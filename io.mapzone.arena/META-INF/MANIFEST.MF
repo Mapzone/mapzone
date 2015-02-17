@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Arena Client
+Bundle-SymbolicName: io.mapzone.arena;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: io.mapzone.arena.ArenaPlugin
+Bundle-Vendor: mapzone.io
+Require-Bundle: org.eclipse.core.runtime,
+ org.polymap.rhei.batik;bundle-version="4.0.0",
+ org.polymap.rap.openlayers;bundle-version="2.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
