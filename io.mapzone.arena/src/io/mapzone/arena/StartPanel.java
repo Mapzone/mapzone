@@ -10,11 +10,8 @@ import org.eclipse.swt.widgets.Composite;
 
 import org.polymap.core.ui.UIUtils;
 
-import org.polymap.rhei.batik.BatikPlugin;
 import org.polymap.rhei.batik.DefaultPanel;
-import org.polymap.rhei.batik.IAppContext;
 import org.polymap.rhei.batik.IPanel;
-import org.polymap.rhei.batik.IPanelSite;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.dashboard.Dashboard;
 
@@ -37,34 +34,25 @@ public class StartPanel
     
     
     @Override
-    public boolean init( IPanelSite site, IAppContext context ) {
-        super.init( site, context );
-        if (site.getPath().size() == 1) {
-            // FIXME
-            UIUtils.activateCallback( "fix-flowtext-link-actions" );
-            return true;
-        }
-        return false;
+    public boolean wantsToBeShown() {
+        return getSite().getPath().size() == 1;
     }
 
 
     @Override
     public void createContents( Composite parent ) {
-        getSite().setTitle( "Start" );
-        getSite().setIcon( BatikPlugin.instance().imageForName( "resources/icons/house.png" ) );
+        // FIXME
+        UIUtils.activateCallback( "fix-flowtext-link-actions" );
+        
+        getSite().setTitle( "Dashboard" );
+        //getSite().setIcon( BatikPlugin.instance().imageForName( "resources/icons/house.png" ) );
 
         dashboard = new Dashboard( getSite(), DASHBOARD_ID );
         dashboard.addDashlet( new ProjectsDashlet() );
         dashboard.addDashlet( new ActivitiesDashlet() );
-        dashboard.addDashlet( new MapDashlet() );
+//        dashboard.addDashlet( new MapDashlet() );
         
         dashboard.createContents( parent );
     }
 
-
-    @Override
-    public PanelIdentifier id() {
-        return ID;
-    }
-    
 }

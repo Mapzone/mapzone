@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import org.polymap.rhei.batik.dashboard.IDashlet;
 import org.polymap.rhei.batik.dashboard.IDashletSite;
+import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 
 /**
@@ -32,6 +33,7 @@ public class ProjectsDashlet
         this.site = site;
         site.title().set( "My projects" );
         site.layoutConstraints().get().add( new PriorityConstraint( 10 ) );
+        site.layoutConstraints().get().add( new MinWidthConstraint( 450, 0 ) );
     }
 
     @Override
