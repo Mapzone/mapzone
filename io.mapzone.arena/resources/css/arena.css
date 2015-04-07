@@ -1,13 +1,19 @@
-/* 
- * Batik Panel Section 
- */
-Composite[BORDER].batik-panel-section {
-  border: 1px solid #e0e0e0;
-  border-radius: 3px;
-  box-shadow: none;
+Display {
+  rwt-fontlist: 12px Helvetica, Arial, sans-serif;
+  /*background-image: url(resources/icons/rap/display/browser_bg.png );*/
+  font: 12px Helvetica, Arial, sans-serif;
 }
-
-DateTime {
+* {
+  font: 12px Helvetica, Arial, sans-serif;
+  color: #404040;
+  background-color: transparent;
+  background-image: none;
+}
+Label.atlas-panel-header {
+  font: 14px Helvetica, Arial, sans-serif;
+}
+Label.batik-panel-section-title {
+  font: 22px Helvetica, Arial, sans-serif;
 }
 Button {
   font: 14px Helvetica, Arial, sans-serif;
