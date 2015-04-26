@@ -9,10 +9,13 @@ import org.apache.commons.logging.LogFactory;
 import com.google.common.base.Joiner;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.IPanel;
 import org.polymap.rhei.batik.PanelIdentifier;
+import org.polymap.rhei.batik.toolkit.ConstraintData;
+import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 
 /**
  * 
@@ -40,7 +43,7 @@ public class ActivitiesPanel
 
     @Override
     public void createContents( Composite parent ) {
-        getSite().toolkit().createFlowText( parent, Joiner.on( "\n" ).join( 
+        Label text = getSite().toolkit().createFlowText( parent, Joiner.on( "\n" ).join( 
                 "### Projects  ",
                 "\n  * **15/02/2015** - Project created: Waldbesitzerverzeichnis",
                 "\n  * **14/02/2015** - Project updated: Waldbesitzerverzeichnis",
@@ -50,6 +53,8 @@ public class ActivitiesPanel
                 "\n  * **10/01/2015** - Waldbesitzer: 1 Objects added",
                 "\n  * **11/01/2015** - Waldbesitzer: 1 Objects modified"
                 ));
+        
+        text.setLayoutData( new ConstraintData( new MinWidthConstraint( 450, 0 ) ) );
     }
 
 }

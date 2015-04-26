@@ -44,7 +44,7 @@ public class ProjectsDashlet
                 "\n  * Admin: Steffen Stundzig",
                 "  * Last update: 6 hours ago",
                 "\n----\n",
-                "\n### [Wahlbeteiligung Sachsen]()  ",
+                "\n### [Wahlbeteiligung Sachsen](@open/project)  ",
                 "Offene Daten aus OpenGov.de und OSM Karte",
                 "\n  * Admin: Steffen Stundzig",
                 "  * Last update: 25.02.1871",

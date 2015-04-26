@@ -46,6 +46,10 @@
             class="io.mapzone.arena.ProjectPanel"
             id="io.mapzone.arena.ProjectPanel">
       </panel>
+      <panel
+            class="io.mapzone.arena.LayersPanel"
+            id="io.mapzone.arena.LayersPanel">
+      </panel>
    </extension>
 
 </plugin>

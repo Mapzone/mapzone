@@ -16,15 +16,15 @@ import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.IPanel;
 import org.polymap.rhei.batik.PanelIdentifier;
 
-import org.polymap.rap.openlayers.OpenLayersWidget;
-import org.polymap.rap.openlayers.base_types.Bounds;
-import org.polymap.rap.openlayers.base_types.OpenLayersMap;
-import org.polymap.rap.openlayers.base_types.Projection;
-import org.polymap.rap.openlayers.controls.LayerSwitcherControl;
-import org.polymap.rap.openlayers.controls.MousePositionControl;
-import org.polymap.rap.openlayers.controls.NavigationControl;
-import org.polymap.rap.openlayers.controls.ScaleLineControl;
-import org.polymap.rap.openlayers.layers.WMSLayer;
+import org.polymap.rap.openlayers.OlWidget;
+import org.polymap.rap.openlayers.base.OlMap;
+import org.polymap.rap.openlayers.layer.ImageLayer;
+import org.polymap.rap.openlayers.source.ImageWMSSource;
+import org.polymap.rap.openlayers.source.ImageWMSSource.RequestParams;
+import org.polymap.rap.openlayers.types.Coordinate;
+import org.polymap.rap.openlayers.types.Projection;
+import org.polymap.rap.openlayers.types.Projection.Units;
+import org.polymap.rap.openlayers.view.View;
 
 /**
  * 
@@ -39,9 +39,9 @@ public class ProjectPanel
 
     public static final PanelIdentifier ID = PanelIdentifier.parse( "project" );
 
-    private OpenLayersWidget        olwidget;
+    private OlWidget        olwidget;
 
-    private OpenLayersMap           map;
+    private OlMap           map;
 
     
     @Override
@@ -50,37 +50,38 @@ public class ProjectPanel
         
         parent.setLayout( FormLayoutFactory.defaults().margins( 10 ).create() );
 
-//        getSite().toolkit().createLabel( parent, "Karte..." )
-//                .setLayoutData( FormDataFactory.filled().width( 500 ).create() );
+        getSite().toolkit().createLabel( parent, "Karte... (" + hashCode() + ")" )
+                .setLayoutData( FormDataFactory.filled().width( 600 ).create() );
         
-        olwidget = new OpenLayersWidget( parent, SWT.MULTI | SWT.WRAP | SWT.BORDER );
+        
+        olwidget = new OlWidget( parent, SWT.MULTI | SWT.WRAP | SWT.BORDER );
         olwidget.setLayoutData( FormDataFactory.filled().height( 500 ).create() );
 
-        String srs = "EPSG:31468";// Geometries.srs( getCRS() );
-        Projection proj = new Projection( srs );
-        String units = srs.equals( "EPSG:4326" ) ? "degrees" : "m";
-        float maxResolution = srs.equals( "EPSG:4326" ) ? (360 / 256) : 500000;
-        Bounds bounds = new Bounds( 4500000, 5550000, 4700000, 5700000 );
+//        Bounds bounds = new Bounds( 4500000, 5550000, 4700000, 5700000 );
 
-        map = new OpenLayersMap( olwidget, proj, proj, units, bounds, maxResolution );
-        // map.updateSize();
+        map = new OlMap( olwidget, new View()
+            .projection.put( new Projection( "EPSG:3857", Units.m ) )
+            //.center.put( new Coordinate( 4500000, 5550000 ) )
+            .center.put( new Coordinate( 0, 0 ) )
+            .zoom.put( 3 ) );
 
-        WMSLayer layer = new WMSLayer( "OSM", "http://ows.terrestris.de/osm/service/", "OSM-WMS" );
-        layer.setIsBaseLayer( true );
-        map.addLayer( layer );
+        map.addLayer( new ImageLayer()
+            .source.put( new ImageWMSSource()
+                .url.put( "http://ows.terrestris.de/osm/service/" )
+                .params.put( new RequestParams().layers.put( "OSM-WMS" ) ) ) );
+        
         //
-        map.addControl( new NavigationControl( true ) );
+//        map.addControl( new NavigationControl( true ) );
 //        map.addControl( new PanZoomBarControl() );
-        map.addControl( new LayerSwitcherControl() );
-        map.addControl( new MousePositionControl() );
-        map.addControl( new ScaleLineControl() );
-        map.addControl( new MousePositionControl() );
+//        map.addControl( new LayerSwitcherControl() );
+//        map.addControl( new MousePositionControl() );
+//        map.addControl( new ScaleLineControl() );
 
         // map.addControl( new ScaleControl() );
         // map.addControl( new LoadingPanelControl() );
 
         // map.setRestrictedExtend( maxExtent );
-        map.zoomToExtent( bounds, true );
+//        map.zoomToExtent( bounds, true );
         //map.zoomTo( 2 );
     }
 
