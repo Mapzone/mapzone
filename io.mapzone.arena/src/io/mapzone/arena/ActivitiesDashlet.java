@@ -11,7 +11,7 @@ import com.google.common.base.Joiner;
 import org.eclipse.swt.widgets.Composite;
 
 import org.polymap.rhei.batik.dashboard.IDashlet;
-import org.polymap.rhei.batik.dashboard.IDashletSite;
+import org.polymap.rhei.batik.dashboard.DashletSite;
 
 /**
  * 
@@ -23,19 +23,19 @@ public class ActivitiesDashlet
 
     private static Log log = LogFactory.getLog( ActivitiesDashlet.class );
     
-    private IDashletSite            site;
+    private DashletSite            site;
 
     
     @Override
-    public void init( @SuppressWarnings("hiding") IDashletSite site ) {
+    public void init( @SuppressWarnings("hiding") DashletSite site ) {
         this.site = site;
-        site.title().set( "My activities" );
+        site.title.set( "My activities" );
         //site.isBoxStyle().set( true );
     }
 
 
     @Override
-    public void createContents( Composite parent ) {
+    public Composite createContents( Composite parent ) {
         site.toolkit().createFlowText( parent, Joiner.on( "\n" ).join( 
                 "### Projects  ",
                 "\n  * **15/02/2015** - Project created: Waldbesitzerverzeichnis",
@@ -49,6 +49,7 @@ public class ActivitiesDashlet
 
         //site.toolkit().createButton( parent, "Press me ...", SWT.PUSH );
         //site.toolkit().createFlowText( parent, "Noch einbißchen Text zum stopfen. Muss hier hin, um zu sehen wie das Layout dann wirkt." );
+        return parent;
     }
     
 }

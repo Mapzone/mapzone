@@ -11,7 +11,7 @@ import com.google.common.base.Joiner;
 import org.eclipse.swt.widgets.Composite;
 
 import org.polymap.rhei.batik.dashboard.IDashlet;
-import org.polymap.rhei.batik.dashboard.IDashletSite;
+import org.polymap.rhei.batik.dashboard.DashletSite;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 
@@ -25,19 +25,19 @@ public class ProjectsDashlet
 
     private static Log log = LogFactory.getLog( ProjectsDashlet.class );
 
-    private IDashletSite            site;
+    private DashletSite            site;
     
     
     @Override
-    public void init( @SuppressWarnings("hiding") IDashletSite site ) {
+    public void init( @SuppressWarnings("hiding") DashletSite site ) {
         this.site = site;
-        site.title().set( "My projects" );
-        site.layoutConstraints().get().add( new PriorityConstraint( 10 ) );
-        site.layoutConstraints().get().add( new MinWidthConstraint( 450, 0 ) );
+        site.title.set( "My projects" );
+        site.constraints.get().add( new PriorityConstraint( 10 ) );
+        site.constraints.get().add( new MinWidthConstraint( 450, 0 ) );
     }
 
     @Override
-    public void createContents( Composite parent ) {
+    public Composite createContents( Composite parent ) {
         site.toolkit().createFlowText( parent, Joiner.on( "\n" ).join( 
                 "### [Waldbesitzerverzeichnis](@open/project)  ",
                 "Unsere Waldbesitzer als Karte und Dienst. Zugriff von außen möglich.  ",
@@ -54,6 +54,7 @@ public class ProjectsDashlet
                 "\n  * Admin: Steffen Stundzig",
                 "  * Last update: irgendwann"
                 ));
+        return parent;
     }
     
 }

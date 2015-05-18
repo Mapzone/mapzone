@@ -13,7 +13,7 @@ import org.polymap.core.ui.FormDataFactory;
 import org.polymap.core.ui.FormLayoutFactory;
 
 import org.polymap.rhei.batik.dashboard.IDashlet;
-import org.polymap.rhei.batik.dashboard.IDashletSite;
+import org.polymap.rhei.batik.dashboard.DashletSite;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 
@@ -30,7 +30,7 @@ public class MapDashlet
 
     private static Log log = LogFactory.getLog( MapDashlet.class );
     
-    private IDashletSite            site;
+    private DashletSite            site;
 
     private OlWidget                olwidget;
 
@@ -38,15 +38,15 @@ public class MapDashlet
 
     
     @Override
-    public void init( @SuppressWarnings("hiding") IDashletSite site ) {
+    public void init( @SuppressWarnings("hiding") DashletSite site ) {
         this.site = site;
-        site.layoutConstraints().get().add( new PriorityConstraint( 1 ) );
-        site.layoutConstraints().get().add( new MinWidthConstraint( 400, 0 ) );
+        site.constraints.get().add( new PriorityConstraint( 1 ) );
+        site.constraints.get().add( new MinWidthConstraint( 400, 0 ) );
     }
 
 
     @Override
-    public void createContents( Composite parent ) {
+    public Composite createContents( Composite parent ) {
         parent.setLayout( FormLayoutFactory.defaults().create() );
         
         olwidget = new OlWidget( parent, SWT.MULTI | SWT.WRAP | SWT.BORDER );
@@ -78,6 +78,7 @@ public class MapDashlet
         // map.setRestrictedExtend( maxExtent );
         map.zoomToExtent( bounds, true );
         //map.zoomTo( 2 );
+        return parent;
     }
     
 }
