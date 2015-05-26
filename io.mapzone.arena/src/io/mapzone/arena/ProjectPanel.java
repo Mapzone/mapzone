@@ -20,7 +20,6 @@ import org.polymap.rap.openlayers.OlWidget;
 import org.polymap.rap.openlayers.base.OlMap;
 import org.polymap.rap.openlayers.layer.ImageLayer;
 import org.polymap.rap.openlayers.source.ImageWMSSource;
-import org.polymap.rap.openlayers.source.ImageWMSSource.RequestParams;
 import org.polymap.rap.openlayers.types.Coordinate;
 import org.polymap.rap.openlayers.types.Projection;
 import org.polymap.rap.openlayers.types.Projection.Units;
@@ -68,7 +67,8 @@ public class ProjectPanel
         map.addLayer( new ImageLayer()
             .source.put( new ImageWMSSource()
                 .url.put( "http://ows.terrestris.de/osm/service/" )
-                .params.put( new RequestParams().layers.put( "OSM-WMS" ) ) ) );
+                .params.put( new ImageWMSSource.RequestParams().layers.put( "OSM-WMS" ) ) )
+            .opacity.put( 0.5f ) );
         
         //
 //        map.addControl( new NavigationControl( true ) );

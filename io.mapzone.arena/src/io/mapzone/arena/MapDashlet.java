@@ -6,11 +6,7 @@ package io.mapzone.arena;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-
-import org.polymap.core.ui.FormDataFactory;
-import org.polymap.core.ui.FormLayoutFactory;
 
 import org.polymap.rhei.batik.dashboard.IDashlet;
 import org.polymap.rhei.batik.dashboard.DashletSite;
@@ -47,37 +43,37 @@ public class MapDashlet
 
     @Override
     public Composite createContents( Composite parent ) {
-        parent.setLayout( FormLayoutFactory.defaults().create() );
-        
-        olwidget = new OlWidget( parent, SWT.MULTI | SWT.WRAP | SWT.BORDER );
-        olwidget.setLayoutData( FormDataFactory.filled().height( 500 ).create() );
-
-        String srs = "EPSG:31468";// Geometries.srs( getCRS() );
-        Projection proj = new Projection( srs );
-        String units = srs.equals( "EPSG:4326" ) ? "degrees" : "m";
-        float maxResolution = srs.equals( "EPSG:4326" ) ? (360 / 256) : 500000;
-        Bounds bounds = new Bounds( 4500000, 5550000, 4700000, 5700000 );
-
-        map = new OlMap( olwidget, proj, proj, units, bounds, maxResolution );
-        // map.updateSize();
-
-        WMSLayer layer = new WMSLayer( "OSM", "http://ows.terrestris.de/osm/service/", "OSM-WMS" );
-        layer.setIsBaseLayer( true );
-        map.addLayer( layer );
-        //
-        map.addControl( new NavigationControl( true ) );
-//        map.addControl( new PanZoomBarControl() );
-        map.addControl( new LayerSwitcherControl() );
-        map.addControl( new MousePositionControl() );
-        map.addControl( new ScaleLineControl() );
-        map.addControl( new MousePositionControl() );
-
-        // map.addControl( new ScaleControl() );
-        // map.addControl( new LoadingPanelControl() );
-
-        // map.setRestrictedExtend( maxExtent );
-        map.zoomToExtent( bounds, true );
-        //map.zoomTo( 2 );
+//        parent.setLayout( FormLayoutFactory.defaults().create() );
+//        
+//        olwidget = new OlWidget( parent, SWT.MULTI | SWT.WRAP | SWT.BORDER );
+//        olwidget.setLayoutData( FormDataFactory.filled().height( 500 ).create() );
+//
+//        String srs = "EPSG:31468";// Geometries.srs( getCRS() );
+//        Projection proj = new Projection( srs );
+//        String units = srs.equals( "EPSG:4326" ) ? "degrees" : "m";
+//        float maxResolution = srs.equals( "EPSG:4326" ) ? (360 / 256) : 500000;
+//        Bounds bounds = new Bounds( 4500000, 5550000, 4700000, 5700000 );
+//
+//        map = new OlMap( olwidget, proj, proj, units, bounds, maxResolution );
+//        // map.updateSize();
+//
+//        WMSLayer layer = new WMSLayer( "OSM", "http://ows.terrestris.de/osm/service/", "OSM-WMS" );
+//        layer.setIsBaseLayer( true );
+//        map.addLayer( layer );
+//        //
+//        map.addControl( new NavigationControl( true ) );
+////        map.addControl( new PanZoomBarControl() );
+//        map.addControl( new LayerSwitcherControl() );
+//        map.addControl( new MousePositionControl() );
+//        map.addControl( new ScaleLineControl() );
+//        map.addControl( new MousePositionControl() );
+//
+//        // map.addControl( new ScaleControl() );
+//        // map.addControl( new LoadingPanelControl() );
+//
+//        // map.setRestrictedExtend( maxExtent );
+//        map.zoomToExtent( bounds, true );
+//        //map.zoomTo( 2 );
         return parent;
     }
     
