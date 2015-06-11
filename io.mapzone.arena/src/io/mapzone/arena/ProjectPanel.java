@@ -16,7 +16,6 @@ import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.IPanel;
 import org.polymap.rhei.batik.PanelIdentifier;
 
-import org.polymap.rap.openlayers.OlWidget;
 import org.polymap.rap.openlayers.base.OlMap;
 import org.polymap.rap.openlayers.layer.ImageLayer;
 import org.polymap.rap.openlayers.source.ImageWMSSource;
@@ -38,8 +37,6 @@ public class ProjectPanel
 
     public static final PanelIdentifier ID = PanelIdentifier.parse( "project" );
 
-    private OlWidget        olwidget;
-
     private OlMap           map;
 
     
@@ -53,12 +50,9 @@ public class ProjectPanel
                 .setLayoutData( FormDataFactory.filled().width( 600 ).create() );
         
         
-        olwidget = new OlWidget( parent, SWT.MULTI | SWT.WRAP | SWT.BORDER );
-        olwidget.setLayoutData( FormDataFactory.filled().height( 500 ).create() );
-
 //        Bounds bounds = new Bounds( 4500000, 5550000, 4700000, 5700000 );
 
-        map = new OlMap( olwidget, new View()
+        map = new OlMap( parent, SWT.NONE, new View()
             .projection.put( new Projection( "EPSG:3857", Units.m ) )
             //.center.put( new Coordinate( 4500000, 5550000 ) )
             .center.put( new Coordinate( 0, 0 ) )
@@ -69,6 +63,8 @@ public class ProjectPanel
                 .url.put( "http://ows.terrestris.de/osm/service/" )
                 .params.put( new ImageWMSSource.RequestParams().layers.put( "OSM-WMS" ) ) )
             .opacity.put( 0.5f ) );
+
+        map.setLayoutData( FormDataFactory.filled().height( 500 ).create() );
         
         //
 //        map.addControl( new NavigationControl( true ) );

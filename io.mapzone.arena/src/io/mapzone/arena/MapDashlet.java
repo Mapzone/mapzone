@@ -13,7 +13,6 @@ import org.polymap.rhei.batik.dashboard.DashletSite;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 
-import org.polymap.rap.openlayers.OlWidget;
 import org.polymap.rap.openlayers.base.OlMap;
 
 /**
@@ -26,9 +25,7 @@ public class MapDashlet
 
     private static Log log = LogFactory.getLog( MapDashlet.class );
     
-    private DashletSite            site;
-
-    private OlWidget                olwidget;
+    private DashletSite             site;
 
     private OlMap                   map;
 
