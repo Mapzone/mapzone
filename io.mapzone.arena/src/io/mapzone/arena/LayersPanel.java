@@ -3,8 +3,6 @@
  */
 package io.mapzone.arena;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -19,8 +17,7 @@ import org.polymap.core.ui.FormLayoutFactory;
 
 import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.IPanel;
-import org.polymap.rhei.batik.PanelIdentifier;import org.polymap.rhei.batik.PanelPath;
-
+import org.polymap.rhei.batik.PanelIdentifier;
 
 /**
  * 
@@ -38,14 +35,8 @@ public class LayersPanel
     
     @Override
     public boolean wantsToBeShown() {
-        List<IPanel> sibling = getContext().findPanels( panel -> {
-                PanelPath panelPath = panel.getSite().getPath();
-                PanelPath myPath = getSite().getPath();
-
-                return panel instanceof ProjectPanel && panelPath.size() == myPath.size(); 
-        });
-        
-        if (!sibling.isEmpty()) {
+        IPanel parent = getContext().getPanel( getSite().getPath().removeLast( 1 ) );
+        if (parent instanceof ProjectPanel) {
             getSite().setTitle( "Layers" );
             getSite().setPreferredWidth( 200 );
             return true;

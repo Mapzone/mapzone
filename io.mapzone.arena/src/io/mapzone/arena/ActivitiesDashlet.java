@@ -35,7 +35,7 @@ public class ActivitiesDashlet
 
 
     @Override
-    public Composite createContents( Composite parent ) {
+    public void createContents( Composite parent ) {
         site.toolkit().createFlowText( parent, Joiner.on( "\n" ).join( 
                 "### Projects  ",
                 "\n  * **15/02/2015** - Project created: Waldbesitzerverzeichnis",
@@ -49,7 +49,6 @@ public class ActivitiesDashlet
 
         //site.toolkit().createButton( parent, "Press me ...", SWT.PUSH );
         //site.toolkit().createFlowText( parent, "Noch einbißchen Text zum stopfen. Muss hier hin, um zu sehen wie das Layout dann wirkt." );
-        return parent;
     }
     
 }

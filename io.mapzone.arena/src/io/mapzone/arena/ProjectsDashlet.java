@@ -37,7 +37,7 @@ public class ProjectsDashlet
     }
 
     @Override
-    public Composite createContents( Composite parent ) {
+    public void createContents( Composite parent ) {
         site.toolkit().createFlowText( parent, Joiner.on( "\n" ).join( 
                 "### [Waldbesitzerverzeichnis](@open/project)  ",
                 "Unsere Waldbesitzer als Karte und Dienst. Zugriff von außen möglich.  ",
@@ -54,7 +54,6 @@ public class ProjectsDashlet
                 "\n  * Admin: Steffen Stundzig",
                 "  * Last update: irgendwann"
                 ));
-        return parent;
     }
     
 }

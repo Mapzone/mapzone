@@ -33,7 +33,7 @@ public class ActivitiesPanel
     
     @Override
     public boolean wantsToBeShown() {
-        if (getSite().getPath().size() == 1) {
+        if (getSite().getPath().size() == 2) {
             getSite().setTitle( "Audit log" );
             return true;            
         }

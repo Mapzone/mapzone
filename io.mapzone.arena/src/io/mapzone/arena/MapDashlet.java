@@ -39,7 +39,7 @@ public class MapDashlet
 
 
     @Override
-    public Composite createContents( Composite parent ) {
+    public void createContents( Composite parent ) {
 //        parent.setLayout( FormLayoutFactory.defaults().create() );
 //        
 //        olwidget = new OlWidget( parent, SWT.MULTI | SWT.WRAP | SWT.BORDER );
@@ -71,7 +71,6 @@ public class MapDashlet
 //        // map.setRestrictedExtend( maxExtent );
 //        map.zoomToExtent( bounds, true );
 //        //map.zoomTo( 2 );
-        return parent;
     }
     
 }

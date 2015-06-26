@@ -6,7 +6,6 @@ package io.mapzone.arena;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import org.polymap.core.ui.FormDataFactory;
@@ -17,12 +16,6 @@ import org.polymap.rhei.batik.IPanel;
 import org.polymap.rhei.batik.PanelIdentifier;
 
 import org.polymap.rap.openlayers.base.OlMap;
-import org.polymap.rap.openlayers.layer.ImageLayer;
-import org.polymap.rap.openlayers.source.ImageWMSSource;
-import org.polymap.rap.openlayers.types.Coordinate;
-import org.polymap.rap.openlayers.types.Projection;
-import org.polymap.rap.openlayers.types.Projection.Units;
-import org.polymap.rap.openlayers.view.View;
 
 /**
  * 
@@ -42,7 +35,7 @@ public class ProjectPanel
     
     @Override
     public void createContents( Composite parent ) {
-        getSite().setTitle( "Waldbesitzer" );
+        getSite().setTitle( "Project" );
         
         parent.setLayout( FormLayoutFactory.defaults().margins( 10 ).create() );
 
@@ -52,19 +45,19 @@ public class ProjectPanel
         
 //        Bounds bounds = new Bounds( 4500000, 5550000, 4700000, 5700000 );
 
-        map = new OlMap( parent, SWT.NONE, new View()
-            .projection.put( new Projection( "EPSG:3857", Units.m ) )
-            //.center.put( new Coordinate( 4500000, 5550000 ) )
-            .center.put( new Coordinate( 0, 0 ) )
-            .zoom.put( 3 ) );
-
-        map.addLayer( new ImageLayer()
-            .source.put( new ImageWMSSource()
-                .url.put( "http://ows.terrestris.de/osm/service/" )
-                .params.put( new ImageWMSSource.RequestParams().layers.put( "OSM-WMS" ) ) )
-            .opacity.put( 0.5f ) );
-
-        map.setLayoutData( FormDataFactory.filled().height( 500 ).create() );
+//        map = new OlMap( parent, SWT.NONE, new View()
+//            .projection.put( new Projection( "EPSG:3857", Units.m ) )
+//            //.center.put( new Coordinate( 4500000, 5550000 ) )
+//            .center.put( new Coordinate( 0, 0 ) )
+//            .zoom.put( 3 ) );
+//
+//        map.addLayer( new ImageLayer()
+//            .source.put( new ImageWMSSource()
+//                .url.put( "http://ows.terrestris.de/osm/service/" )
+//                .params.put( new ImageWMSSource.RequestParams().layers.put( "OSM-WMS" ) ) )
+//            .opacity.put( 0.5f ) );
+//
+//        map.setLayoutData( FormDataFactory.filled().height( 500 ).create() );
         
         //
 //        map.addControl( new NavigationControl( true ) );
