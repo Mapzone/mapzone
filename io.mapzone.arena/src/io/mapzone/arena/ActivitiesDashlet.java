@@ -10,8 +10,9 @@ import com.google.common.base.Joiner;
 
 import org.eclipse.swt.widgets.Composite;
 
-import org.polymap.rhei.batik.dashboard.IDashlet;
 import org.polymap.rhei.batik.dashboard.DashletSite;
+import org.polymap.rhei.batik.dashboard.IDashlet;
+import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 
 /**
  * 
@@ -30,6 +31,7 @@ public class ActivitiesDashlet
     public void init( @SuppressWarnings("hiding") DashletSite site ) {
         this.site = site;
         site.title.set( "My activities" );
+        site.constraints.get().add( new PriorityConstraint( 0 ) );
         //site.isBoxStyle().set( true );
     }
 
