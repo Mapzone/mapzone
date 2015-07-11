@@ -21,6 +21,10 @@
                   href="batikres/css/flowtext.css"
                   rel="stylesheet">
             </link>
+            <!--link
+                  href="http://fonts.googleapis.com/css?family=Roboto"
+                  rel="stylesheet">
+            </link-->
          </additionalHeaders>
       </branding>
    </extension>
@@ -45,10 +49,6 @@
       <panel
             class="io.mapzone.arena.ProjectPanel"
             id="io.mapzone.arena.ProjectPanel">
-      </panel>
-      <panel
-            class="io.mapzone.arena.LayersPanel"
-            id="io.mapzone.arena.LayersPanel">
       </panel>
    </extension>
 

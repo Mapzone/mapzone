@@ -40,11 +40,17 @@ public class StartPanel
 
 
     @Override
+    public void init() {
+    }
+
+
+    @Override
     public void createContents( Composite parent ) {
         // FIXME
         UIUtils.activateCallback( "fix-flowtext-link-actions" );
         
         getSite().setTitle( "Dashboard" );
+        getSite().setPreferredWidth( 450 );
         //getSite().setIcon( BatikPlugin.instance().imageForName( "resources/icons/house.png" ) );
 
         dashboard = new Dashboard( getSite(), DASHBOARD_ID );
