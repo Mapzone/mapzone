@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.rap.ui.entrypoint">
+      <entrypoint
+            brandingId="io.mapzone.controller.branding"
+            class="org.polymap.rhei.batik.BatikApplication"
+            id="io.mapzone.controller.entrypoint"
+            path="/ctrl">
+      </entrypoint>
+   </extension>
+   <extension
+         point="org.eclipse.rap.ui.branding">
+      <branding
+            id="io.mapzone.controller.branding"
+            themeId="org.polymap.rhei.batik.theme"
+            title="Mapzone">
+         <additionalHeaders>
+            <link
+                  href="batikres/css/flowtext.css"
+                  rel="stylesheet">
+            </link>
+         </additionalHeaders>
+      </branding>
+   </extension>
+   <extension
+         point="org.polymap.rhei.batik.design">
+      <design
+            class="io.mapzone.controller.CtrlAppDesign"
+            id="io.mapzone.controller.design"
+            servletNameMatcher="/ctrl">
+      </design>
+   </extension>
+   <extension
+         point="org.polymap.rhei.batik.panels">
+      <panel
+            class="io.mapzone.controller.CtrlStartPanel"
+            id="io.mapzone.controller.StartPanel">
+      </panel>
+   </extension>
+
+</plugin>
