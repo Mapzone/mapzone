@@ -67,10 +67,10 @@ public class ProjectPanel
             
             CoordinateReferenceSystem epsg3857 = Geometries.crs( "EPSG:3857" );
             
-            MapViewer<Layer> mapViewer = new MapViewer<Layer>( parent )
-                    .maxExtent.put( new ReferencedEnvelope( 1380000, 1390000, 6680000, 6690000, epsg3857 ) )
-                    .contentProvider.put( new OlContentProvider() )
-                    .layerProvider.put( new OlLayerProvider() );
+            MapViewer<Layer> mapViewer = new MapViewer<Layer>( parent );
+            mapViewer.maxExtent.set( new ReferencedEnvelope( 1380000, 1390000, 6680000, 6690000, epsg3857 ) );
+            mapViewer.contentProvider.set( new OlContentProvider() );
+            mapViewer.layerProvider.set( new OlLayerProvider() );
             
             mapViewer.setInput( osm );
             mapViewer.getMap().setLayoutData( FormDataFactory.filled().height( 500 ).create() );

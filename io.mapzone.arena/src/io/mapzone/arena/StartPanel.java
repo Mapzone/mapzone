@@ -1,6 +1,3 @@
-/* 
- * Copyright (C) 2015, Falko Bräutigam. All rights reserved.
- */
 package io.mapzone.arena;
 
 import org.apache.commons.logging.Log;

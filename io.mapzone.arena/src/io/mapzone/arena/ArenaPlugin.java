@@ -1,6 +1,3 @@
-/*
- * Copyright (C) 2015 Falko Bräutigam. All rights reserved.
- */
 package io.mapzone.arena;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -12,9 +9,10 @@ import org.osgi.framework.BundleContext;
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-public class ArenaPlugin extends AbstractUIPlugin {
+public class ArenaPlugin 
+        extends AbstractUIPlugin {
 
-	public static final String PLUGIN_ID = "io.mapzone.arena"; //$NON-NLS-1$
+	public static final String ID = "io.mapzone.arena"; //$NON-NLS-1$
 
 	private static ArenaPlugin instance;
 	

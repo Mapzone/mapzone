@@ -21,10 +21,10 @@
                   href="batikres/css/flowtext.css"
                   rel="stylesheet">
             </link>
-            <!--link
-                  href="http://fonts.googleapis.com/css?family=Roboto"
+            <link
+                  href="../batikres/css/roboto.css"
                   rel="stylesheet">
-            </link-->
+            </link>
          </additionalHeaders>
       </branding>
    </extension>
