@@ -14,11 +14,15 @@
          point="org.eclipse.rap.ui.branding">
       <branding
             id="io.mapzone.controller.branding"
-            themeId="org.polymap.rhei.batik.theme"
+            themeId="org.polymap.rhei.batik.materialDesign"
             title="Mapzone">
          <additionalHeaders>
             <link
-                  href="batikres/css/flowtext.css"
+                  href="batikres/css/roboto.css"
+                  rel="stylesheet">
+            </link>
+            <link
+                  href="batikres/css/md/flowtext.css"
                   rel="stylesheet">
             </link>
          </additionalHeaders>

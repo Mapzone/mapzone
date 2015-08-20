@@ -8,7 +8,7 @@ import org.polymap.core.ui.FormLayoutFactory;
 import org.polymap.core.ui.UIUtils;
 
 import org.polymap.rhei.batik.app.IAppDesign;
-import org.polymap.rhei.batik.engine.DefaultAppDesign;
+import org.polymap.rhei.batik.toolkit.md.MdAppDesign;
 
 /**
  * 
@@ -16,7 +16,7 @@ import org.polymap.rhei.batik.engine.DefaultAppDesign;
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class CtrlAppDesign
-        extends DefaultAppDesign {
+        extends MdAppDesign {
 
     protected Composite fillHeaderArea( Composite parent ) {
         Composite result = new Composite( parent, SWT.NO_FOCUS | SWT.BORDER );
