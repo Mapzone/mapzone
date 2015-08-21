@@ -1,5 +1,6 @@
 package io.mapzone.controller.model;
 
+import org.polymap.model2.Association;
 import org.polymap.model2.Entity;
 import org.polymap.model2.Nullable;
 import org.polymap.model2.Property;
@@ -14,14 +15,15 @@ public class Project
         extends Entity {
 
     @Queryable
-    public Property<String>         name;
+    public Property<String>             name;
 
     @Queryable
     @Nullable
-    public Property<String>         description;
+    public Property<String>             description;
 
     @Queryable
     @Nullable
-    public Property<String>         website;
+    public Property<String>             website;
     
+    public Association<Organization>    organization;
 }

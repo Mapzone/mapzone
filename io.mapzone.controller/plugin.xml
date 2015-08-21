@@ -2,6 +2,14 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
+         point="org.eclipse.equinox.http.registry.servlets">
+      <servlet
+            alias="/projects"
+            class="io.mapzone.controller.http.ProxyServlet"
+            load-on-startup="true">
+      </servlet>
+   </extension>
+   <extension
          point="org.eclipse.rap.ui.entrypoint">
       <entrypoint
             brandingId="io.mapzone.controller.branding"
