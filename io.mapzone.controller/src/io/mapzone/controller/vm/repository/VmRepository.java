@@ -3,7 +3,9 @@ package io.mapzone.controller.vm.repository;
 import static org.polymap.model2.query.Expressions.and;
 import static org.polymap.model2.query.Expressions.eq;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import java.io.IOException;
 
@@ -18,6 +20,7 @@ import org.polymap.model2.runtime.EntityRepository;
 import org.polymap.model2.runtime.ModelRuntimeException;
 import org.polymap.model2.runtime.UnitOfWork;
 import org.polymap.model2.runtime.ValueInitializer;
+import org.polymap.model2.store.OptimisticLocking;
 import org.polymap.model2.store.recordstore.RecordStoreAdapter;
 import org.polymap.recordstore.lucene.LuceneRecordStore;
 
@@ -40,7 +43,9 @@ public class VmRepository {
                             RegisteredHost.class,
                             RegisteredProcess.class })
                     .store.set( 
-                            new RecordStoreAdapter( store ) )
+                            // make sure to never lose updates or something
+                            new OptimisticLocking(
+                            new RecordStoreAdapter( store ) ) )
                     .create();
         }
         catch (Exception e) {
@@ -65,6 +70,11 @@ public class VmRepository {
     }
 
     
+    public List<RegisteredHost> allHosts() {
+        return uow.query( RegisteredHost.class ).execute().stream().collect( Collectors.toList() );
+    }
+
+
     public <T extends Entity> T entity( Class<T> entityClass, Object id ) {
         return uow.entity( entityClass, id );
     }

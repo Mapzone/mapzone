@@ -1,7 +1,9 @@
 package io.mapzone.controller.vm.repository;
 
+import io.mapzone.controller.model.Project;
 import io.mapzone.controller.vm.runtime.HostRuntime;
 import io.mapzone.controller.vm.runtime.LocalHostRuntime;
+import io.mapzone.controller.vm.runtime.ProcessRuntime;
 
 import org.polymap.model2.Concerns;
 import org.polymap.model2.Entity;
@@ -24,7 +26,7 @@ public class RegisteredHost
     }
     
     
-    public Property<HostType>   hostType;
+    public Property<HostType>           hostType;
     
     
     public HostRuntime runtime() {
@@ -34,6 +36,12 @@ public class RegisteredHost
         else {
             throw new RuntimeException( "Unhandled host type: " + hostType.get() );
         }
+    }
+
+
+    public void startProject( Project project ) throws Exception {
+        String home = "/servers/polymap4";
+        ProcessRuntime processRuntime = runtime().startEclipseProcess( home );
     }
     
 }

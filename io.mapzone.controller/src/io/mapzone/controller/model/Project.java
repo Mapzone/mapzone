@@ -26,4 +26,5 @@ public class Project
     public Property<String>             website;
     
     public Association<Organization>    organization;
+    
 }

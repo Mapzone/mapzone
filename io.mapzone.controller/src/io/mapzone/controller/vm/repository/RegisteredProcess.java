@@ -35,6 +35,8 @@ public class RegisteredProcess
     
     public Association<RegisteredHost>      host;
     
+    public Property<String>                 fsPath;
+    
     
     public ProcessRuntime runtime() {
         
