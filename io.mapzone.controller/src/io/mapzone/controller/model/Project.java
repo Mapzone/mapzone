@@ -27,4 +27,6 @@ public class Project
     
     public Association<Organization>    organization;
     
+    public Property<ProjectStoreInfo>   storedAt;
+
 }

@@ -1,7 +1,9 @@
-package io.mapzone.controller.http;
+package io.mapzone.controller.provision;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Defines and provides access to an {@link Provision} property.
@@ -22,11 +24,9 @@ public interface Context<T> {
     
     public T get();
     
-    public T __();
+//    public T __();
     
-    public T getOrWait( int time, TimeUnit unit );
-    
-    public T set( T value );
+    public void set( T value );
     
     
     /**
@@ -43,5 +43,11 @@ public interface Context<T> {
     public Class<T> getDeclaredType();
     
     public String getScope();
+
+    public T orElse( T other );
+
+    public T orElse( Supplier<T> supplier );
+
+    public <U> Optional<U> map( Function<? super T,? extends U> mapper );
     
 }

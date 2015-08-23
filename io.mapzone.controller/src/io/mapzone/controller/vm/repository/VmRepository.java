@@ -2,6 +2,7 @@ package io.mapzone.controller.vm.repository;
 
 import static org.polymap.model2.query.Expressions.and;
 import static org.polymap.model2.query.Expressions.eq;
+import io.mapzone.controller.vm.repository.RegisteredHost.HostType;
 
 import java.util.List;
 import java.util.Optional;
@@ -43,13 +44,30 @@ public class VmRepository {
                             RegisteredHost.class,
                             RegisteredProcess.class })
                     .store.set( 
-                            // make sure to never lose updates or something
+                            // make sure to never loose updates or something
                             new OptimisticLocking(
                             new RecordStoreAdapter( store ) ) )
                     .create();
+            
+            checkInit();
         }
         catch (Exception e) {
             throw new RuntimeException( e );
+        }
+    }
+    
+    
+    public static void checkInit() {
+        try (
+            UnitOfWork _uow = repo.newUnitOfWork()
+        ){
+            if (_uow.query( RegisteredHost.class ).execute().size() == 0) {
+                _uow.createEntity( RegisteredHost.class, "local", (RegisteredHost proto) -> {
+                    proto.hostType.set( HostType.LOCAL );
+                    return proto;
+                });
+                _uow.commit();
+            }
         }
     }
     

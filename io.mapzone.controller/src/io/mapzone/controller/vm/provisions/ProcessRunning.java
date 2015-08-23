@@ -1,12 +1,14 @@
 package io.mapzone.controller.vm.provisions;
 
-import static io.mapzone.controller.http.Provision.Status.Severity.FAILED_CHECK_AGAIN;
-import io.mapzone.controller.http.Context;
+import static io.mapzone.controller.provision.Provision.Status.Severity.FAILED_CHECK_AGAIN;
 import io.mapzone.controller.http.DefaultProvision;
 import io.mapzone.controller.http.OkToForwardRequest;
-import io.mapzone.controller.http.Provision;
 import io.mapzone.controller.model.Project;
+import io.mapzone.controller.provision.Context;
+import io.mapzone.controller.provision.Provision;
 import io.mapzone.controller.vm.repository.RegisteredHost;
+import io.mapzone.controller.vm.repository.RegisteredProcess;
+import io.mapzone.controller.vm.runtime.ProcessRuntime;
 
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class ProcessRunning
 
     private Context<Project>                project;
     
-    private Context<RegisteredHost>         host;
+    private Context<RegisteredHost>         rhost;
 
     
     @Override
@@ -38,9 +40,9 @@ public class ProcessRunning
     
     @Override
     public Status execute() throws Exception {
-        lock.__().lock();
+        lock.get().lock();
         
-        List<RegisteredHost> hosts = vmRepo.__().allHosts();
+        List<RegisteredHost> hosts = vmRepo.get().allHosts();
         if (hosts.isEmpty()) {
             return new Status( FAILED_CHECK_AGAIN, NO_HOST );
         }
@@ -48,8 +50,22 @@ public class ProcessRunning
             throw new RuntimeException( "FIXME find the most suited host to run this project" );
         }
         
-        host.set( hosts.get( 0 ) );
-        host.__().startProject( project.__() );
+        // define host to use
+        rhost.set( hosts.get( 0 ) );
+
+        // start process
+        String projectHome = project.get().storedAt.get().path.get();
+        ProcessRuntime process = rhost.get().runtime().newEclipseProcess( projectHome );
+
+        // update repo
+        vmRepo.get().createEntity( RegisteredProcess.class, null, (RegisteredProcess proto) -> {
+            proto.host.set( rhost.get() );
+            proto.organisation.set( project.get().organization.get().name.get() );
+            proto.project.set( project.get().name.get() );
+            return proto;
+        });
+        
+        return OK_STATUS;
     }
     
 }

@@ -1,8 +1,8 @@
 package io.mapzone.controller.vm.provisions;
 
-import io.mapzone.controller.http.Context;
 import io.mapzone.controller.http.DefaultProvision;
-import io.mapzone.controller.http.Provision;
+import io.mapzone.controller.provision.Context;
+import io.mapzone.controller.provision.Provision;
 import io.mapzone.controller.vm.repository.RegisteredHost;
 import io.mapzone.controller.vm.runtime.HostRuntime;
 

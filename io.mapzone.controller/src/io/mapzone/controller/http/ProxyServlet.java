@@ -1,7 +1,8 @@
 package io.mapzone.controller.http;
 
-import static io.mapzone.controller.http.Provision.Status.Severity.OK;
-import io.mapzone.controller.http.Provision.Status;
+import static io.mapzone.controller.provision.Provision.Status.Severity.OK;
+import io.mapzone.controller.provision.ProvisionExecutor;
+import io.mapzone.controller.provision.Provision.Status;
 import io.mapzone.controller.vm.provisions.ProcessRunning;
 import io.mapzone.controller.vm.repository.VmRepository;
 

@@ -1,6 +1,6 @@
-package io.mapzone.controller.http;
+package io.mapzone.controller.provision;
 
-import io.mapzone.controller.http.Provision.Status.Severity;
+import io.mapzone.controller.provision.Provision.Status.Severity;
 
 /**
  * 

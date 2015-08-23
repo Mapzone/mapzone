@@ -1,4 +1,4 @@
-package io.mapzone.controller.http;
+package io.mapzone.controller.provision;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

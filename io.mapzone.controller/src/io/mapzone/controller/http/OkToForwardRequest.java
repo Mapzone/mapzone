@@ -1,7 +1,9 @@
 package io.mapzone.controller.http;
 
-import io.mapzone.controller.http.Provision.Status.Severity;
 import io.mapzone.controller.model.Project;
+import io.mapzone.controller.provision.Context;
+import io.mapzone.controller.provision.Provision;
+import io.mapzone.controller.provision.Provision.Status.Severity;
 import io.mapzone.controller.vm.repository.RegisteredProcess;
 import io.mapzone.controller.vm.runtime.ProcessRuntime;
 
@@ -46,7 +48,7 @@ public class OkToForwardRequest
             return OK_STATUS;
         }
         else {
-            project.set( projectRepo.__()
+            project.set( projectRepo.get()
                     .findProject( organizationName, projectName )
                     .orElseThrow( () -> new RuntimeException( "No such project: " + organizationName + "/" + projectName ) ) ); 
             return new Status( Severity.FAILED_CHECK_AGAIN, NO_PROCESS );
