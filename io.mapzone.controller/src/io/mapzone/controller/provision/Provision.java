@@ -14,11 +14,13 @@ public interface Provision {
     /**
      * 
      *
-     * @param failed
+     * @param failed The upper {@link Provision} that failed.
+     * @param cause XXX
+     * @param cause The {@link Status} that caused the fail of the upper {@link Provision}.
      * @return True if this Provision wants to be executed for the given context and
      *         failed Provision.
      */
-    public boolean init( Provision failed );
+    public boolean init( Provision failed, Status cause );
     
     public Status execute() throws Exception;
 

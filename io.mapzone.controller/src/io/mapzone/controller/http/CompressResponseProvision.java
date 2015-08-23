@@ -17,7 +17,7 @@ public class CompressResponseProvision
 
 
     @Override
-    public boolean init( Provision failed ) {
+    public boolean init( Provision failed , Status cause  ) {
         return failed == null;
     }
 

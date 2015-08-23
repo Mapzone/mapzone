@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.client.methods.CloseableHttpResponse;
+
+import org.polymap.core.runtime.Closer;
 
 /**
  * 
@@ -35,25 +38,24 @@ public class ProxyServlet
 
     @Override
     protected void service( HttpServletRequest req, HttpServletResponse resp ) throws ServletException, IOException {
+        CloseableHttpResponse downResponse = null;
         try {
-            // provisioning
+            // request provisioning
             VmRepository vmRepo = null;
             ProvisionExecutor executor = new ProvisionExecutor( forwardRequestProvisions );
-            OkToForwardRequest okRequest = executor.newTargetProvision( OkToForwardRequest.class );
-            okRequest.request.set( req );
-            okRequest.response.set( resp );
-            okRequest.vmRepo.set( vmRepo );
+            OkToForwardRequest forwardRequest = executor.newTargetProvision( OkToForwardRequest.class );
+            forwardRequest.request.set( req );
+            forwardRequest.response.set( resp );
+            forwardRequest.vmRepo.set( vmRepo );
             Status status = executor.execute( null );
             assert status.severityEquals( OK );
 
-            // send request and handle response code / errors
-            
-            // provisioning
+            // response provisioning
             executor = new ProvisionExecutor( forwardResponseProvisions );
-            OkToForwardResponse okResponse = executor.newTargetProvision( OkToForwardResponse.class );
-            okResponse.request.set( req );
-            okResponse.response.set( resp );
-            okResponse.vmRepo.set( vmRepo );
+            OkToForwardResponse forwardResponse = executor.newTargetProvision( OkToForwardResponse.class );
+            forwardResponse.request.set( req );
+            forwardResponse.response.set( resp );
+            forwardResponse.vmRepo.set( vmRepo );
             status = executor.execute( null );
             assert status.severityEquals( OK );
             
@@ -62,6 +64,9 @@ public class ProxyServlet
         catch (Exception e) {
             // XXX log, reset instance(?), send error page
             throw new RuntimeException( e );
+        }
+        finally {
+            Closer.create().close( downResponse );
         }
     }
     

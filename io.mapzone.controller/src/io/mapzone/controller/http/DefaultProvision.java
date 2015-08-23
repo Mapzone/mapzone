@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpRequestBase;
 
 /**
  * Provides basic context variables.
@@ -26,6 +28,10 @@ public abstract class DefaultProvision
     protected Context<HttpServletRequest>   request;
     
     protected Context<HttpServletResponse>  response;
+
+    protected Context<HttpRequestBase>      downRequest;
+    
+    protected Context<CloseableHttpResponse> downResponse;
     
     protected Context<VmRepository>         vmRepo;
     

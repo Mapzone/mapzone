@@ -58,7 +58,8 @@ public class ProjectRepository {
                     proto.description.set( "The first registered project at mapzone.io" );
                     proto.storedAt.createValue( storedAt -> {
                         storedAt.hostId.set( "local" );
-                        storedAt.path.set( "/home/falko/servers/polymap4" );
+                        storedAt.exePath.set( "/home/falko/servers/polymap4/bin/" );
+                        storedAt.dataPath.set( "/home/falko/servers/workspace-arena" );
                         return storedAt;
                     });
                     return proto;

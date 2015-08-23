@@ -13,6 +13,14 @@ public class ProjectStoreInfo
 
     public Property<String>             hostId;
     
-    public Property<String>             path;
+    /**
+     * The filesystem path where to find the workspace.
+     */
+    public Property<String>             dataPath;
+    
+    /**
+     * The filesystem path where to find the eclipse executables.
+     */
+    public Property<String>             exePath;
     
 }

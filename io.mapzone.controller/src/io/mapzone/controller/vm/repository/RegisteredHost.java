@@ -25,6 +25,8 @@ public class RegisteredHost
     
     public Property<HostType>           hostType;
     
+    public Property<String>             inetAddress;
+    
     
     public HostRuntime runtime() {
         if (hostType.get().equals( HostType.LOCAL )) {

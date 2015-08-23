@@ -20,7 +20,7 @@ public class HostRunning
 
     
     @Override
-    public boolean init( Provision failed ) {
+    public boolean init( Provision failed , Status cause  ) {
         return failed instanceof ProcessRunning;
     }
 

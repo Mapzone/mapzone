@@ -31,11 +31,11 @@ public class RegisteredProcess
     @Queryable
     public Property<String>                 version;
     
+    public Property<Integer>                pid;
+    
     public Property<Integer>                port;
     
     public Association<RegisteredHost>      host;
-    
-    public Property<String>                 fsPath;
     
     
     public ProcessRuntime runtime() {

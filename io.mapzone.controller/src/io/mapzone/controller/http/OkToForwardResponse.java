@@ -23,7 +23,7 @@ public class OkToForwardResponse
 
 
     @Override
-    public boolean init( Provision failed ) {
+    public boolean init( Provision failed , Status cause  ) {
         throw new RuntimeException( "must not be called" );
     }
  

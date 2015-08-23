@@ -64,6 +64,7 @@ public class VmRepository {
             if (_uow.query( RegisteredHost.class ).execute().size() == 0) {
                 _uow.createEntity( RegisteredHost.class, "local", (RegisteredHost proto) -> {
                     proto.hostType.set( HostType.LOCAL );
+                    proto.inetAddress.set( "localhost" );
                     return proto;
                 });
                 _uow.commit();
