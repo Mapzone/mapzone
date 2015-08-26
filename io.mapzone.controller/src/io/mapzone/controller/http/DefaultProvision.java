@@ -33,9 +33,9 @@ public abstract class DefaultProvision
     
     protected Context<CloseableHttpResponse> downResponse;
     
-    protected Context<VmRepository>         vmRepo;
+    public Context<VmRepository>            vmRepo;
     
-    protected Context<ProjectRepository>    projectRepo;
+    public Context<ProjectRepository>       projectRepo;
     
     /**
      * Lock write access to repos and runtime. A lock must be aquired *before

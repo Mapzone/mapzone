@@ -38,6 +38,7 @@ public class VmRepository {
     
     static {
         try {
+            //File dir = new File( CorePlugin.getDataLocation( ControllerPlugin.instance() ), "vms" );
             LuceneRecordStore store = new LuceneRecordStore();
             repo = EntityRepository.newConfiguration()
                     .entities.set( new Class[] {
@@ -63,8 +64,8 @@ public class VmRepository {
         ){
             if (_uow.query( RegisteredHost.class ).execute().size() == 0) {
                 _uow.createEntity( RegisteredHost.class, "local", (RegisteredHost proto) -> {
-                    proto.hostType.set( HostType.LOCAL );
-                    proto.inetAddress.set( "localhost" );
+                    proto.hostType.set( HostType.JCLOUDS );
+                    proto.address.set( "local" );
                     return proto;
                 });
                 _uow.commit();
@@ -73,9 +74,21 @@ public class VmRepository {
     }
     
     
+    private static VmRepository         instance = new VmRepository( repo.newUnitOfWork() );
+    
+    public static VmRepository instance() {
+        return instance;
+    }
+    
+    
     // instance *******************************************
     
     private UnitOfWork                  uow;
+
+    
+    public VmRepository( UnitOfWork uow ) {
+        this.uow = uow;
+    }
 
     
     public Optional<RegisteredProcess> findProcess( String organisation, String project, String version ) {

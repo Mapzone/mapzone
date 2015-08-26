@@ -1,43 +1,56 @@
 package io.mapzone.controller.vm.runtime;
 
-import java.util.List;
+import io.mapzone.controller.model.Project;
+import io.mapzone.controller.vm.repository.RegisteredProcess;
 
-import org.polymap.core.runtime.config.Check;
-import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.Configurable;
-import org.polymap.core.runtime.config.Defaults;
-import org.polymap.core.runtime.config.Immutable;
-import org.polymap.core.runtime.config.Mandatory;
-import org.polymap.core.runtime.config.NumberRangeValidator;
 
 /**
- * Represents an OS process within an {@link HostRuntime}.
+ * The runtime interface of an OS process within a {@link HostRuntime}.
  * 
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public abstract class ProcessRuntime
         extends Configurable {
     
-    @Immutable
-    @Mandatory
-    @Check(value=NumberRangeValidator.class, args={"1024","65535"})
-    public Config<Integer>          port;
+    protected RegisteredProcess     rprocess;
     
-    @Immutable
-    @Mandatory
-    public Config<String>           logPath;
+    
+    public ProcessRuntime( RegisteredProcess rprocess ) {
+        this.rprocess = rprocess;
+    }
+    
 
-    @Immutable
-    @Defaults
-    public Config<List<String>>     args;
-
-    @Immutable
-    @Defaults
-    public Config<List<String>>     vmargs;
+//    @Immutable
+//    @Mandatory
+//    public Config2<ProcessRuntime,String>       executablePath;
+//    
+//    @Immutable
+//    @Mandatory
+//    public Config2<ProcessRuntime,String>       homePath;
+//    
+//    @Immutable
+//    @Mandatory
+//    @Check(value=NumberRangeValidator.class, args={"1024","65535"})
+//    public Config2<ProcessRuntime,Integer>      port;
+//    
+//    @Immutable
+//    @Mandatory
+//    public Config2<ProcessRuntime,String>       logPath;
+//
+//    @Immutable
+//    @Defaults
+//    public Config2<ProcessRuntime,List<String>> args;
+//
+//    @Immutable
+//    @Defaults
+//    public Config2<ProcessRuntime,List<String>> vmargs;
 
     
-    public abstract void start();
+    public abstract void start( Project project ) throws Exception;
     
-    public abstract void stop();
+    public abstract void stop() throws Exception;
+    
+    public abstract boolean isRunning();
     
 }

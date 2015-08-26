@@ -1,10 +1,12 @@
 package io.mapzone.controller.http;
 
 import static io.mapzone.controller.provision.Provision.Status.Severity.OK;
+
+import java.util.concurrent.locks.ReentrantLock;
+
 import io.mapzone.controller.provision.ProvisionExecutor;
 import io.mapzone.controller.provision.Provision.Status;
 import io.mapzone.controller.vm.provisions.ProcessRunning;
-import io.mapzone.controller.vm.repository.VmRepository;
 
 import java.io.IOException;
 
@@ -37,17 +39,23 @@ public class ProxyServlet
     
 
     @Override
+    public void init() throws ServletException {
+        log.info( "Started." );
+    }
+
+
+    @Override
     protected void service( HttpServletRequest req, HttpServletResponse resp ) throws ServletException, IOException {
         CloseableHttpResponse downResponse = null;
         try {
             // request provisioning
-            VmRepository vmRepo = null;
+            // XXX job/thread to make in cancelable or timeout?
             ProvisionExecutor executor = new ProvisionExecutor( forwardRequestProvisions );
             OkToForwardRequest forwardRequest = executor.newTargetProvision( OkToForwardRequest.class );
             forwardRequest.request.set( req );
             forwardRequest.response.set( resp );
-            forwardRequest.vmRepo.set( vmRepo );
-            Status status = executor.execute( null );
+            forwardRequest.lock.set( new ReentrantLock() );
+            Status status = executor.execute( forwardRequest );
             assert status.severityEquals( OK );
 
             // response provisioning
@@ -55,7 +63,7 @@ public class ProxyServlet
             OkToForwardResponse forwardResponse = executor.newTargetProvision( OkToForwardResponse.class );
             forwardResponse.request.set( req );
             forwardResponse.response.set( resp );
-            forwardResponse.vmRepo.set( vmRepo );
+            forwardResponse.lock.set( new ReentrantLock() );
             status = executor.execute( null );
             assert status.severityEquals( OK );
             

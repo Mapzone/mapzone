@@ -1,9 +1,14 @@
 package io.mapzone.controller.http;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import io.mapzone.controller.provision.Provision;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.Header;
 
 /**
  * 
@@ -17,14 +22,28 @@ public class OkToForwardResponse
 
     
     @Override
-    public Status execute() throws Exception {
-        return OK_STATUS;
+    public boolean init( Provision failed, Status cause  ) {
+        return failed == null;
     }
 
 
     @Override
-    public boolean init( Provision failed , Status cause  ) {
-        throw new RuntimeException( "must not be called" );
+    public Status execute() throws Exception {
+        // copy headers
+        for (Header header : downResponse.get().getAllHeaders() ) {
+            log.info( "    header: " + header.getName() + " = " + header.getValue() );
+            response.get().addHeader( header.getName(), header.getValue() );
+        }
+
+        // copy stream
+        try (
+            InputStream in = downResponse.get().getEntity().getContent();
+            OutputStream out = response.get().getOutputStream();
+        ){
+            IOUtils.copy( in, out );
+        }
+        response.get().flushBuffer();
+        return OK_STATUS;
     }
  
 }

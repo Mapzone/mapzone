@@ -1,15 +1,11 @@
 package io.mapzone.controller.model;
 
-import io.mapzone.controller.ControllerPlugin;
-import io.mapzone.controller.vm.repository.RegisteredHost;
-import io.mapzone.controller.vm.repository.RegisteredProcess;
-
+import static org.polymap.model2.query.Expressions.and;
+import static org.polymap.model2.query.Expressions.eq;
+import static org.polymap.model2.query.Expressions.the;
 import java.util.Optional;
 
-import java.io.File;
-
-import org.polymap.core.CorePlugin;
-
+import org.polymap.model2.query.ResultSet;
 import org.polymap.model2.runtime.EntityRepository;
 import org.polymap.model2.runtime.UnitOfWork;
 import org.polymap.model2.store.OptimisticLocking;
@@ -27,12 +23,12 @@ public class ProjectRepository {
     
     static {
         try {
-            File dir = new File( CorePlugin.getDataLocation( ControllerPlugin.instance() ), "projects" );
-            LuceneRecordStore store = new LuceneRecordStore( dir, false );
+            //File dir = new File( CorePlugin.getDataLocation( ControllerPlugin.instance() ), "projects" );
+            LuceneRecordStore store = new LuceneRecordStore( /*dir, false*/ );
             repo = EntityRepository.newConfiguration()
                     .entities.set( new Class[] {
-                            RegisteredHost.class,
-                            RegisteredProcess.class })
+                            Project.class,
+                            Organization.class })
                     .store.set( 
                             // make sure to never loose updates or something
                             new OptimisticLocking(
@@ -56,10 +52,11 @@ public class ProjectRepository {
                 Project project = _uow.createEntity( Project.class, null, (Project proto) -> {
                     proto.name.set( "first" );
                     proto.description.set( "The first registered project at mapzone.io" );
+                    proto.maxRamMb.set( 256 );
                     proto.storedAt.createValue( storedAt -> {
                         storedAt.hostId.set( "local" );
-                        storedAt.exePath.set( "/home/falko/servers/polymap4/bin/" );
-                        storedAt.dataPath.set( "/home/falko/servers/workspace-arena" );
+                        storedAt.exePath.set( "/home/falko/servers/polymap4/" );
+                        storedAt.dataPath.set( "/home/falko/servers/workspace-alkis" );
                         return storedAt;
                     });
                     return proto;
@@ -78,12 +75,42 @@ public class ProjectRepository {
         }
     }
     
+
+    private static ProjectRepository    instance = new ProjectRepository( repo.newUnitOfWork() );
+    
+    public static ProjectRepository instance() {
+        return instance;
+    }
+
     
     // instance *******************************************
     
-    public Optional<Project> findProject( String organizationName, String projectName ) {
-        // XXX Auto-generated method stub
-        throw new RuntimeException( "not yet implemented." );
+    private UnitOfWork              uow;
+    
+    
+    public ProjectRepository( UnitOfWork uow ) {
+        this.uow = uow;
+    }
+
+    
+    public Optional<Project> findProject( String organization, String project ) {
+        ResultSet<Project> rs = uow.query( Project.class )
+                .where( and( 
+                        the( Project.TYPE.organization, eq( Organization.TYPE.name, organization ) ),
+                        eq( Project.TYPE.name, project ) ) )
+                .execute();
+        assert rs.size() <= 1;
+        return rs.stream().findAny();
+    }
+
+    
+    public void rollback() {
+        uow.rollback();
+    }
+
+    
+    public void commit() {
+        uow.commit();
     }
 
 }

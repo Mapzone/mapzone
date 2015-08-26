@@ -8,7 +8,6 @@ import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
 import io.mapzone.controller.vm.repository.RegisteredHost;
 import io.mapzone.controller.vm.repository.RegisteredProcess;
-import io.mapzone.controller.vm.runtime.ProcessRuntime;
 
 import java.util.List;
 
@@ -29,42 +28,49 @@ public class ProcessRunning
 
     private Context<Project>                project;
     
-    private Context<RegisteredHost>         rhost;
+    private Context<RegisteredHost>         host;
+
+    private Context<RegisteredProcess>      process;
+
+    private Status                          cause;
 
     
     @Override
-    public boolean init( Provision failed , Status cause  ) {
+    public boolean init( Provision failed, @SuppressWarnings("hiding") Status cause ) {
+        this.cause = cause;
         return failed instanceof OkToForwardRequest;
     }
 
     
     @Override
     public Status execute() throws Exception {
-        lock.get().lock();
-        
-        List<RegisteredHost> hosts = vmRepo.get().allHosts();
-        if (hosts.isEmpty()) {
-            return new Status( FAILED_CHECK_AGAIN, NO_HOST );
-        }
-        if (hosts.size() > 1) {
-            throw new RuntimeException( "FIXME find the most suited host to run this project" );
-        }
-        
-        // define host to use
-        rhost.set( hosts.get( 0 ) );
+        if (cause.getCause().equals( OkToForwardRequest.NO_PROCESS )) {
+            lock.get().lock();
 
-        // start process
-        String projectHome = project.get().storedAt.get().path.get();
-        ProcessRuntime process = rhost.get().runtime().newEclipseProcess( projectHome );
+            List<RegisteredHost> hosts = vmRepo.get().allHosts();
+            if (hosts.isEmpty()) {
+                return new Status( FAILED_CHECK_AGAIN, NO_HOST );
+            }
+            if (hosts.size() > 1) {
+                throw new RuntimeException( "FIXME find the most suited host to run this project" );
+            }
 
-        // update repo
-        vmRepo.get().createEntity( RegisteredProcess.class, null, (RegisteredProcess proto) -> {
-            proto.host.set( rhost.get() );
-            proto.organisation.set( project.get().organization.get().name.get() );
-            proto.project.set( project.get().name.get() );
-            return proto;
-        });
-        
+            // define host to use
+            host.set( hosts.get( 0 ) );
+
+            // start process
+            int port = host.get().runtime.get().findFreePort();
+            process.set( host.get().startProcess( project.get(), (RegisteredProcess proto) -> {
+                proto.organisation.set( project.get().organization.get().name.get() );
+                proto.project.set( project.get().name.get() );
+                proto.port.set( port );
+                return proto;
+            }));
+        }
+        else {
+            throw new RuntimeException( "Unsupported cause: " + cause );
+        }
+
         return OK_STATUS;
     }
     

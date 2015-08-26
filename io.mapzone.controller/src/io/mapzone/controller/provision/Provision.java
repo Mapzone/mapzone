@@ -15,7 +15,6 @@ public interface Provision {
      * 
      *
      * @param failed The upper {@link Provision} that failed.
-     * @param cause XXX
      * @param cause The {@link Status} that caused the fail of the upper {@link Provision}.
      * @return True if this Provision wants to be executed for the given context and
      *         failed Provision.
@@ -47,9 +46,16 @@ public interface Provision {
             this.cause = cause;
         }
 
-        
         public boolean severityEquals( Severity check ) {
             return this.severity.equals( check );
+        }
+
+        public Severity getSeverity() {
+            return severity;
+        }
+        
+        public String getCause() {
+            return cause;
         }
         
     }

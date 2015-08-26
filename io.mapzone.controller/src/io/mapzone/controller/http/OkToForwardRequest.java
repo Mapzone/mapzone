@@ -36,8 +36,8 @@ public class OkToForwardRequest
 
     private static Log log = LogFactory.getLog( OkToForwardRequest.class );
 
-    private static final String             NO_PROCESS = "_no_process_";
-    private static final String             BAD_RESPONSE = "_bad_response_";
+    public static final String              NO_PROCESS = "_no_process_";
+    public static final String              BAD_RESPONSE = "_bad_response_";
 
     public static CloseableHttpClient       httpclient = HttpClients.createDefault();
 
@@ -55,8 +55,8 @@ public class OkToForwardRequest
     @Override
     public Status execute() throws Exception {
         String[] path = StringUtils.split( request.get().getPathInfo(), "/" );
-        String projectName = path[2];
-        String organizationName = path[1];
+        String projectName = path[1];
+        String organizationName = path[0];
         
         // find process
         Optional<RegisteredProcess> process = vmRepo.get().findProcess( organizationName, projectName, null );
@@ -87,7 +87,7 @@ public class OkToForwardRequest
         String method = r.getMethod();
         
         URI downUri = new URIBuilder().setScheme( "http")
-                .setHost( process.host.get().inetAddress.get() )
+                .setHost( process.host.get().address.get() )
                 .setPort( process.port.get() )
                 .setQuery( request.get().getQueryString() )
                 .build();
@@ -116,6 +116,9 @@ public class OkToForwardRequest
             log.info( "    header: " + header + " = " + value );
             to.setHeader( header, value );
         }
+//        Cookie[] cookies = from.getCookies();
+//        if (cookies != null) {
+//        }
     }
     
 }

@@ -1,16 +1,54 @@
 package io.mapzone.controller.vm.runtime;
 
+import io.mapzone.controller.vm.repository.RegisteredHost;
+import io.mapzone.controller.vm.repository.RegisteredHost.HostType;
+import io.mapzone.controller.vm.repository.RegisteredProcess;
+
 import org.polymap.core.runtime.config.Configurable;
 
 /**
- * Physical or virtual OS instance that host multiple VMs/processes
- * {@link ProcessRuntime}.
+ * The runtime interface of a physical or virtual OS instance that is able to host
+ * multiple VMs/processes {@link ProcessRuntime}.
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public abstract class HostRuntime
         extends Configurable {
+    
+    
+    public static HostRuntime forHost( RegisteredHost rhost ) {
+        HostType hostType = rhost.hostType.get();
+        if (hostType.equals( HostType.JCLOUDS )) {
+            return new JCloudsHostRuntime( rhost );
+        }
+        else {
+            throw new RuntimeException( "Unhandled host type: " + hostType );
+        }
+    }
+    
+    
+    // instance *******************************************
 
-    public abstract ProcessRuntime newEclipseProcess( String projectHome );
+    protected RegisteredHost            rhost;
+    
+    
+    protected HostRuntime( RegisteredHost rhost ) {
+        this.rhost = rhost;
+    }
+
+
+    /**
+     * Creates a runtime for process that is to be started or is running already.
+     *
+     * @param result The {@link RegisteredProcess} to create or connect to.
+     * @return Newly created process runtime instance.
+     */
+    public abstract ProcessRuntime process( RegisteredProcess result );
+
+    
+    /**
+     * Find the next port that is free to bind on this host. 
+     */
+    public abstract int findFreePort();
     
 }

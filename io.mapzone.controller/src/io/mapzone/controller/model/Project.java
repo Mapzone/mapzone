@@ -14,6 +14,8 @@ import org.polymap.model2.Queryable;
 public class Project
         extends Entity {
 
+    public static Project               TYPE;
+
     @Queryable
     public Property<String>             name;
 
@@ -29,4 +31,6 @@ public class Project
     
     public Property<ProjectStoreInfo>   storedAt;
 
+    public Property<Integer>            maxRamMb;
+    
 }

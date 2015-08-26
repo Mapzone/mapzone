@@ -14,6 +14,8 @@ import org.polymap.model2.Queryable;
 public class Organization
         extends Entity {
 
+    public static Organization      TYPE;
+
     @Queryable
     public Property<String>         name;
     
