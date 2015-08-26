@@ -33,7 +33,12 @@ public class RegisteredHost
     /**
      * The address or id that identifies this hosts and allows to access it.
      */
-    public Property<String>                     address;
+    public Property<String>                     hostId;
+    
+    /**
+     * The host's IP or DnS name. This is used to build URIs for the instances.
+     */
+    public Property<String>                     inetAddress;
     
     public ManyAssociation<RegisteredProcess>   processes;
 

@@ -45,8 +45,10 @@ public class ProcessRunning
     @Override
     public Status execute() throws Exception {
         if (cause.getCause().equals( OkToForwardRequest.NO_PROCESS )) {
+            // lock others while we change things
             lock.get().lock();
 
+            // find host to use
             List<RegisteredHost> hosts = vmRepo.get().allHosts();
             if (hosts.isEmpty()) {
                 return new Status( FAILED_CHECK_AGAIN, NO_HOST );
@@ -54,8 +56,6 @@ public class ProcessRunning
             if (hosts.size() > 1) {
                 throw new RuntimeException( "FIXME find the most suited host to run this project" );
             }
-
-            // define host to use
             host.set( hosts.get( 0 ) );
 
             // start process

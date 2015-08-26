@@ -9,6 +9,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 
 /**
  * 
@@ -30,19 +31,22 @@ public class OkToForwardResponse
     @Override
     public Status execute() throws Exception {
         // copy headers
-        for (Header header : downResponse.get().getAllHeaders() ) {
-            log.info( "    header: " + header.getName() + " = " + header.getValue() );
+        for (Header header : proxyResponse.get().getAllHeaders() ) {
+            log.info( "    response header: " + header.getName() + " = " + header.getValue() );
             response.get().addHeader( header.getName(), header.getValue() );
         }
 
         // copy stream
-        try (
-            InputStream in = downResponse.get().getEntity().getContent();
-            OutputStream out = response.get().getOutputStream();
-        ){
-            IOUtils.copy( in, out );
+        HttpEntity entity = proxyResponse.get().getEntity();
+        if (entity != null) {
+            try (
+                InputStream in = proxyResponse.get().getEntity().getContent();
+                OutputStream out = response.get().getOutputStream();
+            ){
+                IOUtils.copy( in, out );
+            }
+            response.get().flushBuffer();
         }
-        response.get().flushBuffer();
         return OK_STATUS;
     }
  

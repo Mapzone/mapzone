@@ -65,7 +65,8 @@ public class VmRepository {
             if (_uow.query( RegisteredHost.class ).execute().size() == 0) {
                 _uow.createEntity( RegisteredHost.class, "local", (RegisteredHost proto) -> {
                     proto.hostType.set( HostType.JCLOUDS );
-                    proto.address.set( "local" );
+                    proto.hostId.set( "local" );
+                    proto.inetAddress.set( "localhost" );
                     return proto;
                 });
                 _uow.commit();

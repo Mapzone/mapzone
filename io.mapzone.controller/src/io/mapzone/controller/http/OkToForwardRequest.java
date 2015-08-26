@@ -18,13 +18,17 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 
 /**
  * 
@@ -82,40 +86,61 @@ public class OkToForwardRequest
     }
  
     
+    /**
+     * 
+     * @see https://github.com/mitre/HTTP-Proxy-Servlet/blob/master/src/main/java/org/mitre/dsmiley/httpproxy/ProxyServlet.java
+     * @param process
+     * @throws ClientProtocolException
+     * @throws IOException
+     * @throws Exception
+     */
     protected void forwardRequest( RegisteredProcess process ) throws ClientProtocolException, IOException, Exception {
         HttpServletRequest r = request.get();
         String method = r.getMethod();
         
-        URI downUri = new URIBuilder().setScheme( "http")
-                .setHost( process.host.get().address.get() )
+        String path = StringUtils.substringAfter( r.getPathInfo(), process.project.get() );
+        URI proxyUri = new URIBuilder().setScheme( "http")
+                .setHost( process.host.get().inetAddress.get() )
                 .setPort( process.port.get() )
+                .setPath( path )
                 .setQuery( request.get().getQueryString() )
                 .build();
         
         // GET
         if (method.equals( HttpGet.METHOD_NAME )) {
-            downRequest.set( new HttpGet( downUri ) );
+            proxyRequest.set( new HttpGet( proxyUri ) );
         }
         // POST
         else if (method.equals( HttpPost.METHOD_NAME )) {
-            downRequest.set( new HttpPost( downUri ) );
+            HttpEntityEnclosingRequest entityRequest = new BasicHttpEntityEnclosingRequest( method, proxyUri.toString() );
+            // container handles closing streams
+            entityRequest.setEntity( new InputStreamEntity( r.getInputStream(), r.getContentLength() ) );
+            proxyRequest.set( entityRequest );
         }
         else {
             throw new RuntimeException( "Unhandled request method: " + r.getMethod() );
         }
-        copyRequest( r, downRequest.get() );
+        copyRequest( r, proxyRequest.get() );
+        log.info( "PROXY REQUEST: " + proxyRequest.get() );
         
-        downResponse.set( httpclient.execute( downRequest.get() ) );
-        log.info( "    response: " + downResponse.get().getStatusLine() );
+        HttpHost host = new HttpHost( process.host.get().inetAddress.get(), process.port.get(), "http" ); 
+        proxyResponse.set( httpclient.execute( host, proxyRequest.get() ) );
+        log.info( "PROXY RESPONSE: " + proxyResponse.get().getStatusLine() );
     }
     
     
-    protected void copyRequest( HttpServletRequest from, HttpRequestBase to ) {
+    protected void copyRequest( HttpServletRequest from, HttpRequest to ) {
         for (String header : Collections.list( from.getHeaderNames() )) {
             String value = from.getHeader( header );
-            log.info( "    header: " + header + " = " + value );
-            to.setHeader( header, value );
+            if (header.toLowerCase().equals( "content-length" )) {
+                log.info( "    omitting header: " + header + " = " + value );
+            }
+            else {
+                log.info( "    request header: " + header + " = " + value );
+                to.setHeader( header, value );
+            }
         }
+        
 //        Cookie[] cookies = from.getCookies();
 //        if (cookies != null) {
 //        }

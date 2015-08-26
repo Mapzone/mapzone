@@ -1,11 +1,7 @@
 package io.mapzone.controller.provision;
 
-import io.mapzone.controller.http.DefaultProvision;
-import io.mapzone.controller.model.ProjectRepository;
 import io.mapzone.controller.provision.Provision.Status;
 import io.mapzone.controller.provision.Provision.Status.Severity;
-import io.mapzone.controller.vm.repository.VmRepository;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +36,16 @@ public class ProvisionExecutor {
                 return contextValues.get( ImmutablePair.of( type, scope ) ); 
             }
         };
+    }
+
+    
+    public Map<Pair<Class,String>,Object> getContextValues() {
+        return contextValues;
+    }
+    
+    public ProvisionExecutor setContextValues( Map<Pair<Class,String>,Object> contextValues ) {
+        this.contextValues = new HashMap( contextValues );
+        return this;
     }
 
 
@@ -87,23 +93,7 @@ public class ProvisionExecutor {
 
     
     protected Status executeProvision( Provision provision ) throws Exception {
-        VmRepository vmRepo = VmRepository.instance();
-        ProjectRepository projectRepo = ProjectRepository.instance();
-        try {
-            ((DefaultProvision)provision).vmRepo.set( vmRepo );
-            ((DefaultProvision)provision).projectRepo.set( projectRepo );
-            
-            Status result = provision.execute();
-
-            vmRepo.commit();
-            projectRepo.commit();
-            return result;
-        }
-        catch (Exception e) {
-            vmRepo.rollback();
-            projectRepo.rollback();
-            throw e;
-        }
+        return provision.execute();
     }
     
     

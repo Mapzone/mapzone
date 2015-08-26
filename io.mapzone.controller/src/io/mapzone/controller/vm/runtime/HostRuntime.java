@@ -1,5 +1,7 @@
 package io.mapzone.controller.vm.runtime;
 
+import java.io.File;
+
 import io.mapzone.controller.vm.repository.RegisteredHost;
 import io.mapzone.controller.vm.repository.RegisteredHost.HostType;
 import io.mapzone.controller.vm.repository.RegisteredProcess;
@@ -50,5 +52,13 @@ public abstract class HostRuntime
      * Find the next port that is free to bind on this host. 
      */
     public abstract int findFreePort();
+    
+    
+    /**
+     * Returns a handle for a file on the server. 
+     *
+     * @param f The file(name)
+     */
+    public abstract HostFile file( File f );
     
 }

@@ -7,16 +7,26 @@ import io.mapzone.controller.vm.repository.RegisteredProcess;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import org.jclouds.compute.ComputeService;
 import org.jclouds.compute.domain.ExecResponse;
 import org.jclouds.compute.options.RunScriptOptions.Builder;
 import org.jclouds.scriptbuilder.ScriptBuilder;
 import org.jclouds.scriptbuilder.domain.Statements;
+import org.jclouds.ssh.SshClient;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.google.common.base.Joiner;
 import com.google.common.util.concurrent.ListenableFuture;
+
+import org.polymap.core.runtime.Timer;
 
 /**
  * 
@@ -53,16 +63,16 @@ public class JCloudsHostRuntime
     }
 
 
-//    @Override
-//    public HostFile file( File f ) {
-//        return portCount.getAndIncrement();
-//    }
+    @Override
+    public HostFile file( File f ) {
+        return new JCloudsHostFile( f );
+    }
 
 
     /**
      * 
      */
-    public class JCloudsProcessRuntime
+    protected class JCloudsProcessRuntime
             extends ProcessRuntime {
 
         public JCloudsProcessRuntime( RegisteredProcess template ) {
@@ -102,7 +112,7 @@ public class JCloudsHostRuntime
             log.info( "SCRIPT: " + script );
             
             ListenableFuture<ExecResponse> response = cs.submitScriptOnNode( 
-                    rhost.address.get(), 
+                    rhost.hostId.get(), 
                     Statements.exec( script ), 
                     Builder.blockOnComplete( true ).wrapInInitScript( false ).runAsRoot( false ) );
 
@@ -110,8 +120,8 @@ public class JCloudsHostRuntime
             log.info( "RESPONSE: " + response.get().getExitStatus() );
             log.info( "RESPONSE: " + response.get().getOutput() );
             
-            //
-            throw new RuntimeException( "read pid of process!? ..." );
+            // fail on exception
+            log.info( "PID: " + file( new File( pidFile ) ).content() );
         }
 
         
@@ -123,6 +133,63 @@ public class JCloudsHostRuntime
 
         @Override
         public boolean isRunning() {
+            // XXX Auto-generated method stub
+            throw new RuntimeException( "not yet implemented." );
+        }
+    }
+    
+    
+    /**
+     * <p/>
+     * XXX Makes new connection for each and every request!
+     */
+    protected class JCloudsHostFile
+            extends HostFile {
+        
+        private File            f;
+
+        public JCloudsHostFile( File f ) {
+            this.f = f;
+        }
+
+        @Override
+        public String content() throws IOException {
+            return content( "UTF8" );
+        }
+        
+        @Override
+        public String content( String charset ) throws IOException {
+            SshClient ssh = JCloudsRuntime.instance.get().sshForNode( rhost.hostId.get() );
+            Timer timer = new Timer();
+            InputStream in = null;
+            try {
+                ssh.connect();
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                in = ssh.get( f.getAbsolutePath() ).openStream();
+                IOUtils.copy( in, out );
+                System.out.println( "READ: " + out.size() + "bytes (" + timer.elapsedTime() + "ms)" );
+                
+                return out.toString( charset );
+            } 
+            finally {
+                if (in != null) { in.close(); }
+                if (ssh != null) { ssh.disconnect(); }
+            }
+        }
+        
+        @Override
+        public InputStream inputStream() {
+            throw new RuntimeException( "not yet implemented." );
+        }
+
+        @Override
+        public OutputStream outputStream() {
+            // XXX Auto-generated method stub
+            throw new RuntimeException( "not yet implemented." );
+        }
+
+        @Override
+        public boolean exists() {
             // XXX Auto-generated method stub
             throw new RuntimeException( "not yet implemented." );
         }
