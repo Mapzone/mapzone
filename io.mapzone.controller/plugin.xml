@@ -15,7 +15,7 @@
             brandingId="io.mapzone.controller.branding"
             class="org.polymap.rhei.batik.BatikApplication"
             id="io.mapzone.controller.entrypoint"
-            path="/ctrl">
+            path="/dashboard">
       </entrypoint>
    </extension>
    <extension
@@ -41,7 +41,7 @@
       <design
             class="io.mapzone.controller.CtrlAppDesign"
             id="io.mapzone.controller.design"
-            servletNameMatcher="/ctrl">
+            servletNameMatcher="/dashboard">
       </design>
    </extension>
    <extension

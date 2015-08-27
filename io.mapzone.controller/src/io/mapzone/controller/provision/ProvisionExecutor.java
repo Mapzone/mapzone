@@ -57,7 +57,7 @@ public class ProvisionExecutor {
         while (provisionIndex < provisions.length) {
             Class<? extends Provision> type = provisions[ provisionIndex ];
             Provision provision = createProvision( type );
-            assert provision.init( failed, cause );
+            assert provision.init( failed, cause ) : failed.getClass().getSimpleName() + " provision is unable to handle: " + cause;
             
             // execute
             Status status = executeProvision( provision );

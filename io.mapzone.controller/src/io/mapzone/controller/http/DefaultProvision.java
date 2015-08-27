@@ -5,8 +5,6 @@ import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
 import io.mapzone.controller.vm.repository.VmRepository;
 
-import java.util.concurrent.locks.Lock;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,15 +30,12 @@ public abstract class DefaultProvision
     protected Context<HttpRequest>          proxyRequest;
     
     protected Context<CloseableHttpResponse> proxyResponse;
-    
+
+    /**
+     * {@link VmRepository#lock()} before any modifications!
+     */
     public Context<VmRepository>            vmRepo;
     
     public Context<ProjectRepository>       projectRepo;
-    
-    /**
-     * Lock write access to repos and runtime. A lock must be aquired *before
-     * accessing* the entity to modify.
-     */
-    protected Context<Lock>                 lock;
     
 }

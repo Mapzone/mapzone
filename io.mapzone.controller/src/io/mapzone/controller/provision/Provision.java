@@ -2,6 +2,8 @@ package io.mapzone.controller.provision;
 
 import io.mapzone.controller.provision.Provision.Status.Severity;
 
+import java.util.Optional;
+
 /**
  * 
  *
@@ -39,11 +41,18 @@ public interface Provision {
         private Severity            severity;
         
         private String              cause;
+        
+        private Throwable           exception;    
 
         
         public Status( Severity severity, String cause ) {
+            this( severity, cause, null );
+        }
+
+        public Status( Severity severity, String cause, Throwable e ) {
             this.severity = severity;
             this.cause = cause;
+            this.exception = e;
         }
 
         public boolean severityEquals( Severity check ) {
@@ -58,6 +67,15 @@ public interface Provision {
             return cause;
         }
         
+        public Optional<Throwable> getException() {
+            return Optional.ofNullable( exception );
+        }
+
+        @Override
+        public String toString() {
+            return "Status[severity=" + severity + ", cause=" + cause + ", exception=" + exception + "]";
+        }
+         
     }
 
 }

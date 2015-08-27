@@ -24,7 +24,7 @@ public class ProcessRunning
 
     private static Log log = LogFactory.getLog( ProcessRunning.class );
 
-    private static final String             NO_HOST = "_no_host_";
+    public static final String              NO_HOST = "_no_host_";
 
     private Context<Project>                project;
     
@@ -38,38 +38,34 @@ public class ProcessRunning
     @Override
     public boolean init( Provision failed, @SuppressWarnings("hiding") Status cause ) {
         this.cause = cause;
-        return failed instanceof OkToForwardRequest;
+        return failed instanceof OkToForwardRequest
+                && cause.getCause().equals( OkToForwardRequest.NO_PROCESS );
     }
 
     
     @Override
     public Status execute() throws Exception {
-        if (cause.getCause().equals( OkToForwardRequest.NO_PROCESS )) {
-            // lock others while we change things
-            lock.get().lock();
+        // lock others while we change things
+        vmRepo.get().lock();
 
-            // find host to use
-            List<RegisteredHost> hosts = vmRepo.get().allHosts();
-            if (hosts.isEmpty()) {
-                return new Status( FAILED_CHECK_AGAIN, NO_HOST );
-            }
-            if (hosts.size() > 1) {
-                throw new RuntimeException( "FIXME find the most suited host to run this project" );
-            }
-            host.set( hosts.get( 0 ) );
+        // find host to use
+        List<RegisteredHost> hosts = vmRepo.get().allHosts();
+        if (hosts.isEmpty()) {
+            return new Status( FAILED_CHECK_AGAIN, NO_HOST );
+        }
+        if (hosts.size() > 1) {
+            throw new RuntimeException( "FIXME find the most suited host to run this project" );
+        }
+        host.set( hosts.get( 0 ) );
 
-            // start process
-            int port = host.get().runtime.get().findFreePort();
-            process.set( host.get().startProcess( project.get(), (RegisteredProcess proto) -> {
-                proto.organisation.set( project.get().organization.get().name.get() );
-                proto.project.set( project.get().name.get() );
-                proto.port.set( port );
-                return proto;
-            }));
-        }
-        else {
-            throw new RuntimeException( "Unsupported cause: " + cause );
-        }
+        // start process
+        int port = host.get().runtime.get().findFreePort();
+        process.set( host.get().startProcess( project.get(), (RegisteredProcess proto) -> {
+            proto.organisation.set( project.get().organization.get().name.get() );
+            proto.project.set( project.get().name.get() );
+            proto.port.set( port );
+            return proto;
+        }));
 
         return OK_STATUS;
     }

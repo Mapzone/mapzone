@@ -73,7 +73,7 @@ public class OkToForwardRequest
             }
             catch (IOException e) {
                 log.info( "Forwarding request failed.", e );
-                return new Status( Severity.FAILED_CHECK_AGAIN, BAD_RESPONSE );                
+                return new Status( Severity.FAILED_CHECK_AGAIN, BAD_RESPONSE, e );                
             }
         }
         // no process -> fail
@@ -88,7 +88,7 @@ public class OkToForwardRequest
     
     /**
      * 
-     * @see https://github.com/mitre/HTTP-Proxy-Servlet/blob/master/src/main/java/org/mitre/dsmiley/httpproxy/ProxyServlet.java
+     * @see HttpForwarder
      * @param process
      * @throws ClientProtocolException
      * @throws IOException
@@ -140,10 +140,6 @@ public class OkToForwardRequest
                 to.setHeader( header, value );
             }
         }
-        
-//        Cookie[] cookies = from.getCookies();
-//        if (cookies != null) {
-//        }
     }
     
 }

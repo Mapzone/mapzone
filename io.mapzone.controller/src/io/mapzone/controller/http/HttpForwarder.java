@@ -68,6 +68,7 @@ import java.util.List;
  * Inspiration: http://httpd.apache.org/docs/2.0/mod/mod_proxy.html
  * </p>
  *
+ * @see <a href="https://github.com/mitre/HTTP-Proxy-Servlet/blob/master/src/main/java/org/mitre/dsmiley/httpproxy/ProxyServlet.java">Origin</a>
  * @author David Smiley dsmiley@mitre.org
  */
 public class HttpForwarder

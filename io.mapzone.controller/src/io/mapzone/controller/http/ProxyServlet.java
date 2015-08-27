@@ -8,8 +8,6 @@ import io.mapzone.controller.provision.ProvisionExecutor;
 import io.mapzone.controller.vm.provisions.ProcessRunning;
 import io.mapzone.controller.vm.repository.VmRepository;
 
-import java.util.concurrent.locks.ReentrantLock;
-
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -38,18 +36,7 @@ public class ProxyServlet
 
     /** The provisions to be handled before forwarding the response back to the sender. */
     private static final Class[]    forwardResponseProvisions = {OkToForwardResponse.class};
-    
-    /**
-     * Synchronizes modifications of {@link VmRepository} and the real host/process
-     * state.
-     * <p/>
-     * XXX This is a huge bottleneck. We will find a more fine grained solution
-     * later. The API will not change to much. The Provision sees a lock in its
-     * context which it aquires for modification. It does not know where it comes
-     * from.
-     */
-    private ReentrantLock           provisioningLock = new ReentrantLock();
-    
+        
     
     @Override
     public void init() throws ServletException {
@@ -100,29 +87,25 @@ public class ProxyServlet
         @Override
         protected Status executeProvision( Provision provision ) throws Exception {
             VmRepository vmRepo = VmRepository.instance();
+            // the projectRepo must not change during provisioning
             ProjectRepository projectRepo = ProjectRepository.instance();
             try {
                 ((DefaultProvision)provision).vmRepo.set( vmRepo );
                 ((DefaultProvision)provision).projectRepo.set( projectRepo );
-                ((DefaultProvision)provision).lock.set( provisioningLock );
        
                 Status result = super.executeProvision( provision );
 
-                if (provisioningLock.isLocked()) {
+                if (vmRepo.isLocked()) {
                     log.info( "COMMIT provision: " + provision.getClass().getSimpleName() );
-                    vmRepo.commit();
-                    projectRepo.commit();
-                    provisioningLock.unlock();
                 }
+                vmRepo.commit();
                 return result;
             }
             catch (Exception e) {
-                if (provisioningLock.isLocked()) {
-                    log.info( "COMMIT provision: " + provision.getClass().getSimpleName() );
-                    vmRepo.rollback();
-                    projectRepo.rollback();
-                    provisioningLock.unlock();
+                if (vmRepo.isLocked()) {
+                    log.info( "ROLLBACK provision: " + provision.getClass().getSimpleName() );
                 }
+                vmRepo.rollback();
                 throw e;
             }
         }

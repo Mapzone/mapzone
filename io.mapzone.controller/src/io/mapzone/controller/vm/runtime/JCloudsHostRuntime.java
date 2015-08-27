@@ -119,6 +119,10 @@ public class JCloudsHostRuntime
             log.info( "RESPONSE: " + response.get().getError() );
             log.info( "RESPONSE: " + response.get().getExitStatus() );
             log.info( "RESPONSE: " + response.get().getOutput() );
+
+            // XXX better poll HTTP?
+            log.info( "SLEEP: 1s (allow instance to start up)" );
+            Thread.sleep( 1000 );
             
             // fail on exception
             log.info( "PID: " + file( new File( pidFile ) ).content() );
