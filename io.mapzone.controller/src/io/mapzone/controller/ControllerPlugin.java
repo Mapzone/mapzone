@@ -2,6 +2,9 @@ package io.mapzone.controller;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import org.polymap.core.security.SecurityContext;
+import org.polymap.core.security.StandardConfiguration;
+
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 
 import org.osgi.framework.BundleContext;
@@ -24,11 +27,22 @@ public class ControllerPlugin extends AbstractUIPlugin {
     	return instance;
     }
 
-    public void start(BundleContext context) throws Exception {
-		super.start(context);
-		instance = this;
+	
+    public void start( BundleContext context ) throws Exception {
+		super.start( context );
+		instance = this;        
+		
+		// JAAS config: no dialog; let LoginDashlet create UI
+        SecurityContext.registerConfiguration( () -> new StandardConfiguration() {
+            @Override
+            public String getConfigName() {
+                return SecurityContext.SERVICES_CONFIG_NAME;
+            }
+        });
+
 	}
 
+    
 	public void stop(BundleContext context) throws Exception {
 		instance = null;
 		super.stop(context);

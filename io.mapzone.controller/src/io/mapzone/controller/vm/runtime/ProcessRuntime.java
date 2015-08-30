@@ -1,6 +1,6 @@
 package io.mapzone.controller.vm.runtime;
 
-import io.mapzone.controller.model.Project;
+import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.vm.repository.RegisteredProcess;
 
 import org.polymap.core.runtime.config.Configurable;

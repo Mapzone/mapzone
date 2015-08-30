@@ -1,6 +1,6 @@
 package io.mapzone.controller.vm.runtime;
 
-import io.mapzone.controller.model.Project;
+import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.vm.repository.RegisteredHost;
 import io.mapzone.controller.vm.repository.RegisteredProcess;
 
@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 import org.jclouds.compute.ComputeService;
 import org.jclouds.compute.domain.ExecResponse;
 import org.jclouds.compute.options.RunScriptOptions.Builder;

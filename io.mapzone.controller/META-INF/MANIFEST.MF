@@ -10,11 +10,13 @@ Require-Bundle: org.eclipse.equinox.http.registry;bundle-version="1.1.300",
  org.polymap.core;bundle-version="4.0.0",
  org.polymap.rhei.batik;bundle-version="4.0.0",
  org.polymap.model2;bundle-version="3.0.0",
- org.polymap.model2.store.recordstore;bundle-version="3.0.0"
+ org.polymap.model2.store.recordstore;bundle-version="3.0.0",
+ org.polymap.rhei.form,
+ org.polymap.rhei.form.batik,
+ org.eclipse.equinox.security;bundle-version="1.0.200"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: lib/jsch-0.1.53.jar,
- lib/commons-codec-1.9.jar,
+Bundle-ClassPath: lib/commons-codec-1.9.jar,
  lib/httpclient-4.5.jar,
  lib/httpcore-4.4.1.jar,
  lib/aopalliance-1.0.jar,
@@ -50,4 +52,7 @@ Bundle-ClassPath: lib/jsch-0.1.53.jar,
  lib/bcprov-ext-jdk15on-1.49.jar,
  .,
  lib/jclouds-jsch-1.9.1.jar,
- lib/jsch.agentproxy.jsch-0.0.8.jar
+ lib/jsch.agentproxy.jsch-0.0.8.jar,
+ lib/commons-email-1.4.jar,
+ lib/javax.mail-1.5.2.jar,
+ lib/jsch-0.1.49.jar

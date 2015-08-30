@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/jsch-0.1.49.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-email-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/javax.mail-1.5.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jclouds-jsch-1.9.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jsch.agentproxy.jsch-0.0.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bcpkix-jdk15on-1.49.jar"/>
@@ -33,10 +36,9 @@
 	<classpathentry exported="true" kind="lib" path="lib/jsr311-api-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/rocoto-6.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/snakeyaml-1.11.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-codec-1.9.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-codec-1.9.jar" sourcepath="lib/sources/commons-codec-1.9-sources.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/httpclient-4.5.jar" sourcepath="lib/sources/httpclient-4.5-sources.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/httpcore-4.4.1.jar" sourcepath="lib/sources/httpcore-4.4.1-sources.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/jsch-0.1.53.jar" sourcepath="lib/sources/jsch-0.1.53-sources.zip"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>

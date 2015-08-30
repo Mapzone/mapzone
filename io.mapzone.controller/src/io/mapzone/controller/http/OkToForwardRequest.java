@@ -1,9 +1,9 @@
 package io.mapzone.controller.http;
 
-import io.mapzone.controller.model.Project;
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
 import io.mapzone.controller.provision.Provision.Status.Severity;
+import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.vm.repository.RegisteredProcess;
 import io.mapzone.controller.vm.runtime.ProcessRuntime;
 

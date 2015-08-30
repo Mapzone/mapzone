@@ -1,4 +1,4 @@
-package io.mapzone.controller.model;
+package io.mapzone.controller.um.repository;
 
 import org.polymap.model2.Entity;
 import org.polymap.model2.Property;

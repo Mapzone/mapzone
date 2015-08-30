@@ -1,6 +1,6 @@
 package io.mapzone.controller.vm.repository;
 
-import io.mapzone.controller.model.Project;
+import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.vm.runtime.HostRuntime;
 
 import org.polymap.core.runtime.Lazy;

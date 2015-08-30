@@ -1,13 +1,27 @@
-package io.mapzone.controller.model;
+package io.mapzone.controller.um.repository;
 
 import static org.polymap.model2.query.Expressions.and;
 import static org.polymap.model2.query.Expressions.eq;
+import static org.polymap.model2.query.Expressions.or;
 import static org.polymap.model2.query.Expressions.the;
-import java.util.Optional;
+import io.mapzone.controller.ControllerPlugin;
 
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+
+import java.io.File;
+
+import org.polymap.core.CorePlugin;
+import org.polymap.core.runtime.session.SessionContext;
+import org.polymap.core.runtime.session.SessionSingleton;
+
+import org.polymap.model2.Entity;
+import org.polymap.model2.query.Query;
 import org.polymap.model2.query.ResultSet;
 import org.polymap.model2.runtime.EntityRepository;
 import org.polymap.model2.runtime.UnitOfWork;
+import org.polymap.model2.runtime.ValueInitializer;
 import org.polymap.model2.store.OptimisticLocking;
 import org.polymap.model2.store.recordstore.RecordStoreAdapter;
 import org.polymap.recordstore.lucene.LuceneRecordStore;
@@ -17,16 +31,17 @@ import org.polymap.recordstore.lucene.LuceneRecordStore;
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-public class ProjectRepository {
+public class ProjectRepository
+        extends SessionSingleton {
 
-    private static EntityRepository     repo;
-    
     static {
         try {
-            //File dir = new File( CorePlugin.getDataLocation( ControllerPlugin.instance() ), "projects" );
-            LuceneRecordStore store = new LuceneRecordStore( /*dir, false*/ );
+            File dir = new File( CorePlugin.getDataLocation( ControllerPlugin.instance() ), "um" );
+            LuceneRecordStore store = new LuceneRecordStore( dir, false );
             repo = EntityRepository.newConfiguration()
                     .entities.set( new Class[] {
+                            User.class,
+                            LoginCookie.class,
                             Project.class,
                             Organization.class })
                     .store.set( 
@@ -75,11 +90,21 @@ public class ProjectRepository {
         }
     }
     
-
-    private static ProjectRepository    instance = new ProjectRepository( repo.newUnitOfWork() );
+    private static EntityRepository     repo;
     
+
+    /**
+     * The instance of the current {@link SessionContext}.
+     */
     public static ProjectRepository instance() {
-        return instance;
+        return instance( ProjectRepository.class );
+    }
+
+    /**
+     *
+     */
+    public static ProjectRepository newInstance() {
+        return instance( ProjectRepository.class );
     }
 
     
@@ -88,7 +113,12 @@ public class ProjectRepository {
     private UnitOfWork              uow;
     
     
-    public ProjectRepository( UnitOfWork uow ) {
+    protected ProjectRepository() {
+        this.uow = repo.newUnitOfWork();
+    }
+    
+    
+    protected ProjectRepository( UnitOfWork uow ) {
         this.uow = uow;
     }
 
@@ -104,6 +134,32 @@ public class ProjectRepository {
     }
 
     
+    public Optional<User> findUser( String usernameOrEmail ) {
+        ResultSet<User> rs = uow.query( User.class )
+                .where( or( 
+                        eq( User.TYPE.name, usernameOrEmail ),
+                        eq( User.TYPE.email, usernameOrEmail ) ) )
+                .execute();
+        assert rs.size() <= 1;
+        return rs.stream().findAny();
+    }
+
+
+    public Set<String> groupsOfUser( User user ) {
+        return Collections.EMPTY_SET;
+    }
+
+    
+    protected <T extends Entity> Query<T> query( Class<T> entityClass ) {
+        return uow.query( entityClass );
+    }
+
+
+    public <T extends Entity> T createEntity( Class<T> entityClass, Object id, ValueInitializer<T>... initializers ) {
+        return uow.createEntity( entityClass, id, initializers );
+    }
+
+
     public void rollback() {
         uow.rollback();
     }
@@ -111,6 +167,16 @@ public class ProjectRepository {
     
     public void commit() {
         uow.commit();
+    }
+
+    
+    protected void close() {
+        uow.close();
+    }
+
+    
+    protected ProjectRepository nestedRepo() {
+        return new ProjectRepository( uow.newUnitOfWork() );
     }
 
 }

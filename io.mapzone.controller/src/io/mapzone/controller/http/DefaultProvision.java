@@ -1,8 +1,8 @@
 package io.mapzone.controller.http;
 
-import io.mapzone.controller.model.ProjectRepository;
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
+import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.vm.repository.VmRepository;
 
 import javax.servlet.http.HttpServletRequest;

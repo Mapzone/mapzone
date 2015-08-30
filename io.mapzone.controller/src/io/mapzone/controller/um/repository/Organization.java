@@ -1,7 +1,8 @@
-package io.mapzone.controller.model;
+package io.mapzone.controller.um.repository;
 
 import org.polymap.model2.Entity;
 import org.polymap.model2.ManyAssociation;
+import org.polymap.model2.Nullable;
 import org.polymap.model2.Property;
 import org.polymap.model2.Queryable;
 
@@ -10,22 +11,23 @@ import org.polymap.model2.Queryable;
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-public class User
+public class Organization
         extends Entity {
+
+    public static Organization      TYPE;
 
     @Queryable
     public Property<String>         name;
     
-    public Property<String>         passwordHash;
-    
     @Queryable
-    public Property<String>         email;
-    
+    @Nullable
+    public Property<String>         description;
+
     @Queryable
-    public Property<String>         company;
-    
-    @Queryable
-    public Property<String>         location;
+    @Nullable
+    public Property<String>         website;
+
+    public ManyAssociation<User>    members;
     
     public ManyAssociation<Project> projects;     
     

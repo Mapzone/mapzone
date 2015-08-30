@@ -1,4 +1,6 @@
-package io.mapzone.controller;
+package io.mapzone.controller.ui;
+
+import io.mapzone.controller.Messages;
 
 import org.eclipse.swt.widgets.Composite;
 

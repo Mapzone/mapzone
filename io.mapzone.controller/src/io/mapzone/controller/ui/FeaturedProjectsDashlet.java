@@ -1,4 +1,7 @@
-package io.mapzone.controller;
+package io.mapzone.controller.ui;
+
+import io.mapzone.controller.ControllerPlugin;
+import io.mapzone.controller.Messages;
 
 import com.google.common.base.Joiner;
 

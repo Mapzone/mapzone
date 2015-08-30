@@ -3,9 +3,9 @@ package io.mapzone.controller.vm.provisions;
 import static io.mapzone.controller.provision.Provision.Status.Severity.FAILED_CHECK_AGAIN;
 import io.mapzone.controller.http.DefaultProvision;
 import io.mapzone.controller.http.OkToForwardRequest;
-import io.mapzone.controller.model.Project;
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
+import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.vm.repository.RegisteredHost;
 import io.mapzone.controller.vm.repository.RegisteredProcess;
 

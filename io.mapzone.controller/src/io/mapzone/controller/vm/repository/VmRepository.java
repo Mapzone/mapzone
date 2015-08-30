@@ -34,7 +34,7 @@ public class VmRepository {
     
     static {
         try {
-            //File dir = new File( CorePlugin.getDataLocation( ControllerPlugin.instance() ), "vms" );
+            //File dir = new File( CorePlugin.getDataLocation( ControllerPlugin.instance() ), "vm" );
             LuceneRecordStore store = new LuceneRecordStore();
             repo = EntityRepository.newConfiguration()
                     .entities.set( new Class[] {

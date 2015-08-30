@@ -1,10 +1,10 @@
 package io.mapzone.controller.http;
 
 import static io.mapzone.controller.provision.Provision.Status.Severity.OK;
-import io.mapzone.controller.model.ProjectRepository;
 import io.mapzone.controller.provision.Provision;
 import io.mapzone.controller.provision.Provision.Status;
 import io.mapzone.controller.provision.ProvisionExecutor;
+import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.vm.provisions.ProcessRunning;
 import io.mapzone.controller.vm.repository.VmRepository;
 
@@ -87,7 +87,7 @@ public class ProxyServlet
         @Override
         protected Status executeProvision( Provision provision ) throws Exception {
             VmRepository vmRepo = VmRepository.instance();
-            // the projectRepo must not change during provisioning
+            // the projectRepo does/must not change during provisioning
             ProjectRepository projectRepo = ProjectRepository.instance();
             try {
                 ((DefaultProvision)provision).vmRepo.set( vmRepo );

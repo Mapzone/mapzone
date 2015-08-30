@@ -2,6 +2,20 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
+         id="io.mapzone.controller.UmLoginModule"
+         point="org.eclipse.equinox.security.loginModule">
+      <loginModule
+            class="io.mapzone.controller.um.xauth.UmLoginModule">
+      </loginModule>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.security.callbackHandlerMapping">
+      <callbackHandlerMapping
+            callbackHandlerId="io.mapzone.controller.UmLoginModule"
+            configName="Services">
+      </callbackHandlerMapping>
+   </extension>
+   <extension
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
             alias="/projects"
@@ -47,8 +61,16 @@
    <extension
          point="org.polymap.rhei.batik.panels">
       <panel
-            class="io.mapzone.controller.CtrlStartPanel"
+            class="io.mapzone.controller.ui.DashboardPanel"
+            id="io.mapzone.controller.DashboardPanel">
+      </panel>
+      <panel
+            class="io.mapzone.controller.ui.StartPanel"
             id="io.mapzone.controller.StartPanel">
+      </panel>
+      <panel
+            class="io.mapzone.controller.ui.RegisterPanel"
+            id="io.mapzone.controller.RegisterPanel">
       </panel>
    </extension>
 

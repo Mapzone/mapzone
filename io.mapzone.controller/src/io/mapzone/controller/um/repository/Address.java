@@ -1,7 +1,7 @@
 /* 
  * Copyright (C) 2015, Falko Bräutigam. All rights reserved.
  */
-package io.mapzone.controller.model;
+package io.mapzone.controller.um.repository;
 
 import org.polymap.model2.Entity;
 
