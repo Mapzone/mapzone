@@ -72,6 +72,10 @@
             class="io.mapzone.controller.ui.RegisterPanel"
             id="io.mapzone.controller.RegisterPanel">
       </panel>
+      <panel
+            class="io.mapzone.controller.ui.CreateProjectPanel"
+            id="io.mapzone.controller.CreateProjectPanel">
+      </panel>
    </extension>
 
 </plugin>

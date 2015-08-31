@@ -1,11 +1,10 @@
 package io.mapzone.controller.um.repository;
 
-import org.polymap.model2.Entity;
+import org.polymap.model2.Defaults;
 import org.polymap.model2.ManyAssociation;
 import org.polymap.model2.Nullable;
 import org.polymap.model2.Property;
 import org.polymap.model2.Queryable;
-import org.polymap.model2.runtime.UnitOfWork;
 
 /**
  * 
@@ -13,31 +12,24 @@ import org.polymap.model2.runtime.UnitOfWork;
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class User
-        extends Entity {
+        extends Named {
 
     public static User              TYPE;
 
-    @Queryable
-    public Property<String>         name;
-    
     public Property<String>         passwordHash;
     
     @Queryable
-    public Property<String>         email;
+    @Nullable
+    public Property<String>         fullname;
     
     @Queryable
     @Nullable
     public Property<String>         company;
     
-    @Queryable
-    @Nullable
-    public Property<String>         location;
-    
-    public ManyAssociation<Project> projects;
+    @Defaults
+    public ManyAssociation<Organization> organizations;
 
-    
-    public UnitOfWork unitOfWork() {
-        return context.getUnitOfWork();
-    }
+    @Defaults
+    public ManyAssociation<Project> projects;
     
 }

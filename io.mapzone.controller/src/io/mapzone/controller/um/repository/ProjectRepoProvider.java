@@ -10,6 +10,7 @@ import org.polymap.model2.runtime.EntityRepository;
 /**
  * Holds the global {@link EntityRepository} of users and projects.
  *
+ * @deprecated Just makea nested UoW  is necessary, propagate the instance.
  * @see TxProvider
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
@@ -20,7 +21,7 @@ public class ProjectRepoProvider
     
     @Override
     protected ProjectRepository newTx( ProjectRepository parent ) {
-        return parent != null ? parent.nestedRepo() : ProjectRepository.instance();
+        return parent != null ? parent.newNested() : ProjectRepository.instance();
     }
 
     @Override

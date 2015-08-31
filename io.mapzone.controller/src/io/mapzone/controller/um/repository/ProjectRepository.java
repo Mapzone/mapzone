@@ -5,6 +5,7 @@ import static org.polymap.model2.query.Expressions.eq;
 import static org.polymap.model2.query.Expressions.or;
 import static org.polymap.model2.query.Expressions.the;
 import io.mapzone.controller.ControllerPlugin;
+import io.mapzone.controller.um.repository.LifecycleEvent.Type;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -12,17 +13,21 @@ import java.util.Set;
 
 import java.io.File;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.polymap.core.CorePlugin;
+import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.runtime.session.SessionContext;
 import org.polymap.core.runtime.session.SessionSingleton;
 
 import org.polymap.model2.Entity;
+import org.polymap.model2.query.Expressions;
 import org.polymap.model2.query.Query;
 import org.polymap.model2.query.ResultSet;
 import org.polymap.model2.runtime.EntityRepository;
 import org.polymap.model2.runtime.UnitOfWork;
 import org.polymap.model2.runtime.ValueInitializer;
-import org.polymap.model2.store.OptimisticLocking;
 import org.polymap.model2.store.recordstore.RecordStoreAdapter;
 import org.polymap.recordstore.lucene.LuceneRecordStore;
 
@@ -34,6 +39,8 @@ import org.polymap.recordstore.lucene.LuceneRecordStore;
 public class ProjectRepository
         extends SessionSingleton {
 
+    private static Log log = LogFactory.getLog( ProjectRepository.class );
+    
     static {
         try {
             File dir = new File( CorePlugin.getDataLocation( ControllerPlugin.instance() ), "um" );
@@ -46,8 +53,8 @@ public class ProjectRepository
                             Organization.class })
                     .store.set( 
                             // make sure to never loose updates or something
-                            new OptimisticLocking(
-                            new RecordStoreAdapter( store ) ) )
+                            //new OptimisticLocking(
+                            new RecordStoreAdapter( store ) )
                     .create();
             
             checkInit();
@@ -94,7 +101,15 @@ public class ProjectRepository
     
 
     /**
-     * The instance of the current {@link SessionContext}.
+     * The instance of the current {@link SessionContext}. This is the <b>read</b>
+     * cache for all entities used by the UI.
+     * <p/>
+     * Do <b>not</b> use this for <b>modifications</b> that might be canceled or
+     * otherwise may left pending changes! Create a {@link #newNested()} instance for
+     * that. This helps to prevent your modifications from being committed by another
+     * party are leaving half-done, uncommitted changes. Commiting a nested instance
+     * commits also the parent, hence making changes persistent, in one atomic
+     * action. If that fails the <b>parent</b> is rolled back.
      */
     public static ProjectRepository instance() {
         return instance( ProjectRepository.class );
@@ -104,7 +119,7 @@ public class ProjectRepository
      *
      */
     public static ProjectRepository newInstance() {
-        return instance( ProjectRepository.class );
+        return new ProjectRepository();
     }
 
     
@@ -123,10 +138,12 @@ public class ProjectRepository
     }
 
     
-    public Optional<Project> findProject( String organization, String project ) {
+    public Optional<Project> findProject( String organizationOrUser, String project ) {
         ResultSet<Project> rs = uow.query( Project.class )
                 .where( and( 
-                        the( Project.TYPE.organization, eq( Organization.TYPE.name, organization ) ),
+                        Expressions.or(
+                                the( Project.TYPE.user, eq( User.TYPE.name, organizationOrUser ) ),
+                                the( Project.TYPE.organization, eq( Organization.TYPE.name, organizationOrUser ) ) ),
                         eq( Project.TYPE.name, project ) ) )
                 .execute();
         assert rs.size() <= 1;
@@ -161,22 +178,59 @@ public class ProjectRepository
 
 
     public void rollback() {
+        EventManager.instance().publish( new LifecycleEvent( this, Type.BEFORE_ROLLBACK ) );
         uow.rollback();
+        EventManager.instance().publish( new LifecycleEvent( this, Type.AFTER_ROLLBACK ) );
     }
 
     
     public void commit() {
+        EventManager.instance().publish( new LifecycleEvent( this, Type.BEFORE_COMMIT ) );
         uow.commit();
+        EventManager.instance().publish( new LifecycleEvent( this, Type.AFTER_COMMIT ) );
     }
 
     
-    protected void close() {
+    public void close() {
+        EventManager.instance().publish( new LifecycleEvent( this, Type.BEFORE_CLOSE ) );
         uow.close();
     }
 
     
-    protected ProjectRepository nestedRepo() {
-        return new ProjectRepository( uow.newUnitOfWork() );
+    public ProjectRepository newNested() {
+        ProjectRepository parent = this;
+        return new ProjectRepository( uow.newUnitOfWork() ) {
+            @Override
+            public void commit() {
+                synchronized (parent) {
+                    try {
+                        super.commit();
+                        parent.commit();
+                    }
+                    catch (Exception e) {
+                        log.info( "Commit nested ProjectRepository failed.", e );
+                        parent.rollback();
+                    }
+                }
+            }            
+        };
     }
 
+    
+    /**
+     * Registers the given handler for {@link LifecycleEvent}s. 
+     * 
+     * @see EventManager#subscribe(Object, org.polymap.core.runtime.event.EventFilter...)
+     * @param annotated The weakly stored handler.
+     * @return this 
+     */
+    public ProjectRepository addLifecycleListener( Object annotated ) {
+        EventManager.instance().subscribe( annotated, ev -> ev.getSource() == this );
+        return this;
+    }
+    
+    public boolean removeLifecycleListener( Object annotated ) {
+        return EventManager.instance().unsubscribe( annotated );    
+    }
+    
 }

@@ -11,18 +11,19 @@ import org.opengis.feature.type.Name;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.feature.type.PropertyType;
 
+import org.polymap.model2.Entity;
 import org.polymap.model2.runtime.PropertyInfo;
 
 /**
- * Adapts {@link org.polymap.model2.Property} to {@link org.opengis.feature.Property}
- * to be used by forms.
+ * Adapts {@link org.polymap.model2.Association} to
+ * {@link org.opengis.feature.Property} to be used by forms.
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-public class PropertyAdapter
+public class AssociationAdapter
         implements Property {
 
-    public static PropertyDescriptor descriptorFor( org.polymap.model2.Property prop ) {
+    public static PropertyDescriptor descriptorFor( org.polymap.model2.Association prop ) {
         PropertyInfo info = prop.info();
         NameImpl name = new NameImpl( info.getName() );
         AttributeType type = new AttributeTypeImpl( name, info.getType(), true, false, null, null, null );
@@ -39,10 +40,10 @@ public class PropertyAdapter
     
     // instance *******************************************
     
-    private org.polymap.model2.Property    delegate;
+    private org.polymap.model2.Association  delegate;
     
 
-    public PropertyAdapter( org.polymap.model2.Property delegate ) {
+    public AssociationAdapter( org.polymap.model2.Association delegate ) {
         assert delegate != null;
         this.delegate = delegate;
     }
@@ -58,7 +59,7 @@ public class PropertyAdapter
                 && !delegate.info().getType().isAssignableFrom( newValue.getClass() )) {
             throw new ClassCastException( "Wrong value for Property of type '" + delegate.info().getType() + "': " + newValue.getClass() );
         }
-        delegate.set( newValue );
+        delegate.set( (Entity)newValue );
     }
 
     @Override

@@ -65,6 +65,7 @@ public class RegisterPanel
 
     public static final IMessages       i18n = Messages.forPrefix( "RegisterPanel" );
 
+    /** The nested transaction that allows to rollback. */
     private ProjectRepository           repo;
     
     private Context<UserPrincipal>      userPrincipal;
@@ -84,9 +85,8 @@ public class RegisterPanel
 
     @Override
     public void init() {
-        // XXX
-        repo = ProjectRepository.instance();
         getSite().setPreferredWidth( 450 );
+        repo = ProjectRepository.instance().newNested();
     }
 
 
@@ -96,6 +96,7 @@ public class RegisterPanel
             form.removeFieldListener( this );
             form = null;
         }
+        repo.close();
     }
 
 
@@ -153,7 +154,7 @@ public class RegisterPanel
                     return;
                 }
 
-                IUndoableOperation op = new NewUserOperation( user, password );
+                IUndoableOperation op = new NewUserOperation( repo, user, password );
                 OperationSupport.instance().execute( op, true, false, new JobChangeAdapter() {
                     @Override
                     public void done( IJobChangeEvent ev2 ) {
