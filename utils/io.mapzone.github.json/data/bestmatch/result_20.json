@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/informigis",
+ "repository": "https://github.com/informigis/data.kk.dk",
+ "file": "https://github.com/informigis/data.kk.dk/blob/489d7b070b4e2081623adfed1529726eeafd613a/lastbil_natparkering.geojson",
+ "lastIndexed": "2015-06-03T03:47:24Z"
+},
+{
+"user": "https://github.com/cadooo",
+ "repository": "https://github.com/cadooo/maps",
+ "file": "https://github.com/cadooo/maps/blob/98c14d09fe236df830e55c2924b850c591577025/gs.geojson",
+ "lastIndexed": "2015-06-02T21:29:51Z"
+},
+{
+"user": "https://github.com/jenningsanderson",
+ "repository": "https://github.com/jenningsanderson/Twitter-Evacuation-Patterns",
+ "file": "https://github.com/jenningsanderson/Twitter-Evacuation-Patterns/blob/d958fddac9f92bf898bbdd1b127e7f1c547253c9/assets/geojson/frankenstorm_apocalypse_checkins.geojson",
+ "lastIndexed": "2015-07-14T22:02:58Z"
+},
+{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_site/geojson/parish-21.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+},
+{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_source/geojson/parish-21.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+},
+{
+"user": "https://github.com/mossowski",
+ "repository": "https://github.com/mossowski/NoSQL-lab",
+ "file": "https://github.com/mossowski/NoSQL-lab/blob/2f1f9cd827f53c426ad1459b28d18e69c5689e63/places/places4.geojson",
+ "lastIndexed": "2015-06-03T18:26:26Z"
+},
+{
+"user": "https://github.com/admoncho",
+ "repository": "https://github.com/admoncho/repostorio2",
+ "file": "https://github.com/admoncho/repostorio2/blob/50cd1939fac47e59a0c12eea7b11d141af1b62de/Practica1/puntos.geojson",
+ "lastIndexed": "2015-06-01T17:48:45Z"
+},
+{
+"user": "https://github.com/jimmyhillis",
+ "repository": "https://github.com/jimmyhillis/letour-2014",
+ "file": "https://github.com/jimmyhillis/letour-2014/blob/bbb7be335aca79b64acc52a662a46fcaf71e1c7d/json/maps/stage-05.geojson",
+ "lastIndexed": "2015-06-02T14:22:41Z"
+},
+{
+"user": "https://github.com/mapnik",
+ "repository": "https://github.com/mapnik/test-data",
+ "file": "https://github.com/mapnik/test-data/blob/3b1f481ac2ceeb780255cd4c76a42ae06197b9bc/json/points.geojson",
+ "lastIndexed": "2015-08-05T18:46:29Z"
+},
+{
+"user": "https://github.com/wnstn",
+ "repository": "https://github.com/wnstn/roadtripData",
+ "file": "https://github.com/wnstn/roadtripData/blob/4bc823dc752a68ea13a599c9a3f7414c9800c494/geojson/leg10Geo.geojson",
+ "lastIndexed": "2015-06-03T23:39:22Z"
+}]

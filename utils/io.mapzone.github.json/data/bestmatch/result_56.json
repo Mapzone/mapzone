@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/north-carolina-data",
+ "file": "https://github.com/jalbertbowden/north-carolina-data/blob/b18304c656a99f702f66a1e15aab7a604f83cbc2/gis/flood-effective-iredell/geojson/D_WAVE_MDL.geojson",
+ "lastIndexed": "2015-06-01T03:04:38Z"
+},
+{
+"user": "https://github.com/dringtech",
+ "repository": "https://github.com/dringtech/hebden-biz",
+ "file": "https://github.com/dringtech/hebden-biz/blob/82a7c69a2de3e4020e12c7fdd2bf6aaa47ce6704/layers/hx7.geojson",
+ "lastIndexed": "2015-07-12T00:40:16Z"
+},
+{
+"user": "https://github.com/rjruss",
+ "repository": "https://github.com/rjruss/test",
+ "file": "https://github.com/rjruss/test/blob/2699b1db470c4ce6442405a922d7ac30051e2671/WorldGeoJsonPoints.geojson",
+ "lastIndexed": "2015-05-29T04:40:46Z"
+},
+{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q3/grilles.geojson",
+ "lastIndexed": "2015-06-05T18:25:52Z"
+},
+{
+"user": "https://github.com/jimmyhillis",
+ "repository": "https://github.com/jimmyhillis/letour-2014",
+ "file": "https://github.com/jimmyhillis/letour-2014/blob/bbb7be335aca79b64acc52a662a46fcaf71e1c7d/json/maps/stage-17.geojson",
+ "lastIndexed": "2015-06-02T14:22:41Z"
+},
+{
+"user": "https://github.com/kingye",
+ "repository": "https://github.com/kingye/ipatrol",
+ "file": "https://github.com/kingye/ipatrol/blob/762571bd8bbe09309255238b460a7590d74fce0d/src/test/resources/testdata/area/nanjing/qinhuai/qinhuai_2.geojson",
+ "lastIndexed": "2015-06-04T05:55:01Z"
+},
+{
+"user": "https://github.com/pjhooker",
+ "repository": "https://github.com/pjhooker/gis_sensori",
+ "file": "https://github.com/pjhooker/gis_sensori/blob/b2d60a5da4fa10630d5a0c18265b5d73b6cec259/coworking_milano.geojson",
+ "lastIndexed": "2015-08-03T15:04:28Z"
+},
+{
+"user": "https://github.com/zero-point",
+ "repository": "https://github.com/zero-point/hackattack",
+ "file": "https://github.com/zero-point/hackattack/blob/8ce38891e0dcbb42d3f77e4b73111f52c071140f/traffic.geojson",
+ "lastIndexed": "2015-06-02T07:27:13Z"
+},
+{
+"user": "https://github.com/mr-bobz",
+ "repository": "https://github.com/mr-bobz/geojsonrepo",
+ "file": "https://github.com/mr-bobz/geojsonrepo/blob/03c538eb5866a0ad59ecf80d8a52ed2947773f63/Countries/israel_cities.geojson",
+ "lastIndexed": "2015-09-03T08:34:59Z"
+},
+{
+"user": "https://github.com/atlregional",
+ "repository": "https://github.com/atlregional/aris",
+ "file": "https://github.com/atlregional/aris/blob/49a0e44d95f5d12efb00bff05b3697f6de1f18c6/Interstate_exits_new.geojson",
+ "lastIndexed": "2015-05-31T21:21:58Z"
+}]

@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/camilleanne",
+ "repository": "https://github.com/camilleanne/geojsonupload",
+ "file": "https://github.com/camilleanne/geojsonupload/blob/7c2e4e9d082c664e03081289d6e6170703904315/test3.geojson",
+ "lastIndexed": "2015-06-04T07:33:24Z"
+},
+{
+"user": "https://github.com/vdubr",
+ "repository": "https://github.com/vdubr/publications",
+ "file": "https://github.com/vdubr/publications/blob/4945cf8e0218fb318a4434d460b2619cf4a2dd1e/mapito/beta_0.1/data/blanice_points.geojson",
+ "lastIndexed": "2015-07-09T10:41:23Z"
+},
+{
+"user": "https://github.com/vdubr",
+ "repository": "https://github.com/vdubr/publications",
+ "file": "https://github.com/vdubr/publications/blob/4945cf8e0218fb318a4434d460b2619cf4a2dd1e/mapito/examples/data/blanice_points.geojson",
+ "lastIndexed": "2015-07-09T10:41:23Z"
+},
+{
+"user": "https://github.com/vdubr",
+ "repository": "https://github.com/vdubr/publications",
+ "file": "https://github.com/vdubr/publications/blob/4945cf8e0218fb318a4434d460b2619cf4a2dd1e/mapito/beta_0.1/data/vector/3857/point.geojson",
+ "lastIndexed": "2015-07-09T10:41:25Z"
+},
+{
+"user": "https://github.com/vdubr",
+ "repository": "https://github.com/vdubr/publications",
+ "file": "https://github.com/vdubr/publications/blob/4945cf8e0218fb318a4434d460b2619cf4a2dd1e/mapito/examples/data/vector/3857/point.geojson",
+ "lastIndexed": "2015-07-09T10:41:25Z"
+},
+{
+"user": "https://github.com/MaptimeSEA",
+ "repository": "https://github.com/MaptimeSEA/geojson",
+ "file": "https://github.com/MaptimeSEA/geojson/blob/c5eeb4966a1bdca42b9c36fa5a6ff7671b9663a8/mapsam.geojson",
+ "lastIndexed": "2015-06-03T23:54:42Z"
+},
+{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_site/geojson/parish-13.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+},
+{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_source/geojson/parish-13.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+},
+{
+"user": "https://github.com/yiqingj",
+ "repository": "https://github.com/yiqingj/work",
+ "file": "https://github.com/yiqingj/work/blob/8388627720448258cc18be5a9ed842d10e542d3a/tests/data/json/lines.geojson",
+ "lastIndexed": "2015-05-31T18:51:23Z"
+},
+{
+"user": "https://github.com/yiqingj",
+ "repository": "https://github.com/yiqingj/work",
+ "file": "https://github.com/yiqingj/work/blob/8388627720448258cc18be5a9ed842d10e542d3a/tests/data/json/null_feature.geojson",
+ "lastIndexed": "2015-05-31T18:51:23Z"
+}]

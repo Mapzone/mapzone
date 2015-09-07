@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/205071.geojson",
+ "lastIndexed": "2015-08-31T00:48:04Z"
+},
+{
+"user": "https://github.com/rdmpage",
+ "repository": "https://github.com/rdmpage/refcon15-journalmap",
+ "file": "https://github.com/rdmpage/refcon15-journalmap/blob/ca6fe03e3f90451a74ad177d15b67de6b2f435cf/zookeys.geojson",
+ "lastIndexed": "2015-06-20T23:40:22Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/north-carolina-data",
+ "file": "https://github.com/jalbertbowden/north-carolina-data/blob/b18304c656a99f702f66a1e15aab7a604f83cbc2/gis/flood-effective-iredell/geojson/D_MTLTYP.geojson",
+ "lastIndexed": "2015-06-01T03:04:37Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/north-carolina-data",
+ "file": "https://github.com/jalbertbowden/north-carolina-data/blob/b18304c656a99f702f66a1e15aab7a604f83cbc2/gis/flood-effective-iredell/geojson/D_RUNUP_MDL.geojson",
+ "lastIndexed": "2015-06-01T03:04:37Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/north-carolina-data",
+ "file": "https://github.com/jalbertbowden/north-carolina-data/blob/b18304c656a99f702f66a1e15aab7a604f83cbc2/gis/flood-effective-iredell/geojson/D_VELOCITY_UNITS.geojson",
+ "lastIndexed": "2015-06-01T03:04:37Z"
+},
+{
+"user": "https://github.com/henio180",
+ "repository": "https://github.com/henio180/NoSQL",
+ "file": "https://github.com/henio180/NoSQL/blob/a86cb0f87822dc813094d34ebe616e5589828741/lab/mapy/mapa.geojson",
+ "lastIndexed": "2015-06-03T10:42:55Z"
+},
+{
+"user": "https://github.com/bwainstock",
+ "repository": "https://github.com/bwainstock/halfmile-geojson",
+ "file": "https://github.com/bwainstock/halfmile-geojson/blob/68fa7de1542131939ff1a83d2884aa1af6ab3d4f/CA/tracks/GeoJSON/CA_Sec_G_tracks.geojson",
+ "lastIndexed": "2015-06-05T12:27:05Z"
+},
+{
+"user": "https://github.com/Turfjs",
+ "repository": "https://github.com/Turfjs/turf-concave",
+ "file": "https://github.com/Turfjs/turf-concave/blob/4c0bd898be695eac78dc82300c4e3ca06680cd03/fixtures/in/pts1.geojson",
+ "lastIndexed": "2015-06-02T07:09:05Z"
+},
+{
+"user": "https://github.com/jimmyhillis",
+ "repository": "https://github.com/jimmyhillis/letour-2014",
+ "file": "https://github.com/jimmyhillis/letour-2014/blob/bbb7be335aca79b64acc52a662a46fcaf71e1c7d/json/maps/stage-04.geojson",
+ "lastIndexed": "2015-06-02T14:22:41Z"
+},
+{
+"user": "https://github.com/jimmyhillis",
+ "repository": "https://github.com/jimmyhillis/letour-2014",
+ "file": "https://github.com/jimmyhillis/letour-2014/blob/bbb7be335aca79b64acc52a662a46fcaf71e1c7d/json/maps/stage-11.geojson",
+ "lastIndexed": "2015-06-02T14:22:41Z"
+}]

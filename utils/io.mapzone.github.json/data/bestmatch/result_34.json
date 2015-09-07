@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/north-carolina-data",
+ "file": "https://github.com/jalbertbowden/north-carolina-data/blob/b18304c656a99f702f66a1e15aab7a604f83cbc2/gis/flood-effective-iredell/geojson/D_STRUC_TYP.geojson",
+ "lastIndexed": "2015-06-01T03:04:37Z"
+},
+{
+"user": "https://github.com/cinkonaap",
+ "repository": "https://github.com/cinkonaap/nosql",
+ "file": "https://github.com/cinkonaap/nosql/blob/633fd5b881d222e7a233d05ec2a443698159b273/zad1/geoQ4.geojson",
+ "lastIndexed": "2015-06-03T19:09:28Z"
+},
+{
+"user": "https://github.com/pkulas",
+ "repository": "https://github.com/pkulas/nosql",
+ "file": "https://github.com/pkulas/nosql/blob/785d18de3e5b95e541cf7131cd2e7a74fba42434/geo/map3.geojson",
+ "lastIndexed": "2015-06-03T21:01:10Z"
+},
+{
+"user": "https://github.com/elil",
+ "repository": "https://github.com/elil/redfern",
+ "file": "https://github.com/elil/redfern/blob/8308c7f0a70cf699e8a3f25084c67500a60e901f/locations2.geojson",
+ "lastIndexed": "2015-06-02T10:23:42Z"
+},
+{
+"user": "https://github.com/texas",
+ "repository": "https://github.com/texas/maps",
+ "file": "https://github.com/texas/maps/blob/a6161f311a7606c8549aa131065bac663af8e39e/geojson/cities.geojson",
+ "lastIndexed": "2015-05-31T01:11:54Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/va-data",
+ "file": "https://github.com/jalbertbowden/va-data/blob/ee4c63639421306120ac602af0bdb2300a7b6dfe/dgif/2005/source/source/index/geojson/CNT.geojson",
+ "lastIndexed": "2015-05-31T13:13:27Z"
+},
+{
+"user": "https://github.com/mattseymour",
+ "repository": "https://github.com/mattseymour/envhack",
+ "file": "https://github.com/mattseymour/envhack/blob/adc31f9f8d989a84ac21399f8582c2f4acf149ca/example.geojson",
+ "lastIndexed": "2015-05-30T11:07:35Z"
+},
+{
+"user": "https://github.com/jonahadkins",
+ "repository": "https://github.com/jonahadkins/open-noland-trail",
+ "file": "https://github.com/jonahadkins/open-noland-trail/blob/0d27bb189b607fb51c930a2d8d1822028687235c/data/water_fountains.geojson",
+ "lastIndexed": "2015-06-02T11:38:00Z"
+},
+{
+"user": "https://github.com/bwainstock",
+ "repository": "https://github.com/bwainstock/halfmile-geojson",
+ "file": "https://github.com/bwainstock/halfmile-geojson/blob/68fa7de1542131939ff1a83d2884aa1af6ab3d4f/CA/tracks/GeoJSON/CA_Sec_L_tracks.geojson",
+ "lastIndexed": "2015-06-05T12:27:05Z"
+},
+{
+"user": "https://github.com/turban",
+ "repository": "https://github.com/turban/nordryggen",
+ "file": "https://github.com/turban/nordryggen/blob/74bdcb9974b96314e437de523f1122d226f6225b/data/cabins.geojson",
+ "lastIndexed": "2015-06-05T07:41:46Z"
+}]

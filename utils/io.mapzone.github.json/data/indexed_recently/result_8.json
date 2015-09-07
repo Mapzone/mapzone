@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/gtfs-collection",
+ "repository": "https://github.com/gtfs-collection/overview",
+ "file": "https://github.com/gtfs-collection/overview/blob/d335db0348a42e3eec4c1a8ae313f7753467907a/places.geojson",
+ "lastIndexed": "2015-09-03T14:19:53Z"
+},
+{
+"user": "https://github.com/gtfs-collection",
+ "repository": "https://github.com/gtfs-collection/overview",
+ "file": "https://github.com/gtfs-collection/overview/blob/d335db0348a42e3eec4c1a8ae313f7753467907a/polygons/porto-alegre_brazil.geojson",
+ "lastIndexed": "2015-09-03T14:19:53Z"
+},
+{
+"user": "https://github.com/nrkkrm",
+ "repository": "https://github.com/nrkkrm/geojson",
+ "file": "https://github.com/nrkkrm/geojson/blob/3566ef26b1e8998f52d547f685fb30092caa237b/lakes.geojson",
+ "lastIndexed": "2015-09-03T14:11:55Z"
+},
+{
+"user": "https://github.com/nrkkrm",
+ "repository": "https://github.com/nrkkrm/geojson",
+ "file": "https://github.com/nrkkrm/geojson/blob/04098466cb560875d3d8a1722314d96734c5ed63/borders.geojson",
+ "lastIndexed": "2015-09-03T14:11:24Z"
+},
+{
+"user": "https://github.com/mapzen",
+ "repository": "https://github.com/mapzen/metroextractor-cities",
+ "file": "https://github.com/mapzen/metroextractor-cities/blob/34e71a74e6fe5c833360fefb958c3e2347ebdd53/cities.geojson",
+ "lastIndexed": "2015-09-03T12:46:01Z"
+},
+{
+"user": "https://github.com/Bishi",
+ "repository": "https://github.com/Bishi/gtfs_feed",
+ "file": "https://github.com/Bishi/gtfs_feed/blob/307c7bc3603a40f5c3c3783b6271e4491efaf9b0/ljubljana.geojson",
+ "lastIndexed": "2015-09-03T12:02:49Z"
+},
+{
+"user": "https://github.com/ryanfb",
+ "repository": "https://github.com/ryanfb/pleiades-geojson",
+ "file": "https://github.com/ryanfb/pleiades-geojson/blob/5087a22764d27f6ae0c0413d420f473b1ff910da/geojson/295331.geojson",
+ "lastIndexed": "2015-09-03T12:01:42Z"
+},
+{
+"user": "https://github.com/ryanfb",
+ "repository": "https://github.com/ryanfb/pleiades-geojson",
+ "file": "https://github.com/ryanfb/pleiades-geojson/blob/5087a22764d27f6ae0c0413d420f473b1ff910da/geojson/579885.geojson",
+ "lastIndexed": "2015-09-03T12:01:42Z"
+},
+{
+"user": "https://github.com/ryanfb",
+ "repository": "https://github.com/ryanfb/pleiades-geojson",
+ "file": "https://github.com/ryanfb/pleiades-geojson/blob/5087a22764d27f6ae0c0413d420f473b1ff910da/geojson/1001896.geojson",
+ "lastIndexed": "2015-09-03T12:01:42Z"
+},
+{
+"user": "https://github.com/ryanfb",
+ "repository": "https://github.com/ryanfb/pleiades-geojson",
+ "file": "https://github.com/ryanfb/pleiades-geojson/blob/5087a22764d27f6ae0c0413d420f473b1ff910da/geojson/540647.geojson",
+ "lastIndexed": "2015-09-03T12:01:42Z"
+}]

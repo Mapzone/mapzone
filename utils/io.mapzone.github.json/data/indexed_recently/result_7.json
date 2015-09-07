@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/tongning",
+ "repository": "https://github.com/tongning/access-route",
+ "file": "https://github.com/tongning/access-route/blob/d49dc6efb6f49af7ed27baf633e9b0815778a4fc/routing/routeapp/templates/routeapp/route.geojson",
+ "lastIndexed": "2015-09-03T20:28:35Z"
+},
+{
+"user": "https://github.com/cluhring",
+ "repository": "https://github.com/cluhring/us_pizza_d3_map",
+ "file": "https://github.com/cluhring/us_pizza_d3_map/blob/13a9f62a64db91cff1953bbe3ffad5580b575401/pizza_map.geojson",
+ "lastIndexed": "2015-09-03T19:43:53Z"
+},
+{
+"user": "https://github.com/abicnair",
+ "repository": "https://github.com/abicnair/geotest2",
+ "file": "https://github.com/abicnair/geotest2/blob/bde45920955f577c707bfed6dcea7da90e00ee91/test6.geojson",
+ "lastIndexed": "2015-09-03T19:24:35Z"
+},
+{
+"user": "https://github.com/abicnair",
+ "repository": "https://github.com/abicnair/geotest2",
+ "file": "https://github.com/abicnair/geotest2/blob/0e21c201a00fecf3b07641ecc37d7302437b9a22/test5.geojson",
+ "lastIndexed": "2015-09-03T19:20:42Z"
+},
+{
+"user": "https://github.com/procterw",
+ "repository": "https://github.com/procterw/ng-maps",
+ "file": "https://github.com/procterw/ng-maps/blob/4c7362366c74106b7a5e2ca1d2ea5e61cadc9b10/site/data/collection.geojson",
+ "lastIndexed": "2015-09-03T19:06:09Z"
+},
+{
+"user": "https://github.com/maptimeLA",
+ "repository": "https://github.com/maptimeLA/food_bank_data_bank",
+ "file": "https://github.com/maptimeLA/food_bank_data_bank/blob/b1127bc58378bd651e4f5beb75f401a6cdbef2df/datasets/FoodSources/LACountyWICRetailers/LACountyWICRetailers.geojson",
+ "lastIndexed": "2015-09-03T19:01:20Z"
+},
+{
+"user": "https://github.com/bikeablebrews",
+ "repository": "https://github.com/bikeablebrews/wod",
+ "file": "https://github.com/bikeablebrews/wod/blob/1108e3ba5ec9e4b9dbc14379a32663c7932b8f2d/data/brewery.geojson",
+ "lastIndexed": "2015-09-03T18:40:11Z"
+},
+{
+"user": "https://github.com/bikeablebrews",
+ "repository": "https://github.com/bikeablebrews/wod",
+ "file": "https://github.com/bikeablebrews/wod/blob/1108e3ba5ec9e4b9dbc14379a32663c7932b8f2d/data/other.geojson",
+ "lastIndexed": "2015-09-03T18:40:11Z"
+},
+{
+"user": "https://github.com/bikeablebrews",
+ "repository": "https://github.com/bikeablebrews/wod",
+ "file": "https://github.com/bikeablebrews/wod/blob/1108e3ba5ec9e4b9dbc14379a32663c7932b8f2d/data/trail.geojson",
+ "lastIndexed": "2015-09-03T18:40:11Z"
+},
+{
+"user": "https://github.com/meltaweel",
+ "repository": "https://github.com/meltaweel/test",
+ "file": "https://github.com/meltaweel/test/blob/b55660003e18a461341663448aea07bd102e6b52/test.geojson",
+ "lastIndexed": "2015-09-03T17:38:16Z"
+}]

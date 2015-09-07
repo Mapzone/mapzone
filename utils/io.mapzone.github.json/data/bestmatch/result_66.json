@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/youchan",
+ "repository": "https://github.com/youchan/samples",
+ "file": "https://github.com/youchan/samples/blob/ba1c7da66bfe9edc3a7f643f9643da07b320f3ea/myhome.geojson",
+ "lastIndexed": "2015-05-28T01:51:49Z"
+},
+{
+"user": "https://github.com/wdv4758h",
+ "repository": "https://github.com/wdv4758h/test",
+ "file": "https://github.com/wdv4758h/test/blob/90cf636ee5db5607ba0555ff788288bdd502bf59/test.geojson",
+ "lastIndexed": "2015-05-31T12:04:40Z"
+},
+{
+"user": "https://github.com/esripdx",
+ "repository": "https://github.com/esripdx/terraformer-java",
+ "file": "https://github.com/esripdx/terraformer-java/blob/6c2031365b692c13dbe0be4130f8a8fbd9e5e762/src/test/resources/geometry_collection.geojson",
+ "lastIndexed": "2015-06-02T05:53:12Z"
+},
+{
+"user": "https://github.com/zenweasel",
+ "repository": "https://github.com/zenweasel/mapping",
+ "file": "https://github.com/zenweasel/mapping/blob/0abfb308725620ef3332af1f8e62646649f29d5f/staticsrc/mapbox/mapbox.js-mb-pages/docs/assets/data/example.geojson",
+ "lastIndexed": "2015-06-02T10:06:39Z"
+},
+{
+"user": "https://github.com/zenweasel",
+ "repository": "https://github.com/zenweasel/mapping",
+ "file": "https://github.com/zenweasel/mapping/blob/0abfb308725620ef3332af1f8e62646649f29d5f/staticsrc/mapbox/mapbox.js-mb-pages/test/manual/example.geojson",
+ "lastIndexed": "2015-06-02T10:06:39Z"
+},
+{
+"user": "https://github.com/fabkxd",
+ "repository": "https://github.com/fabkxd/cesium_demo",
+ "file": "https://github.com/fabkxd/cesium_demo/blob/a4f0003c81cb82ed73f6c1e18b74a5156d99d8a0/Specs/Data/test.geojson",
+ "lastIndexed": "2015-06-05T08:51:41Z"
+},
+{
+"user": "https://github.com/iannpro",
+ "repository": "https://github.com/iannpro/biojs-vis-iann-bilevel-partition",
+ "file": "https://github.com/iannpro/biojs-vis-iann-bilevel-partition/blob/e7cbcbb5094cd6a2c08d74c00117dd0ffa9c4c98/javascript/data/data.geojson",
+ "lastIndexed": "2015-06-03T21:47:50Z"
+},
+{
+"user": "https://github.com/usgin",
+ "repository": "https://github.com/usgin/wfs-index",
+ "file": "https://github.com/usgin/wfs-index/blob/59bb40335a68b61517956db4fcdb1421ba323454/testData/clusteredAt7.geojson",
+ "lastIndexed": "2015-05-31T09:04:12Z"
+},
+{
+"user": "https://github.com/OpenBankProject",
+ "repository": "https://github.com/OpenBankProject/CommandlineHelpers",
+ "file": "https://github.com/OpenBankProject/CommandlineHelpers/blob/42397d10c44954f55239c9be02e7abaa0bc9bb1e/static/ireland_points.geojson",
+ "lastIndexed": "2015-06-04T14:44:24Z"
+},
+{
+"user": "https://github.com/UrbanInstitute",
+ "repository": "https://github.com/UrbanInstitute/occ-public-safety",
+ "file": "https://github.com/UrbanInstitute/occ-public-safety/blob/827eaa73f317b2d055f0c3f0580f386714b45cfe/data/homicide/homicide2002.geojson",
+ "lastIndexed": "2015-08-06T13:43:14Z"
+}]

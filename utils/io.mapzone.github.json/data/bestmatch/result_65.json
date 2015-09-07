@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q2/hydrants.geojson",
+ "lastIndexed": "2015-06-05T18:25:52Z"
+},
+{
+"user": "https://github.com/informigis",
+ "repository": "https://github.com/informigis/data.kk.dk",
+ "file": "https://github.com/informigis/data.kk.dk/blob/489d7b070b4e2081623adfed1529726eeafd613a/elbil_ladestander.geojson",
+ "lastIndexed": "2015-06-03T03:47:22Z"
+},
+{
+"user": "https://github.com/rodowi",
+ "repository": "https://github.com/rodowi/mapas",
+ "file": "https://github.com/rodowi/mapas/blob/7cda8381e6b2e166c662a1e53441144a36d633e1/salud/issste_unidades-medicas.geojson",
+ "lastIndexed": "2015-05-31T12:30:44Z"
+},
+{
+"user": "https://github.com/kh3rxu5",
+ "repository": "https://github.com/kh3rxu5/cesium-gis",
+ "file": "https://github.com/kh3rxu5/cesium-gis/blob/9b05936e15b04ae2b591829c28481b6e43bd9f5a/cesium/Specs/Data/test.geojson",
+ "lastIndexed": "2015-06-02T10:09:43Z"
+},
+{
+"user": "https://github.com/jimmyhillis",
+ "repository": "https://github.com/jimmyhillis/letour-2014",
+ "file": "https://github.com/jimmyhillis/letour-2014/blob/bbb7be335aca79b64acc52a662a46fcaf71e1c7d/json/maps/stage-13.geojson",
+ "lastIndexed": "2015-06-02T14:22:41Z"
+},
+{
+"user": "https://github.com/jsalata",
+ "repository": "https://github.com/jsalata/NoSQL",
+ "file": "https://github.com/jsalata/NoSQL/blob/73eb298b5912b73d85eff16224a0c42ba2061f49/zapytania/zapytanie5.geojson",
+ "lastIndexed": "2015-06-03T20:46:34Z"
+},
+{
+"user": "https://github.com/jsalata",
+ "repository": "https://github.com/jsalata/NoSQL",
+ "file": "https://github.com/jsalata/NoSQL/blob/73eb298b5912b73d85eff16224a0c42ba2061f49/zapytania/zapytanie6.geojson",
+ "lastIndexed": "2015-06-03T20:46:34Z"
+},
+{
+"user": "https://github.com/abicnair",
+ "repository": "https://github.com/abicnair/geotest2",
+ "file": "https://github.com/abicnair/geotest2/blob/38a2000e6be0438b3f093fc59e8f448855f89efd/popoutput2.geojson",
+ "lastIndexed": "2015-09-02T22:24:05Z"
+},
+{
+"user": "https://github.com/youchan",
+ "repository": "https://github.com/youchan/samples",
+ "file": "https://github.com/youchan/samples/blob/ba1c7da66bfe9edc3a7f643f9643da07b320f3ea/myhome.geojson",
+ "lastIndexed": "2015-05-28T01:51:49Z"
+},
+{
+"user": "https://github.com/wdv4758h",
+ "repository": "https://github.com/wdv4758h/test",
+ "file": "https://github.com/wdv4758h/test/blob/90cf636ee5db5607ba0555ff788288bdd502bf59/test.geojson",
+ "lastIndexed": "2015-05-31T12:04:40Z"
+}]

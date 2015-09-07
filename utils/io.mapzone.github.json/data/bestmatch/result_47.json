@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q9/grilles.geojson",
+ "lastIndexed": "2015-06-05T18:25:52Z"
+},
+{
+"user": "https://github.com/hock",
+ "repository": "https://github.com/hock/Manifest",
+ "file": "https://github.com/hock/Manifest/blob/d0785bde1b9964be2e43b5a546043d4245a49f25/tools/smaps/2180.geojson",
+ "lastIndexed": "2015-05-30T15:44:06Z"
+},
+{
+"user": "https://github.com/hock",
+ "repository": "https://github.com/hock/Manifest",
+ "file": "https://github.com/hock/Manifest/blob/d0785bde1b9964be2e43b5a546043d4245a49f25/tools/smaps/2181.geojson",
+ "lastIndexed": "2015-05-30T15:44:06Z"
+},
+{
+"user": "https://github.com/tormi",
+ "repository": "https://github.com/tormi/KOV",
+ "file": "https://github.com/tormi/KOV/blob/a166e21f8c31973eef560052aa7debbc115cfbeb/kaardid/3.geojson",
+ "lastIndexed": "2015-07-07T12:51:01Z"
+},
+{
+"user": "https://github.com/availabs",
+ "repository": "https://github.com/availabs/stormevents",
+ "file": "https://github.com/availabs/stormevents/blob/e012a52a3701aed08100e873f213f157a8d0f5cc/data/test.geojson",
+ "lastIndexed": "2015-06-04T03:46:30Z"
+},
+{
+"user": "https://github.com/tabachain",
+ "repository": "https://github.com/tabachain/geoJSON",
+ "file": "https://github.com/tabachain/geoJSON/blob/be0cd31774f477da08d94f9e4d71b616f2933c69/atm.geojson",
+ "lastIndexed": "2015-06-01T02:07:58Z"
+},
+{
+"user": "https://github.com/psynowczyk",
+ "repository": "https://github.com/psynowczyk/tnosql",
+ "file": "https://github.com/psynowczyk/tnosql/blob/635b9f09c3353a6fea89fadff85dd01fd4a561cc/1d1_result.geojson",
+ "lastIndexed": "2015-06-03T18:14:13Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/387833.geojson",
+ "lastIndexed": "2015-08-31T01:04:35Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/387834.geojson",
+ "lastIndexed": "2015-08-31T01:04:35Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/213010.geojson",
+ "lastIndexed": "2015-08-31T00:48:45Z"
+}]

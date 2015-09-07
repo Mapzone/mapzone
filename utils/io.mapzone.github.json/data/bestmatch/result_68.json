@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/cncplyr",
+ "repository": "https://github.com/cncplyr/test",
+ "file": "https://github.com/cncplyr/test/blob/4b3bc095bbee7e3d14650aefbda8c3dcd511835f/test.geojson",
+ "lastIndexed": "2015-06-07T22:26:47Z"
+},
+{
+"user": "https://github.com/yiyanggis",
+ "repository": "https://github.com/yiyanggis/www",
+ "file": "https://github.com/yiyanggis/www/blob/722c9dc14766e2797756969aa4099d2562518832/Cesium/Specs/Data/test.geojson",
+ "lastIndexed": "2015-07-16T17:26:53Z"
+},
+{
+"user": "https://github.com/WorldViews",
+ "repository": "https://github.com/WorldViews/Registry",
+ "file": "https://github.com/WorldViews/Registry/blob/4f6767cebeae91c5e4af0894510aa8bbe43255c8/Registry/static/Cesium/1.7.1/Specs/Data/test.geojson",
+ "lastIndexed": "2015-07-18T04:43:56Z"
+},
+{
+"user": "https://github.com/th0ma5w",
+ "repository": "https://github.com/th0ma5w/th0ma5w.github.com",
+ "file": "https://github.com/th0ma5w/th0ma5w.github.com/blob/81fa2f673d96b9f764a40b56f99ae45e15e3049a/Cesium/Specs/Data/test.geojson",
+ "lastIndexed": "2015-05-30T11:14:12Z"
+},
+{
+"user": "https://github.com/jieter",
+ "repository": "https://github.com/jieter/travel-recorder",
+ "file": "https://github.com/jieter/travel-recorder/blob/a63dd0fc5695100fb4ee0e6da46835355c15573d/src/site/layers/poi.geojson",
+ "lastIndexed": "2015-06-02T16:57:52Z"
+},
+{
+"user": "https://github.com/ThomasG77",
+ "repository": "https://github.com/ThomasG77/turf-ol3",
+ "file": "https://github.com/ThomasG77/turf-ol3/blob/a42a1987387893289f9fdc75fc15158506290caf/assets/data/randomConcave.geojson",
+ "lastIndexed": "2015-06-04T05:19:00Z"
+},
+{
+"user": "https://github.com/xiyaoli",
+ "repository": "https://github.com/xiyaoli/visualization-cesium",
+ "file": "https://github.com/xiyaoli/visualization-cesium/blob/f2457e050374f46b0d3423a56534ae3a119aab12/Specs/Data/test.geojson",
+ "lastIndexed": "2015-08-25T19:25:16Z"
+},
+{
+"user": "https://github.com/arbakker",
+ "repository": "https://github.com/arbakker/windmill-map",
+ "file": "https://github.com/arbakker/windmill-map/blob/7d1202d3fbe9d05e9c755a82e061b346afdad268/data-result/geojson/point/fire_extinguishers.geojson",
+ "lastIndexed": "2015-06-04T09:12:37Z"
+},
+{
+"user": "https://github.com/xavier114fch",
+ "repository": "https://github.com/xavier114fch/mapbox-test",
+ "file": "https://github.com/xavier114fch/mapbox-test/blob/5cb5753bbfc9fa20cf76f7bedbe1d127be0c2823/example-single.geojson",
+ "lastIndexed": "2015-06-01T09:18:40Z"
+},
+{
+"user": "https://github.com/dreamsxin",
+ "repository": "https://github.com/dreamsxin/Drawer-Web",
+ "file": "https://github.com/dreamsxin/Drawer-Web/blob/caa45a171774bc53904cfacaa4f9ef26a47532ff/local_resources/js/bower_components/mapbox.js/examples/example.geojson",
+ "lastIndexed": "2015-06-01T03:45:08Z"
+}]

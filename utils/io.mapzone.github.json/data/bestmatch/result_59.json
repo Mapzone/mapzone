@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/allangm",
+ "repository": "https://github.com/allangm/allangm.github.io",
+ "file": "https://github.com/allangm/allangm.github.io/blob/064d7d584e36da76da0960820b993d83b845bbf9/proyectoIII/geojson/puentes.geojson",
+ "lastIndexed": "2015-06-02T07:31:31Z"
+},
+{
+"user": "https://github.com/jonahadkins",
+ "repository": "https://github.com/jonahadkins/open-noland-trail",
+ "file": "https://github.com/jonahadkins/open-noland-trail/blob/0d27bb189b607fb51c930a2d8d1822028687235c/data/artifacts_in_the_park.geojson",
+ "lastIndexed": "2015-06-02T11:37:58Z"
+},
+{
+"user": "https://github.com/thanosbellos",
+ "repository": "https://github.com/thanosbellos/your_journey",
+ "file": "https://github.com/thanosbellos/your_journey/blob/7703bcdfb13a6cacf954d5634178d89375fe01c1/vendor/assets/javascripts/turf/turf-buffer-artisinal/fixtures/Point.geojson",
+ "lastIndexed": "2015-07-13T10:06:53Z"
+},
+{
+"user": "https://github.com/bertspaan",
+ "repository": "https://github.com/bertspaan/west-village",
+ "file": "https://github.com/bertspaan/west-village/blob/868724282e47aebc2ee014bfc86993dbc5044abd/data/addresses.geojson",
+ "lastIndexed": "2015-07-25T11:08:48Z"
+},
+{
+"user": "https://github.com/merripho",
+ "repository": "https://github.com/merripho/InstaVenture",
+ "file": "https://github.com/merripho/InstaVenture/blob/36ca333cb68fd2491e0f248cd8006fe61bc0b425/public/data/data.geojson",
+ "lastIndexed": "2015-06-05T17:59:47Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/13285.geojson",
+ "lastIndexed": "2015-08-31T00:42:13Z"
+},
+{
+"user": "https://github.com/sergioalberto",
+ "repository": "https://github.com/sergioalberto/sergioalberto.github.io",
+ "file": "https://github.com/sergioalberto/sergioalberto.github.io/blob/fb43938f6571d6a9e35bb0484bce9a5a53959a84/datos/Puente.geojson",
+ "lastIndexed": "2015-06-02T07:11:06Z"
+},
+{
+"user": "https://github.com/sergioalberto",
+ "repository": "https://github.com/sergioalberto/sergioalberto.github.io",
+ "file": "https://github.com/sergioalberto/sergioalberto.github.io/blob/fb43938f6571d6a9e35bb0484bce9a5a53959a84/datos/Puente2.geojson",
+ "lastIndexed": "2015-06-02T07:11:06Z"
+},
+{
+"user": "https://github.com/UrbanInstitute",
+ "repository": "https://github.com/UrbanInstitute/occ-public-safety",
+ "file": "https://github.com/UrbanInstitute/occ-public-safety/blob/827eaa73f317b2d055f0c3f0580f386714b45cfe/data/homicide/homicide2006.geojson",
+ "lastIndexed": "2015-08-06T13:43:15Z"
+},
+{
+"user": "https://github.com/kring-browserswarm",
+ "repository": "https://github.com/kring-browserswarm/cesium2",
+ "file": "https://github.com/kring-browserswarm/cesium2/blob/4cd40e8cbbe42ca405f8e91716d32b8d9af4c076/Specs/Data/test.geojson",
+ "lastIndexed": "2015-05-31T13:04:08Z"
+}]

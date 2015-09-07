@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/cinkonaap",
+ "repository": "https://github.com/cinkonaap/nosql",
+ "file": "https://github.com/cinkonaap/nosql/blob/633fd5b881d222e7a233d05ec2a443698159b273/zad1/geoQ1.geojson",
+ "lastIndexed": "2015-06-03T19:09:28Z"
+},
+{
+"user": "https://github.com/jenningsanderson",
+ "repository": "https://github.com/jenningsanderson/Twitter-Evacuation-Patterns",
+ "file": "https://github.com/jenningsanderson/Twitter-Evacuation-Patterns/blob/cfac4646bca73453d3ab86edd7704429097defae/GeoJSON/exports/NYJ_Evacuators.geojson",
+ "lastIndexed": "2015-06-02T08:45:25Z"
+},
+{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_site/geojson/parish-1.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+},
+{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_source/geojson/parish-1.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/chesapeake-bay-data",
+ "file": "https://github.com/jalbertbowden/chesapeake-bay-data/blob/b0f809eafe557a887d93acf6c0479da8e75e4a86/shoreline-inventories/mathews-county/mathews-county-shlinv-2008-port/astru/geojson/math08_astru.geojson",
+ "lastIndexed": "2015-05-31T20:10:29Z"
+},
+{
+"user": "https://github.com/wnstn",
+ "repository": "https://github.com/wnstn/roadtripData",
+ "file": "https://github.com/wnstn/roadtripData/blob/4bc823dc752a68ea13a599c9a3f7414c9800c494/geojson/leg06Geo.geojson",
+ "lastIndexed": "2015-06-03T23:39:22Z"
+},
+{
+"user": "https://github.com/cronin101",
+ "repository": "https://github.com/cronin101/FutureHack",
+ "file": "https://github.com/cronin101/FutureHack/blob/ab42beb8b221cffddb81862647860e3dd1dd0d70/frontend/public/toilets.geojson",
+ "lastIndexed": "2015-06-02T07:03:49Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/354124.geojson",
+ "lastIndexed": "2015-08-31T01:02:24Z"
+},
+{
+"user": "https://github.com/wnstn",
+ "repository": "https://github.com/wnstn/roadtripData",
+ "file": "https://github.com/wnstn/roadtripData/blob/4bc823dc752a68ea13a599c9a3f7414c9800c494/geojson/leg07Geo.geojson",
+ "lastIndexed": "2015-06-03T23:39:22Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/north-carolina-data",
+ "file": "https://github.com/jalbertbowden/north-carolina-data/blob/b18304c656a99f702f66a1e15aab7a604f83cbc2/gis/flood-effective-iredell/geojson/D_V_DATUM.geojson",
+ "lastIndexed": "2015-06-01T03:04:37Z"
+}]

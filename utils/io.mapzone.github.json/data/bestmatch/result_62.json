@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/odoe",
+ "repository": "https://github.com/odoe/monitoringlocator",
+ "file": "https://github.com/odoe/monitoringlocator/blob/a1179e67977b4b7f610658f8c9cd069943fb79fa/resources/public/monuments.geojson",
+ "lastIndexed": "2015-05-31T18:07:05Z"
+},
+{
+"user": "https://github.com/andrewvolokitin",
+ "repository": "https://github.com/andrewvolokitin/mountainwave",
+ "file": "https://github.com/andrewvolokitin/mountainwave/blob/3285fe028ef78fb7bca74487e0f3a2fd92d4db4b/lakes.geojson",
+ "lastIndexed": "2015-08-12T03:06:11Z"
+},
+{
+"user": "https://github.com/lelandlee",
+ "repository": "https://github.com/lelandlee/Mine_Map",
+ "file": "https://github.com/lelandlee/Mine_Map/blob/4d55142e06788df4b6c20111f9f1c304768f798e/Mine%20Data/sampleGeoJSON.geojson",
+ "lastIndexed": "2015-06-03T19:52:36Z"
+},
+{
+"user": "https://github.com/makinacorpus",
+ "repository": "https://github.com/makinacorpus/caue24",
+ "file": "https://github.com/makinacorpus/caue24/blob/008fd36ff5fcae35411a52418fc5e34cd66fd192/data/geojson/20_portrait_1.geojson",
+ "lastIndexed": "2015-05-31T11:49:14Z"
+},
+{
+"user": "https://github.com/makinacorpus",
+ "repository": "https://github.com/makinacorpus/caue24",
+ "file": "https://github.com/makinacorpus/caue24/blob/008fd36ff5fcae35411a52418fc5e34cd66fd192/data/geojson/20_urbanisme_1.geojson",
+ "lastIndexed": "2015-05-31T11:49:14Z"
+},
+{
+"user": "https://github.com/shimizu",
+ "repository": "https://github.com/shimizu/d3example",
+ "file": "https://github.com/shimizu/d3example/blob/79b57c1afda185e5ef56cdd1e009a8e945dfd082/geo_example/geo10/point.geojson",
+ "lastIndexed": "2015-05-31T04:06:34Z"
+},
+{
+"user": "https://github.com/shimizu",
+ "repository": "https://github.com/shimizu/d3example",
+ "file": "https://github.com/shimizu/d3example/blob/79b57c1afda185e5ef56cdd1e009a8e945dfd082/geo_example/geo11/point.geojson",
+ "lastIndexed": "2015-05-31T04:06:34Z"
+},
+{
+"user": "https://github.com/shimizu",
+ "repository": "https://github.com/shimizu/d3example",
+ "file": "https://github.com/shimizu/d3example/blob/79b57c1afda185e5ef56cdd1e009a8e945dfd082/geo_example/geo13/point.geojson",
+ "lastIndexed": "2015-05-31T04:06:34Z"
+},
+{
+"user": "https://github.com/shimizu",
+ "repository": "https://github.com/shimizu/d3example",
+ "file": "https://github.com/shimizu/d3example/blob/79b57c1afda185e5ef56cdd1e009a8e945dfd082/geo_example/geo14/point.geojson",
+ "lastIndexed": "2015-05-31T04:06:34Z"
+},
+{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q4/fontaines.geojson",
+ "lastIndexed": "2015-06-05T18:25:52Z"
+}]

@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/joebrew",
+ "repository": "https://github.com/joebrew/uf",
+ "file": "https://github.com/joebrew/uf/blob/9e5529f16ee826effe7d2530a0d0402228459582/phc7065/big_data/gnv_crime/zip_df.geojson",
+ "lastIndexed": "2015-06-02T12:40:51Z"
+},
+{
+"user": "https://github.com/davidpots",
+ "repository": "https://github.com/davidpots/geotunes",
+ "file": "https://github.com/davidpots/geotunes/blob/9997b227f6d9c67a119535031b1b8b3a03183480/004-api-geojson/example-single.geojson",
+ "lastIndexed": "2015-05-31T20:49:05Z"
+},
+{
+"user": "https://github.com/davidpots",
+ "repository": "https://github.com/davidpots/geotunes",
+ "file": "https://github.com/davidpots/geotunes/blob/9997b227f6d9c67a119535031b1b8b3a03183480/005-api-geojson-multiple-markers/example-single.geojson",
+ "lastIndexed": "2015-05-31T20:49:05Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/open-virginia-gis",
+ "file": "https://github.com/jalbertbowden/open-virginia-gis/blob/56e60ad1828b49347e326ac285d989ec19753f5e/county/albemarle/gis/police-stations/json/police_stations.geojson",
+ "lastIndexed": "2015-06-02T01:13:20Z"
+},
+{
+"user": "https://github.com/TheStoryExchange",
+ "repository": "https://github.com/TheStoryExchange/storyexchange",
+ "file": "https://github.com/TheStoryExchange/storyexchange/blob/310cf0d971372c585359c93158e0c2236bb17af1/mail.geojson",
+ "lastIndexed": "2015-06-03T00:08:32Z"
+},
+{
+"user": "https://github.com/aashish24",
+ "repository": "https://github.com/aashish24/gdal-cmake",
+ "file": "https://github.com/aashish24/gdal-cmake/blob/d00996ea017ce9c574d77dfa417f21ce70e8428e/autotest/ogr/data/geometrycollection.geojson",
+ "lastIndexed": "2015-05-28T16:30:54Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/north-carolina-data",
+ "file": "https://github.com/jalbertbowden/north-carolina-data/blob/b18304c656a99f702f66a1e15aab7a604f83cbc2/gis/flood-effective-iredell/geojson/D_CID.geojson",
+ "lastIndexed": "2015-06-01T03:04:37Z"
+},
+{
+"user": "https://github.com/crondaemon",
+ "repository": "https://github.com/crondaemon/sandbox",
+ "file": "https://github.com/crondaemon/sandbox/blob/9725ee2e100e0952c8a50ea689db1010facefaf1/test.geojson",
+ "lastIndexed": "2015-06-03T00:11:15Z"
+},
+{
+"user": "https://github.com/kurohune538",
+ "repository": "https://github.com/kurohune538/cesium-practice",
+ "file": "https://github.com/kurohune538/cesium-practice/blob/8af3a766284d7d5848fa07884be93d32795378b9/Cesium-1.9/Specs/Data/test.geojson",
+ "lastIndexed": "2015-06-06T06:40:33Z"
+},
+{
+"user": "https://github.com/UMONS-GFA",
+ "repository": "https://github.com/UMONS-GFA/bdas",
+ "file": "https://github.com/UMONS-GFA/bdas/blob/56c8d2b53135f61e508b4580372f4b0c785e0728/data_examples/testGeoJSON.geojson",
+ "lastIndexed": "2015-06-24T13:02:57Z"
+}]

@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/simonsonc",
+ "repository": "https://github.com/simonsonc/blm-glo-mosaic",
+ "file": "https://github.com/simonsonc/blm-glo-mosaic/blob/26952293b447850479c282fddf09763463d7728f/ut/cutlines/UT260060S0030E00005.geojson",
+ "lastIndexed": "2015-09-02T05:04:50Z"
+},
+{
+"user": "https://github.com/simonsonc",
+ "repository": "https://github.com/simonsonc/blm-glo-mosaic",
+ "file": "https://github.com/simonsonc/blm-glo-mosaic/blob/26952293b447850479c282fddf09763463d7728f/ut/cutlines/UT260070S0030E00001.geojson",
+ "lastIndexed": "2015-09-02T05:04:50Z"
+},
+{
+"user": "https://github.com/maptimemsp",
+ "repository": "https://github.com/maptimemsp/nacis2015-map",
+ "file": "https://github.com/maptimemsp/nacis2015-map/blob/a830e74822d3a3f0d44882def937b4e5c2c0ae63/js/places.geojson",
+ "lastIndexed": "2015-09-02T03:14:34Z"
+},
+{
+"user": "https://github.com/simonsonc",
+ "repository": "https://github.com/simonsonc/blm-glo-mosaic",
+ "file": "https://github.com/simonsonc/blm-glo-mosaic/blob/d3abd70c3ea3bdd31bc365fcd6bb6d3bf70daf2e/ut/cutlines/UT260010N0010E00001.geojson",
+ "lastIndexed": "2015-09-02T02:31:10Z"
+},
+{
+"user": "https://github.com/whosonfirst",
+ "repository": "https://github.com/whosonfirst/whosonfirst-data",
+ "file": "https://github.com/whosonfirst/whosonfirst-data/blob/df12d56cda53fa3fd85d48ceb560e6f9e11395d9/data/858/657/45/85865745.geojson",
+ "lastIndexed": "2015-09-02T01:04:43Z"
+},
+{
+"user": "https://github.com/SLUGIS",
+ "repository": "https://github.com/SLUGIS/incidents",
+ "file": "https://github.com/SLUGIS/incidents/blob/b53b3d14464eafdf412ea092ca0ae374dd56db50/geojson/2015_0831_Log.geojson",
+ "lastIndexed": "2015-09-02T00:00:58Z"
+},
+{
+"user": "https://github.com/UselessPress",
+ "repository": "https://github.com/UselessPress/decapitated-animals-data",
+ "file": "https://github.com/UselessPress/decapitated-animals-data/blob/a76e0cff50e1d45f4f591d67ceaa78faa21527b7/animals.geojson",
+ "lastIndexed": "2015-09-01T23:34:28Z"
+},
+{
+"user": "https://github.com/awolfe76",
+ "repository": "https://github.com/awolfe76/point-poly",
+ "file": "https://github.com/awolfe76/point-poly/blob/0a7cb369fb92fc9d5c515cd632530cd28cf7ed51/us-states.geojson",
+ "lastIndexed": "2015-09-01T22:51:59Z"
+},
+{
+"user": "https://github.com/linster",
+ "repository": "https://github.com/linster/SayHiBackend",
+ "file": "https://github.com/linster/SayHiBackend/blob/783379ddc033610da498fc692478cc9eb790171a/godmode/web/data/subways.geojson",
+ "lastIndexed": "2015-09-01T22:30:02Z"
+},
+{
+"user": "https://github.com/linster",
+ "repository": "https://github.com/linster/SayHiBackend",
+ "file": "https://github.com/linster/SayHiBackend/blob/783379ddc033610da498fc692478cc9eb790171a/godmode/web/data/DOITT_MUSEUM_01_13SEPT2010.geojson",
+ "lastIndexed": "2015-09-01T22:30:01Z"
+}]

@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/DataGarage",
+ "repository": "https://github.com/DataGarage/gulp-geojson",
+ "file": "https://github.com/DataGarage/gulp-geojson/blob/094a0d1b6fd53e6989e14318e85d5217a2372379/sample/dist/polygon.geojson",
+ "lastIndexed": "2015-06-01T12:11:36Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/206643.geojson",
+ "lastIndexed": "2015-08-31T00:48:09Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/206644.geojson",
+ "lastIndexed": "2015-08-31T00:48:09Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/va-data",
+ "file": "https://github.com/jalbertbowden/va-data/blob/ee4c63639421306120ac602af0bdb2300a7b6dfe/dgif/trout-waters/wild-trout-streams/wild-trout-streams.geojson",
+ "lastIndexed": "2015-05-31T13:13:30Z"
+},
+{
+"user": "https://github.com/calvinmetcalf",
+ "repository": "https://github.com/calvinmetcalf/geojson-assert",
+ "file": "https://github.com/calvinmetcalf/geojson-assert/blob/c5daa527d03f2e127cf6787573a51cca5d259ef6/test/data/good/nullgeometry.geojson",
+ "lastIndexed": "2015-05-31T16:35:44Z"
+},
+{
+"user": "https://github.com/licyeus",
+ "repository": "https://github.com/licyeus/seattle-geojson",
+ "file": "https://github.com/licyeus/seattle-geojson/blob/5aff98a74588d60ecc75f525decee2066ffdc2d5/bus_routes/688.geojson",
+ "lastIndexed": "2015-05-31T04:24:21Z"
+},
+{
+"user": "https://github.com/informigis",
+ "repository": "https://github.com/informigis/data.kk.dk",
+ "file": "https://github.com/informigis/data.kk.dk/blob/489d7b070b4e2081623adfed1529726eeafd613a/monumenter.geojson",
+ "lastIndexed": "2015-06-03T03:47:24Z"
+},
+{
+"user": "https://github.com/artieeffim",
+ "repository": "https://github.com/artieeffim/map_test",
+ "file": "https://github.com/artieeffim/map_test/blob/6c5731903c383355192f69af30a06ae99787240e/test.geojson",
+ "lastIndexed": "2015-05-31T12:54:19Z"
+},
+{
+"user": "https://github.com/artieeffim",
+ "repository": "https://github.com/artieeffim/map_test",
+ "file": "https://github.com/artieeffim/map_test/blob/6c5731903c383355192f69af30a06ae99787240e/test1.geojson",
+ "lastIndexed": "2015-05-31T12:54:19Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/tokml",
+ "file": "https://github.com/mapbox/tokml/blob/a783d46ae942d72ec83d06e0e5893b6917a69959/test/data/singlefeature.geojson",
+ "lastIndexed": "2015-05-31T14:37:25Z"
+}]

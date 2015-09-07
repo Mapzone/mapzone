@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/91063.geojson",
+ "lastIndexed": "2015-08-31T01:13:43Z"
+},
+{
+"user": "https://github.com/RobTranquillo",
+ "repository": "https://github.com/RobTranquillo/refmap",
+ "file": "https://github.com/RobTranquillo/refmap/blob/458e5d41a2bffbc2aeb58015a2f7c7710314b0b0/freifunk.geojson",
+ "lastIndexed": "2015-06-04T16:23:24Z"
+},
+{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_site/geojson/parish-18.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+},
+{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_source/geojson/parish-18.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+},
+{
+"user": "https://github.com/mycrazydog",
+ "repository": "https://github.com/mycrazydog/uncc-I485",
+ "file": "https://github.com/mycrazydog/uncc-I485/blob/48bc0ee2d47ec89617eb8d5650b40e4d0447d729/2014_points.geojson",
+ "lastIndexed": "2015-06-24T14:11:07Z"
+},
+{
+"user": "https://github.com/henio180",
+ "repository": "https://github.com/henio180/NoSQL",
+ "file": "https://github.com/henio180/NoSQL/blob/a86cb0f87822dc813094d34ebe616e5589828741/lab/mapy/1d_3.geojson",
+ "lastIndexed": "2015-06-03T10:42:55Z"
+},
+{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_site/geojson/parish-19.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+},
+{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_source/geojson/parish-19.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/north-carolina-data",
+ "file": "https://github.com/jalbertbowden/north-carolina-data/blob/b18304c656a99f702f66a1e15aab7a604f83cbc2/gis/flood-effective-iredell/geojson/D_TRANS_TYP.geojson",
+ "lastIndexed": "2015-06-01T03:04:37Z"
+},
+{
+"user": "https://github.com/jimmyhillis",
+ "repository": "https://github.com/jimmyhillis/letour-2014",
+ "file": "https://github.com/jimmyhillis/letour-2014/blob/bbb7be335aca79b64acc52a662a46fcaf71e1c7d/json/maps/stage-14.geojson",
+ "lastIndexed": "2015-06-02T14:22:41Z"
+}]

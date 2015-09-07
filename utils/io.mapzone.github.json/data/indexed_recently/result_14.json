@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/kaltera",
+ "repository": "https://github.com/kaltera/Udacity-Data-Viz-Project-2",
+ "file": "https://github.com/kaltera/Udacity-Data-Viz-Project-2/blob/4aa7696819320033fc6c2d9f9b9810ca02ad8330/London.geojson",
+ "lastIndexed": "2015-09-02T17:40:49Z"
+},
+{
+"user": "https://github.com/baltimoreheritage",
+ "repository": "https://github.com/baltimoreheritage/baltimore-geojson",
+ "file": "https://github.com/baltimoreheritage/baltimore-geojson/blob/cfaa6c9147ae8f4f9c9bac3b8f0fda8cf3307878/baltimore-civil-rights-heritage.geojson",
+ "lastIndexed": "2015-09-02T16:09:45Z"
+},
+{
+"user": "https://github.com/davemetzler",
+ "repository": "https://github.com/davemetzler/davemetzler.github.io",
+ "file": "https://github.com/davemetzler/davemetzler.github.io/blob/23b127c8181a4a6b5040053f66bc97dbbe8228f7/maps/classicdenver/data/DOITT_THEATER_01_13SEPT2010.geojson",
+ "lastIndexed": "2015-09-02T15:23:56Z"
+},
+{
+"user": "https://github.com/davemetzler",
+ "repository": "https://github.com/davemetzler/davemetzler.github.io",
+ "file": "https://github.com/davemetzler/davemetzler.github.io/blob/23b127c8181a4a6b5040053f66bc97dbbe8228f7/maps/classicdenver/data/wells.geojson",
+ "lastIndexed": "2015-09-02T15:23:56Z"
+},
+{
+"user": "https://github.com/davemetzler",
+ "repository": "https://github.com/davemetzler/davemetzler.github.io",
+ "file": "https://github.com/davemetzler/davemetzler.github.io/blob/23b127c8181a4a6b5040053f66bc97dbbe8228f7/maps/classicdenver/data/boroughs.geojson",
+ "lastIndexed": "2015-09-02T15:23:56Z"
+},
+{
+"user": "https://github.com/availabs",
+ "repository": "https://github.com/availabs/FreightAtlas",
+ "file": "https://github.com/availabs/FreightAtlas/blob/4e3b0036adc3445dca931c85369c60b0db8d24c3/assets/data/finalGeoJson/Intermodal_Facility2.geojson",
+ "lastIndexed": "2015-09-02T14:50:48Z"
+},
+{
+"user": "https://github.com/availabs",
+ "repository": "https://github.com/availabs/FreightAtlas",
+ "file": "https://github.com/availabs/FreightAtlas/blob/4e3b0036adc3445dca931c85369c60b0db8d24c3/assets/data/finalGeoJson/Major_Ports.geojson",
+ "lastIndexed": "2015-09-02T14:50:48Z"
+},
+{
+"user": "https://github.com/availabs",
+ "repository": "https://github.com/availabs/FreightAtlas",
+ "file": "https://github.com/availabs/FreightAtlas/blob/4e3b0036adc3445dca931c85369c60b0db8d24c3/assets/data/finalGeoJson/Border_Crossing_Port.geojson",
+ "lastIndexed": "2015-09-02T14:50:48Z"
+},
+{
+"user": "https://github.com/availabs",
+ "repository": "https://github.com/availabs/FreightAtlas",
+ "file": "https://github.com/availabs/FreightAtlas/blob/4e3b0036adc3445dca931c85369c60b0db8d24c3/assets/data/finalGeoJson/Major_Airport.geojson",
+ "lastIndexed": "2015-09-02T14:50:48Z"
+},
+{
+"user": "https://github.com/guinea-ebov",
+ "repository": "https://github.com/guinea-ebov/guinea-ebov.github.io",
+ "file": "https://github.com/guinea-ebov/guinea-ebov.github.io/blob/2b64df9d7fe50cd9dd66ba059bca0bd68d916dd3/code/data/cumulative_daily.geojson",
+ "lastIndexed": "2015-09-02T14:42:04Z"
+}]

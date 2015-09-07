@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/mapsam",
+ "repository": "https://github.com/mapsam/project-linework",
+ "file": "https://github.com/mapsam/project-linework/blob/7764856ec63284a0c056ecac2a8d5dca0b95baf1/linework-sets/moriarty-hand/Small%20Scale/geojson/Admin_0_lines.geojson",
+ "lastIndexed": "2015-09-03T20:54:23Z"
+},
+{
+"user": "https://github.com/mapsam",
+ "repository": "https://github.com/mapsam/project-linework",
+ "file": "https://github.com/mapsam/project-linework/blob/7764856ec63284a0c056ecac2a8d5dca0b95baf1/linework-sets/moriarty-hand/Small%20Scale/geojson/Waterbodies.geojson",
+ "lastIndexed": "2015-09-03T20:54:23Z"
+},
+{
+"user": "https://github.com/mapsam",
+ "repository": "https://github.com/mapsam/project-linework",
+ "file": "https://github.com/mapsam/project-linework/blob/7764856ec63284a0c056ecac2a8d5dca0b95baf1/linework-sets/moriarty-hand/Small%20Scale/geojson/Rivers.geojson",
+ "lastIndexed": "2015-09-03T20:54:23Z"
+},
+{
+"user": "https://github.com/whosonfirst",
+ "repository": "https://github.com/whosonfirst/whosonfirst-data",
+ "file": "https://github.com/whosonfirst/whosonfirst-data/blob/f291c96704c5ab6495445e7c87c373aeeb6e6521/data/101/736/545/101736545.geojson",
+ "lastIndexed": "2015-09-03T20:41:16Z"
+},
+{
+"user": "https://github.com/bikeablebrews",
+ "repository": "https://github.com/bikeablebrews/custis",
+ "file": "https://github.com/bikeablebrews/custis/blob/d5135171bf1cab133206bb4bb9abccf6957af1e9/data/other.geojson",
+ "lastIndexed": "2015-09-03T20:31:54Z"
+},
+{
+"user": "https://github.com/bikeablebrews",
+ "repository": "https://github.com/bikeablebrews/custis",
+ "file": "https://github.com/bikeablebrews/custis/blob/d5135171bf1cab133206bb4bb9abccf6957af1e9/data/brewery.geojson",
+ "lastIndexed": "2015-09-03T20:31:54Z"
+},
+{
+"user": "https://github.com/bikeablebrews",
+ "repository": "https://github.com/bikeablebrews/custis",
+ "file": "https://github.com/bikeablebrews/custis/blob/d5135171bf1cab133206bb4bb9abccf6957af1e9/data/trail.geojson",
+ "lastIndexed": "2015-09-03T20:31:54Z"
+},
+{
+"user": "https://github.com/tongning",
+ "repository": "https://github.com/tongning/access-route",
+ "file": "https://github.com/tongning/access-route/blob/d49dc6efb6f49af7ed27baf633e9b0815778a4fc/routing/routeapp/static/routeapp/elevation.geojson",
+ "lastIndexed": "2015-09-03T20:28:35Z"
+},
+{
+"user": "https://github.com/tongning",
+ "repository": "https://github.com/tongning/access-route",
+ "file": "https://github.com/tongning/access-route/blob/d49dc6efb6f49af7ed27baf633e9b0815778a4fc/routing/routeapp/templates/routeapp/elevation.geojson",
+ "lastIndexed": "2015-09-03T20:28:35Z"
+},
+{
+"user": "https://github.com/tongning",
+ "repository": "https://github.com/tongning/access-route",
+ "file": "https://github.com/tongning/access-route/blob/d49dc6efb6f49af7ed27baf633e9b0815778a4fc/routing/routeapp/static/routeapp/route.geojson",
+ "lastIndexed": "2015-09-03T20:28:35Z"
+}]

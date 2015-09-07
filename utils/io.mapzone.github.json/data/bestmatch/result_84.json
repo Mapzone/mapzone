@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/chesapeake-bay-data",
+ "file": "https://github.com/jalbertbowden/chesapeake-bay-data/blob/b0f809eafe557a887d93acf6c0479da8e75e4a86/shoreline-inventories/westmoreland-county/westmoreland-county-2006/shapefile/geojson/west06_astru.geojson",
+ "lastIndexed": "2015-05-31T20:10:32Z"
+},
+{
+"user": "https://github.com/bradbarnett",
+ "repository": "https://github.com/bradbarnett/eatspeak",
+ "file": "https://github.com/bradbarnett/eatspeak/blob/a999a5ee81266733484a817d2d6bfde6449f5f74/Denver/geoprocessing/points/geojson/koreanpts.geojson",
+ "lastIndexed": "2015-08-26T22:56:17Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/148226.geojson",
+ "lastIndexed": "2015-08-31T00:43:37Z"
+},
+{
+"user": "https://github.com/Madzia",
+ "repository": "https://github.com/Madzia/NoSQL_UG",
+ "file": "https://github.com/Madzia/NoSQL_UG/blob/3d557cd25438f76e482f336288e59d7cd8d931b5/files/polygon_mapa.geojson",
+ "lastIndexed": "2015-06-03T14:13:00Z"
+},
+{
+"user": "https://github.com/Narcotic",
+ "repository": "https://github.com/Narcotic/egam.io",
+ "file": "https://github.com/Narcotic/egam.io/blob/91024f49b1910a08b80778466a48c52fa490bae7/public/js/vendor/mapbox.js/docs/assets/data/example-single.geojson",
+ "lastIndexed": "2015-06-02T01:40:28Z"
+},
+{
+"user": "https://github.com/Narcotic",
+ "repository": "https://github.com/Narcotic/egam.io",
+ "file": "https://github.com/Narcotic/egam.io/blob/91024f49b1910a08b80778466a48c52fa490bae7/public/js/vendor/mapbox.js/docs/assets/data/example.geojson",
+ "lastIndexed": "2015-06-02T01:40:28Z"
+},
+{
+"user": "https://github.com/tuwien-geoweb",
+ "repository": "https://github.com/tuwien-geoweb/g06-2014",
+ "file": "https://github.com/tuwien-geoweb/g06-2014/blob/05278d46fd172020c4c92e6f812f9c3f3d5ef05e/block3/mydata.geojson",
+ "lastIndexed": "2015-06-03T19:17:28Z"
+},
+{
+"user": "https://github.com/cugos",
+ "repository": "https://github.com/cugos/dropchop",
+ "file": "https://github.com/cugos/dropchop/blob/144d32afc068365cb35db5f887f7616dff70cb0d/test/featureCollection_points.geojson",
+ "lastIndexed": "2015-06-05T03:02:25Z"
+},
+{
+"user": "https://github.com/carolinebuttet",
+ "repository": "https://github.com/carolinebuttet/WorldWideGaming",
+ "file": "https://github.com/carolinebuttet/WorldWideGaming/blob/08cb4258745ae0f86afca93c66911d4b252a2bdf/Specs/Data/test.geojson",
+ "lastIndexed": "2015-06-06T06:20:19Z"
+},
+{
+"user": "https://github.com/openplacedatabase",
+ "repository": "https://github.com/openplacedatabase/validate",
+ "file": "https://github.com/openplacedatabase/validate/blob/0ddedd34a2c741caaae610fa425ada021fb26784/test/geojson/valid-featurecollection.geojson",
+ "lastIndexed": "2015-06-01T06:56:12Z"
+}]

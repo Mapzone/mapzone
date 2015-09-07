@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_source/geojson/parish-30.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+},
+{
+"user": "https://github.com/Norkart",
+ "repository": "https://github.com/Norkart/Webatlas.js-doc",
+ "file": "https://github.com/Norkart/Webatlas.js-doc/blob/f048bc553ee11cb05c0dfec68f6e92822eb79615/Kursmateriell/datakilder/vindkraftverk.geojson",
+ "lastIndexed": "2015-06-01T11:24:43Z"
+},
+{
+"user": "https://github.com/klatoszewski",
+ "repository": "https://github.com/klatoszewski/nosql",
+ "file": "https://github.com/klatoszewski/nosql/blob/8b34aaa9d0cca91d7511bbcca421a80d3f84d428/Zapytanie3.geojson",
+ "lastIndexed": "2015-06-03T20:12:00Z"
+},
+{
+"user": "https://github.com/zross",
+ "repository": "https://github.com/zross/wc",
+ "file": "https://github.com/zross/wc/blob/a7e9effce248cc18894b13bf02f0f61ee925e401/app/data/countriespt.geojson",
+ "lastIndexed": "2015-06-02T04:38:02Z"
+},
+{
+"user": "https://github.com/zross",
+ "repository": "https://github.com/zross/wc",
+ "file": "https://github.com/zross/wc/blob/a7e9effce248cc18894b13bf02f0f61ee925e401/app/data/old/countriespt.geojson",
+ "lastIndexed": "2015-06-02T04:38:02Z"
+},
+{
+"user": "https://github.com/benheb",
+ "repository": "https://github.com/benheb/geodata",
+ "file": "https://github.com/benheb/geodata/blob/b9914d7006ed4754a32fa32d5625e7d3eec0f885/random-points.geojson",
+ "lastIndexed": "2015-05-31T11:12:53Z"
+},
+{
+"user": "https://github.com/offenesdresden",
+ "repository": "https://github.com/offenesdresden/ParkAPI",
+ "file": "https://github.com/offenesdresden/ParkAPI/blob/be24ef819268f90400b4892a7defce17ed4c3c8f/park_api/cities/Luebeck.geojson",
+ "lastIndexed": "2015-08-27T20:38:25Z"
+},
+{
+"user": "https://github.com/dezede",
+ "repository": "https://github.com/dezede/dezede",
+ "file": "https://github.com/dezede/dezede/blob/b82c4919b52eb3945fedf1a75f49db196c132b0b/libretto/templates/libretto/lieu_list.geojson",
+ "lastIndexed": "2015-05-30T13:02:06Z"
+},
+{
+"user": "https://github.com/yeesian",
+ "repository": "https://github.com/yeesian/Turf.jl",
+ "file": "https://github.com/yeesian/Turf.jl/blob/cba4333e11363eadf2ba80eda3af099e0bdf1ff7/test/geojson/fc.geojson",
+ "lastIndexed": "2015-06-04T13:56:04Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/173642.geojson",
+ "lastIndexed": "2015-08-31T00:45:31Z"
+}]

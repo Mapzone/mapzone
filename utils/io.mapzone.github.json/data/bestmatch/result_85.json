@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/openplacedatabase",
+ "repository": "https://github.com/openplacedatabase/validate",
+ "file": "https://github.com/openplacedatabase/validate/blob/0ddedd34a2c741caaae610fa425ada021fb26784/test/geojson/valid-geometrycollection.geojson",
+ "lastIndexed": "2015-06-01T06:56:12Z"
+},
+{
+"user": "https://github.com/kbubnicki",
+ "repository": "https://github.com/kbubnicki/test",
+ "file": "https://github.com/kbubnicki/test/blob/2f54d355a7d659a22fd85cf426916ba760847a7b/trapper/static/storage/reqs/csv2geojson/test/data/degrees.geojson",
+ "lastIndexed": "2015-06-02T23:34:54Z"
+},
+{
+"user": "https://github.com/kbubnicki",
+ "repository": "https://github.com/kbubnicki/test",
+ "file": "https://github.com/kbubnicki/test/blob/2f54d355a7d659a22fd85cf426916ba760847a7b/trapper/static/storage/reqs/csv2geojson/test/data/includeLatLon.geojson",
+ "lastIndexed": "2015-06-02T23:34:54Z"
+},
+{
+"user": "https://github.com/kbubnicki",
+ "repository": "https://github.com/kbubnicki/test",
+ "file": "https://github.com/kbubnicki/test/blob/2f54d355a7d659a22fd85cf426916ba760847a7b/trapper/static/storage/reqs/csv2geojson/test/data/line.geojson",
+ "lastIndexed": "2015-06-02T23:34:54Z"
+},
+{
+"user": "https://github.com/kbubnicki",
+ "repository": "https://github.com/kbubnicki/test",
+ "file": "https://github.com/kbubnicki/test/blob/2f54d355a7d659a22fd85cf426916ba760847a7b/trapper/static/storage/reqs/csv2geojson/test/data/lng.geojson",
+ "lastIndexed": "2015-06-02T23:34:54Z"
+},
+{
+"user": "https://github.com/kbubnicki",
+ "repository": "https://github.com/kbubnicki/test",
+ "file": "https://github.com/kbubnicki/test/blob/2f54d355a7d659a22fd85cf426916ba760847a7b/trapper/static/storage/reqs/csv2geojson/test/data/simple.geojson",
+ "lastIndexed": "2015-06-02T23:34:54Z"
+},
+{
+"user": "https://github.com/kbubnicki",
+ "repository": "https://github.com/kbubnicki/test",
+ "file": "https://github.com/kbubnicki/test/blob/2f54d355a7d659a22fd85cf426916ba760847a7b/trapper/static/storage/reqs/csv2geojson/test/data/polygon.geojson",
+ "lastIndexed": "2015-06-02T23:34:54Z"
+},
+{
+"user": "https://github.com/kbubnicki",
+ "repository": "https://github.com/kbubnicki/test",
+ "file": "https://github.com/kbubnicki/test/blob/2f54d355a7d659a22fd85cf426916ba760847a7b/trapper/static/storage/reqs/csv2geojson/test/data/simple_space.geojson",
+ "lastIndexed": "2015-06-02T23:34:54Z"
+},
+{
+"user": "https://github.com/3DMusicMap",
+ "repository": "https://github.com/3DMusicMap/cesiumb30",
+ "file": "https://github.com/3DMusicMap/cesiumb30/blob/a6b398730a74a3381cd51a4473b14db24cc69048/Specs/Data/test.geojson",
+ "lastIndexed": "2015-06-02T21:40:34Z"
+},
+{
+"user": "https://github.com/MaptimeSEA",
+ "repository": "https://github.com/MaptimeSEA/geojson",
+ "file": "https://github.com/MaptimeSEA/geojson/blob/c5eeb4966a1bdca42b9c36fa5a6ff7671b9663a8/QuentinK.geojson",
+ "lastIndexed": "2015-06-03T23:54:42Z"
+}]

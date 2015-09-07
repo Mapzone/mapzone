@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/KoelnAPI",
+ "repository": "https://github.com/KoelnAPI/data",
+ "file": "https://github.com/KoelnAPI/data/blob/f7d4c198bfdea6fa2360e3c82256d1ccdfaf1115/data/geo-base/osm-pois/amenity/amenity_fountain.geojson",
+ "lastIndexed": "2015-05-31T00:48:59Z"
+},
+{
+"user": "https://github.com/waveq",
+ "repository": "https://github.com/waveq/nosqlUG",
+ "file": "https://github.com/waveq/nosqlUG/blob/15c0e5888c4d3b45b6691e5c9a3177b5bf7f3c0a/maps/box.geojson",
+ "lastIndexed": "2015-06-03T18:26:22Z"
+},
+{
+"user": "https://github.com/waveq",
+ "repository": "https://github.com/waveq/nosqlUG",
+ "file": "https://github.com/waveq/nosqlUG/blob/15c0e5888c4d3b45b6691e5c9a3177b5bf7f3c0a/maps/dupa.geojson",
+ "lastIndexed": "2015-06-03T18:26:22Z"
+},
+{
+"user": "https://github.com/milesgrimshaw",
+ "repository": "https://github.com/milesgrimshaw/milesgrimshaw.github.io",
+ "file": "https://github.com/milesgrimshaw/milesgrimshaw.github.io/blob/16e9e7ccb78a6fae36f91ddfde54824f7a97b8ee/Data/map.geojson",
+ "lastIndexed": "2015-06-01T18:06:28Z"
+},
+{
+"user": "https://github.com/milesgrimshaw",
+ "repository": "https://github.com/milesgrimshaw/milesgrimshaw.github.io",
+ "file": "https://github.com/milesgrimshaw/milesgrimshaw.github.io/blob/16e9e7ccb78a6fae36f91ddfde54824f7a97b8ee/_site/Data/map.geojson",
+ "lastIndexed": "2015-06-01T18:06:28Z"
+},
+{
+"user": "https://github.com/UrbanInstitute",
+ "repository": "https://github.com/UrbanInstitute/occ-public-safety",
+ "file": "https://github.com/UrbanInstitute/occ-public-safety/blob/827eaa73f317b2d055f0c3f0580f386714b45cfe/data/homicide/homicide2010.geojson",
+ "lastIndexed": "2015-08-06T13:43:15Z"
+},
+{
+"user": "https://github.com/gccgisteam",
+ "repository": "https://github.com/gccgisteam/maps-website",
+ "file": "https://github.com/gccgisteam/maps-website/blob/043d8e22a2a7992735e120528c299e1f76ef4346/data/points.geojson",
+ "lastIndexed": "2015-05-30T05:15:42Z"
+},
+{
+"user": "https://github.com/dmcintire",
+ "repository": "https://github.com/dmcintire/slugisdata",
+ "file": "https://github.com/dmcintire/slugisdata/blob/39b1c165c255153a50fa14dea70afc7e2a9b10a6/CountywidePreAttack/GatesParkhill.geojson",
+ "lastIndexed": "2015-05-31T09:58:54Z"
+},
+{
+"user": "https://github.com/InfiniteCoop",
+ "repository": "https://github.com/InfiniteCoop/bought-in-bishkek",
+ "file": "https://github.com/InfiniteCoop/bought-in-bishkek/blob/33e7f49f02d8b3efc0687fbef3e08eb8710cd59a/geo/Narodniy_locations_Bishkek.geojson",
+ "lastIndexed": "2015-06-04T19:04:19Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/377673.geojson",
+ "lastIndexed": "2015-08-31T01:03:54Z"
+}]

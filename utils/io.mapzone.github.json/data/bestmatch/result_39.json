@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/dwr-psandhu",
+ "repository": "https://github.com/dwr-psandhu/dsm2-vista",
+ "file": "https://github.com/dwr-psandhu/dsm2-vista/blob/d12ecf118df6f632573da3ea84d07748715dde51/dsm2-input-model/resources/dsm2_node.geojson",
+ "lastIndexed": "2015-07-22T17:55:47Z"
+},
+{
+"user": "https://github.com/yiqingj",
+ "repository": "https://github.com/yiqingj/work",
+ "file": "https://github.com/yiqingj/work/blob/8388627720448258cc18be5a9ed842d10e542d3a/tests/data/json/lines.geojson",
+ "lastIndexed": "2015-05-31T18:51:23Z"
+},
+{
+"user": "https://github.com/yiqingj",
+ "repository": "https://github.com/yiqingj/work",
+ "file": "https://github.com/yiqingj/work/blob/8388627720448258cc18be5a9ed842d10e542d3a/tests/data/json/null_feature.geojson",
+ "lastIndexed": "2015-05-31T18:51:23Z"
+},
+{
+"user": "https://github.com/geowurster",
+ "repository": "https://github.com/geowurster/gj2ascii",
+ "file": "https://github.com/geowurster/gj2ascii/blob/dc5a1467d139b6f712cdd97ea11114496ebff369/sample-data/points.geojson",
+ "lastIndexed": "2015-06-05T03:00:18Z"
+},
+{
+"user": "https://github.com/jnowicki",
+ "repository": "https://github.com/jnowicki/NoSQL-MongoDB-Testing",
+ "file": "https://github.com/jnowicki/NoSQL-MongoDB-Testing/blob/a6d9378eabba28dca712f33cb4fc1f334c1587e8/maps/query1.geojson",
+ "lastIndexed": "2015-06-03T20:57:46Z"
+},
+{
+"user": "https://github.com/josacord92",
+ "repository": "https://github.com/josacord92/Tarea2SIGJoseCarlosAlvarezUmana200967010",
+ "file": "https://github.com/josacord92/Tarea2SIGJoseCarlosAlvarezUmana200967010/blob/aedcb89e76b8dce683804777985e3223b08bdf46/geojson/paralelas/paralelas.geojson",
+ "lastIndexed": "2015-06-01T17:36:45Z"
+},
+{
+"user": "https://github.com/pkulas",
+ "repository": "https://github.com/pkulas/nosql",
+ "file": "https://github.com/pkulas/nosql/blob/785d18de3e5b95e541cf7131cd2e7a74fba42434/geo/map2.geojson",
+ "lastIndexed": "2015-06-03T21:01:10Z"
+},
+{
+"user": "https://github.com/losequeira",
+ "repository": "https://github.com/losequeira/losequeira.github.io",
+ "file": "https://github.com/losequeira/losequeira.github.io/blob/8e9a05b649503063eec8db5004c8713847afb632/Practica%2012/Archivos%20GeoJSON/Restaurantes.geojson",
+ "lastIndexed": "2015-06-02T06:20:11Z"
+},
+{
+"user": "https://github.com/kingye",
+ "repository": "https://github.com/kingye/ipatrol",
+ "file": "https://github.com/kingye/ipatrol/blob/762571bd8bbe09309255238b460a7590d74fce0d/src/test/resources/testdata/area/nanjing/qinhuai/qinhuai_5.geojson",
+ "lastIndexed": "2015-06-04T05:55:01Z"
+},
+{
+"user": "https://github.com/morganherlocker",
+ "repository": "https://github.com/morganherlocker/gistmap-sample",
+ "file": "https://github.com/morganherlocker/gistmap-sample/blob/60285b7e736af4425775635e66198a1f0564324a/points2.geojson",
+ "lastIndexed": "2015-06-01T09:02:47Z"
+}]

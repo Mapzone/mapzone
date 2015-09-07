@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/csv2geojson",
+ "file": "https://github.com/mapbox/csv2geojson/blob/1f7205585d703dd6b8caebbe17d4c679b78b296c/test/data/degrees.geojson",
+ "lastIndexed": "2015-05-29T10:48:07Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/csv2geojson",
+ "file": "https://github.com/mapbox/csv2geojson/blob/1f7205585d703dd6b8caebbe17d4c679b78b296c/test/data/includeLatLon.geojson",
+ "lastIndexed": "2015-05-29T10:48:07Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/csv2geojson",
+ "file": "https://github.com/mapbox/csv2geojson/blob/1f7205585d703dd6b8caebbe17d4c679b78b296c/test/data/line.geojson",
+ "lastIndexed": "2015-05-29T10:48:07Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/csv2geojson",
+ "file": "https://github.com/mapbox/csv2geojson/blob/1f7205585d703dd6b8caebbe17d4c679b78b296c/test/data/lng.geojson",
+ "lastIndexed": "2015-05-29T10:48:07Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/csv2geojson",
+ "file": "https://github.com/mapbox/csv2geojson/blob/1f7205585d703dd6b8caebbe17d4c679b78b296c/test/data/simple.geojson",
+ "lastIndexed": "2015-05-29T10:48:07Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/csv2geojson",
+ "file": "https://github.com/mapbox/csv2geojson/blob/1f7205585d703dd6b8caebbe17d4c679b78b296c/test/data/polygon.geojson",
+ "lastIndexed": "2015-05-29T10:48:07Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/csv2geojson",
+ "file": "https://github.com/mapbox/csv2geojson/blob/1f7205585d703dd6b8caebbe17d4c679b78b296c/test/data/simple_space.geojson",
+ "lastIndexed": "2015-05-29T10:48:07Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/geojson-normalize",
+ "file": "https://github.com/mapbox/geojson-normalize/blob/8f9d1d2bad644024aa4318b910f0da4061b04c5b/test/data/feature.input.geojson",
+ "lastIndexed": "2015-06-01T22:23:23Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/geojson-normalize",
+ "file": "https://github.com/mapbox/geojson-normalize/blob/8f9d1d2bad644024aa4318b910f0da4061b04c5b/test/data/feature.output.geojson",
+ "lastIndexed": "2015-06-01T22:23:23Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/geojson-normalize",
+ "file": "https://github.com/mapbox/geojson-normalize/blob/8f9d1d2bad644024aa4318b910f0da4061b04c5b/test/data/geometry.output.geojson",
+ "lastIndexed": "2015-06-01T22:23:23Z"
+}]

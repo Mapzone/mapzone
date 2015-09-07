@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/bertspaan",
+ "repository": "https://github.com/bertspaan/casper30",
+ "file": "https://github.com/bertspaan/casper30/blob/381829df5255a270a013f6e8e3851258db632d4f/routes/points.geojson",
+ "lastIndexed": "2015-05-31T19:43:35Z"
+},
+{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q6/grilles.geojson",
+ "lastIndexed": "2015-06-05T18:25:52Z"
+},
+{
+"user": "https://github.com/drwelby",
+ "repository": "https://github.com/drwelby/geodiff",
+ "file": "https://github.com/drwelby/geodiff/blob/253497f5b99b45a9de854899aeff63e0f50cc8f0/points.geojson",
+ "lastIndexed": "2015-06-01T09:24:27Z"
+},
+{
+"user": "https://github.com/tabachain",
+ "repository": "https://github.com/tabachain/geoJSON",
+ "file": "https://github.com/tabachain/geoJSON/blob/be0cd31774f477da08d94f9e4d71b616f2933c69/wifi.geojson",
+ "lastIndexed": "2015-06-01T02:07:58Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/192301.geojson",
+ "lastIndexed": "2015-08-31T00:47:10Z"
+},
+{
+"user": "https://github.com/ioos",
+ "repository": "https://github.com/ioos/catalog",
+ "file": "https://github.com/ioos/catalog/blob/a88d8ba7c089596f9fd32f33f030122e64446c4a/ioos_catalog/static/geojson/ioos.geojson",
+ "lastIndexed": "2015-05-31T12:54:51Z"
+},
+{
+"user": "https://github.com/waveq",
+ "repository": "https://github.com/waveq/nosqlUG",
+ "file": "https://github.com/waveq/nosqlUG/blob/15c0e5888c4d3b45b6691e5c9a3177b5bf7f3c0a/maps/box.geojson",
+ "lastIndexed": "2015-06-03T18:26:22Z"
+},
+{
+"user": "https://github.com/waveq",
+ "repository": "https://github.com/waveq/nosqlUG",
+ "file": "https://github.com/waveq/nosqlUG/blob/15c0e5888c4d3b45b6691e5c9a3177b5bf7f3c0a/maps/dupa.geojson",
+ "lastIndexed": "2015-06-03T18:26:22Z"
+},
+{
+"user": "https://github.com/pathawks",
+ "repository": "https://github.com/pathawks/SXM",
+ "file": "https://github.com/pathawks/SXM/blob/fbbabff83cbf6facad437e41d7e49f49f81f71b9/shopping.geojson",
+ "lastIndexed": "2015-05-31T01:34:56Z"
+},
+{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q10/hydrants.geojson",
+ "lastIndexed": "2015-06-05T18:25:52Z"
+}]

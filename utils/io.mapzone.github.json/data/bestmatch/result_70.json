@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/WorldViews",
+ "repository": "https://github.com/WorldViews/Registry",
+ "file": "https://github.com/WorldViews/Registry/blob/4f6767cebeae91c5e4af0894510aa8bbe43255c8/Registry/static/Cesium/1.7.1/Specs/Data/test.geojson",
+ "lastIndexed": "2015-07-18T04:43:56Z"
+},
+{
+"user": "https://github.com/cncplyr",
+ "repository": "https://github.com/cncplyr/test",
+ "file": "https://github.com/cncplyr/test/blob/4b3bc095bbee7e3d14650aefbda8c3dcd511835f/test.geojson",
+ "lastIndexed": "2015-06-07T22:26:47Z"
+},
+{
+"user": "https://github.com/yiyanggis",
+ "repository": "https://github.com/yiyanggis/www",
+ "file": "https://github.com/yiyanggis/www/blob/722c9dc14766e2797756969aa4099d2562518832/Cesium/Specs/Data/test.geojson",
+ "lastIndexed": "2015-07-16T17:26:53Z"
+},
+{
+"user": "https://github.com/xavier114fch",
+ "repository": "https://github.com/xavier114fch/mapbox-test",
+ "file": "https://github.com/xavier114fch/mapbox-test/blob/5cb5753bbfc9fa20cf76f7bedbe1d127be0c2823/example-single.geojson",
+ "lastIndexed": "2015-06-01T09:18:40Z"
+},
+{
+"user": "https://github.com/dreamsxin",
+ "repository": "https://github.com/dreamsxin/Drawer-Web",
+ "file": "https://github.com/dreamsxin/Drawer-Web/blob/caa45a171774bc53904cfacaa4f9ef26a47532ff/local_resources/js/bower_components/mapbox.js/examples/example.geojson",
+ "lastIndexed": "2015-06-01T03:45:08Z"
+},
+{
+"user": "https://github.com/smanousopoulos",
+ "repository": "https://github.com/smanousopoulos/PublicaMundi-MappingAPI",
+ "file": "https://github.com/smanousopoulos/PublicaMundi-MappingAPI/blob/0caf7944fc1772a4d5fe1cb8f09763544a6a78e3/lib/togeojson/test/data/selfclosing.geojson",
+ "lastIndexed": "2015-06-03T20:01:59Z"
+},
+{
+"user": "https://github.com/khinz",
+ "repository": "https://github.com/khinz/MongoDB",
+ "file": "https://github.com/khinz/MongoDB/blob/fbf1ac2ac7b4a44f9720ae22ecc18364df6d21a1/miasta.geojson",
+ "lastIndexed": "2015-06-04T08:33:27Z"
+},
+{
+"user": "https://github.com/beckex",
+ "repository": "https://github.com/beckex/HelloGit",
+ "file": "https://github.com/beckex/HelloGit/blob/f4a28c27df42227d34f3b8993a88e99040d39a3b/test.geojson",
+ "lastIndexed": "2015-07-27T21:11:14Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/200115.geojson",
+ "lastIndexed": "2015-08-31T00:47:44Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/246396.geojson",
+ "lastIndexed": "2015-08-31T00:51:18Z"
+}]

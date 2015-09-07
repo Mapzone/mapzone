@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/craigds",
+ "repository": "https://github.com/craigds/osgeo-gdal",
+ "file": "https://github.com/craigds/osgeo-gdal/blob/df65430fe4517890b55a874c6110b7c98bc77128/autotest/ogr/data/geometrycollection.geojson",
+ "lastIndexed": "2015-05-28T20:13:43Z"
+},
+{
+"user": "https://github.com/Madzia",
+ "repository": "https://github.com/Madzia/NoSQL_UG",
+ "file": "https://github.com/Madzia/NoSQL_UG/blob/3d557cd25438f76e482f336288e59d7cd8d931b5/files/near_mapa.geojson",
+ "lastIndexed": "2015-06-03T14:13:00Z"
+},
+{
+"user": "https://github.com/Fedoraman42",
+ "repository": "https://github.com/Fedoraman42/NICTA-NDSU-National-Map",
+ "file": "https://github.com/Fedoraman42/NICTA-NDSU-National-Map/blob/99cdf0d212e749ed6d94ba9a11af92120725013b/cesium/Specs/Data/test.geojson",
+ "lastIndexed": "2015-06-04T12:18:49Z"
+},
+{
+"user": "https://github.com/Turfjs",
+ "repository": "https://github.com/Turfjs/turf-line-slice",
+ "file": "https://github.com/Turfjs/turf-line-slice/blob/b3985348bf3ea1507107641ad59ec1533023285b/fixtures/out/line2_out.geojson",
+ "lastIndexed": "2015-06-04T11:45:57Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/va-data",
+ "file": "https://github.com/jalbertbowden/va-data/blob/ee4c63639421306120ac602af0bdb2300a7b6dfe/noaa-digital-coast/shoreline-counties/critical-facilities-coastal-shoreline-counties.geojson",
+ "lastIndexed": "2015-05-31T13:14:00Z"
+},
+{
+"user": "https://github.com/daseinphil",
+ "repository": "https://github.com/daseinphil/daseinphil.github.io",
+ "file": "https://github.com/daseinphil/daseinphil.github.io/blob/a69a7ad2623f2eadfd25336cb56c225dc191aa03/static/geojson/testpoints.geojson",
+ "lastIndexed": "2015-06-01T07:17:12Z"
+},
+{
+"user": "https://github.com/javnik36",
+ "repository": "https://github.com/javnik36/ZTMvsOSM",
+ "file": "https://github.com/javnik36/ZTMvsOSM/blob/f89fb3caa1677d55a8ddf0d33c6709456a5a6b82/demo/brak_temp.geojson",
+ "lastIndexed": "2015-06-03T00:16:49Z"
+},
+{
+"user": "https://github.com/Turfjs",
+ "repository": "https://github.com/Turfjs/turf-nearest",
+ "file": "https://github.com/Turfjs/turf-nearest/blob/bb7dd00810b81036960af81e6eb5c7a8cfb7175a/geojson/pt.geojson",
+ "lastIndexed": "2015-06-01T20:16:27Z"
+},
+{
+"user": "https://github.com/jonahadkins",
+ "repository": "https://github.com/jonahadkins/open-noland-trail",
+ "file": "https://github.com/jonahadkins/open-noland-trail/blob/0d27bb189b607fb51c930a2d8d1822028687235c/data/trail_mile_markers.geojson",
+ "lastIndexed": "2015-06-02T11:38:00Z"
+},
+{
+"user": "https://github.com/etiennesky",
+ "repository": "https://github.com/etiennesky/gdal-netcdf-old",
+ "file": "https://github.com/etiennesky/gdal-netcdf-old/blob/fb037b8777b0ab454d8d8f8ad685baddcaedea39/autotest/ogr/data/geometrycollection.geojson",
+ "lastIndexed": "2015-05-28T13:20:14Z"
+}]

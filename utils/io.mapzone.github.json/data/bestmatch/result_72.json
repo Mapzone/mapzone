@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/benbalter",
+ "repository": "https://github.com/benbalter/geojson-diff",
+ "file": "https://github.com/benbalter/geojson-diff/blob/651329bffd0f5169973fea56581ef15c9bb6eabf/test/fixtures/point-diff/before.geojson",
+ "lastIndexed": "2015-06-01T23:16:04Z"
+},
+{
+"user": "https://github.com/benbalter",
+ "repository": "https://github.com/benbalter/geojson-diff",
+ "file": "https://github.com/benbalter/geojson-diff/blob/651329bffd0f5169973fea56581ef15c9bb6eabf/test/fixtures/point-diff/removed.geojson",
+ "lastIndexed": "2015-06-01T23:16:04Z"
+},
+{
+"user": "https://github.com/benbalter",
+ "repository": "https://github.com/benbalter/geojson-diff",
+ "file": "https://github.com/benbalter/geojson-diff/blob/651329bffd0f5169973fea56581ef15c9bb6eabf/test/fixtures/remove-feature-diff/before.geojson",
+ "lastIndexed": "2015-06-01T23:16:04Z"
+},
+{
+"user": "https://github.com/binger999",
+ "repository": "https://github.com/binger999/binger999.github.io",
+ "file": "https://github.com/binger999/binger999.github.io/blob/2a8359c10c063fa397c04945735bc6b4300fe206/locations.geojson",
+ "lastIndexed": "2015-06-01T13:28:16Z"
+},
+{
+"user": "https://github.com/woodstockinst",
+ "repository": "https://github.com/woodstockinst/woodstock-maps",
+ "file": "https://github.com/woodstockinst/woodstock-maps/blob/4ed826af06484d38a51a2645e026b3f646197373/app/bower_components/mapbox.js/docs/assets/data/example.geojson",
+ "lastIndexed": "2015-06-03T00:15:23Z"
+},
+{
+"user": "https://github.com/araichev",
+ "repository": "https://github.com/araichev/affordability_nz",
+ "file": "https://github.com/araichev/affordability_nz/blob/318508fddbcb1ff426fc64d8bcc684a37a3d01be/data/canterbury/centroids.geojson",
+ "lastIndexed": "2015-06-01T20:24:59Z"
+},
+{
+"user": "https://github.com/JoakimBrannstrom",
+ "repository": "https://github.com/JoakimBrannstrom/PowerShell",
+ "file": "https://github.com/JoakimBrannstrom/PowerShell/blob/413fd7a44ca791179d032365665b6ffcbad727d6/home.geojson",
+ "lastIndexed": "2015-05-30T22:58:28Z"
+},
+{
+"user": "https://github.com/simultechnology",
+ "repository": "https://github.com/simultechnology/globe",
+ "file": "https://github.com/simultechnology/globe/blob/08b5ef49a403f83a18b4b93b65f051a7d9148a88/Cesium-1.0/Specs/Data/test.geojson",
+ "lastIndexed": "2015-06-02T21:26:37Z"
+},
+{
+"user": "https://github.com/personlin",
+ "repository": "https://github.com/personlin/GIS",
+ "file": "https://github.com/personlin/GIS/blob/a221365999329774f1c539a3c37b16b453cac795/NPPs.geojson",
+ "lastIndexed": "2015-07-21T04:02:42Z"
+},
+{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q1/grilles.geojson",
+ "lastIndexed": "2015-06-05T18:25:51Z"
+}]

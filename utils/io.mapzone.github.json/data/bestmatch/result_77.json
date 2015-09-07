@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/321160.geojson",
+ "lastIndexed": "2015-08-31T01:00:03Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/321177.geojson",
+ "lastIndexed": "2015-08-31T01:00:04Z"
+},
+{
+"user": "https://github.com/eric906",
+ "repository": "https://github.com/eric906/arcgis-runtime-samples-java-geojson",
+ "file": "https://github.com/eric906/arcgis-runtime-samples-java-geojson/blob/49a04cf7961a685021df38563414528054574445/geojson/geometrycollection.geojson",
+ "lastIndexed": "2015-06-03T15:06:32Z"
+},
+{
+"user": "https://github.com/npcasler",
+ "repository": "https://github.com/npcasler/ember-cesium",
+ "file": "https://github.com/npcasler/ember-cesium/blob/715301307127b0df21f7fcdeb831d54f790daddc/vendor/cesium/Specs/Data/test.geojson",
+ "lastIndexed": "2015-06-04T10:13:50Z"
+},
+{
+"user": "https://github.com/ungentilgarcon",
+ "repository": "https://github.com/ungentilgarcon/cesiumviz",
+ "file": "https://github.com/ungentilgarcon/cesiumviz/blob/fe54bbc70ae72c753cd28a1699c8b264a70655d1/Specs/Data/test.geojson",
+ "lastIndexed": "2015-07-07T13:09:37Z"
+},
+{
+"user": "https://github.com/rouault",
+ "repository": "https://github.com/rouault/gdal",
+ "file": "https://github.com/rouault/gdal/blob/67fd4d92f2e7afb604995c6e6846a61bfe3c36fd/autotest/ogr/data/geometrycollection.geojson",
+ "lastIndexed": "2015-05-29T17:16:55Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/368719.geojson",
+ "lastIndexed": "2015-08-31T01:03:20Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/368720.geojson",
+ "lastIndexed": "2015-08-31T01:03:20Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/368721.geojson",
+ "lastIndexed": "2015-08-31T01:03:20Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/368722.geojson",
+ "lastIndexed": "2015-08-31T01:03:20Z"
+}]

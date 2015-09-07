@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/budharpey",
+ "repository": "https://github.com/budharpey/srcjquery3seriousClusterSplash",
+ "file": "https://github.com/budharpey/srcjquery3seriousClusterSplash/blob/16e5d4a6c79319a06416742b905987c4b76167db/data/parkingCopy.geojson",
+ "lastIndexed": "2015-05-31T16:19:29Z"
+},
+{
+"user": "https://github.com/kwoxer",
+ "repository": "https://github.com/kwoxer/Arda-Maps",
+ "file": "https://github.com/kwoxer/Arda-Maps/blob/0e19c05e522fdde47b4f3ab9578f0e6ab6b90612/QGIS/third%20age/arda3/point_place.geojson",
+ "lastIndexed": "2015-08-19T09:00:46Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/va-data",
+ "file": "https://github.com/jalbertbowden/va-data/blob/ee4c63639421306120ac602af0bdb2300a7b6dfe/dgif/2005/source/source/habitats/geojson/CNT.geojson",
+ "lastIndexed": "2015-05-31T13:13:26Z"
+},
+{
+"user": "https://github.com/calvinmetcalf",
+ "repository": "https://github.com/calvinmetcalf/geojson-assert",
+ "file": "https://github.com/calvinmetcalf/geojson-assert/blob/c5daa527d03f2e127cf6787573a51cca5d259ef6/test/data/bad/nofeaturetype.geojson",
+ "lastIndexed": "2015-05-31T16:35:44Z"
+},
+{
+"user": "https://github.com/calvinmetcalf",
+ "repository": "https://github.com/calvinmetcalf/geojson-assert",
+ "file": "https://github.com/calvinmetcalf/geojson-assert/blob/c5daa527d03f2e127cf6787573a51cca5d259ef6/test/data/good/good-geometrycollection.geojson",
+ "lastIndexed": "2015-05-31T16:35:44Z"
+},
+{
+"user": "https://github.com/calvinmetcalf",
+ "repository": "https://github.com/calvinmetcalf/geojson-assert",
+ "file": "https://github.com/calvinmetcalf/geojson-assert/blob/c5daa527d03f2e127cf6787573a51cca5d259ef6/test/data/good/nullproperties.geojson",
+ "lastIndexed": "2015-05-31T16:35:44Z"
+},
+{
+"user": "https://github.com/hyd1984",
+ "repository": "https://github.com/hyd1984/geo_data",
+ "file": "https://github.com/hyd1984/geo_data/blob/aa861ade72a4d60e032ffdffad556e4dcc123c66/library.geojson",
+ "lastIndexed": "2015-06-05T08:51:32Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/cbay-vims-sav-data",
+ "file": "https://github.com/jalbertbowden/cbay-vims-sav-data/blob/7ca5901b35be6e76df67278500f50191b4808f76/data/1980/geojson/CNT.geojson",
+ "lastIndexed": "2015-06-01T04:55:25Z"
+},
+{
+"user": "https://github.com/bradbarnett",
+ "repository": "https://github.com/bradbarnett/RhodeIsland",
+ "file": "https://github.com/bradbarnett/RhodeIsland/blob/b6c0dba2558d400d8c0760f11d5b0b94b6b31e4b/data/SubsidizedHousingTotalUnitsPoint.geojson",
+ "lastIndexed": "2015-06-03T19:04:23Z"
+},
+{
+"user": "https://github.com/SLUGIS",
+ "repository": "https://github.com/SLUGIS/CountywidePreAttack",
+ "file": "https://github.com/SLUGIS/CountywidePreAttack/blob/4d35360ce4d17bbedbcdff6a32a7243bc014e147/GatesParkhill.geojson",
+ "lastIndexed": "2015-05-31T14:06:50Z"
+}]

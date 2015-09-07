@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/jimmyhillis",
+ "repository": "https://github.com/jimmyhillis/letour-2014",
+ "file": "https://github.com/jimmyhillis/letour-2014/blob/bbb7be335aca79b64acc52a662a46fcaf71e1c7d/json/maps/stage-10.geojson",
+ "lastIndexed": "2015-06-02T14:22:41Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/137578.geojson",
+ "lastIndexed": "2015-08-31T00:42:35Z"
+},
+{
+"user": "https://github.com/cadooo",
+ "repository": "https://github.com/cadooo/maps",
+ "file": "https://github.com/cadooo/maps/blob/98c14d09fe236df830e55c2924b850c591577025/gs.geojson",
+ "lastIndexed": "2015-06-02T21:29:51Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/210672.geojson",
+ "lastIndexed": "2015-08-31T00:48:30Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/210673.geojson",
+ "lastIndexed": "2015-08-31T00:48:30Z"
+},
+{
+"user": "https://github.com/alrocar",
+ "repository": "https://github.com/alrocar/opendatasets",
+ "file": "https://github.com/alrocar/opendatasets/blob/d6f53ff05461e2097d85fa07b1fe1ff50f5ba9fe/datasets/europe/spain/valencia/paradas_de_taxis.geojson",
+ "lastIndexed": "2015-06-06T07:02:07Z"
+},
+{
+"user": "https://github.com/pietrakkk",
+ "repository": "https://github.com/pietrakkk/mongo-db",
+ "file": "https://github.com/pietrakkk/mongo-db/blob/f3197067f490e3e32a03b603fef3635dae6ae129/places.geojson",
+ "lastIndexed": "2015-06-03T20:32:04Z"
+},
+{
+"user": "https://github.com/yiqingj",
+ "repository": "https://github.com/yiqingj/work",
+ "file": "https://github.com/yiqingj/work/blob/8388627720448258cc18be5a9ed842d10e542d3a/tests/data/json/points.geojson",
+ "lastIndexed": "2015-05-31T18:51:23Z"
+},
+{
+"user": "https://github.com/informigis",
+ "repository": "https://github.com/informigis/data.kk.dk",
+ "file": "https://github.com/informigis/data.kk.dk/blob/489d7b070b4e2081623adfed1529726eeafd613a/lastbil_natparkering.geojson",
+ "lastIndexed": "2015-06-03T03:47:24Z"
+},
+{
+"user": "https://github.com/pkulas",
+ "repository": "https://github.com/pkulas/nosql",
+ "file": "https://github.com/pkulas/nosql/blob/785d18de3e5b95e541cf7131cd2e7a74fba42434/geo/map1.geojson",
+ "lastIndexed": "2015-06-03T21:01:10Z"
+}]

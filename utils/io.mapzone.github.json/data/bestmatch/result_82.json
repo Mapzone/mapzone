@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/AnalyticalGraphicsInc",
+ "repository": "https://github.com/AnalyticalGraphicsInc/cesium",
+ "file": "https://github.com/AnalyticalGraphicsInc/cesium/blob/68df3e9aa0728f26b363cd64d85e20b91fc5eb2e/Specs/Data/test.geojson",
+ "lastIndexed": "2015-05-28T23:00:51Z"
+},
+{
+"user": "https://github.com/kolszer",
+ "repository": "https://github.com/kolszer/geojson",
+ "file": "https://github.com/kolszer/geojson/blob/a85b1693ed766554ba41ca3232f491f9cec38442/5.geojson",
+ "lastIndexed": "2015-06-04T08:35:53Z"
+},
+{
+"user": "https://github.com/ginimod",
+ "repository": "https://github.com/ginimod/carto_icc_git",
+ "file": "https://github.com/ginimod/carto_icc_git/blob/29777d6f57cea2761f0564e1b9f9b2b516c49f8d/carto_icc.geojson",
+ "lastIndexed": "2015-06-08T08:06:05Z"
+},
+{
+"user": "https://github.com/stormxuwz",
+ "repository": "https://github.com/stormxuwz/Json",
+ "file": "https://github.com/stormxuwz/Json/blob/a72fb7f09efdaecc30b73abc45f5aa6ac8764fc7/map.geojson",
+ "lastIndexed": "2015-06-01T11:00:17Z"
+},
+{
+"user": "https://github.com/lekiert",
+ "repository": "https://github.com/lekiert/nosql",
+ "file": "https://github.com/lekiert/nosql/blob/f4201f5a70700d1a9de3398c96f3b661500c2630/zapytania/z1.geojson",
+ "lastIndexed": "2015-06-03T20:59:18Z"
+},
+{
+"user": "https://github.com/lekiert",
+ "repository": "https://github.com/lekiert/nosql",
+ "file": "https://github.com/lekiert/nosql/blob/f4201f5a70700d1a9de3398c96f3b661500c2630/zapytania/z4.geojson",
+ "lastIndexed": "2015-06-03T20:59:18Z"
+},
+{
+"user": "https://github.com/KeyMaker13",
+ "repository": "https://github.com/KeyMaker13/3dmusicmap",
+ "file": "https://github.com/KeyMaker13/3dmusicmap/blob/a6b398730a74a3381cd51a4473b14db24cc69048/Specs/Data/test.geojson",
+ "lastIndexed": "2015-06-13T08:06:07Z"
+},
+{
+"user": "https://github.com/lukasz978",
+ "repository": "https://github.com/lukasz978/nosql",
+ "file": "https://github.com/lukasz978/nosql/blob/59fb4fa6611da1abc33597d142b0c3045b6fa96f/maps/mapa2.geojson",
+ "lastIndexed": "2015-06-03T18:40:42Z"
+},
+{
+"user": "https://github.com/codeonwort",
+ "repository": "https://github.com/codeonwort/cesium-demo",
+ "file": "https://github.com/codeonwort/cesium-demo/blob/20a579228a2e071d065f0ce2e206615be96486b9/Specs/Data/test.geojson",
+ "lastIndexed": "2015-06-05T08:48:21Z"
+},
+{
+"user": "https://github.com/rezn8d",
+ "repository": "https://github.com/rezn8d/netentionjs2",
+ "file": "https://github.com/rezn8d/netentionjs2/blob/a30f6b96788f2ce3aca95afe7e5e1388f3fe79b5/client/lib/cesium/1.9/Specs/Data/test.geojson",
+ "lastIndexed": "2015-05-31T22:52:59Z"
+}]

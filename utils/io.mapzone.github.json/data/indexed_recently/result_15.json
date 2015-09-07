@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/guinea-ebov",
+ "repository": "https://github.com/guinea-ebov/guinea-ebov.github.io",
+ "file": "https://github.com/guinea-ebov/guinea-ebov.github.io/blob/2b64df9d7fe50cd9dd66ba059bca0bd68d916dd3/code/data/cumulative_daily_2015.geojson",
+ "lastIndexed": "2015-09-02T14:42:04Z"
+},
+{
+"user": "https://github.com/guinea-ebov",
+ "repository": "https://github.com/guinea-ebov/guinea-ebov.github.io",
+ "file": "https://github.com/guinea-ebov/guinea-ebov.github.io/blob/2b64df9d7fe50cd9dd66ba059bca0bd68d916dd3/code/data/last_21d_daily.geojson",
+ "lastIndexed": "2015-09-02T14:42:04Z"
+},
+{
+"user": "https://github.com/guinea-ebov",
+ "repository": "https://github.com/guinea-ebov/guinea-ebov.github.io",
+ "file": "https://github.com/guinea-ebov/guinea-ebov.github.io/blob/2b64df9d7fe50cd9dd66ba059bca0bd68d916dd3/code/data/last_7d_daily.geojson",
+ "lastIndexed": "2015-09-02T14:42:04Z"
+},
+{
+"user": "https://github.com/guinea-ebov",
+ "repository": "https://github.com/guinea-ebov/guinea-ebov.github.io",
+ "file": "https://github.com/guinea-ebov/guinea-ebov.github.io/blob/2b64df9d7fe50cd9dd66ba059bca0bd68d916dd3/code/data/data_per_week.geojson",
+ "lastIndexed": "2015-09-02T14:42:04Z"
+},
+{
+"user": "https://github.com/auremoser",
+ "repository": "https://github.com/auremoser/sharedata",
+ "file": "https://github.com/auremoser/sharedata/blob/e42a34ba19186c81648b180c770135a3214d7588/_airbnb/airbnb_story.geojson",
+ "lastIndexed": "2015-09-02T14:32:46Z"
+},
+{
+"user": "https://github.com/Mr-5",
+ "repository": "https://github.com/Mr-5/code_snip",
+ "file": "https://github.com/Mr-5/code_snip/blob/defb4586fa7188ad10fe5018fc18cf1c19308bed/python/dynamic_tile_server/test/test_data/point.geojson",
+ "lastIndexed": "2015-09-02T14:07:23Z"
+},
+{
+"user": "https://github.com/Mr-5",
+ "repository": "https://github.com/Mr-5/code_snip",
+ "file": "https://github.com/Mr-5/code_snip/blob/defb4586fa7188ad10fe5018fc18cf1c19308bed/python/dynamic_tile_server/test/test_data/line.geojson",
+ "lastIndexed": "2015-09-02T14:07:23Z"
+},
+{
+"user": "https://github.com/Mr-5",
+ "repository": "https://github.com/Mr-5/code_snip",
+ "file": "https://github.com/Mr-5/code_snip/blob/defb4586fa7188ad10fe5018fc18cf1c19308bed/python/dynamic_tile_server/test/test_data/polygon.geojson",
+ "lastIndexed": "2015-09-02T14:07:23Z"
+},
+{
+"user": "https://github.com/Mr-5",
+ "repository": "https://github.com/Mr-5/code_snip",
+ "file": "https://github.com/Mr-5/code_snip/blob/defb4586fa7188ad10fe5018fc18cf1c19308bed/python/dynamic_tile_server/test/test_data/china.geojson",
+ "lastIndexed": "2015-09-02T14:07:23Z"
+},
+{
+"user": "https://github.com/shamrock3ire",
+ "repository": "https://github.com/shamrock3ire/shamrock3ire.github.io",
+ "file": "https://github.com/shamrock3ire/shamrock3ire.github.io/blob/0b4f02e531f5ef8a386c75ce7df77b8b21bafefc/data/nurseryFacilities.geojson",
+ "lastIndexed": "2015-09-02T13:20:44Z"
+}]

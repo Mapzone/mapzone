@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/morganherlocker",
+ "repository": "https://github.com/morganherlocker/level-geography",
+ "file": "https://github.com/morganherlocker/level-geography/blob/4acc36c6662faea6c7641f9fd996c1c823a90f05/fixtures/points.geojson",
+ "lastIndexed": "2015-06-02T22:58:31Z"
+},
+{
+"user": "https://github.com/etiennesky",
+ "repository": "https://github.com/etiennesky/gdal-netcdf-old",
+ "file": "https://github.com/etiennesky/gdal-netcdf-old/blob/fb037b8777b0ab454d8d8f8ad685baddcaedea39/autotest/ogr/data/geometrycollection.geojson",
+ "lastIndexed": "2015-05-28T13:20:14Z"
+},
+{
+"user": "https://github.com/kknaveenkumar",
+ "repository": "https://github.com/kknaveenkumar/AlumniMaps",
+ "file": "https://github.com/kknaveenkumar/AlumniMaps/blob/6c64bc190bc64aed8996ce94988cab8c19f9f011/WebContent/map.geojson",
+ "lastIndexed": "2015-06-01T22:59:09Z"
+},
+{
+"user": "https://github.com/jackielu",
+ "repository": "https://github.com/jackielu/geojsontest",
+ "file": "https://github.com/jackielu/geojsontest/blob/66fb678b4086773771c713978c2029754f6f5fee/data/map.geojson",
+ "lastIndexed": "2015-06-03T17:09:42Z"
+},
+{
+"user": "https://github.com/davidpots",
+ "repository": "https://github.com/davidpots/geotunes",
+ "file": "https://github.com/davidpots/geotunes/blob/9997b227f6d9c67a119535031b1b8b3a03183480/004-api-geojson/example-single.geojson",
+ "lastIndexed": "2015-05-31T20:49:05Z"
+},
+{
+"user": "https://github.com/davidpots",
+ "repository": "https://github.com/davidpots/geotunes",
+ "file": "https://github.com/davidpots/geotunes/blob/9997b227f6d9c67a119535031b1b8b3a03183480/005-api-geojson-multiple-markers/example-single.geojson",
+ "lastIndexed": "2015-05-31T20:49:05Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/open-virginia-gis",
+ "file": "https://github.com/jalbertbowden/open-virginia-gis/blob/56e60ad1828b49347e326ac285d989ec19753f5e/county/albemarle/gis/police-stations/json/police_stations.geojson",
+ "lastIndexed": "2015-06-02T01:13:20Z"
+},
+{
+"user": "https://github.com/TheStoryExchange",
+ "repository": "https://github.com/TheStoryExchange/storyexchange",
+ "file": "https://github.com/TheStoryExchange/storyexchange/blob/310cf0d971372c585359c93158e0c2236bb17af1/mail.geojson",
+ "lastIndexed": "2015-06-03T00:08:32Z"
+},
+{
+"user": "https://github.com/mossowski",
+ "repository": "https://github.com/mossowski/NoSQL-lab",
+ "file": "https://github.com/mossowski/NoSQL-lab/blob/2f1f9cd827f53c426ad1459b28d18e69c5689e63/places/places2.geojson",
+ "lastIndexed": "2015-06-03T18:26:26Z"
+},
+{
+"user": "https://github.com/mossowski",
+ "repository": "https://github.com/mossowski/NoSQL-lab",
+ "file": "https://github.com/mossowski/NoSQL-lab/blob/2f1f9cd827f53c426ad1459b28d18e69c5689e63/places/places5.geojson",
+ "lastIndexed": "2015-06-03T18:26:26Z"
+}]

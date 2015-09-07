@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/kingye",
+ "repository": "https://github.com/kingye/ipatrol",
+ "file": "https://github.com/kingye/ipatrol/blob/762571bd8bbe09309255238b460a7590d74fce0d/src/test/resources/testdata/area/nanjing/jiangning/jiangning_1.geojson",
+ "lastIndexed": "2015-06-04T05:55:00Z"
+},
+{
+"user": "https://github.com/kingye",
+ "repository": "https://github.com/kingye/ipatrol",
+ "file": "https://github.com/kingye/ipatrol/blob/762571bd8bbe09309255238b460a7590d74fce0d/src/test/resources/testdata/area/nanjing/qixia/qixia_4.geojson",
+ "lastIndexed": "2015-06-04T05:55:01Z"
+},
+{
+"user": "https://github.com/kingye",
+ "repository": "https://github.com/kingye/ipatrol",
+ "file": "https://github.com/kingye/ipatrol/blob/762571bd8bbe09309255238b460a7590d74fce0d/src/test/resources/testdata/area/nanjing/xuanwu/xuanwu_1.geojson",
+ "lastIndexed": "2015-06-04T05:55:01Z"
+},
+{
+"user": "https://github.com/geomajor56",
+ "repository": "https://github.com/geomajor56/capecodbay",
+ "file": "https://github.com/geomajor56/capecodbay/blob/b63fe4ebe0927e54fce1916014e8bd7fc5da813a/data/monitor_stations.geojson",
+ "lastIndexed": "2015-06-01T23:08:17Z"
+},
+{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q5/arrosages.geojson",
+ "lastIndexed": "2015-06-05T18:25:52Z"
+},
+{
+"user": "https://github.com/informigis",
+ "repository": "https://github.com/informigis/OpendataOdense",
+ "file": "https://github.com/informigis/OpendataOdense/blob/8e9ad6d79603f70f480637725a4f9f85acdf0e73/Legepladser.geojson",
+ "lastIndexed": "2015-06-03T10:34:38Z"
+},
+{
+"user": "https://github.com/wnstn",
+ "repository": "https://github.com/wnstn/roadtripData",
+ "file": "https://github.com/wnstn/roadtripData/blob/4bc823dc752a68ea13a599c9a3f7414c9800c494/geojson/leg03Geo.geojson",
+ "lastIndexed": "2015-06-03T23:39:22Z"
+},
+{
+"user": "https://github.com/jonasmalacofilho",
+ "repository": "https://github.com/jonasmalacofilho/map-matching-lab",
+ "file": "https://github.com/jonasmalacofilho/map-matching-lab/blob/60ebfe6ede731451816f2a9fd3935f11625c0df4/lab/test/data/alpha/nodes.geojson",
+ "lastIndexed": "2015-06-01T06:58:19Z"
+},
+{
+"user": "https://github.com/adrozdowski",
+ "repository": "https://github.com/adrozdowski/NoSQL",
+ "file": "https://github.com/adrozdowski/NoSQL/blob/b4866dabb12659dbdd770dc577a5422f362aeb29/Images/Zapytanie1.geojson",
+ "lastIndexed": "2015-06-03T09:06:37Z"
+},
+{
+"user": "https://github.com/adrozdowski",
+ "repository": "https://github.com/adrozdowski/NoSQL",
+ "file": "https://github.com/adrozdowski/NoSQL/blob/b4866dabb12659dbdd770dc577a5422f362aeb29/Images/Zapytanie4.geojson",
+ "lastIndexed": "2015-06-03T09:06:37Z"
+}]

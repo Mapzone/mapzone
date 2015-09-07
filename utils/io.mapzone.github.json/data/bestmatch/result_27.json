@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/jonahadkins",
+ "repository": "https://github.com/jonahadkins/open-noland-trail",
+ "file": "https://github.com/jonahadkins/open-noland-trail/blob/0d27bb189b607fb51c930a2d8d1822028687235c/data/portable_restrooms.geojson",
+ "lastIndexed": "2015-06-02T11:37:59Z"
+},
+{
+"user": "https://github.com/jonahadkins",
+ "repository": "https://github.com/jonahadkins/open-noland-trail",
+ "file": "https://github.com/jonahadkins/open-noland-trail/blob/0d27bb189b607fb51c930a2d8d1822028687235c/data/vehicle_gates.geojson",
+ "lastIndexed": "2015-06-02T11:38:00Z"
+},
+{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q4/arrosages.geojson",
+ "lastIndexed": "2015-06-05T18:25:52Z"
+},
+{
+"user": "https://github.com/wdenejko",
+ "repository": "https://github.com/wdenejko/EDA-geoJSON",
+ "file": "https://github.com/wdenejko/EDA-geoJSON/blob/e560ca61db3891bc2097f040cfd6f4614745b3ec/zapytanie-3.geojson",
+ "lastIndexed": "2015-06-03T18:26:01Z"
+},
+{
+"user": "https://github.com/bwainstock",
+ "repository": "https://github.com/bwainstock/halfmile-geojson",
+ "file": "https://github.com/bwainstock/halfmile-geojson/blob/68fa7de1542131939ff1a83d2884aa1af6ab3d4f/OR/tracks/GeoJSON/OR_Sec_G_tracks.geojson",
+ "lastIndexed": "2015-06-05T12:27:10Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/va-data",
+ "file": "https://github.com/jalbertbowden/va-data/blob/ee4c63639421306120ac602af0bdb2300a7b6dfe/us-census/2000/demographic-profile/general-characteristics/2kh51.geojson",
+ "lastIndexed": "2015-05-31T13:15:11Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/va-data",
+ "file": "https://github.com/jalbertbowden/va-data/blob/ee4c63639421306120ac602af0bdb2300a7b6dfe/demographics/population/2011/pop-2011.geojson",
+ "lastIndexed": "2015-05-31T13:13:19Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/va-data",
+ "file": "https://github.com/jalbertbowden/va-data/blob/ee4c63639421306120ac602af0bdb2300a7b6dfe/demographics/population/2012/pop-2012.geojson",
+ "lastIndexed": "2015-05-31T13:13:19Z"
+},
+{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_site/geojson/parish-17.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+},
+{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_source/geojson/parish-17.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+}]

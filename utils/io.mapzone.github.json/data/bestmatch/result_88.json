@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/geojsonhint",
+ "file": "https://github.com/mapbox/geojsonhint/blob/f545e269509a93c4efb4b6051b431b43b76afca3/test/data/good/good-feature-with-string-id.geojson",
+ "lastIndexed": "2015-05-31T04:28:49Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/geojsonhint",
+ "file": "https://github.com/mapbox/geojsonhint/blob/f545e269509a93c4efb4b6051b431b43b76afca3/test/data/good/good-geometrycollection.geojson",
+ "lastIndexed": "2015-05-31T04:28:49Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/geojsonhint",
+ "file": "https://github.com/mapbox/geojsonhint/blob/f545e269509a93c4efb4b6051b431b43b76afca3/test/data/good/nullproperties.geojson",
+ "lastIndexed": "2015-05-31T04:28:49Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/geojsonhint",
+ "file": "https://github.com/mapbox/geojsonhint/blob/ef39c71f694dcdbcbfb52b4a95eaad65647d7101/test/data/bad/multiple_problems.geojson",
+ "lastIndexed": "2015-07-18T04:14:52Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/geojsonhint",
+ "file": "https://github.com/mapbox/geojsonhint/blob/e5b91018ce2c8ea603f5657b9c455f3c0aa95858/test/data/bad/badcoordtype.geojson",
+ "lastIndexed": "2015-07-18T03:35:08Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/geojsonhint",
+ "file": "https://github.com/mapbox/geojsonhint/blob/e5b91018ce2c8ea603f5657b9c455f3c0aa95858/test/data/bad/badfeatureid.geojson",
+ "lastIndexed": "2015-07-18T03:35:08Z"
+},
+{
+"user": "https://github.com/ArcherCraftStore",
+ "repository": "https://github.com/ArcherCraftStore/ArcherSys",
+ "file": "https://github.com/ArcherCraftStore/ArcherSys/blob/80536fb60344cfa5367fe4d1b59018812bbf7b44/Producktiviti/Globula/Specs/Data/test.geojson",
+ "lastIndexed": "2015-06-03T06:34:30Z"
+},
+{
+"user": "https://github.com/ajah",
+ "repository": "https://github.com/ajah/mapbox",
+ "file": "https://github.com/ajah/mapbox/blob/21ed2f01f7014f22d36c6051e0ca0eb87ca0acea/examples/example.geojson",
+ "lastIndexed": "2015-06-08T19:35:06Z"
+},
+{
+"user": "https://github.com/handygeospatial",
+ "repository": "https://github.com/handygeospatial/barefoot-cesium",
+ "file": "https://github.com/handygeospatial/barefoot-cesium/blob/afc0ac4213d9781ddcf63d128573794ccc6579c9/Specs/Data/test.geojson",
+ "lastIndexed": "2015-07-25T11:13:30Z"
+},
+{
+"user": "https://github.com/Ruagof",
+ "repository": "https://github.com/Ruagof/geo",
+ "file": "https://github.com/Ruagof/geo/blob/5ff10057419ab3fde9957f61a7d7f40afee0e456/map2.geojson",
+ "lastIndexed": "2015-06-02T10:52:59Z"
+}]

@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/213018.geojson",
+ "lastIndexed": "2015-08-31T00:48:45Z"
+},
+{
+"user": "https://github.com/colemanm",
+ "repository": "https://github.com/colemanm/orbit",
+ "file": "https://github.com/colemanm/orbit/blob/56e7cdb476c05c22f60a1f549c18a1766000539c/map.geojson",
+ "lastIndexed": "2015-05-30T19:31:28Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/north-carolina-data",
+ "file": "https://github.com/jalbertbowden/north-carolina-data/blob/b18304c656a99f702f66a1e15aab7a604f83cbc2/gis/flood-effective-iredell/geojson/D_WAVE_METH.geojson",
+ "lastIndexed": "2015-06-01T03:04:38Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/194012.geojson",
+ "lastIndexed": "2015-08-31T00:47:18Z"
+},
+{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q7/hydrants.geojson",
+ "lastIndexed": "2015-06-05T18:25:52Z"
+},
+{
+"user": "https://github.com/hock",
+ "repository": "https://github.com/hock/Manifest",
+ "file": "https://github.com/hock/Manifest/blob/d0785bde1b9964be2e43b5a546043d4245a49f25/tools/smaps/5927.geojson",
+ "lastIndexed": "2015-05-30T15:44:39Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/north-carolina-data",
+ "file": "https://github.com/jalbertbowden/north-carolina-data/blob/b18304c656a99f702f66a1e15aab7a604f83cbc2/gis/flood-effective-iredell/geojson/D_LN_TYP.geojson",
+ "lastIndexed": "2015-06-01T03:04:37Z"
+},
+{
+"user": "https://github.com/lucasgp",
+ "repository": "https://github.com/lucasgp/cait-tfg-web",
+ "file": "https://github.com/lucasgp/cait-tfg-web/blob/3dd528a657c2a9941376077a68ee8f51a846b2a6/soap-ui/TrailMontBlancRoute.geojson",
+ "lastIndexed": "2015-06-01T04:23:38Z"
+},
+{
+"user": "https://github.com/LluisRamon",
+ "repository": "https://github.com/LluisRamon/Introduccio-mapes-amb-R",
+ "file": "https://github.com/LluisRamon/Introduccio-mapes-amb-R/blob/6476ee59460376a4dfa7a025c0091a11b643b50f/Mapes%20dinamics/leafletMap.geojson",
+ "lastIndexed": "2015-06-02T00:10:35Z"
+},
+{
+"user": "https://github.com/sckott",
+ "repository": "https://github.com/sckott/soylocs",
+ "file": "https://github.com/sckott/soylocs/blob/50b6ed3d193eac8f4199d7e906a11ccb41b9593f/soylocs.geojson",
+ "lastIndexed": "2015-06-04T23:45:44Z"
+}]

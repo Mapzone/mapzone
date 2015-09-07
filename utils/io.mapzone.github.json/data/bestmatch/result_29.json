@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/264744.geojson",
+ "lastIndexed": "2015-08-31T00:53:05Z"
+},
+{
+"user": "https://github.com/yeesian",
+ "repository": "https://github.com/yeesian/Turf.jl",
+ "file": "https://github.com/yeesian/Turf.jl/blob/cba4333e11363eadf2ba80eda3af099e0bdf1ff7/test/geojson/elevation2.geojson",
+ "lastIndexed": "2015-06-04T13:56:04Z"
+},
+{
+"user": "https://github.com/yeesian",
+ "repository": "https://github.com/yeesian/Turf.jl",
+ "file": "https://github.com/yeesian/Turf.jl/blob/cba4333e11363eadf2ba80eda3af099e0bdf1ff7/test/geojson/tagPoints.geojson",
+ "lastIndexed": "2015-06-04T13:56:04Z"
+},
+{
+"user": "https://github.com/bwainstock",
+ "repository": "https://github.com/bwainstock/halfmile-geojson",
+ "file": "https://github.com/bwainstock/halfmile-geojson/blob/68fa7de1542131939ff1a83d2884aa1af6ab3d4f/OR/tracks/GeoJSON/OR_Sec_F_tracks.geojson",
+ "lastIndexed": "2015-06-05T12:27:10Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/markers.js",
+ "file": "https://github.com/mapbox/markers.js/blob/3feae089a43b4c10835bb0f147e8166333fc7b6a/example/random_geojson_points.geojson",
+ "lastIndexed": "2015-05-28T18:22:32Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/va-data",
+ "file": "https://github.com/jalbertbowden/va-data/blob/ee4c63639421306120ac602af0bdb2300a7b6dfe/foreclosure/va-county/va-county.geojson",
+ "lastIndexed": "2015-05-31T13:13:48Z"
+},
+{
+"user": "https://github.com/admoncho",
+ "repository": "https://github.com/admoncho/repositorio",
+ "file": "https://github.com/admoncho/repositorio/blob/8633bcec547b178c3a94959de4f20306bd50eb93/Practica1/puntos.geojson",
+ "lastIndexed": "2015-06-01T15:08:50Z"
+},
+{
+"user": "https://github.com/yoanngern",
+ "repository": "https://github.com/yoanngern/gospelcenter",
+ "file": "https://github.com/yoanngern/gospelcenter/blob/1cb4c348feedc7d8e8848021b3baf450ca0079d5/web/bases_jura.geojson",
+ "lastIndexed": "2015-08-03T15:46:03Z"
+},
+{
+"user": "https://github.com/dimitrius-brest",
+ "repository": "https://github.com/dimitrius-brest/selsovety-Brest-oblast",
+ "file": "https://github.com/dimitrius-brest/selsovety-Brest-oblast/blob/5f4ab751ac8c1e299cc1f79882db1248648b02ee/selsovety_Brest_raion.geojson",
+ "lastIndexed": "2015-08-14T20:50:23Z"
+},
+{
+"user": "https://github.com/jsalata",
+ "repository": "https://github.com/jsalata/NoSQL",
+ "file": "https://github.com/jsalata/NoSQL/blob/73eb298b5912b73d85eff16224a0c42ba2061f49/zapytania/zapytanie2.geojson",
+ "lastIndexed": "2015-06-03T20:46:34Z"
+}]

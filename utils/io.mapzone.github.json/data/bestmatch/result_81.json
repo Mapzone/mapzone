@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/cityofatlantadummy",
+ "repository": "https://github.com/cityofatlantadummy/fc-review",
+ "file": "https://github.com/cityofatlantadummy/fc-review/blob/86cbc2862533d69e89a144b1056a721f1c64b6ef/data/atl.geojson",
+ "lastIndexed": "2015-06-01T22:50:04Z"
+},
+{
+"user": "https://github.com/jonahadkins",
+ "repository": "https://github.com/jonahadkins/tuurf",
+ "file": "https://github.com/jonahadkins/tuurf/blob/8cd5691cfb3fdf9618bc495c3b74b8bae1c16db8/data/test.geojson",
+ "lastIndexed": "2015-06-04T14:38:49Z"
+},
+{
+"user": "https://github.com/mandoode",
+ "repository": "https://github.com/mandoode/cesuimTest",
+ "file": "https://github.com/mandoode/cesuimTest/blob/c2d180daca1c06a8e347d1887c78483192eee1f5/public-html/Specs/Data/test.geojson",
+ "lastIndexed": "2015-06-06T03:30:09Z"
+},
+{
+"user": "https://github.com/omniscale",
+ "repository": "https://github.com/omniscale/magnacarto",
+ "file": "https://github.com/omniscale/magnacarto/blob/f3ee3165db06d73ec1f154430273864b4dc19101/regression/cases/031-label-point/data.geojson",
+ "lastIndexed": "2015-07-21T07:22:49Z"
+},
+{
+"user": "https://github.com/omniscale",
+ "repository": "https://github.com/omniscale/magnacarto",
+ "file": "https://github.com/omniscale/magnacarto/blob/f3ee3165db06d73ec1f154430273864b4dc19101/regression/cases/032-label-point-dxdy/data.geojson",
+ "lastIndexed": "2015-07-21T07:22:49Z"
+},
+{
+"user": "https://github.com/omniscale",
+ "repository": "https://github.com/omniscale/magnacarto",
+ "file": "https://github.com/omniscale/magnacarto/blob/f3ee3165db06d73ec1f154430273864b4dc19101/regression/cases/033-label-fields/data.geojson",
+ "lastIndexed": "2015-07-21T07:22:49Z"
+},
+{
+"user": "https://github.com/omniscale",
+ "repository": "https://github.com/omniscale/magnacarto",
+ "file": "https://github.com/omniscale/magnacarto/blob/f3ee3165db06d73ec1f154430273864b4dc19101/regression/cases/040-point-svg/data.geojson",
+ "lastIndexed": "2015-07-21T07:22:49Z"
+},
+{
+"user": "https://github.com/omniscale",
+ "repository": "https://github.com/omniscale/magnacarto",
+ "file": "https://github.com/omniscale/magnacarto/blob/f3ee3165db06d73ec1f154430273864b4dc19101/regression/cases/041-marker-svg/data.geojson",
+ "lastIndexed": "2015-07-21T07:22:49Z"
+},
+{
+"user": "https://github.com/omniscale",
+ "repository": "https://github.com/omniscale/magnacarto",
+ "file": "https://github.com/omniscale/magnacarto/blob/f3ee3165db06d73ec1f154430273864b4dc19101/regression/cases/043-marker-ellipse/data.geojson",
+ "lastIndexed": "2015-07-21T07:22:49Z"
+},
+{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q9/hydrants.geojson",
+ "lastIndexed": "2015-06-05T18:25:52Z"
+}]

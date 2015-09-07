@@ -3,3 +3,5 @@ geojson_dsl/io.mapzone.geojson/.antlr-generator-3.2.0-patch.jar
 geojson_dsl/io.mapzone.geojson.tests/bin
 geojson_dsl/io.mapzone.geojson.tests/bin
 geojson_dsl/io.mapzone.geojson.ui/bin
+utils/io.mapzone.github.json/bin
+utils/io.mapzone.github.json/lib

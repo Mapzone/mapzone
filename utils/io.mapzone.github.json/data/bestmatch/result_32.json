@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/213007.geojson",
+ "lastIndexed": "2015-08-31T00:48:45Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/213015.geojson",
+ "lastIndexed": "2015-08-31T00:48:45Z"
+},
+{
+"user": "https://github.com/vdubr",
+ "repository": "https://github.com/vdubr/mapito_webmap",
+ "file": "https://github.com/vdubr/mapito_webmap/blob/986a0a09f3707019a03b6573591ff7b30dff9df0/examples/stable/data/blanice_points.geojson",
+ "lastIndexed": "2015-06-03T06:37:42Z"
+},
+{
+"user": "https://github.com/vdubr",
+ "repository": "https://github.com/vdubr/mapito_webmap",
+ "file": "https://github.com/vdubr/mapito_webmap/blob/986a0a09f3707019a03b6573591ff7b30dff9df0/examples/stable/data/vector/3857/point.geojson",
+ "lastIndexed": "2015-06-03T06:37:44Z"
+},
+{
+"user": "https://github.com/AdrienVH",
+ "repository": "https://github.com/AdrienVH/alveolus",
+ "file": "https://github.com/AdrienVH/alveolus/blob/7f0e2866389ecf6e672740d95617371e10762fe2/demo/demo.geojson",
+ "lastIndexed": "2015-06-03T02:07:13Z"
+},
+{
+"user": "https://github.com/Turfjs",
+ "repository": "https://github.com/Turfjs/turf-point-on-line",
+ "file": "https://github.com/Turfjs/turf-point-on-line/blob/3807292c7882389829c2c5bac68fe6da662f2390/fixtures/out/line2_out.geojson",
+ "lastIndexed": "2015-06-04T13:13:24Z"
+},
+{
+"user": "https://github.com/thomjoy",
+ "repository": "https://github.com/thomjoy/turftest",
+ "file": "https://github.com/thomjoy/turftest/blob/ae57677fb41a105a134f7caf32b9abf0e4aa6dbc/src/jspm_packages/npm/turf-point-on-line%401.0.2/fixtures/out/line2_out.geojson",
+ "lastIndexed": "2015-06-04T18:21:43Z"
+},
+{
+"user": "https://github.com/klatoszewski",
+ "repository": "https://github.com/klatoszewski/nosql",
+ "file": "https://github.com/klatoszewski/nosql/blob/8b34aaa9d0cca91d7511bbcca421a80d3f84d428/Zapytanie4.geojson",
+ "lastIndexed": "2015-06-03T20:12:00Z"
+},
+{
+"user": "https://github.com/thomjoy",
+ "repository": "https://github.com/thomjoy/turftest",
+ "file": "https://github.com/thomjoy/turftest/blob/ae57677fb41a105a134f7caf32b9abf0e4aa6dbc/src/jspm_packages/npm/turf-point-grid%402.0.0/fixtures/out/grid3.geojson",
+ "lastIndexed": "2015-06-04T18:21:43Z"
+},
+{
+"user": "https://github.com/kousu",
+ "repository": "https://github.com/kousu/modex",
+ "file": "https://github.com/kousu/modex/blob/37bc8e0d13a7ba9e28b4f770e468bfe4c2365f6e/assets/maps/meatplants_test.geojson",
+ "lastIndexed": "2015-06-01T13:47:48Z"
+}]

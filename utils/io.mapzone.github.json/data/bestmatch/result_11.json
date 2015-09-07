@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/smanousopoulos",
+ "repository": "https://github.com/smanousopoulos/PublicaMundi-MappingAPI",
+ "file": "https://github.com/smanousopoulos/PublicaMundi-MappingAPI/blob/0caf7944fc1772a4d5fe1cb8f09763544a6a78e3/lib/togeojson/test/data/wpt.geojson",
+ "lastIndexed": "2015-06-03T20:01:59Z"
+},
+{
+"user": "https://github.com/mycrazydog",
+ "repository": "https://github.com/mycrazydog/uncc-I485",
+ "file": "https://github.com/mycrazydog/uncc-I485/blob/48bc0ee2d47ec89617eb8d5650b40e4d0447d729/2011_points.geojson",
+ "lastIndexed": "2015-06-24T14:11:07Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/togeojson",
+ "file": "https://github.com/mapbox/togeojson/blob/52e0f767866f6bbf66d4cfee1fe0dbb460b2af4a/test/data/wpt.geojson",
+ "lastIndexed": "2015-05-29T23:23:24Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/togeojson",
+ "file": "https://github.com/mapbox/togeojson/blob/52e0f767866f6bbf66d4cfee1fe0dbb460b2af4a/test/data/wpt.gpx.geojson",
+ "lastIndexed": "2015-05-29T23:23:24Z"
+},
+{
+"user": "https://github.com/ardiscovery",
+ "repository": "https://github.com/ardiscovery/cambridge",
+ "file": "https://github.com/ardiscovery/cambridge/blob/252204c3157f63df578435232f7d87fa15b8257a/data/taxis-toronto/toronto-taxis.geojson",
+ "lastIndexed": "2015-06-04T15:16:29Z"
+},
+{
+"user": "https://github.com/spatialdev",
+ "repository": "https://github.com/spatialdev/spatialdev.github.io",
+ "file": "https://github.com/spatialdev/spatialdev.github.io/blob/e5fd5a0141aaa0cd78ff3c9fefa5bd8348bf6f25/fspmaps/data/cicos_2014.geojson",
+ "lastIndexed": "2015-06-01T19:49:53Z"
+},
+{
+"user": "https://github.com/dcasciotti",
+ "repository": "https://github.com/dcasciotti/json_points",
+ "file": "https://github.com/dcasciotti/json_points/blob/b573f797888be41c5dbcf80757436317503cd9f4/ucr.geojson",
+ "lastIndexed": "2015-05-31T02:32:11Z"
+},
+{
+"user": "https://github.com/PublicaMundi",
+ "repository": "https://github.com/PublicaMundi/MappingAPI",
+ "file": "https://github.com/PublicaMundi/MappingAPI/blob/1a2b0e12f952f75552d18300a8feb672dd6a91bf/lib/togeojson/test/data/wpt.geojson",
+ "lastIndexed": "2015-06-03T12:36:07Z"
+},
+{
+"user": "https://github.com/alrocar",
+ "repository": "https://github.com/alrocar/opendatasets",
+ "file": "https://github.com/alrocar/opendatasets/blob/d6f53ff05461e2097d85fa07b1fe1ff50f5ba9fe/datasets/europe/spain/valencia/barracas_de_fallas.geojson",
+ "lastIndexed": "2015-06-06T07:02:05Z"
+},
+{
+"user": "https://github.com/adrozdowski",
+ "repository": "https://github.com/adrozdowski/NoSQL",
+ "file": "https://github.com/adrozdowski/NoSQL/blob/b4866dabb12659dbdd770dc577a5422f362aeb29/PolishCities.geojson",
+ "lastIndexed": "2015-06-03T09:06:37Z"
+}]

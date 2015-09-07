@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/geojsonhint",
+ "file": "https://github.com/mapbox/geojsonhint/blob/f545e269509a93c4efb4b6051b431b43b76afca3/test/data/good/nullgeometry.geojson",
+ "lastIndexed": "2015-05-31T04:28:49Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/va-data",
+ "file": "https://github.com/jalbertbowden/va-data/blob/ee4c63639421306120ac602af0bdb2300a7b6dfe/dgif/trout-waters/stocked-trout-reaches/stocked-trout-reaches.geojson",
+ "lastIndexed": "2015-05-31T13:13:30Z"
+},
+{
+"user": "https://github.com/Turfjs",
+ "repository": "https://github.com/Turfjs/turf-to-features",
+ "file": "https://github.com/Turfjs/turf-to-features/blob/dbd59912880d4f11529d7029d3b35ef47b75d8de/test/fixtures/in/GeometryCollection.geojson",
+ "lastIndexed": "2015-06-05T04:32:41Z"
+},
+{
+"user": "https://github.com/Turfjs",
+ "repository": "https://github.com/Turfjs/turf-merge",
+ "file": "https://github.com/Turfjs/turf-merge/blob/d3b69383efd98890d61850d5119c0d4fd8a3bb2e/test/fixtures/in/mergeIn2.geojson",
+ "lastIndexed": "2015-06-02T07:09:55Z"
+},
+{
+"user": "https://github.com/thomjoy",
+ "repository": "https://github.com/thomjoy/turftest",
+ "file": "https://github.com/thomjoy/turftest/blob/ae57677fb41a105a134f7caf32b9abf0e4aa6dbc/src/jspm_packages/npm/turf-merge%401.0.2/test/fixtures/in/mergeIn2.geojson",
+ "lastIndexed": "2015-06-04T18:21:42Z"
+},
+{
+"user": "https://github.com/Turfjs",
+ "repository": "https://github.com/Turfjs/turf-to-features",
+ "file": "https://github.com/Turfjs/turf-to-features/blob/dbd59912880d4f11529d7029d3b35ef47b75d8de/test/fixtures/in/FeatureCollection.geojson",
+ "lastIndexed": "2015-06-05T04:32:41Z"
+},
+{
+"user": "https://github.com/Turfjs",
+ "repository": "https://github.com/Turfjs/turf-to-features",
+ "file": "https://github.com/Turfjs/turf-to-features/blob/dbd59912880d4f11529d7029d3b35ef47b75d8de/test/fixtures/out/GeometryCollection.geojson",
+ "lastIndexed": "2015-06-05T04:32:41Z"
+},
+{
+"user": "https://github.com/Turfjs",
+ "repository": "https://github.com/Turfjs/turf-to-features",
+ "file": "https://github.com/Turfjs/turf-to-features/blob/dbd59912880d4f11529d7029d3b35ef47b75d8de/test/fixtures/out/FeatureCollection.geojson",
+ "lastIndexed": "2015-06-05T04:32:41Z"
+},
+{
+"user": "https://github.com/informigis",
+ "repository": "https://github.com/informigis/data.kk.dk",
+ "file": "https://github.com/informigis/data.kk.dk/blob/489d7b070b4e2081623adfed1529726eeafd613a/stednavn_punkt.geojson",
+ "lastIndexed": "2015-06-03T03:47:25Z"
+},
+{
+"user": "https://github.com/dmtucker",
+ "repository": "https://github.com/dmtucker/vizit",
+ "file": "https://github.com/dmtucker/vizit/blob/f5bdc3ab0e77862a1b088858f882b2509dcd0339/data/example/empty/FeatureCollectionFeature.geojson",
+ "lastIndexed": "2015-06-01T12:52:47Z"
+}]

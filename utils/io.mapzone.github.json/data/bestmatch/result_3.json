@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/175064.geojson",
+ "lastIndexed": "2015-08-31T00:45:39Z"
+},
+{
+"user": "https://github.com/dmtucker",
+ "repository": "https://github.com/dmtucker/vizit",
+ "file": "https://github.com/dmtucker/vizit/blob/f5bdc3ab0e77862a1b088858f882b2509dcd0339/data/example/empty/Feature.geojson",
+ "lastIndexed": "2015-06-01T12:52:47Z"
+},
+{
+"user": "https://github.com/Turfjs",
+ "repository": "https://github.com/Turfjs/turf-to-geometries",
+ "file": "https://github.com/Turfjs/turf-to-geometries/blob/64375432e7e1804b720ec24dc0857e45bb47d569/test/fixtures/in/Feature.geojson",
+ "lastIndexed": "2015-06-05T04:33:22Z"
+},
+{
+"user": "https://github.com/rshk",
+ "repository": "https://github.com/rshk/geojson-experiments",
+ "file": "https://github.com/rshk/geojson-experiments/blob/fe9873878f086c1e1aca7125d921818d96417553/example2.geojson",
+ "lastIndexed": "2015-05-31T00:52:49Z"
+},
+{
+"user": "https://github.com/thomjoy",
+ "repository": "https://github.com/thomjoy/turftest",
+ "file": "https://github.com/thomjoy/turftest/blob/ae57677fb41a105a134f7caf32b9abf0e4aa6dbc/src/jspm_packages/npm/turf-grid%401.0.1/geojson/grid1.geojson",
+ "lastIndexed": "2015-06-04T18:21:41Z"
+},
+{
+"user": "https://github.com/thomjoy",
+ "repository": "https://github.com/thomjoy/turftest",
+ "file": "https://github.com/thomjoy/turftest/blob/ae57677fb41a105a134f7caf32b9abf0e4aa6dbc/src/jspm_packages/npm/turf-grid%401.0.1/geojson/grid2.geojson",
+ "lastIndexed": "2015-06-04T18:21:41Z"
+},
+{
+"user": "https://github.com/informigis",
+ "repository": "https://github.com/informigis/data.kk.dk",
+ "file": "https://github.com/informigis/data.kk.dk/blob/489d7b070b4e2081623adfed1529726eeafd613a/hundeomraader.geojson",
+ "lastIndexed": "2015-06-03T03:47:23Z"
+},
+{
+"user": "https://github.com/informigis",
+ "repository": "https://github.com/informigis/data.kk.dk",
+ "file": "https://github.com/informigis/data.kk.dk/blob/489d7b070b4e2081623adfed1529726eeafd613a/vandtappested.geojson",
+ "lastIndexed": "2015-06-03T03:47:26Z"
+},
+{
+"user": "https://github.com/Joe-xXx",
+ "repository": "https://github.com/Joe-xXx/gdal",
+ "file": "https://github.com/Joe-xXx/gdal/blob/73d0da311fea34f8a6ba9fd74640d0ab74566ce2/autotest/ogr/data/ogr_geojson_14.geojson",
+ "lastIndexed": "2015-05-29T11:46:14Z"
+},
+{
+"user": "https://github.com/OSGeo",
+ "repository": "https://github.com/OSGeo/gdal",
+ "file": "https://github.com/OSGeo/gdal/blob/67fd4d92f2e7afb604995c6e6846a61bfe3c36fd/autotest/ogr/data/ogr_geojson_14.geojson",
+ "lastIndexed": "2015-05-29T17:17:02Z"
+}]

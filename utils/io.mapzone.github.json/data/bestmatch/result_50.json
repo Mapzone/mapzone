@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/open-virginia-gis",
+ "file": "https://github.com/jalbertbowden/open-virginia-gis/blob/56e60ad1828b49347e326ac285d989ec19753f5e/geology/white-hall-quad-frederick-co-va-beckley-co-wva/json/SinkholePoints.geojson",
+ "lastIndexed": "2015-06-02T01:13:54Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/open-virginia-gis",
+ "file": "https://github.com/jalbertbowden/open-virginia-gis/blob/b5c9556aa7e2e6f2074ebeb36cf7ca8fd9675527/city/virginia-beach/norfolk-light-rail-stations/json/norfolk-light-rail-stations.geojson",
+ "lastIndexed": "2015-08-18T05:14:58Z"
+},
+{
+"user": "https://github.com/diogok",
+ "repository": "https://github.com/diogok/dwc-analysis",
+ "file": "https://github.com/diogok/dwc-analysis/blob/0df31931116764f0a90475e050f40e04c37dbbff/resources/occs1.geojson",
+ "lastIndexed": "2015-06-04T12:05:02Z"
+},
+{
+"user": "https://github.com/bwainstock",
+ "repository": "https://github.com/bwainstock/halfmile-geojson",
+ "file": "https://github.com/bwainstock/halfmile-geojson/blob/68fa7de1542131939ff1a83d2884aa1af6ab3d4f/CA/tracks/GeoJSON/CA_Sec_K_tracks.geojson",
+ "lastIndexed": "2015-06-05T12:27:05Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/154852.geojson",
+ "lastIndexed": "2015-08-31T00:44:06Z"
+},
+{
+"user": "https://github.com/KatiRG",
+ "repository": "https://github.com/KatiRG/ExtremeAttributes",
+ "file": "https://github.com/KatiRG/ExtremeAttributes/blob/8d5f5151dd9d692d088fd1fcbd678508cfec33ae/geojson/cities.geojson",
+ "lastIndexed": "2015-06-13T05:28:41Z"
+},
+{
+"user": "https://github.com/paulErdos",
+ "repository": "https://github.com/paulErdos/geoJSON",
+ "file": "https://github.com/paulErdos/geoJSON/blob/1b2fdc930e1e154dfeec9ba0193f338ba9a3eabe/bike_racks.geojson",
+ "lastIndexed": "2015-06-04T21:16:25Z"
+},
+{
+"user": "https://github.com/xguaita",
+ "repository": "https://github.com/xguaita/mtig-js",
+ "file": "https://github.com/xguaita/mtig-js/blob/938ccd956e27f656cdf93bfebe53eaa044e4454c/data/combate-siglo.geojson",
+ "lastIndexed": "2015-06-05T12:15:02Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/va-data",
+ "file": "https://github.com/jalbertbowden/va-data/blob/ee4c63639421306120ac602af0bdb2300a7b6dfe/foreclosure/va-county-place/va-county-place.geojson",
+ "lastIndexed": "2015-05-31T13:13:47Z"
+},
+{
+"user": "https://github.com/schlomm",
+ "repository": "https://github.com/schlomm/Random_Stuff",
+ "file": "https://github.com/schlomm/Random_Stuff/blob/d236efaef16190ae7f327f50826488a91ce6c935/examples/examples/keepsmiling.geojson",
+ "lastIndexed": "2015-06-02T03:23:10Z"
+}]

@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/213009.geojson",
+ "lastIndexed": "2015-08-31T00:48:45Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/213017.geojson",
+ "lastIndexed": "2015-08-31T00:48:45Z"
+},
+{
+"user": "https://github.com/Turfjs",
+ "repository": "https://github.com/Turfjs/turf-point-grid",
+ "file": "https://github.com/Turfjs/turf-point-grid/blob/4ae7f4aeb9ea23879ff2ef82d4f719b3a006991f/fixtures/out/grid4.geojson",
+ "lastIndexed": "2015-06-02T03:46:43Z"
+},
+{
+"user": "https://github.com/kscanne",
+ "repository": "https://github.com/kscanne/itweets-geodata",
+ "file": "https://github.com/kscanne/itweets-geodata/blob/ed0cb5bc656e711970302a077ffc5769ae2785ec/wagner/eire.geojson",
+ "lastIndexed": "2015-06-01T09:14:25Z"
+},
+{
+"user": "https://github.com/thomjoy",
+ "repository": "https://github.com/thomjoy/turftest",
+ "file": "https://github.com/thomjoy/turftest/blob/ae57677fb41a105a134f7caf32b9abf0e4aa6dbc/src/jspm_packages/npm/turf-point-grid%402.0.0/fixtures/out/grid1.geojson",
+ "lastIndexed": "2015-06-04T18:21:43Z"
+},
+{
+"user": "https://github.com/adleritech",
+ "repository": "https://github.com/adleritech/ockotv",
+ "file": "https://github.com/adleritech/ockotv/blob/befcf32508d60cc64a21c7a994269ce3a8dd6658/map.geojson",
+ "lastIndexed": "2015-06-05T07:02:42Z"
+},
+{
+"user": "https://github.com/geoinquietoscordoba",
+ "repository": "https://github.com/geoinquietoscordoba/opencyclecordoba",
+ "file": "https://github.com/geoinquietoscordoba/opencyclecordoba/blob/1eafdae79d497b7c47da32fabdf2f3d25dc14b7f/aparcamientos_bici.geojson",
+ "lastIndexed": "2015-06-01T08:18:30Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/234001.geojson",
+ "lastIndexed": "2015-08-31T00:50:24Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/264742.geojson",
+ "lastIndexed": "2015-08-31T00:53:05Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/264743.geojson",
+ "lastIndexed": "2015-08-31T00:53:05Z"
+}]

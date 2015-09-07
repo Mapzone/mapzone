@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/Turfjs",
+ "repository": "https://github.com/Turfjs/turf-tag",
+ "file": "https://github.com/Turfjs/turf-tag/blob/d4b45f3951544c901faf501cb2a8e4bbf8d23bdf/geojson/tagPoints.geojson",
+ "lastIndexed": "2015-06-01T19:45:26Z"
+},
+{
+"user": "https://github.com/adamkozuch",
+ "repository": "https://github.com/adamkozuch/Zadanie1",
+ "file": "https://github.com/adamkozuch/Zadanie1/blob/1f2d3812261d5d66b389eff8a85a1f4f3e73f735/j.geojson",
+ "lastIndexed": "2015-06-03T20:42:08Z"
+},
+{
+"user": "https://github.com/calvinmetcalf",
+ "repository": "https://github.com/calvinmetcalf/geojson-assert",
+ "file": "https://github.com/calvinmetcalf/geojson-assert/blob/c5daa527d03f2e127cf6787573a51cca5d259ef6/test/data/bad/stringcoord.geojson",
+ "lastIndexed": "2015-05-31T16:35:44Z"
+},
+{
+"user": "https://github.com/kingye",
+ "repository": "https://github.com/kingye/ipatrol",
+ "file": "https://github.com/kingye/ipatrol/blob/762571bd8bbe09309255238b460a7590d74fce0d/src/test/resources/testdata/area/nanjing/jianye/jianye_5.geojson",
+ "lastIndexed": "2015-06-04T05:55:01Z"
+},
+{
+"user": "https://github.com/kingye",
+ "repository": "https://github.com/kingye/ipatrol",
+ "file": "https://github.com/kingye/ipatrol/blob/762571bd8bbe09309255238b460a7590d74fce0d/src/test/resources/testdata/area/nanjing/gulou/gulou_2.geojson",
+ "lastIndexed": "2015-06-04T05:55:00Z"
+},
+{
+"user": "https://github.com/jaromero91",
+ "repository": "https://github.com/jaromero91/PracticasdeSIG",
+ "file": "https://github.com/jaromero91/PracticasdeSIG/blob/29f3f1965253ec89708e31d231c4898e2c5ac52f/practica%201/puntos.geojson",
+ "lastIndexed": "2015-06-01T15:16:51Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/399031.geojson",
+ "lastIndexed": "2015-08-31T01:05:41Z"
+},
+{
+"user": "https://github.com/sabas",
+ "repository": "https://github.com/sabas/GenoaPortStats",
+ "file": "https://github.com/sabas/GenoaPortStats/blob/6cd9ddf8dbcdc687c52577df00c81d9fb3341692/top61/data/coordinates.geojson",
+ "lastIndexed": "2015-06-01T02:43:59Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/326874.geojson",
+ "lastIndexed": "2015-08-31T01:00:44Z"
+},
+{
+"user": "https://github.com/wnstn",
+ "repository": "https://github.com/wnstn/roadtripData",
+ "file": "https://github.com/wnstn/roadtripData/blob/4bc823dc752a68ea13a599c9a3f7414c9800c494/geojson/cities.geojson",
+ "lastIndexed": "2015-06-03T23:39:22Z"
+}]

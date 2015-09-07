@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/george-sattler",
+ "repository": "https://github.com/george-sattler/samples",
+ "file": "https://github.com/george-sattler/samples/blob/4865a9ad5f59fededd6dd7ce028fe73e4ea7d56c/spatial/geojson/aus_capital_cities.geojson",
+ "lastIndexed": "2015-06-01T15:55:09Z"
+},
+{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q3/wcPublics.geojson",
+ "lastIndexed": "2015-06-05T18:25:52Z"
+},
+{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q8/hydrants.geojson",
+ "lastIndexed": "2015-06-05T18:25:52Z"
+},
+{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q3/fontaines.geojson",
+ "lastIndexed": "2015-06-05T18:25:52Z"
+},
+{
+"user": "https://github.com/npcasler",
+ "repository": "https://github.com/npcasler/ffdm-frontend",
+ "file": "https://github.com/npcasler/ffdm-frontend/blob/cf09444bf89b5c6f3e644b698fa353195b8eb0bb/vendor/cesium/Specs/Data/test.geojson",
+ "lastIndexed": "2015-06-04T16:00:01Z"
+},
+{
+"user": "https://github.com/george-oakling",
+ "repository": "https://github.com/george-oakling/GeoJSON",
+ "file": "https://github.com/george-oakling/GeoJSON/blob/96b70fe59042aee4c70bc0aeed4c434afd6b5258/docs/Point.geojson",
+ "lastIndexed": "2015-06-02T09:08:29Z"
+},
+{
+"user": "https://github.com/bwainstock",
+ "repository": "https://github.com/bwainstock/halfmile-geojson",
+ "file": "https://github.com/bwainstock/halfmile-geojson/blob/68fa7de1542131939ff1a83d2884aa1af6ab3d4f/CA/tracks/GeoJSON/CA_Sec_F_tracks.geojson",
+ "lastIndexed": "2015-06-05T12:27:04Z"
+},
+{
+"user": "https://github.com/petrushy",
+ "repository": "https://github.com/petrushy/CesiumWidget",
+ "file": "https://github.com/petrushy/CesiumWidget/blob/ed75c7e57f1fb5db69be60d9d961eb0105d58fb6/CesiumWidget/cesium/Specs/Data/test.geojson",
+ "lastIndexed": "2015-06-26T21:32:06Z"
+},
+{
+"user": "https://github.com/jaromero91",
+ "repository": "https://github.com/jaromero91/PracticasdeSIG",
+ "file": "https://github.com/jaromero91/PracticasdeSIG/blob/29f3f1965253ec89708e31d231c4898e2c5ac52f/practica%202/puntos.geojson",
+ "lastIndexed": "2015-06-01T15:16:51Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/cbay-vims-sav-data",
+ "file": "https://github.com/jalbertbowden/cbay-vims-sav-data/blob/7ca5901b35be6e76df67278500f50191b4808f76/data/1981/geojson/CNT.geojson",
+ "lastIndexed": "2015-06-01T04:55:26Z"
+}]

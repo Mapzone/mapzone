@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/spatialdev",
+ "repository": "https://github.com/spatialdev/q-cluster",
+ "file": "https://github.com/spatialdev/q-cluster/blob/a64a320fa8c5b6b726b901af20c4b4fa0663cd14/demo/data/nigeria-sample-small.geojson",
+ "lastIndexed": "2015-06-01T09:38:12Z"
+},
+{
+"user": "https://github.com/jsalata",
+ "repository": "https://github.com/jsalata/NoSQL",
+ "file": "https://github.com/jsalata/NoSQL/blob/73eb298b5912b73d85eff16224a0c42ba2061f49/zapytania/zapytanie3.geojson",
+ "lastIndexed": "2015-06-03T20:46:34Z"
+},
+{
+"user": "https://github.com/thenew",
+ "repository": "https://github.com/thenew/trvl",
+ "file": "https://github.com/thenew/trvl/blob/4e183785a9e653bd479995fca72da65566609adc/westerncanada/assets/points.geojson",
+ "lastIndexed": "2015-05-31T08:00:30Z"
+},
+{
+"user": "https://github.com/kcprashanth",
+ "repository": "https://github.com/kcprashanth/testmap",
+ "file": "https://github.com/kcprashanth/testmap/blob/1b5f3441eea72924ccda61e411e1d6ed0a484737/mapdata1.geojson",
+ "lastIndexed": "2015-06-02T18:21:55Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/148226.geojson",
+ "lastIndexed": "2015-08-31T00:43:37Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/chesapeake-bay-data",
+ "file": "https://github.com/jalbertbowden/chesapeake-bay-data/blob/b0f809eafe557a887d93acf6c0479da8e75e4a86/shoreline-inventories/westmoreland-county/westmoreland-county-2006/shapefile/geojson/west06_astru.geojson",
+ "lastIndexed": "2015-05-31T20:10:32Z"
+},
+{
+"user": "https://github.com/Turfjs",
+ "repository": "https://github.com/Turfjs/turf-buffer",
+ "file": "https://github.com/Turfjs/turf-buffer/blob/2ce85b201d6e2f1f512123818763e387cc8b7118/test/fixtures/in/Point.geojson",
+ "lastIndexed": "2015-06-02T05:58:35Z"
+},
+{
+"user": "https://github.com/moneymanagerex",
+ "repository": "https://github.com/moneymanagerex/moneymanagerex",
+ "file": "https://github.com/moneymanagerex/moneymanagerex/blob/c0e6554bca3cd5533d37a651b4c28ba3238260bf/developer.geojson",
+ "lastIndexed": "2015-07-26T15:57:04Z"
+},
+{
+"user": "https://github.com/openplacedatabase",
+ "repository": "https://github.com/openplacedatabase/validate",
+ "file": "https://github.com/openplacedatabase/validate/blob/0ddedd34a2c741caaae610fa425ada021fb26784/test/geojson/valid-featurecollection.geojson",
+ "lastIndexed": "2015-06-01T06:56:12Z"
+},
+{
+"user": "https://github.com/openplacedatabase",
+ "repository": "https://github.com/openplacedatabase/validate",
+ "file": "https://github.com/openplacedatabase/validate/blob/0ddedd34a2c741caaae610fa425ada021fb26784/test/geojson/valid-geometrycollection.geojson",
+ "lastIndexed": "2015-06-01T06:56:12Z"
+}]

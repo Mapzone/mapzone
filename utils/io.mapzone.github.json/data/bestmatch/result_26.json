@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_source/geojson/parish-16.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+},
+{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_source/geojson/parish-2.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+},
+{
+"user": "https://github.com/momosolo",
+ "repository": "https://github.com/momosolo/tokyo_geo",
+ "file": "https://github.com/momosolo/tokyo_geo/blob/f2c8d47f82a71ffa5a3f4d96c4a2d4a88896f674/0_5.geojson",
+ "lastIndexed": "2015-06-05T13:58:46Z"
+},
+{
+"user": "https://github.com/momosolo",
+ "repository": "https://github.com/momosolo/tokyo_geo",
+ "file": "https://github.com/momosolo/tokyo_geo/blob/f2c8d47f82a71ffa5a3f4d96c4a2d4a88896f674/1_0.geojson",
+ "lastIndexed": "2015-06-05T13:58:46Z"
+},
+{
+"user": "https://github.com/geowurster",
+ "repository": "https://github.com/geowurster/fio-buffer",
+ "file": "https://github.com/geowurster/fio-buffer/blob/2d8466caf3370530d8be11fc8862af5d88c51d17/tests/data/points.geojson",
+ "lastIndexed": "2015-07-23T03:22:26Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/213011.geojson",
+ "lastIndexed": "2015-08-31T00:48:45Z"
+},
+{
+"user": "https://github.com/jonahadkins",
+ "repository": "https://github.com/jonahadkins/open-noland-trail",
+ "file": "https://github.com/jonahadkins/open-noland-trail/blob/0d27bb189b607fb51c930a2d8d1822028687235c/data/fence_gates.geojson",
+ "lastIndexed": "2015-06-02T11:37:59Z"
+},
+{
+"user": "https://github.com/jonahadkins",
+ "repository": "https://github.com/jonahadkins/open-noland-trail",
+ "file": "https://github.com/jonahadkins/open-noland-trail/blob/0d27bb189b607fb51c930a2d8d1822028687235c/data/portable_restrooms.geojson",
+ "lastIndexed": "2015-06-02T11:37:59Z"
+},
+{
+"user": "https://github.com/jonahadkins",
+ "repository": "https://github.com/jonahadkins/open-noland-trail",
+ "file": "https://github.com/jonahadkins/open-noland-trail/blob/0d27bb189b607fb51c930a2d8d1822028687235c/data/vehicle_gates.geojson",
+ "lastIndexed": "2015-06-02T11:38:00Z"
+},
+{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q4/arrosages.geojson",
+ "lastIndexed": "2015-06-05T18:25:52Z"
+}]

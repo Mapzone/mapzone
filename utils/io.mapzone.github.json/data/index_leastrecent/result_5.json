@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/tmcw",
+ "repository": "https://github.com/tmcw/presentations",
+ "file": "https://github.com/tmcw/presentations/blob/2fe429ae318d7bf6be4bdb4a8ac4849461da8f36/turf-geodc/turf.geojson",
+ "lastIndexed": "2015-05-28T07:38:08Z"
+},
+{
+"user": "https://github.com/qgis",
+ "repository": "https://github.com/qgis/QGIS",
+ "file": "https://github.com/qgis/QGIS/blob/131ea80e449832f72b0e3f3e335444f2d9546cf4/python/plugins/processing/tests/data/polygons.geojson",
+ "lastIndexed": "2015-05-28T08:49:58Z"
+},
+{
+"user": "https://github.com/springmeyer",
+ "repository": "https://github.com/springmeyer/arc.js",
+ "file": "https://github.com/springmeyer/arc.js/blob/49f4c64eae52b677249c8cb6976d86d9abe18fc8/example/bezier/bezier.geojson",
+ "lastIndexed": "2015-05-28T10:09:35Z"
+},
+{
+"user": "https://github.com/springmeyer",
+ "repository": "https://github.com/springmeyer/arc.js",
+ "file": "https://github.com/springmeyer/arc.js/blob/49f4c64eae52b677249c8cb6976d86d9abe18fc8/example/tracks.geojson",
+ "lastIndexed": "2015-05-28T10:09:35Z"
+},
+{
+"user": "https://github.com/ebrelsford",
+ "repository": "https://github.com/ebrelsford/596acres",
+ "file": "https://github.com/ebrelsford/596acres/blob/d8c84911234e87667b512bb389218183896df3b5/fiveninesix/media/geojson/borough_centroids.geojson",
+ "lastIndexed": "2015-05-28T10:19:17Z"
+},
+{
+"user": "https://github.com/ebrelsford",
+ "repository": "https://github.com/ebrelsford/596acres",
+ "file": "https://github.com/ebrelsford/596acres/blob/d8c84911234e87667b512bb389218183896df3b5/fiveninesix/media/geojson/nycd_centroids.geojson",
+ "lastIndexed": "2015-05-28T10:19:17Z"
+},
+{
+"user": "https://github.com/ebrelsford",
+ "repository": "https://github.com/ebrelsford/596acres",
+ "file": "https://github.com/ebrelsford/596acres/blob/d8c84911234e87667b512bb389218183896df3b5/fiveninesix/media/geojson/nycc_centroids.geojson",
+ "lastIndexed": "2015-05-28T10:19:17Z"
+},
+{
+"user": "https://github.com/ebrelsford",
+ "repository": "https://github.com/ebrelsford/596acres",
+ "file": "https://github.com/ebrelsford/596acres/blob/d8c84911234e87667b512bb389218183896df3b5/fiveninesix/media/geojson/boroughs.geojson",
+ "lastIndexed": "2015-05-28T10:19:17Z"
+},
+{
+"user": "https://github.com/frewsxcv",
+ "repository": "https://github.com/frewsxcv/python-geojson",
+ "file": "https://github.com/frewsxcv/python-geojson/blob/5cd6b3e6add769d969edcc0e768e13fd38278aa8/tests/data.geojson",
+ "lastIndexed": "2015-05-28T10:55:27Z"
+},
+{
+"user": "https://github.com/alrocar",
+ "repository": "https://github.com/alrocar/POIProxy",
+ "file": "https://github.com/alrocar/POIProxy/blob/cb6f2458002a8831cd3daa178ac1538935c695d7/es.alrocar.poiproxy/src/test/resources/cloudmade_search.geojson",
+ "lastIndexed": "2015-05-28T11:27:22Z"
+}]

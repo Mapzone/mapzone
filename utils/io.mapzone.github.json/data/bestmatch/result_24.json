@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/adamkozuch",
+ "repository": "https://github.com/adamkozuch/Zadanie1",
+ "file": "https://github.com/adamkozuch/Zadanie1/blob/1f2d3812261d5d66b389eff8a85a1f4f3e73f735/j.geojson",
+ "lastIndexed": "2015-06-03T20:42:08Z"
+},
+{
+"user": "https://github.com/Turfjs",
+ "repository": "https://github.com/Turfjs/turf-concave",
+ "file": "https://github.com/Turfjs/turf-concave/blob/4c0bd898be695eac78dc82300c4e3ca06680cd03/fixtures/in/pts1.geojson",
+ "lastIndexed": "2015-06-02T07:09:05Z"
+},
+{
+"user": "https://github.com/thomjoy",
+ "repository": "https://github.com/thomjoy/turftest",
+ "file": "https://github.com/thomjoy/turftest/blob/ae57677fb41a105a134f7caf32b9abf0e4aa6dbc/src/jspm_packages/npm/turf-point-grid%402.0.0/fixtures/out/grid4.geojson",
+ "lastIndexed": "2015-06-04T18:21:43Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/213005.geojson",
+ "lastIndexed": "2015-08-31T00:48:45Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/213013.geojson",
+ "lastIndexed": "2015-08-31T00:48:45Z"
+},
+{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_site/geojson/parish-25.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+},
+{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_source/geojson/parish-25.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+},
+{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q5/hydrants.geojson",
+ "lastIndexed": "2015-06-05T18:25:52Z"
+},
+{
+"user": "https://github.com/informigis",
+ "repository": "https://github.com/informigis/OpendataOdense",
+ "file": "https://github.com/informigis/OpendataOdense/blob/8e9ad6d79603f70f480637725a4f9f85acdf0e73/Skoler.geojson",
+ "lastIndexed": "2015-06-03T10:34:38Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/north-carolina-data",
+ "file": "https://github.com/jalbertbowden/north-carolina-data/blob/b18304c656a99f702f66a1e15aab7a604f83cbc2/gis/flood-effective-iredell/geojson/D_BMAGEN.geojson",
+ "lastIndexed": "2015-06-01T03:04:37Z"
+}]

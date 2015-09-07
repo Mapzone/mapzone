@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/basic99",
+ "repository": "https://github.com/basic99/TLC-webmap",
+ "file": "https://github.com/basic99/TLC-webmap/blob/9fa03f8beace35c54dcc11323bf14e9585f1a898/data/Parking_locations.geojson",
+ "lastIndexed": "2015-05-29T22:39:30Z"
+},
+{
+"user": "https://github.com/jimmyhillis",
+ "repository": "https://github.com/jimmyhillis/letour-2014",
+ "file": "https://github.com/jimmyhillis/letour-2014/blob/bbb7be335aca79b64acc52a662a46fcaf71e1c7d/json/maps/stage-09.geojson",
+ "lastIndexed": "2015-06-02T14:22:41Z"
+},
+{
+"user": "https://github.com/umidev",
+ "repository": "https://github.com/umidev/mapnik-utils",
+ "file": "https://github.com/umidev/mapnik-utils/blob/f3caa6868dffa881970f08e9a56bbfdaf814c503/sandbox/testing/ogr_plugin/data/geometrycollection.geojson",
+ "lastIndexed": "2015-05-28T02:24:13Z"
+},
+{
+"user": "https://github.com/nls-oskari",
+ "repository": "https://github.com/nls-oskari/oskari",
+ "file": "https://github.com/nls-oskari/oskari/blob/21db98b126a19bda80818c25aa4f9bc4b5008ef8/libraries/cesium/cesium-b30/Specs/Data/test.geojson",
+ "lastIndexed": "2015-05-29T12:46:31Z"
+},
+{
+"user": "https://github.com/larsbutler",
+ "repository": "https://github.com/larsbutler/scratchpad",
+ "file": "https://github.com/larsbutler/scratchpad/blob/0f67b413f3d65bdcfe40255afcafcec610527865/feature_test.geojson",
+ "lastIndexed": "2015-05-31T02:32:53Z"
+},
+{
+"user": "https://github.com/hotoo",
+ "repository": "https://github.com/hotoo/life",
+ "file": "https://github.com/hotoo/life/blob/62af9e154bdd8af7638763e057c82d261cf7b628/hotoo.geojson",
+ "lastIndexed": "2015-08-05T07:14:14Z"
+},
+{
+"user": "https://github.com/kingye",
+ "repository": "https://github.com/kingye/ipatrol",
+ "file": "https://github.com/kingye/ipatrol/blob/762571bd8bbe09309255238b460a7590d74fce0d/src/test/resources/testdata/area/nanjing/qixia/qixia_3.geojson",
+ "lastIndexed": "2015-06-04T05:55:01Z"
+},
+{
+"user": "https://github.com/jonahadkins",
+ "repository": "https://github.com/jonahadkins/open-noland-trail",
+ "file": "https://github.com/jonahadkins/open-noland-trail/blob/0d27bb189b607fb51c930a2d8d1822028687235c/data/monuments.geojson",
+ "lastIndexed": "2015-06-02T11:37:59Z"
+},
+{
+"user": "https://github.com/MimiOnuoha",
+ "repository": "https://github.com/MimiOnuoha/Three-Friends",
+ "file": "https://github.com/MimiOnuoha/Three-Friends/blob/e0cfe5c97dd6745f85a4b6df4bc404599933d96d/friend1_version2.geojson",
+ "lastIndexed": "2015-06-04T17:53:35Z"
+},
+{
+"user": "https://github.com/bhell",
+ "repository": "https://github.com/bhell/bhell.github.com",
+ "file": "https://github.com/bhell/bhell.github.com/blob/e3be916c4c67a4363e7e216d89035ff87b8999ea/misc/point.geojson",
+ "lastIndexed": "2015-05-30T13:10:41Z"
+}]

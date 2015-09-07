@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/vol0054",
+ "repository": "https://github.com/vol0054/Prasak",
+ "file": "https://github.com/vol0054/Prasak/blob/e235375e04ae087e7be41e6fb53b1a358a8fb070/vendor/george-oakling/geojson/docs/Point.geojson",
+ "lastIndexed": "2015-06-04T19:49:02Z"
+},
+{
+"user": "https://github.com/bisury",
+ "repository": "https://github.com/bisury/geojson-test",
+ "file": "https://github.com/bisury/geojson-test/blob/6739df2b5addf2ff7924b065a4d3f467f75474ff/samples/recents.geojson",
+ "lastIndexed": "2015-07-01T04:28:23Z"
+},
+{
+"user": "https://github.com/harsha2010",
+ "repository": "https://github.com/harsha2010/magellan",
+ "file": "https://github.com/harsha2010/magellan/blob/f516b5ce99dde7298dbceba6311fd169fff03827/src/test/resources/geojson/point/point.geojson",
+ "lastIndexed": "2015-07-18T18:21:19Z"
+},
+{
+"user": "https://github.com/KoelnAPI",
+ "repository": "https://github.com/KoelnAPI/data",
+ "file": "https://github.com/KoelnAPI/data/blob/f7d4c198bfdea6fa2360e3c82256d1ccdfaf1115/data/geo-base/osm-pois/amenity/amenity_recycling.geojson",
+ "lastIndexed": "2015-05-31T00:49:01Z"
+},
+{
+"user": "https://github.com/mycrazydog",
+ "repository": "https://github.com/mycrazydog/uncc-I485",
+ "file": "https://github.com/mycrazydog/uncc-I485/blob/48bc0ee2d47ec89617eb8d5650b40e4d0447d729/2009_points.geojson",
+ "lastIndexed": "2015-06-24T14:11:07Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/362651.geojson",
+ "lastIndexed": "2015-08-31T01:02:53Z"
+},
+{
+"user": "https://github.com/alienlebarge",
+ "repository": "https://github.com/alienlebarge/school-bus-mezieres",
+ "file": "https://github.com/alienlebarge/school-bus-mezieres/blob/ba45522f2d989d0c179f9fbad2cb633831695af6/map.geojson",
+ "lastIndexed": "2015-05-31T13:40:07Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/3504.geojson",
+ "lastIndexed": "2015-08-31T01:02:08Z"
+},
+{
+"user": "https://github.com/andrewvolokitin",
+ "repository": "https://github.com/andrewvolokitin/mountainwave",
+ "file": "https://github.com/andrewvolokitin/mountainwave/blob/3285fe028ef78fb7bca74487e0f3a2fd92d4db4b/lakes.geojson",
+ "lastIndexed": "2015-08-12T03:06:11Z"
+},
+{
+"user": "https://github.com/odoe",
+ "repository": "https://github.com/odoe/monitoringlocator",
+ "file": "https://github.com/odoe/monitoringlocator/blob/a1179e67977b4b7f610658f8c9cd069943fb79fa/resources/json/monuments.geojson",
+ "lastIndexed": "2015-05-31T18:07:05Z"
+}]

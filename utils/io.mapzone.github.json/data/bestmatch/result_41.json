@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/largelymfs",
+ "repository": "https://github.com/largelymfs/IPMap",
+ "file": "https://github.com/largelymfs/IPMap/blob/42fccac57685f429f71df988b7487d6297fa3b82/test2.geojson",
+ "lastIndexed": "2015-06-04T01:32:45Z"
+},
+{
+"user": "https://github.com/mapmeld",
+ "repository": "https://github.com/mapmeld/dogetiles",
+ "file": "https://github.com/mapmeld/dogetiles/blob/48d60f780548adcc638f74bd230221f32db111bb/dogepoints.geojson",
+ "lastIndexed": "2015-06-01T12:13:08Z"
+},
+{
+"user": "https://github.com/Smata",
+ "repository": "https://github.com/Smata/Smata.github.io",
+ "file": "https://github.com/Smata/Smata.github.io/blob/ff005b5bb7a6c745b43d3bceb17a9232baa6d13a/Practica%2012/Archivos%20GeoJSON/Restaurantes.geojson",
+ "lastIndexed": "2015-06-02T06:45:30Z"
+},
+{
+"user": "https://github.com/mapnik",
+ "repository": "https://github.com/mapnik/test-data",
+ "file": "https://github.com/mapnik/test-data/blob/977c6fc1efd8bf44e9d15862a067f1406e39e29d/json/lines.geojson",
+ "lastIndexed": "2015-06-04T03:31:14Z"
+},
+{
+"user": "https://github.com/mapnik",
+ "repository": "https://github.com/mapnik/test-data",
+ "file": "https://github.com/mapnik/test-data/blob/977c6fc1efd8bf44e9d15862a067f1406e39e29d/json/null_feature.geojson",
+ "lastIndexed": "2015-06-04T03:31:14Z"
+},
+{
+"user": "https://github.com/tuwien-geoweb",
+ "repository": "https://github.com/tuwien-geoweb/g03-2014",
+ "file": "https://github.com/tuwien-geoweb/g03-2014/blob/6715061634300b3b170a037160a5016f724364af/Block4/mydata.geojson",
+ "lastIndexed": "2015-06-03T19:17:27Z"
+},
+{
+"user": "https://github.com/tuwien-geoweb",
+ "repository": "https://github.com/tuwien-geoweb/g03-2014",
+ "file": "https://github.com/tuwien-geoweb/g03-2014/blob/6715061634300b3b170a037160a5016f724364af/karte_block3/mydata.geojson",
+ "lastIndexed": "2015-06-03T19:17:27Z"
+},
+{
+"user": "https://github.com/tansengming",
+ "repository": "https://github.com/tansengming/api-me",
+ "file": "https://github.com/tansengming/api-me/blob/89fb123a01370034467a1f81b5cbd1bb157213b8/travels.geojson",
+ "lastIndexed": "2015-05-30T21:37:31Z"
+},
+{
+"user": "https://github.com/maackle",
+ "repository": "https://github.com/maackle/ILC-app",
+ "file": "https://github.com/maackle/ILC-app/blob/27f47c59239919a048c6cefe82d8b0086878f786/frontend/www/old-data/meck/json/brownfields.geojson",
+ "lastIndexed": "2015-05-31T05:28:51Z"
+},
+{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_site/geojson/parish-30.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+}]

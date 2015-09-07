@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/lukasz978",
+ "repository": "https://github.com/lukasz978/nosql",
+ "file": "https://github.com/lukasz978/nosql/blob/59fb4fa6611da1abc33597d142b0c3045b6fa96f/maps/mapa7.geojson",
+ "lastIndexed": "2015-06-03T18:40:42Z"
+},
+{
+"user": "https://github.com/lukasz978",
+ "repository": "https://github.com/lukasz978/nosql",
+ "file": "https://github.com/lukasz978/nosql/blob/59fb4fa6611da1abc33597d142b0c3045b6fa96f/maps/mapa8.geojson",
+ "lastIndexed": "2015-06-03T18:40:42Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/173642.geojson",
+ "lastIndexed": "2015-08-31T00:45:31Z"
+},
+{
+"user": "https://github.com/dezede",
+ "repository": "https://github.com/dezede/dezede",
+ "file": "https://github.com/dezede/dezede/blob/b82c4919b52eb3945fedf1a75f49db196c132b0b/libretto/templates/libretto/lieu_list.geojson",
+ "lastIndexed": "2015-05-30T13:02:06Z"
+},
+{
+"user": "https://github.com/yeesian",
+ "repository": "https://github.com/yeesian/Turf.jl",
+ "file": "https://github.com/yeesian/Turf.jl/blob/cba4333e11363eadf2ba80eda3af099e0bdf1ff7/test/geojson/fc.geojson",
+ "lastIndexed": "2015-06-04T13:56:04Z"
+},
+{
+"user": "https://github.com/jimmyhillis",
+ "repository": "https://github.com/jimmyhillis/letour-2014",
+ "file": "https://github.com/jimmyhillis/letour-2014/blob/bbb7be335aca79b64acc52a662a46fcaf71e1c7d/json/maps/stage-20.geojson",
+ "lastIndexed": "2015-06-02T14:22:41Z"
+},
+{
+"user": "https://github.com/saveveltri",
+ "repository": "https://github.com/saveveltri/mapeedTMP",
+ "file": "https://github.com/saveveltri/mapeedTMP/blob/c966ec1791604c62ec7484e2d0e05b5bcfd83551/map.geojson",
+ "lastIndexed": "2015-06-04T14:47:44Z"
+},
+{
+"user": "https://github.com/sskartvedt",
+ "repository": "https://github.com/sskartvedt/call_box",
+ "file": "https://github.com/sskartvedt/call_box/blob/5dc966d17fe9732f918a3d6f5d3b37ac221bbb6a/Utilities/JSON/potable_water/water_meter.geojson",
+ "lastIndexed": "2015-08-11T07:59:49Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/north-carolina-data",
+ "file": "https://github.com/jalbertbowden/north-carolina-data/blob/b18304c656a99f702f66a1e15aab7a604f83cbc2/gis/flood-effective-iredell/geojson/D_SURVEYTY.geojson",
+ "lastIndexed": "2015-06-01T03:04:37Z"
+},
+{
+"user": "https://github.com/HeardLibrary",
+ "repository": "https://github.com/HeardLibrary/workshops",
+ "file": "https://github.com/HeardLibrary/workshops/blob/a4d5e8af25aeeb89cfb1db872d3cadc0dc1720b1/HistoricMaps/scripts/berlin.geojson",
+ "lastIndexed": "2015-06-04T09:15:17Z"
+}]

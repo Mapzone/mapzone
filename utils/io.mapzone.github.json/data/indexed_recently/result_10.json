@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/kenef",
+ "repository": "https://github.com/kenef/ASF-Map",
+ "file": "https://github.com/kenef/ASF-Map/blob/8d5288b72c3c2ad55becd6163fc26094de85fee5/GeoJSON.tm2/GeoJSON.geojson",
+ "lastIndexed": "2015-09-03T03:25:14Z"
+},
+{
+"user": "https://github.com/kbsali-data",
+ "repository": "https://github.com/kbsali-data/gasolineras-espana-data",
+ "file": "https://github.com/kbsali-data/gasolineras-espana-data/blob/e362ce4d2590ef0f4fa01e1e992ff1e5f8cd8a33/geojson/latest/GLP.geojson",
+ "lastIndexed": "2015-09-03T03:21:08Z"
+},
+{
+"user": "https://github.com/kbsali-data",
+ "repository": "https://github.com/kbsali-data/gasolineras-espana-data",
+ "file": "https://github.com/kbsali-data/gasolineras-espana-data/blob/e362ce4d2590ef0f4fa01e1e992ff1e5f8cd8a33/geojson/latest/GOB.geojson",
+ "lastIndexed": "2015-09-03T03:21:08Z"
+},
+{
+"user": "https://github.com/kbsali-data",
+ "repository": "https://github.com/kbsali-data/gasolineras-espana-data",
+ "file": "https://github.com/kbsali-data/gasolineras-espana-data/blob/e362ce4d2590ef0f4fa01e1e992ff1e5f8cd8a33/geojson/latest/GOC.geojson",
+ "lastIndexed": "2015-09-03T03:21:08Z"
+},
+{
+"user": "https://github.com/kbsali-data",
+ "repository": "https://github.com/kbsali-data/gasolineras-espana-data",
+ "file": "https://github.com/kbsali-data/gasolineras-espana-data/blob/e362ce4d2590ef0f4fa01e1e992ff1e5f8cd8a33/geojson/latest/BIE.geojson",
+ "lastIndexed": "2015-09-03T03:21:08Z"
+},
+{
+"user": "https://github.com/kbsali-data",
+ "repository": "https://github.com/kbsali-data/gasolineras-espana-data",
+ "file": "https://github.com/kbsali-data/gasolineras-espana-data/blob/e362ce4d2590ef0f4fa01e1e992ff1e5f8cd8a33/geojson/latest/BIO.geojson",
+ "lastIndexed": "2015-09-03T03:21:08Z"
+},
+{
+"user": "https://github.com/kbsali-data",
+ "repository": "https://github.com/kbsali-data/gasolineras-espana-data",
+ "file": "https://github.com/kbsali-data/gasolineras-espana-data/blob/e362ce4d2590ef0f4fa01e1e992ff1e5f8cd8a33/geojson/latest/G95.geojson",
+ "lastIndexed": "2015-09-03T03:21:08Z"
+},
+{
+"user": "https://github.com/jacobmbr",
+ "repository": "https://github.com/jacobmbr/jacobmbr.github.io",
+ "file": "https://github.com/jacobmbr/jacobmbr.github.io/blob/62ccc4361afc027688902a8c76309395b928e84b/kliba-map-example/eastcoast_cities.geojson",
+ "lastIndexed": "2015-09-03T03:07:17Z"
+},
+{
+"user": "https://github.com/kartverket",
+ "repository": "https://github.com/kartverket/coverage",
+ "file": "https://github.com/kartverket/coverage/blob/4396285defb92cba9b415b6584b7505d54266e41/sjo/hovedserie.geojson",
+ "lastIndexed": "2015-09-03T02:23:07Z"
+},
+{
+"user": "https://github.com/ArcherSys",
+ "repository": "https://github.com/ArcherSys/ArcherSys",
+ "file": "https://github.com/ArcherSys/ArcherSys/blob/26ee28163a0cfbba39835d51b7169d4294b84ef7/Producktiviti/Globula/Specs/Data/test.geojson",
+ "lastIndexed": "2015-09-03T00:59:21Z"
+}]

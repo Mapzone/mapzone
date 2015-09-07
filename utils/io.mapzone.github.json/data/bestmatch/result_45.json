@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/geojsonhint",
+ "file": "https://github.com/mapbox/geojsonhint/blob/f545e269509a93c4efb4b6051b431b43b76afca3/test/data/bad/stringcoord.geojson",
+ "lastIndexed": "2015-05-31T04:28:49Z"
+},
+{
+"user": "https://github.com/gisbill",
+ "repository": "https://github.com/gisbill/JohnSnow",
+ "file": "https://github.com/gisbill/JohnSnow/blob/8a46d9b27ed17eae231b48de2777f7afd6de7e82/pumps.geojson",
+ "lastIndexed": "2015-06-04T00:07:43Z"
+},
+{
+"user": "https://github.com/artieeffim",
+ "repository": "https://github.com/artieeffim/map_test",
+ "file": "https://github.com/artieeffim/map_test/blob/6c5731903c383355192f69af30a06ae99787240e/med.geojson",
+ "lastIndexed": "2015-05-31T12:54:18Z"
+},
+{
+"user": "https://github.com/waagsociety",
+ "repository": "https://github.com/waagsociety/noordzuidlijn",
+ "file": "https://github.com/waagsociety/noordzuidlijn/blob/9e19f1db904e1c158deeeeb79de0bd6317e7174d/noordzuidlijn/stations.geojson",
+ "lastIndexed": "2015-06-05T11:19:04Z"
+},
+{
+"user": "https://github.com/morganherlocker",
+ "repository": "https://github.com/morganherlocker/gistmap-sample",
+ "file": "https://github.com/morganherlocker/gistmap-sample/blob/60285b7e736af4425775635e66198a1f0564324a/points1.geojson",
+ "lastIndexed": "2015-06-01T09:02:47Z"
+},
+{
+"user": "https://github.com/caperrault",
+ "repository": "https://github.com/caperrault/Animated_path_d3",
+ "file": "https://github.com/caperrault/Animated_path_d3/blob/6312d6ac927355da1d3c564e418745dff3ddf032/points.geojson",
+ "lastIndexed": "2015-06-05T02:01:08Z"
+},
+{
+"user": "https://github.com/PiotrCzapla",
+ "repository": "https://github.com/PiotrCzapla/geojson-test",
+ "file": "https://github.com/PiotrCzapla/geojson-test/blob/25c846632e4a40d74c24bd086b666dce7ec24665/bright-it-map.geojson",
+ "lastIndexed": "2015-07-28T10:16:46Z"
+},
+{
+"user": "https://github.com/bwainstock",
+ "repository": "https://github.com/bwainstock/halfmile-geojson",
+ "file": "https://github.com/bwainstock/halfmile-geojson/blob/68fa7de1542131939ff1a83d2884aa1af6ab3d4f/WA/tracks/GeoJSON/WA_Sec_I_tracks.geojson",
+ "lastIndexed": "2015-06-05T12:27:11Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/391517.geojson",
+ "lastIndexed": "2015-08-31T01:04:58Z"
+},
+{
+"user": "https://github.com/admora09",
+ "repository": "https://github.com/admora09/admora09.github.io",
+ "file": "https://github.com/admora09/admora09.github.io/blob/4b02ff18b8564e4cc58bc569cdeb1247f6b635ef/restaurantes2.geojson",
+ "lastIndexed": "2015-06-02T06:18:12Z"
+}]

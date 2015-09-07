@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/246397.geojson",
+ "lastIndexed": "2015-08-31T00:51:18Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/246398.geojson",
+ "lastIndexed": "2015-08-31T00:51:18Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/chesapeake-bay-data",
+ "file": "https://github.com/jalbertbowden/chesapeake-bay-data/blob/b0f809eafe557a887d93acf6c0479da8e75e4a86/shoreline-inventories/caroline-county/carolinevashpfiles/geojson/car_astru_point.geojson",
+ "lastIndexed": "2015-05-31T20:10:22Z"
+},
+{
+"user": "https://github.com/kingye",
+ "repository": "https://github.com/kingye/ipatrol",
+ "file": "https://github.com/kingye/ipatrol/blob/762571bd8bbe09309255238b460a7590d74fce0d/src/test/resources/testdata/area/nanjing/jiangning/jiangning_3.geojson",
+ "lastIndexed": "2015-06-04T05:55:00Z"
+},
+{
+"user": "https://github.com/tabachain",
+ "repository": "https://github.com/tabachain/geoJSON",
+ "file": "https://github.com/tabachain/geoJSON/blob/be0cd31774f477da08d94f9e4d71b616f2933c69/cinema.geojson",
+ "lastIndexed": "2015-06-01T02:07:58Z"
+},
+{
+"user": "https://github.com/jiyee",
+ "repository": "https://github.com/jiyee/Construction-Site-Safty",
+ "file": "https://github.com/jiyee/Construction-Site-Safty/blob/b44533a9e10c83025e90669825d6c9c8108efde9/app/www/data/geojson/JB-POINT.geojson",
+ "lastIndexed": "2015-06-03T08:19:43Z"
+},
+{
+"user": "https://github.com/saynis",
+ "repository": "https://github.com/saynis/somalia-maps",
+ "file": "https://github.com/saynis/somalia-maps/blob/75edf20a7a3ea2ea0ca78bda876386cc72130257/hargeisa-maps.geojson",
+ "lastIndexed": "2015-07-28T10:41:56Z"
+},
+{
+"user": "https://github.com/benbalter",
+ "repository": "https://github.com/benbalter/geojson-diff",
+ "file": "https://github.com/benbalter/geojson-diff/blob/651329bffd0f5169973fea56581ef15c9bb6eabf/test/fixtures/initial-commit-diff/added.geojson",
+ "lastIndexed": "2015-06-01T23:16:04Z"
+},
+{
+"user": "https://github.com/benbalter",
+ "repository": "https://github.com/benbalter/geojson-diff",
+ "file": "https://github.com/benbalter/geojson-diff/blob/651329bffd0f5169973fea56581ef15c9bb6eabf/test/fixtures/initial-commit-diff/after.geojson",
+ "lastIndexed": "2015-06-01T23:16:04Z"
+},
+{
+"user": "https://github.com/benbalter",
+ "repository": "https://github.com/benbalter/geojson-diff",
+ "file": "https://github.com/benbalter/geojson-diff/blob/651329bffd0f5169973fea56581ef15c9bb6eabf/test/fixtures/multipoint-diff/before.geojson",
+ "lastIndexed": "2015-06-01T23:16:04Z"
+}]

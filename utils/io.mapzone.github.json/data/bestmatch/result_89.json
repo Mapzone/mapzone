@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/ajah",
+ "repository": "https://github.com/ajah/mapbox",
+ "file": "https://github.com/ajah/mapbox/blob/21ed2f01f7014f22d36c6051e0ca0eb87ca0acea/examples/example.geojson",
+ "lastIndexed": "2015-06-08T19:35:06Z"
+},
+{
+"user": "https://github.com/handygeospatial",
+ "repository": "https://github.com/handygeospatial/barefoot-cesium",
+ "file": "https://github.com/handygeospatial/barefoot-cesium/blob/afc0ac4213d9781ddcf63d128573794ccc6579c9/Specs/Data/test.geojson",
+ "lastIndexed": "2015-07-25T11:13:30Z"
+},
+{
+"user": "https://github.com/Ruagof",
+ "repository": "https://github.com/Ruagof/geo",
+ "file": "https://github.com/Ruagof/geo/blob/5ff10057419ab3fde9957f61a7d7f40afee0e456/map2.geojson",
+ "lastIndexed": "2015-06-02T10:52:59Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/225080.geojson",
+ "lastIndexed": "2015-08-31T00:49:40Z"
+},
+{
+"user": "https://github.com/Technologic101",
+ "repository": "https://github.com/Technologic101/world_blog",
+ "file": "https://github.com/Technologic101/world_blog/blob/a22f603fa5152c93fd02130beb37a242196b8a47/js/cesium/Specs/Data/test.geojson",
+ "lastIndexed": "2015-06-05T15:21:37Z"
+},
+{
+"user": "https://github.com/vdubr",
+ "repository": "https://github.com/vdubr/mapito_webmap_examples",
+ "file": "https://github.com/vdubr/mapito_webmap_examples/blob/5d6e44fec3460d40765ade13eb8e2816241c8983/data/vector/3857/point.geojson",
+ "lastIndexed": "2015-06-03T19:39:54Z"
+},
+{
+"user": "https://github.com/vdubr",
+ "repository": "https://github.com/vdubr/mapito_webmap_examples",
+ "file": "https://github.com/vdubr/mapito_webmap_examples/blob/5d6e44fec3460d40765ade13eb8e2816241c8983/data/blanice_points.geojson",
+ "lastIndexed": "2015-06-03T19:39:51Z"
+},
+{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q7/grilles.geojson",
+ "lastIndexed": "2015-06-05T18:25:52Z"
+},
+{
+"user": "https://github.com/monolabor",
+ "repository": "https://github.com/monolabor/monolabor.github.io",
+ "file": "https://github.com/monolabor/monolabor.github.io/blob/781665717c8335820a04c7f0bffe3afe781856ee/spiegel.geojson",
+ "lastIndexed": "2015-06-01T13:28:15Z"
+},
+{
+"user": "https://github.com/ericzhangva",
+ "repository": "https://github.com/ericzhangva/Cesium_GMTI",
+ "file": "https://github.com/ericzhangva/Cesium_GMTI/blob/604aa6e94d7687080eb903a3b9a94915ef16e015/Specs/Data/test.geojson",
+ "lastIndexed": "2015-06-01T09:12:44Z"
+}]

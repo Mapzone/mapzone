@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/mapnik-omnivore",
+ "file": "https://github.com/mapbox/mapnik-omnivore/blob/116fa2e53f96d56bbbf5183013e6b5565666015c/test/fixtures/invalid-geojson/onefeature.geojson",
+ "lastIndexed": "2015-06-02T05:20:20Z"
+},
+{
+"user": "https://github.com/yoanngern",
+ "repository": "https://github.com/yoanngern/gospelcenter",
+ "file": "https://github.com/yoanngern/gospelcenter/blob/1cb4c348feedc7d8e8848021b3baf450ca0079d5/web/bases_lausanne.geojson",
+ "lastIndexed": "2015-08-03T15:46:03Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/open-virginia-gis",
+ "file": "https://github.com/jalbertbowden/open-virginia-gis/blob/56e60ad1828b49347e326ac285d989ec19753f5e/city/norfolk/st.-pauls-quadrant/st.-pauls-quadrant-norfolk-virginia.geojson",
+ "lastIndexed": "2015-06-02T01:12:41Z"
+},
+{
+"user": "https://github.com/browniefed",
+ "repository": "https://github.com/browniefed/Trimet_GeoJSON_Routes",
+ "file": "https://github.com/browniefed/Trimet_GeoJSON_Routes/blob/90520b8799c7adea849f07affcd6b7b0575adb1c/blank_geojson.geojson",
+ "lastIndexed": "2015-06-01T10:59:13Z"
+},
+{
+"user": "https://github.com/Turfjs",
+ "repository": "https://github.com/Turfjs/turf-merge",
+ "file": "https://github.com/Turfjs/turf-merge/blob/d3b69383efd98890d61850d5119c0d4fd8a3bb2e/test/fixtures/out/mergeIn2.geojson",
+ "lastIndexed": "2015-06-02T07:09:55Z"
+},
+{
+"user": "https://github.com/thomjoy",
+ "repository": "https://github.com/thomjoy/turftest",
+ "file": "https://github.com/thomjoy/turftest/blob/ae57677fb41a105a134f7caf32b9abf0e4aa6dbc/src/jspm_packages/npm/turf-merge%401.0.2/test/fixtures/out/mergeIn2.geojson",
+ "lastIndexed": "2015-06-04T18:21:42Z"
+},
+{
+"user": "https://github.com/tstork",
+ "repository": "https://github.com/tstork/mapstyle",
+ "file": "https://github.com/tstork/mapstyle/blob/a38744b3590ae7180d71abee0e1d4f30545290d6/munro.geojson",
+ "lastIndexed": "2015-05-31T03:05:56Z"
+},
+{
+"user": "https://github.com/openplacedatabase",
+ "repository": "https://github.com/openplacedatabase/validate",
+ "file": "https://github.com/openplacedatabase/validate/blob/0ddedd34a2c741caaae610fa425ada021fb26784/test/geojson/valid-feature.geojson",
+ "lastIndexed": "2015-06-01T06:56:12Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/north-carolina-data",
+ "file": "https://github.com/jalbertbowden/north-carolina-data/blob/b18304c656a99f702f66a1e15aab7a604f83cbc2/gis/flood-effective-iredell/geojson/D_COFIPS.geojson",
+ "lastIndexed": "2015-06-01T03:04:37Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/geojsonhint",
+ "file": "https://github.com/mapbox/geojsonhint/blob/f545e269509a93c4efb4b6051b431b43b76afca3/test/data/good/good-feature.geojson",
+ "lastIndexed": "2015-05-31T04:28:49Z"
+}]

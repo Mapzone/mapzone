@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/jseppi",
+ "repository": "https://github.com/jseppi/koop-geojson-file",
+ "file": "https://github.com/jseppi/koop-geojson-file/blob/d39f2fbf2685f130bc421d5a4e994d6b26bc86d9/test/test-file.geojson",
+ "lastIndexed": "2015-06-06T06:25:23Z"
+},
+{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q4/hydrants.geojson",
+ "lastIndexed": "2015-06-05T18:25:52Z"
+},
+{
+"user": "https://github.com/saveveltri",
+ "repository": "https://github.com/saveveltri/mapeed",
+ "file": "https://github.com/saveveltri/mapeed/blob/537513ad91b79d9a9ec0407dc859f7dc84fdc301/map.geojson",
+ "lastIndexed": "2015-06-04T15:01:45Z"
+},
+{
+"user": "https://github.com/Turfjs",
+ "repository": "https://github.com/Turfjs/turf-point-grid",
+ "file": "https://github.com/Turfjs/turf-point-grid/blob/4ae7f4aeb9ea23879ff2ef82d4f719b3a006991f/fixtures/out/grid1.geojson",
+ "lastIndexed": "2015-06-02T03:46:43Z"
+},
+{
+"user": "https://github.com/jonahadkins",
+ "repository": "https://github.com/jonahadkins/open-noland-trail",
+ "file": "https://github.com/jonahadkins/open-noland-trail/blob/0d27bb189b607fb51c930a2d8d1822028687235c/data/trail_maps.geojson",
+ "lastIndexed": "2015-06-02T11:38:00Z"
+},
+{
+"user": "https://github.com/procrastinatio",
+ "repository": "https://github.com/procrastinatio/map-examples",
+ "file": "https://github.com/procrastinatio/map-examples/blob/b4a33c1c6066d4cc8a45aab42822fb9312ccba18/examples/data/earthquake.geojson",
+ "lastIndexed": "2015-05-28T18:32:18Z"
+},
+{
+"user": "https://github.com/alatoszewski",
+ "repository": "https://github.com/alatoszewski/nosql-mongo",
+ "file": "https://github.com/alatoszewski/nosql-mongo/blob/ff5740414fd1a9dcea9b4d1868d5fce3f5426f27/Zapytanie4.geojson",
+ "lastIndexed": "2015-06-03T19:57:09Z"
+},
+{
+"user": "https://github.com/majdal",
+ "repository": "https://github.com/majdal/modex",
+ "file": "https://github.com/majdal/modex/blob/94eb31f36801bd1ef8e87123a6de0474d4bd61c5/assets/maps/meatplants_test.geojson",
+ "lastIndexed": "2015-05-31T21:02:17Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/va-data",
+ "file": "https://github.com/jalbertbowden/va-data/blob/ee4c63639421306120ac602af0bdb2300a7b6dfe/kids/statewide-all/statewide-all.geojson",
+ "lastIndexed": "2015-05-31T13:13:56Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/321448.geojson",
+ "lastIndexed": "2015-08-31T01:00:06Z"
+}]

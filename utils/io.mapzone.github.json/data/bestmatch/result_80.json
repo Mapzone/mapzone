@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/GAKUEngine",
+ "repository": "https://github.com/GAKUEngine/gaku",
+ "file": "https://github.com/GAKUEngine/gaku/blob/61d56f3f89710b181d1dae145f78e594c264fd32/doc/authorized_service_providers/Genshin/genshin_okazaki_office.geojson",
+ "lastIndexed": "2015-05-28T20:47:57Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/213006.geojson",
+ "lastIndexed": "2015-08-31T00:48:45Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/213014.geojson",
+ "lastIndexed": "2015-08-31T00:48:45Z"
+},
+{
+"user": "https://github.com/bast",
+ "repository": "https://github.com/bast/dirac-map",
+ "file": "https://github.com/bast/dirac-map/blob/973c1e6f75c38393e798628a02f920224256a431/developers.geojson",
+ "lastIndexed": "2015-06-03T11:53:43Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/mapbox.js",
+ "file": "https://github.com/mapbox/mapbox.js/blob/9b51329cddc977b0988f2a0f5ddeb4578e5ca8cd/docs/assets/data/example.geojson",
+ "lastIndexed": "2015-05-29T08:08:04Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/mapbox.js",
+ "file": "https://github.com/mapbox/mapbox.js/blob/9b51329cddc977b0988f2a0f5ddeb4578e5ca8cd/test/manual/example.geojson",
+ "lastIndexed": "2015-05-29T08:08:04Z"
+},
+{
+"user": "https://github.com/stormxuwz",
+ "repository": "https://github.com/stormxuwz/stormxuwz.github.com",
+ "file": "https://github.com/stormxuwz/stormxuwz.github.com/blob/3a04c547007c41ca85c08e9d51e8cf7466791dbe/map.geojson",
+ "lastIndexed": "2015-05-31T03:44:24Z"
+},
+{
+"user": "https://github.com/PythonicNinja",
+ "repository": "https://github.com/PythonicNinja/agregacje3",
+ "file": "https://github.com/PythonicNinja/agregacje3/blob/466b86b01a879d3a8840abf1636eccea7341575e/speedcam/speed_cams_around_pomorskie.geojson",
+ "lastIndexed": "2015-06-03T20:05:06Z"
+},
+{
+"user": "https://github.com/PythonicNinja",
+ "repository": "https://github.com/PythonicNinja/agregacje3",
+ "file": "https://github.com/PythonicNinja/agregacje3/blob/466b86b01a879d3a8840abf1636eccea7341575e/speedcam/speed_cams_pomorskie.geojson",
+ "lastIndexed": "2015-06-03T20:05:06Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/markers.js",
+ "file": "https://github.com/mapbox/markers.js/blob/3feae089a43b4c10835bb0f147e8166333fc7b6a/test/mock/onepoint.geojson",
+ "lastIndexed": "2015-05-28T18:22:32Z"
+}]

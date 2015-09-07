@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/OSGeo",
+ "repository": "https://github.com/OSGeo/gdal",
+ "file": "https://github.com/OSGeo/gdal/blob/67fd4d92f2e7afb604995c6e6846a61bfe3c36fd/autotest/ogr/data/geometrycollection.geojson",
+ "lastIndexed": "2015-05-29T17:17:01Z"
+},
+{
+"user": "https://github.com/nikolcev",
+ "repository": "https://github.com/nikolcev/nikolcev.github.io",
+ "file": "https://github.com/nikolcev/nikolcev.github.io/blob/77c9fa5c83ec9d591310c45605ca8687b2bf0927/Specs/Data/test.geojson",
+ "lastIndexed": "2015-06-05T07:13:00Z"
+},
+{
+"user": "https://github.com/xs2maverick",
+ "repository": "https://github.com/xs2maverick/c44d734",
+ "file": "https://github.com/xs2maverick/c44d734/blob/36d820a935cf96e4668a04408edb5a2f2bef7328/sites/all/libraries/mapbox.js2.js/docs/assets/data/example.geojson",
+ "lastIndexed": "2015-06-05T07:25:07Z"
+},
+{
+"user": "https://github.com/xs2maverick",
+ "repository": "https://github.com/xs2maverick/c44d734",
+ "file": "https://github.com/xs2maverick/c44d734/blob/36d820a935cf96e4668a04408edb5a2f2bef7328/sites/all/libraries/mapbox.js2.js/test/manual/example.geojson",
+ "lastIndexed": "2015-06-05T07:25:07Z"
+},
+{
+"user": "https://github.com/xs2maverick",
+ "repository": "https://github.com/xs2maverick/c44d734",
+ "file": "https://github.com/xs2maverick/c44d734/blob/36d820a935cf96e4668a04408edb5a2f2bef7328/sites/all/libraries/mapboxGIT/docs/assets/data/example.geojson",
+ "lastIndexed": "2015-06-05T07:25:07Z"
+},
+{
+"user": "https://github.com/xs2maverick",
+ "repository": "https://github.com/xs2maverick/c44d734",
+ "file": "https://github.com/xs2maverick/c44d734/blob/36d820a935cf96e4668a04408edb5a2f2bef7328/sites/all/libraries/mapboxGIT/test/manual/example.geojson",
+ "lastIndexed": "2015-06-05T07:25:07Z"
+},
+{
+"user": "https://github.com/geojson",
+ "repository": "https://github.com/geojson/draft-geojson",
+ "file": "https://github.com/geojson/draft-geojson/blob/363152a33812f7207fafdc7aeee867fad77e9e47/js/example_02_c.geojson",
+ "lastIndexed": "2015-05-30T17:31:15Z"
+},
+{
+"user": "https://github.com/geojson",
+ "repository": "https://github.com/geojson/draft-geojson",
+ "file": "https://github.com/geojson/draft-geojson/blob/363152a33812f7207fafdc7aeee867fad77e9e47/js/example_appendix_07.geojson",
+ "lastIndexed": "2015-05-30T17:31:15Z"
+},
+{
+"user": "https://github.com/geografa",
+ "repository": "https://github.com/geografa/scavengeo",
+ "file": "https://github.com/geografa/scavengeo/blob/67054f7f88367de78ee92709733d6b9ab0ce4ca6/_site/geojson/hamilton-2013-11-15.geojson",
+ "lastIndexed": "2015-05-31T12:01:11Z"
+},
+{
+"user": "https://github.com/geografa",
+ "repository": "https://github.com/geografa/scavengeo",
+ "file": "https://github.com/geografa/scavengeo/blob/67054f7f88367de78ee92709733d6b9ab0ce4ca6/geojson/hamilton-2013-11-15.geojson",
+ "lastIndexed": "2015-05-31T12:01:11Z"
+}]

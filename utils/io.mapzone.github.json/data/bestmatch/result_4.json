@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/craigds",
+ "repository": "https://github.com/craigds/osgeo-gdal",
+ "file": "https://github.com/craigds/osgeo-gdal/blob/df65430fe4517890b55a874c6110b7c98bc77128/autotest/ogr/data/ogr_geojson_14.geojson",
+ "lastIndexed": "2015-05-28T20:13:43Z"
+},
+{
+"user": "https://github.com/etiennesky",
+ "repository": "https://github.com/etiennesky/gdal-netcdf-old",
+ "file": "https://github.com/etiennesky/gdal-netcdf-old/blob/fb037b8777b0ab454d8d8f8ad685baddcaedea39/autotest/ogr/data/ogr_geojson_14.geojson",
+ "lastIndexed": "2015-05-28T13:20:14Z"
+},
+{
+"user": "https://github.com/aashish24",
+ "repository": "https://github.com/aashish24/gdal-cmake",
+ "file": "https://github.com/aashish24/gdal-cmake/blob/d00996ea017ce9c574d77dfa417f21ce70e8428e/autotest/ogr/data/ogr_geojson_14.geojson",
+ "lastIndexed": "2015-05-28T16:30:54Z"
+},
+{
+"user": "https://github.com/rouault",
+ "repository": "https://github.com/rouault/gdal",
+ "file": "https://github.com/rouault/gdal/blob/67fd4d92f2e7afb604995c6e6846a61bfe3c36fd/autotest/ogr/data/ogr_geojson_14.geojson",
+ "lastIndexed": "2015-05-29T17:16:56Z"
+},
+{
+"user": "https://github.com/chai2010",
+ "repository": "https://github.com/chai2010/gdal_autotest",
+ "file": "https://github.com/chai2010/gdal_autotest/blob/0e77a2d021153eb6976579049a9ef9b71b79a7ef/ogr/data/ogr_geojson_14.geojson",
+ "lastIndexed": "2015-06-06T07:43:01Z"
+},
+{
+"user": "https://github.com/Ambrosys",
+ "repository": "https://github.com/Ambrosys/gdal",
+ "file": "https://github.com/Ambrosys/gdal/blob/a5e2a7b54db955bd061ebfc6d69aa2dd752b120c/autotest/ogr/data/ogr_geojson_14.geojson",
+ "lastIndexed": "2015-05-31T15:04:57Z"
+},
+{
+"user": "https://github.com/samalone",
+ "repository": "https://github.com/samalone/gdal-ios",
+ "file": "https://github.com/samalone/gdal-ios/blob/beed159503ce550c4e09edb25c168c8344e8998c/autotest/ogr/data/ogr_geojson_14.geojson",
+ "lastIndexed": "2015-06-03T14:36:18Z"
+},
+{
+"user": "https://github.com/informigis",
+ "repository": "https://github.com/informigis/OpendataOdense",
+ "file": "https://github.com/informigis/OpendataOdense/blob/8e9ad6d79603f70f480637725a4f9f85acdf0e73/Bycykelparkering.geojson",
+ "lastIndexed": "2015-06-03T10:34:38Z"
+},
+{
+"user": "https://github.com/etiennesky",
+ "repository": "https://github.com/etiennesky/gdal-netcdf",
+ "file": "https://github.com/etiennesky/gdal-netcdf/blob/84f2b9e95f15991f060d0469076cd1f3e961ee43/autotest/ogr/data/ogr_geojson_14.geojson",
+ "lastIndexed": "2015-05-28T14:56:25Z"
+},
+{
+"user": "https://github.com/rouault",
+ "repository": "https://github.com/rouault/gdal_coverage",
+ "file": "https://github.com/rouault/gdal_coverage/blob/4e90207b9184deef03ddad2fc653f166129c16c3/autotest/ogr/data/ogr_geojson_14.geojson",
+ "lastIndexed": "2015-05-31T02:09:39Z"
+}]

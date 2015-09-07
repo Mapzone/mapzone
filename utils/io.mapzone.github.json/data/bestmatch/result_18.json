@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_site/geojson/parish-28.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+},
+{
+"user": "https://github.com/hofstra",
+ "repository": "https://github.com/hofstra/itinerary",
+ "file": "https://github.com/hofstra/itinerary/blob/7f9d0dd2c18eedbb3db3ab350bd995beea538ec1/_source/geojson/parish-28.geojson",
+ "lastIndexed": "2015-06-04T01:05:12Z"
+},
+{
+"user": "https://github.com/wnstn",
+ "repository": "https://github.com/wnstn/roadtripData",
+ "file": "https://github.com/wnstn/roadtripData/blob/4bc823dc752a68ea13a599c9a3f7414c9800c494/geojson/leg09Geo.geojson",
+ "lastIndexed": "2015-06-03T23:39:22Z"
+},
+{
+"user": "https://github.com/carlosjtacon",
+ "repository": "https://github.com/carlosjtacon/alcabikes",
+ "file": "https://github.com/carlosjtacon/alcabikes/blob/a385f1bd4aa042cee7231fa363059099c10ec0ef/parking.geojson",
+ "lastIndexed": "2015-08-23T15:26:48Z"
+},
+{
+"user": "https://github.com/jimmyhillis",
+ "repository": "https://github.com/jimmyhillis/letour-2014",
+ "file": "https://github.com/jimmyhillis/letour-2014/blob/bbb7be335aca79b64acc52a662a46fcaf71e1c7d/json/maps/stage-07.geojson",
+ "lastIndexed": "2015-06-02T14:22:41Z"
+},
+{
+"user": "https://github.com/jimmyhillis",
+ "repository": "https://github.com/jimmyhillis/letour-2014",
+ "file": "https://github.com/jimmyhillis/letour-2014/blob/bbb7be335aca79b64acc52a662a46fcaf71e1c7d/json/maps/stage-16.geojson",
+ "lastIndexed": "2015-06-02T14:22:41Z"
+},
+{
+"user": "https://github.com/informigis",
+ "repository": "https://github.com/informigis/data.kk.dk",
+ "file": "https://github.com/informigis/data.kk.dk/blob/489d7b070b4e2081623adfed1529726eeafd613a/springv_drikkep.geojson",
+ "lastIndexed": "2015-06-03T03:47:25Z"
+},
+{
+"user": "https://github.com/nerox",
+ "repository": "https://github.com/nerox/Pracitca2",
+ "file": "https://github.com/nerox/Pracitca2/blob/62747ba02dd0857ab70091625f03ca8f74ec55eb/puntos.geojson",
+ "lastIndexed": "2015-06-01T15:16:35Z"
+},
+{
+"user": "https://github.com/thomjoy",
+ "repository": "https://github.com/thomjoy/turftest",
+ "file": "https://github.com/thomjoy/turftest/blob/ae57677fb41a105a134f7caf32b9abf0e4aa6dbc/src/jspm_packages/npm/turf-concave%401.1.3/fixtures/in/pts1.geojson",
+ "lastIndexed": "2015-06-04T18:21:41Z"
+},
+{
+"user": "https://github.com/jimmyhillis",
+ "repository": "https://github.com/jimmyhillis/letour-2014",
+ "file": "https://github.com/jimmyhillis/letour-2014/blob/bbb7be335aca79b64acc52a662a46fcaf71e1c7d/json/maps/stage-02.geojson",
+ "lastIndexed": "2015-06-02T14:22:41Z"
+}]

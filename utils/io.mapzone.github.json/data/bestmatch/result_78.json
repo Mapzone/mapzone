@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/rouault",
+ "repository": "https://github.com/rouault/gdal",
+ "file": "https://github.com/rouault/gdal/blob/67fd4d92f2e7afb604995c6e6846a61bfe3c36fd/autotest/ogr/data/geometrycollection.geojson",
+ "lastIndexed": "2015-05-29T17:16:55Z"
+},
+{
+"user": "https://github.com/KoelnAPI",
+ "repository": "https://github.com/KoelnAPI/data",
+ "file": "https://github.com/KoelnAPI/data/blob/f7d4c198bfdea6fa2360e3c82256d1ccdfaf1115/data/geo-base/osm-pois/amenity/amenity_post_office.geojson",
+ "lastIndexed": "2015-05-31T00:49:00Z"
+},
+{
+"user": "https://github.com/OSMBuildings",
+ "repository": "https://github.com/OSMBuildings/Portal",
+ "file": "https://github.com/OSMBuildings/Portal/blob/feadd1703955d9dc8bfaa28c4d566ca83dbdc0ce/server/data/map.geojson",
+ "lastIndexed": "2015-05-31T22:28:01Z"
+},
+{
+"user": "https://github.com/sebaestel",
+ "repository": "https://github.com/sebaestel/asadojs",
+ "file": "https://github.com/sebaestel/asadojs/blob/63a680d12b484a618d984f4897c4d8551357e2d9/location.geojson",
+ "lastIndexed": "2015-08-24T20:45:55Z"
+},
+{
+"user": "https://github.com/PracticeMinder",
+ "repository": "https://github.com/PracticeMinder/practiceminder-data-utils",
+ "file": "https://github.com/PracticeMinder/practiceminder-data-utils/blob/d56bc7c6d4991e45bdefe1b59133cae158a77ea8/geo/data.small.geojson",
+ "lastIndexed": "2015-05-31T18:54:22Z"
+},
+{
+"user": "https://github.com/TheClimateCorporation",
+ "repository": "https://github.com/TheClimateCorporation/geojson-schema",
+ "file": "https://github.com/TheClimateCorporation/geojson-schema/blob/37c319685da1785b8b0b76650fc7cd5ab19753e6/test-resources/geojson_examples/feature.geojson",
+ "lastIndexed": "2015-06-03T04:27:38Z"
+},
+{
+"user": "https://github.com/TheClimateCorporation",
+ "repository": "https://github.com/TheClimateCorporation/geojson-schema",
+ "file": "https://github.com/TheClimateCorporation/geojson-schema/blob/37c319685da1785b8b0b76650fc7cd5ab19753e6/test-resources/geojson_examples/geometrycollection.geojson",
+ "lastIndexed": "2015-06-03T04:27:38Z"
+},
+{
+"user": "https://github.com/tuwien-geoweb",
+ "repository": "https://github.com/tuwien-geoweb/g09-2014",
+ "file": "https://github.com/tuwien-geoweb/g09-2014/blob/74491dc0f6ba8f6f315549a69083c8478ca22f05/block3/mydata.geojson",
+ "lastIndexed": "2015-06-03T19:17:27Z"
+},
+{
+"user": "https://github.com/tuwien-geoweb",
+ "repository": "https://github.com/tuwien-geoweb/g09-2014",
+ "file": "https://github.com/tuwien-geoweb/g09-2014/blob/74491dc0f6ba8f6f315549a69083c8478ca22f05/block4/mydata.geojson",
+ "lastIndexed": "2015-06-03T19:17:27Z"
+},
+{
+"user": "https://github.com/thomjoy",
+ "repository": "https://github.com/thomjoy/turftest",
+ "file": "https://github.com/thomjoy/turftest/blob/ae57677fb41a105a134f7caf32b9abf0e4aa6dbc/src/jspm_packages/npm/mapbox.js%402.1.5/docs/assets/data/example.geojson",
+ "lastIndexed": "2015-06-04T18:21:33Z"
+}]

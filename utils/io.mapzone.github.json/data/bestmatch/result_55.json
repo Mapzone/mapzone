@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/kingye",
+ "repository": "https://github.com/kingye/ipatrol",
+ "file": "https://github.com/kingye/ipatrol/blob/762571bd8bbe09309255238b460a7590d74fce0d/src/test/resources/testdata/area/nanjing/xuanwu/xuanwu_4.geojson",
+ "lastIndexed": "2015-06-04T05:55:01Z"
+},
+{
+"user": "https://github.com/dfeusse",
+ "repository": "https://github.com/dfeusse/dfeusse.github.io",
+ "file": "https://github.com/dfeusse/dfeusse.github.io/blob/203b1c7236635c61df7df07ed6ca316cab78a4c0/projectFolders/citiesGlobe/data.geojson",
+ "lastIndexed": "2015-06-02T04:21:44Z"
+},
+{
+"user": "https://github.com/AdrienVH",
+ "repository": "https://github.com/AdrienVH/araneum",
+ "file": "https://github.com/AdrienVH/araneum/blob/d148f7ba2d38db9d6125a15eb68c1e93a12df8f4/demo/demo.geojson",
+ "lastIndexed": "2015-06-03T08:21:46Z"
+},
+{
+"user": "https://github.com/kristjanjansen",
+ "repository": "https://github.com/kristjanjansen/kuressaare",
+ "file": "https://github.com/kristjanjansen/kuressaare/blob/1a7fb4d5446e347675d314d50ebfec9690d8ad26/data/out/geojson/historic_photos.geojson",
+ "lastIndexed": "2015-05-31T06:45:36Z"
+},
+{
+"user": "https://github.com/informigis",
+ "repository": "https://github.com/informigis/data.kk.dk",
+ "file": "https://github.com/informigis/data.kk.dk/blob/489d7b070b4e2081623adfed1529726eeafd613a/taelling_ophold.geojson",
+ "lastIndexed": "2015-06-03T03:47:25Z"
+},
+{
+"user": "https://github.com/kpennell",
+ "repository": "https://github.com/kpennell/oaxacahikingmap",
+ "file": "https://github.com/kpennell/oaxacahikingmap/blob/7e04464f91f2cc3fe704dfe618b897fb8214bd9c/data/cafes.geojson",
+ "lastIndexed": "2015-06-01T08:58:39Z"
+},
+{
+"user": "https://github.com/datadesk",
+ "repository": "https://github.com/datadesk/lametro-maps",
+ "file": "https://github.com/datadesk/lametro-maps/blob/a21e75d0664437670f1c5c98718ec27cda30315c/planned-expo-line-extension-stops.geojson",
+ "lastIndexed": "2015-05-31T02:18:12Z"
+},
+{
+"user": "https://github.com/kgryte",
+ "repository": "https://github.com/kgryte/gists",
+ "file": "https://github.com/kgryte/gists/blob/228b666664dea0f8785a9d967c52ff0b2d8f2acb/d3/maps/places/data/data.geojson",
+ "lastIndexed": "2015-05-30T20:43:20Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/209869.geojson",
+ "lastIndexed": "2015-08-31T00:48:25Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/209872.geojson",
+ "lastIndexed": "2015-08-31T00:48:25Z"
+}]

@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/informigis",
+ "repository": "https://github.com/informigis/OpendataOdense",
+ "file": "https://github.com/informigis/OpendataOdense/blob/8e9ad6d79603f70f480637725a4f9f85acdf0e73/Parkeringspladser.geojson",
+ "lastIndexed": "2015-06-03T10:34:38Z"
+},
+{
+"user": "https://github.com/josacord92",
+ "repository": "https://github.com/josacord92/Tarea2SIGJoseCarlosAlvarezUmana200967010",
+ "file": "https://github.com/josacord92/Tarea2SIGJoseCarlosAlvarezUmana200967010/blob/aedcb89e76b8dce683804777985e3223b08bdf46/geojson/intersecciones/intersecciones.geojson",
+ "lastIndexed": "2015-06-01T17:36:45Z"
+},
+{
+"user": "https://github.com/geoiq",
+ "repository": "https://github.com/geoiq/gc_data",
+ "file": "https://github.com/geoiq/gc_data/blob/8ef3395b0550638286857d361d2f7a8ad3fb9672/datasets/217011.geojson",
+ "lastIndexed": "2015-08-31T00:49:01Z"
+},
+{
+"user": "https://github.com/jalbertbowden",
+ "repository": "https://github.com/jalbertbowden/open-virginia-gis",
+ "file": "https://github.com/jalbertbowden/open-virginia-gis/blob/56e60ad1828b49347e326ac285d989ec19753f5e/geology/va-csv/geojson/varef-link.geojson",
+ "lastIndexed": "2015-06-02T01:13:53Z"
+},
+{
+"user": "https://github.com/ahdinosaur",
+ "repository": "https://github.com/ahdinosaur/community",
+ "file": "https://github.com/ahdinosaur/community/blob/e729cacd04396d032df98ad4dca8a9dc3fe78272/community.geojson",
+ "lastIndexed": "2015-06-02T01:44:41Z"
+},
+{
+"user": "https://github.com/alrocar",
+ "repository": "https://github.com/alrocar/POIProxy",
+ "file": "https://github.com/alrocar/POIProxy/blob/cb6f2458002a8831cd3daa178ac1538935c695d7/es.alrocar.poiproxy/src/test/resources/cloudmade_search.geojson",
+ "lastIndexed": "2015-05-28T11:27:22Z"
+},
+{
+"user": "https://github.com/craigds",
+ "repository": "https://github.com/craigds/osgeo-gdal",
+ "file": "https://github.com/craigds/osgeo-gdal/blob/df65430fe4517890b55a874c6110b7c98bc77128/autotest/ogr/data/geometrycollection.geojson",
+ "lastIndexed": "2015-05-28T20:13:43Z"
+},
+{
+"user": "https://github.com/Madzia",
+ "repository": "https://github.com/Madzia/NoSQL_UG",
+ "file": "https://github.com/Madzia/NoSQL_UG/blob/3d557cd25438f76e482f336288e59d7cd8d931b5/files/near_mapa.geojson",
+ "lastIndexed": "2015-06-03T14:13:00Z"
+},
+{
+"user": "https://github.com/Fedoraman42",
+ "repository": "https://github.com/Fedoraman42/NICTA-NDSU-National-Map",
+ "file": "https://github.com/Fedoraman42/NICTA-NDSU-National-Map/blob/99cdf0d212e749ed6d94ba9a11af92120725013b/cesium/Specs/Data/test.geojson",
+ "lastIndexed": "2015-06-04T12:18:49Z"
+},
+{
+"user": "https://github.com/Turfjs",
+ "repository": "https://github.com/Turfjs/turf-line-slice",
+ "file": "https://github.com/Turfjs/turf-line-slice/blob/b3985348bf3ea1507107641ad59ec1533023285b/fixtures/out/line2_out.geojson",
+ "lastIndexed": "2015-06-04T11:45:57Z"
+}]

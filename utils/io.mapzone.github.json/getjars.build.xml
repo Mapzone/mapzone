@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<!--
+ This Ant build script downloads dependency jars needed by thus bundle
+ from several maven repositories on the net. See copy.properties for
+ general settings. 
+ -->
+<project name="io.mapzone.github.json" default="build" basedir="." 
+    xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+	<description>Download open source jars from the internet.</description>
+
+	<property name="lib" value="${basedir}${file.separator}lib" />
+	<property name="libs_src_dir" value="${lib}${file.separator}sources" />
+	<property environment="env" />
+	<dirname file="${ant.file.refresh_libs}" property="refresh_libs_basedir" />
+    <available property="already_downloaded" type="dir" file="${lib}" />
+
+    <!--
+      Download maven-xxx.jar and define task
+      -->
+    <property name="maven_download_dir" value="${user.home}/.m2/repository/org/apache/maven/maven-ant-tasks/2.0.10/" />
+    <available property="bootstrapped" type="dir" file="${maven_download_dir}" />
+
+    <target name="bootstrap" unless="bootstrapped">
+        <mkdir dir="${maven_download_dir}" />
+        <get src="http://central.maven.org/maven2/org/apache/maven/maven-ant-tasks/2.0.10/maven-ant-tasks-2.0.10.jar" 
+             dest="${maven_download_dir}" />
+    </target>
+    
+    <target name="init" depends="bootstrap">
+        <taskdef uri="antlib:org.apache.maven.artifact.ant" resource="org/apache/maven/artifact/ant/antlib.xml">
+            <classpath>
+                <fileset dir="${maven_download_dir}">
+                    <include name="*.jar" />
+                </fileset>
+            </classpath>
+        </taskdef>
+    </target>
+
+    <!--
+      Target: clean
+      -->
+	<target name="clean" description="deletes external libraries folder">
+		<delete dir="${lib}" />
+	</target>
+
+    <!--
+      Target: load_m2_deps
+      -->
+	<target name="load_m2_deps" depends="init" unless="already_downloaded">
+	    <!-- remote repositories as defined in copy.properties -->
+	    <artifact:remoteRepository id="central.repository" url="http://repo1.maven.org/maven2" />
+	    <artifact:localRepository id="local.repository" path="${user.home}/.m2/repository" />
+
+		<artifact:dependencies filesetId="dependency.fileset" sourcesFilesetId="sources.dependency.fileset" versionsId="dependency.versions" useScope="runtime">
+			<localRepository refid="local.repository" />
+            <remoteRepository refid="central.repository" />
+
+            <dependency groupId="org.pegdown" artifactId="pegdown" version="1.4.2"/>
+			
+			<!-- image transformation -->
+			<dependency groupId="com.google.code.gson" artifactId="gson" version="2.3.1"/>
+			<dependency groupId="org.jboss.resteasy" artifactId="resteasy-client" version="3.0.12.Final"/>
+			<dependency groupId="com.google.guava" artifactId="guava" version="18.0"/>
+		</artifact:dependencies>
+	</target>
+
+    <!--
+      Target: print
+      -->
+	<target name="print" depends="load_m2_deps">
+		<description>Print the dependencies the jars</description>
+
+		<path id="jars">
+			<fileset refid="dependency.fileset" />
+		</path>
+		<property name="myjars" refid="jars" />
+		<echo message="Jars = ${myjars}" />
+		<!--propertyregex property="listjars"
+		              input="${myjars}"
+		              regexp="\;"
+		              select="{$line.seperator}"
+		              casesensitive="false" /-->
+		<echo message="Jars = ${myjars}" />
+		<echo message="Jars = ${listjars}" />
+	</target>
+
+	<target name="build" depends="create, load_m2_deps" unless="already_downloaded">
+		<description>Download the jars - used by a manual "clean"</description>
+
+		<!-- (flat) copy all downloaded JARs (classes) to plugin directory ${lib} -->
+		<copy todir="${lib}" verbose="true" flatten="true">
+			<fileset refid="dependency.fileset" />
+		</copy>
+
+		<!-- (flat) copy downloaded source JARs (sources) to plugin directory ${libs_src_dir} -->
+		<copy todir="${libs_src_dir}" flatten="true" verbose="true">
+			<fileset refid="sources.dependency.fileset" />
+			<chainedmapper>
+				<mapper type="flatten" />
+				<globmapper from="*-sources.jar" to="*-sources.zip" />
+			</chainedmapper>
+		</copy>
+		<!-- <eclipse.refreshLocal resource="net.refractions.udig.libs/lib" depth="infinite"/>	-->
+	</target>
+
+	<target name="create" unless="already_downloaded">
+		<description>creates the lib directory if needed</description>
+		<mkdir dir="${lib}" />
+		<mkdir dir="${libs_src_dir}" />
+	</target>
+
+	<!-- Used by headless build please make sure this does everthing from clean to download and fix etc.. -->
+	<target name="full-build" depends="clean, build" description="clean and build">
+	</target>
+
+</project>

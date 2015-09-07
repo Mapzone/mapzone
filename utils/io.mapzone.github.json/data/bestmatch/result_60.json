@@ -1,0 +1,61 @@
+
+[{
+"user": "https://github.com/mapmeld",
+ "repository": "https://github.com/mapmeld/mapplz-ruby",
+ "file": "https://github.com/mapmeld/mapplz-ruby/blob/e3ecc2eff7f6cc44c858e15982e6e2ff5735c6e4/spec/data/data.geojson",
+ "lastIndexed": "2015-06-02T13:49:21Z"
+},
+{
+"user": "https://github.com/Joe-xXx",
+ "repository": "https://github.com/Joe-xXx/gdal",
+ "file": "https://github.com/Joe-xXx/gdal/blob/73d0da311fea34f8a6ba9fd74640d0ab74566ce2/autotest/ogr/data/geometrycollection.geojson",
+ "lastIndexed": "2015-05-29T11:46:14Z"
+},
+{
+"user": "https://github.com/yvonneleow",
+ "repository": "https://github.com/yvonneleow/yvonneleow.github.io",
+ "file": "https://github.com/yvonneleow/yvonneleow.github.io/blob/2c745159fc94182f8b4ec5208530082c86e1330f/locations.geojson",
+ "lastIndexed": "2015-06-01T13:28:14Z"
+},
+{
+"user": "https://github.com/jonahadkins",
+ "repository": "https://github.com/jonahadkins/open-noland-trail",
+ "file": "https://github.com/jonahadkins/open-noland-trail/blob/0d27bb189b607fb51c930a2d8d1822028687235c/data/picnic_shelter.geojson",
+ "lastIndexed": "2015-06-02T11:37:59Z"
+},
+{
+"user": "https://github.com/jonahadkins",
+ "repository": "https://github.com/jonahadkins/open-noland-trail",
+ "file": "https://github.com/jonahadkins/open-noland-trail/blob/0d27bb189b607fb51c930a2d8d1822028687235c/data/trail_heads.geojson",
+ "lastIndexed": "2015-06-02T11:38:00Z"
+},
+{
+"user": "https://github.com/kyspy",
+ "repository": "https://github.com/kyspy/july-4",
+ "file": "https://github.com/kyspy/july-4/blob/231d0f32c4e376dc34e964d3f31d2b989610fcdd/Specs/Data/test.geojson",
+ "lastIndexed": "2015-07-07T18:43:00Z"
+},
+{
+"user": "https://github.com/transmedia41",
+ "repository": "https://github.com/transmedia41/hydromerta-desktop-poc",
+ "file": "https://github.com/transmedia41/hydromerta-desktop-poc/blob/309ce35cb6f719268e7f7201d58a9dd01fe03c14/quartiers/q10/arrosages.geojson",
+ "lastIndexed": "2015-06-05T18:25:51Z"
+},
+{
+"user": "https://github.com/KoelnAPI",
+ "repository": "https://github.com/KoelnAPI/data",
+ "file": "https://github.com/KoelnAPI/data/blob/f7d4c198bfdea6fa2360e3c82256d1ccdfaf1115/data/geo-base/osm-pois/amenity/amenity_telephone.geojson",
+ "lastIndexed": "2015-05-31T00:49:01Z"
+},
+{
+"user": "https://github.com/mycrazydog",
+ "repository": "https://github.com/mycrazydog/uncc-I485",
+ "file": "https://github.com/mycrazydog/uncc-I485/blob/48bc0ee2d47ec89617eb8d5650b40e4d0447d729/2009_points.geojson",
+ "lastIndexed": "2015-06-24T14:11:07Z"
+},
+{
+"user": "https://github.com/mapbox",
+ "repository": "https://github.com/mapbox/mapbox-studio-picture-book.tm2",
+ "file": "https://github.com/mapbox/mapbox-studio-picture-book.tm2/blob/9bdac4d106d326b5b5f461e177a221a0b2dd7091/_data/picture_book.geojson",
+ "lastIndexed": "2015-06-04T20:10:25Z"
+}]
