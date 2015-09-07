@@ -1,0 +1,115 @@
+grammar io.mapzone.GeoJSON with org.eclipse.xtext.common.Terminals
+
+generate geoJSON "http://www.mapzone.io/GeoJSON"
+
+GeoJSON:
+	'{'	(
+			('"type"' ':' type=Type ','?) &
+			('"crs"' ':' crs=CRS ','?)? &
+			('"bbox"' ':' bbox=CoordList ','?)? &
+			(
+				('"geometry"' ':' geometry+=Geometry ',') | 
+				('"geometries"' ':' geometry+=Geometry (',' geometry+=Geometry)+ ','?)
+			) &
+//  		('"generator"' ':' '"overpass-turbo"'  ',')? &
+//  		('"copyright"' ':' copyright=STRING ',')? &
+//  		('"version"' ':' version=INT('.' INT)?  ',')? &
+//  		('"timestamp"' ':' timestamp=INT(INT)*  ',')? &
+			(flatProperties+=Property ','?)* &
+			('"properties"' ':' properties=Struct ','?) &
+			('"style"' ':' style=Style ','?)? &
+	  		('"features"' ':' '['
+	  			(features+=Feature (',' features+=Feature)*)?
+  			']' ','?)?
+  		)
+	'}'	
+;
+
+enum Type:
+	POINT='"Point"' | MULTI_POINT='"MultiPoint"' | LINE_STRING='"LineString"' | 
+	MULTI_LINE_STRING='"MultiLineString"' | POLYGON='"Polygon"' | 
+	MULTI_POLYGON='"MultiPolygon"' | GEOMETRY_COLLECTION='"GeometryCollection"' | 
+	FEATURE='"Feature"' | FEATURE_COLLECTION='"FeatureCollection"'
+;
+
+CRS:
+	'{' 
+		'"type"' ':' type=CRSType ','
+		'"properties"' ':' '{'
+			(
+				('"name"' ':' name=STRING) |
+				(
+					'"href"' ':' STRING ','
+      				'"type"' ':' linkCRSType=LinkCRSType
+				)
+			) 
+		'}'
+	'}'
+;
+
+enum CRSType:
+	NAME='"name"' | LINKED='"link"'
+;
+
+enum LinkCRSType:
+	PROJ4='"proj4"' | OGCWKT='"ogcwkt"' | ESRIWKT='"esriwkt"' // others possible
+;
+
+CoordList:
+	'[' coords+=DOUBLE (',' coords+=DOUBLE)* ']'
+;
+
+Geometry: {Geometry}
+	'{'
+		'"type"' ':' type=GeometryType ','
+		'"coordinates"' ':' '[' coords=Coord ']'
+	'}'	
+;
+
+enum GeometryType:
+	POINT='"Point"' | MULTI_POINT='"MultiPoint"' | LINESTRING='"LineString"' | 
+	MULTI_LINE_STRING='"MultiLineString"' | POLYGON='"Polygon"' | 
+	MULTI_POLYGON='"MultiPolygon"' | GEOMETRY_COLLECTION='"GeometryCollection"'	
+;
+
+Coord:
+	CoordList | CoordArray
+;
+
+CoordArray: {CoordArray}
+	'[' (coords+=Coord (',' coords+=Coord)*)? ']'
+;
+
+Style:
+	'{'
+		//all SVG styles allowed
+		property+=Property (',' property+=Property)*
+	'}'
+;
+
+Feature:
+	'{'
+		'"geometry"' ':' geometry=Geometry ','
+		'"properties"' ':' properties=Struct
+	'}'
+;
+
+Struct: {Struct}
+	'{' (property+=Property (',' property+=Property)*)? '}'
+;
+
+Property:
+	name=STRING ':' value=Value
+;
+
+Value:
+	intValue=INT | nintValue=NINT | doubleValue=DOUBLE | 
+	stringValue=STRING | arrayValue=Array | structValue=Struct
+;
+
+Array: {Array}
+	'[' (values+=Value (',' values+=Value)*)? ']'
+;
+
+NINT: ('-')INT;
+DOUBLE: (INT|NINT)('.' INT);

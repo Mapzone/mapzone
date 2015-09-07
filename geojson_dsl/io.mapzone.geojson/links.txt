@@ -1,0 +1,7 @@
+http://geojson.org/geojson-spec.html
+https://github.com/geojson/draft-geojson
+
+Setup:
+ * Download http://www.eclipse.org/downloads/packages/eclipse-ide-java-and-dsl-developers/marsr
+ * Import projects
+ * use /io.mapzone.geojson/.launch/Generate Language Infrastructure (io.mapzone.geojson).launch

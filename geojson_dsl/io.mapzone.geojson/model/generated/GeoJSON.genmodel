@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/io.mapzone.geojson/src-gen" editDirectory="/io.mapzone.geojson.edit/src"
+    editorDirectory="/io.mapzone.geojson.editor/src" modelPluginID="io.mapzone.geojson"
+    forceOverwrite="true" modelName="GeoJSON" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    complianceLevel="6.0" copyrightFields="false" editPluginID="io.mapzone.geojson.edit"
+    editorPluginID="io.mapzone.geojson.editor" runtimeVersion="2.11">
+  <genPackages prefix="GeoJSON" basePackage="io.mapzone" disposableProviderFactory="true"
+      fileExtensions="geojson" ecorePackage="GeoJSON.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="GeoJSON.ecore#//Type">
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//Type/POINT"/>
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//Type/MULTI_POINT"/>
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//Type/LINE_STRING"/>
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//Type/MULTI_LINE_STRING"/>
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//Type/POLYGON"/>
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//Type/MULTI_POLYGON"/>
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//Type/GEOMETRY_COLLECTION"/>
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//Type/FEATURE"/>
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//Type/FEATURE_COLLECTION"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="GeoJSON.ecore#//CRSType">
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//CRSType/NAME"/>
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//CRSType/LINKED"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="GeoJSON.ecore#//LinkCRSType">
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//LinkCRSType/PROJ4"/>
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//LinkCRSType/OGCWKT"/>
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//LinkCRSType/ESRIWKT"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="GeoJSON.ecore#//GeometryType">
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//GeometryType/POINT"/>
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//GeometryType/MULTI_POINT"/>
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//GeometryType/LINESTRING"/>
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//GeometryType/MULTI_LINE_STRING"/>
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//GeometryType/POLYGON"/>
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//GeometryType/MULTI_POLYGON"/>
+      <genEnumLiterals ecoreEnumLiteral="GeoJSON.ecore#//GeometryType/GEOMETRY_COLLECTION"/>
+    </genEnums>
+    <genClasses ecoreClass="GeoJSON.ecore#//GeoJSON">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GeoJSON.ecore#//GeoJSON/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GeoJSON.ecore#//GeoJSON/crs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GeoJSON.ecore#//GeoJSON/bbox"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GeoJSON.ecore#//GeoJSON/geometry"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GeoJSON.ecore#//GeoJSON/flatProperties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GeoJSON.ecore#//GeoJSON/properties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GeoJSON.ecore#//GeoJSON/style"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GeoJSON.ecore#//GeoJSON/features"/>
+    </genClasses>
+    <genClasses ecoreClass="GeoJSON.ecore#//CRS">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GeoJSON.ecore#//CRS/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GeoJSON.ecore#//CRS/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GeoJSON.ecore#//CRS/linkCRSType"/>
+    </genClasses>
+    <genClasses ecoreClass="GeoJSON.ecore#//CoordList">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GeoJSON.ecore#//CoordList/coords"/>
+    </genClasses>
+    <genClasses ecoreClass="GeoJSON.ecore#//Geometry">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GeoJSON.ecore#//Geometry/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GeoJSON.ecore#//Geometry/coords"/>
+    </genClasses>
+    <genClasses ecoreClass="GeoJSON.ecore#//Coord"/>
+    <genClasses ecoreClass="GeoJSON.ecore#//CoordArray">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GeoJSON.ecore#//CoordArray/coords"/>
+    </genClasses>
+    <genClasses ecoreClass="GeoJSON.ecore#//Style">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GeoJSON.ecore#//Style/property"/>
+    </genClasses>
+    <genClasses ecoreClass="GeoJSON.ecore#//Feature">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GeoJSON.ecore#//Feature/geometry"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GeoJSON.ecore#//Feature/properties"/>
+    </genClasses>
+    <genClasses ecoreClass="GeoJSON.ecore#//Struct">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GeoJSON.ecore#//Struct/property"/>
+    </genClasses>
+    <genClasses ecoreClass="GeoJSON.ecore#//Property">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GeoJSON.ecore#//Property/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GeoJSON.ecore#//Property/value"/>
+    </genClasses>
+    <genClasses ecoreClass="GeoJSON.ecore#//Value">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GeoJSON.ecore#//Value/intValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GeoJSON.ecore#//Value/nintValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GeoJSON.ecore#//Value/doubleValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute GeoJSON.ecore#//Value/stringValue"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GeoJSON.ecore#//Value/arrayValue"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GeoJSON.ecore#//Value/structValue"/>
+    </genClasses>
+    <genClasses ecoreClass="GeoJSON.ecore#//Array">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference GeoJSON.ecore#//Array/values"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

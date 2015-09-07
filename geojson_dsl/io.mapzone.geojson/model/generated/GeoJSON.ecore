@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="geoJSON" nsURI="http://www.mapzone.io/GeoJSON" nsPrefix="geoJSON">
+  <eClassifiers xsi:type="ecore:EClass" name="GeoJSON">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//Type"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="crs" eType="#//CRS" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bbox" eType="#//CoordList"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="geometry" upperBound="-1"
+        eType="#//Geometry" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="flatProperties" upperBound="-1"
+        eType="#//Property" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" eType="#//Struct"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="style" eType="#//Style"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="features" upperBound="-1"
+        eType="#//Feature" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="Type">
+    <eLiterals name="POINT" literal="&quot;Point&quot;"/>
+    <eLiterals name="MULTI_POINT" value="1" literal="&quot;MultiPoint&quot;"/>
+    <eLiterals name="LINE_STRING" value="2" literal="&quot;LineString&quot;"/>
+    <eLiterals name="MULTI_LINE_STRING" value="3" literal="&quot;MultiLineString&quot;"/>
+    <eLiterals name="POLYGON" value="4" literal="&quot;Polygon&quot;"/>
+    <eLiterals name="MULTI_POLYGON" value="5" literal="&quot;MultiPolygon&quot;"/>
+    <eLiterals name="GEOMETRY_COLLECTION" value="6" literal="&quot;GeometryCollection&quot;"/>
+    <eLiterals name="FEATURE" value="7" literal="&quot;Feature&quot;"/>
+    <eLiterals name="FEATURE_COLLECTION" value="8" literal="&quot;FeatureCollection&quot;"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CRS">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//CRSType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="linkCRSType" eType="#//LinkCRSType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="CRSType">
+    <eLiterals name="NAME" literal="&quot;name&quot;"/>
+    <eLiterals name="LINKED" value="1" literal="&quot;link&quot;"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="LinkCRSType">
+    <eLiterals name="PROJ4" literal="&quot;proj4&quot;"/>
+    <eLiterals name="OGCWKT" value="1" literal="&quot;ogcwkt&quot;"/>
+    <eLiterals name="ESRIWKT" value="2" literal="&quot;esriwkt&quot;"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CoordList" eSuperTypes="#//Coord">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="coords" unique="false"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Geometry">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//GeometryType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="coords" eType="#//Coord"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="GeometryType">
+    <eLiterals name="POINT" literal="&quot;Point&quot;"/>
+    <eLiterals name="MULTI_POINT" value="1" literal="&quot;MultiPoint&quot;"/>
+    <eLiterals name="LINESTRING" value="2" literal="&quot;LineString&quot;"/>
+    <eLiterals name="MULTI_LINE_STRING" value="3" literal="&quot;MultiLineString&quot;"/>
+    <eLiterals name="POLYGON" value="4" literal="&quot;Polygon&quot;"/>
+    <eLiterals name="MULTI_POLYGON" value="5" literal="&quot;MultiPolygon&quot;"/>
+    <eLiterals name="GEOMETRY_COLLECTION" value="6" literal="&quot;GeometryCollection&quot;"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Coord"/>
+  <eClassifiers xsi:type="ecore:EClass" name="CoordArray" eSuperTypes="#//Coord">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="coords" upperBound="-1"
+        eType="#//Coord" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Style">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="property" upperBound="-1"
+        eType="#//Property" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Feature">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="geometry" eType="#//Geometry"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" eType="#//Struct"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Struct">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="property" upperBound="-1"
+        eType="#//Property" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Property">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//Value"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Value">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="intValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nintValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="doubleValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="stringValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="arrayValue" eType="#//Array"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="structValue" eType="#//Struct"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Array">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
+        eType="#//Value" containment="true"/>
+  </eClassifiers>
+</ecore:EPackage>
