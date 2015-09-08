@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.Messages;
-import io.mapzone.controller.um.operations.NewUserOperation;
+import io.mapzone.controller.um.operations.CreateUserOperation;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
 
@@ -154,7 +154,7 @@ public class RegisterPanel
                     return;
                 }
 
-                IUndoableOperation op = new NewUserOperation( repo, user, password );
+                IUndoableOperation op = new CreateUserOperation( repo, user, password );
                 OperationSupport.instance().execute( op, true, false, new JobChangeAdapter() {
                     @Override
                     public void done( IJobChangeEvent ev2 ) {
@@ -183,7 +183,7 @@ public class RegisterPanel
             okBtn.setEnabled( false );            
 
             if (ev.getFieldName().equals( "password" )) {
-                password = (String)ev.getNewModelValue().orNull();
+                password = (String)ev.getNewModelValue().orElse( null );
             }
             
             okBtn.setEnabled( form.isValid() );

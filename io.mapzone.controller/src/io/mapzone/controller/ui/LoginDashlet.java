@@ -220,13 +220,13 @@ public class LoginDashlet
                         return;
                     }
                     else if (ev.getFieldName().equals( "store" ) ) {
-                        storeLogin = (Boolean)ev.getNewModelValue().orNull();
+                        storeLogin = (Boolean)ev.getNewModelValue().orElse( null );
                     }
                     else if (ev.getFieldName().equals( "username" ) ) {
-                        username = (String)ev.getNewModelValue().orNull();
+                        username = (String)ev.getNewModelValue().orElse( null );
                     }
                     else if (ev.getFieldName().equals( "password" ) ) {
-                        password = (String)ev.getNewModelValue().orNull();
+                        password = (String)ev.getNewModelValue().orElse( null );
                     }
                     if (loginBtn != null && !loginBtn.isDisposed()) {
                         // don't check dirty to allow login with stored credentials

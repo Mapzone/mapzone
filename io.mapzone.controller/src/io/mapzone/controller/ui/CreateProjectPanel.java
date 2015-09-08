@@ -1,6 +1,7 @@
 package io.mapzone.controller.ui;
 
-import io.mapzone.controller.um.repository.Organization;
+import io.mapzone.controller.um.operations.CreateProjectOperation;
+import io.mapzone.controller.um.repository.Named;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
@@ -17,12 +18,18 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
+import org.polymap.core.operation.OperationSupport;
+import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.ui.ColumnLayoutFactory;
+import org.polymap.core.ui.StatusDispatcher;
 
 import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.PanelIdentifier;
+import org.polymap.rhei.batik.PanelPath;
 import org.polymap.rhei.batik.Scope;
+import org.polymap.rhei.batik.toolkit.IPanelSection;
+import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 import org.polymap.rhei.field.FormFieldEvent;
 import org.polymap.rhei.field.IFormFieldListener;
@@ -81,9 +88,17 @@ public class CreateProjectPanel
         getSite().setPreferredWidth( 350 );
         MdToolkit tk = (MdToolkit)getSite().toolkit();
         
+//        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( 10 ).create() );
+        
+        // welcome
+        IPanelSection welcomeSection = tk.createPanelSection( parent, "New project" );
+        welcomeSection.addConstraint( new MinWidthConstraint( 350, 1 ) );
+        tk.createFlowText( welcomeSection.getBody(), "Choose an **Organization** your are member of. Or you choose to create a **personal** project. Personal projects can be asigned to an Organization later." );
+
         // form
+        IPanelSection formSection = tk.createPanelSection( parent, "Set up the project" );
         form = new BatikFormContainer( new ProjectForm() );
-        form.createContents( parent );
+        form.createContents( formSection.getBody() );
 
         // FAB
         fab = tk.createFab();
@@ -91,13 +106,29 @@ public class CreateProjectPanel
         fab.setEnabled( false );
         fab.addSelectionListener( new SelectionAdapter() {
             @Override
-            public void widgetSelected( SelectionEvent e ) {
-                // XXX Auto-generated method stub
-                throw new RuntimeException( "not yet implemented." );
+            public void widgetSelected( SelectionEvent ev ) {
+                CreateProjectOperation op = new CreateProjectOperation();
+                op.repo.set( nested );
+                op.project.set( project );
+                
+                OperationSupport.instance().execute2( op, true, true, ev2 -> UIThreadExecutor.asyncFast( () -> {
+                    if (ev2.getResult().isOK()) {
+                        PanelPath panelPath = getSite().getPath();
+                        getContext().closePanel( panelPath );                        
+                    }
+                    else {
+                        StatusDispatcher.handleError( "Unable to create project.", ev2.getResult().getException() );
+                    }
+                }));
             }
         } );
     }
 
+    
+    protected void updateEnabled() {
+        fab.setEnabled( form.isDirty() && form.isValid() );
+    }
+    
     
     /**
      * 
@@ -106,7 +137,7 @@ public class CreateProjectPanel
             extends DefaultFormPage 
             implements IFormFieldListener {
         
-        private Object          organizationOrUser;
+        private Optional<Named>     organizationOrUser = Optional.empty();
 
         @Override
         public void createFormContents( IFormPageSite site ) {
@@ -118,7 +149,7 @@ public class CreateProjectPanel
                     .margins( getSite().getLayoutPreference().getSpacing() / 2 ).create() );
             
             // organization
-            Map<String,Object> orgs = user.organizations.stream().collect( Collectors.toMap( o -> o.name.get(), o -> o ) );
+            Map<String,Named> orgs = user.organizations.stream().collect( Collectors.toMap( o -> o.name.get(), o -> o ) );
             orgs.put( user.name.get(), user ); 
             site.newFormField( new AssociationAdapter( project.organization ) )
                     .field.put( new PicklistFormField( orgs ) )
@@ -127,23 +158,21 @@ public class CreateProjectPanel
             
             // name
             site.newFormField( new PropertyAdapter( project.name ) )
-                    .validator.put( new NotEmptyValidator() {
+                    .validator.put( new NotEmptyValidator<String,String>() {
                         @Override
-                        public String validate( Object fieldValue ) {
-                            return Optional.ofNullable( super.validate( fieldValue ) )
-                                    .orElseGet( () -> {
-                                        if (organizationOrUser == null) {
-                                            return "Choose an organization first";
-                                        }
-                                        else if (organizationOrUser instanceof Organization) {
-                                            Organization o = (Organization)organizationOrUser;
-                                            return nested.findProject( o.name.get(), (String)fieldValue ).isPresent() ? "Project name is already taken" : null;
-                                        }
-                                        else {
-                                            User u = (User)organizationOrUser;
-                                            return nested.findProject( u.name.get(), (String)fieldValue ).isPresent() ? "Project name is already taken" : null;
-                                        }
-                                    });
+                        public String validate( String fieldValue ) {
+                            String result = super.validate( fieldValue );
+                            if (result == null) {
+                                if (organizationOrUser.isPresent()) {
+                                    if (nested.findProject( organizationOrUser.get().name.get(), (String)fieldValue ).isPresent()) { 
+                                        result = "Project name is already taken";
+                                    }
+                                }
+                                else {
+                                    result = "Choose an organization first";
+                                }
+                            };
+                            return result;
                         }
                     }).create();
             
@@ -153,6 +182,9 @@ public class CreateProjectPanel
             // website
             site.newFormField( new PropertyAdapter( project.website ) ).create();
             
+            // location
+            site.newFormField( new PropertyAdapter( project.location ) ).create();
+            
             site.addFieldListener( this );
         }
 
@@ -161,8 +193,9 @@ public class CreateProjectPanel
         public void fieldChange( FormFieldEvent ev ) {
             if (ev.getEventCode() == VALUE_CHANGE) {
                 if (ev.getFieldName().equals( project.organization.info().getName() )) {
-                    organizationOrUser = ev.getNewModelValue().orNull();
+                    organizationOrUser = ev.getNewModelValue();
                 }
+                updateEnabled();
             }
         }
         
