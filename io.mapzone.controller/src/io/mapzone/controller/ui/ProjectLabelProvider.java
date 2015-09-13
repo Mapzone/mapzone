@@ -49,11 +49,13 @@ public class ProjectLabelProvider
         Project project = (Project)cell.getElement();
         switch (type) {
             case Name: {
-                cell.setText( project.name.get() );
+                cell.setText( project.organizationOrUser().name.get() + "/ " + project.name.get() );
                 break;
             }
             case Description: {
-                cell.setText( project.organization.get().name.get() );
+                cell.setText( project.description.get() 
+                        //+ " - Organization: " + project.organizationOrUser().name.get()
+                        + " - Last modified: ???"  );
                 break;
             }
             default: throw new RuntimeException( "Unhandled Type: " + type );

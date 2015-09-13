@@ -45,12 +45,12 @@ import org.polymap.rhei.form.batik.BatikFormContainer;
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-public class CreateProjectPanel
+public class EditProjectPanel
         extends DefaultPanel {
 
-    private static Log log = LogFactory.getLog( CreateProjectPanel.class );
+    private static Log log = LogFactory.getLog( EditProjectPanel.class );
 
-    public static final PanelIdentifier ID = PanelIdentifier.parse( "createProject" );
+    public static final PanelIdentifier ID = PanelIdentifier.parse( "editProject" );
     
     @Scope("io.mapzone.controller")
     private Context<String>         username;
@@ -67,20 +67,20 @@ public class CreateProjectPanel
 
     private Optional<ProjectHolder> organizationOrUser = Optional.empty();
 
-
     
-    @Override
-    public boolean wantsToBeShown() {
-        if (parentPanel().get() instanceof DashboardPanel) {
-            getSite().setTitle( "Create project" );
-            return true;
-        }
-        return false;
-    }
+//    @Override
+//    public boolean wantsToBeShown() {
+//        if (parentPanel().get() instanceof DashboardPanel) {
+//            getSite().setTitle( "Create project" );
+//            return true;
+//        }
+//        return false;
+//    }
 
 
     @Override
     public void init() {
+        getSite().setTitle( "Project" );
         nested = ProjectRepository.instance().newNested();
         user = nested.findUser( username.get() ).orElseThrow( () -> new RuntimeException( "No user!" ) );
         project = nested.createEntity( Project.class, null );

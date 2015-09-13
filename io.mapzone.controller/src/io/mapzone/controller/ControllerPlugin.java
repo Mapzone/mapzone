@@ -5,6 +5,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.polymap.core.security.SecurityContext;
 import org.polymap.core.security.StandardConfiguration;
 
+import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 
 import org.osgi.framework.BundleContext;
@@ -27,6 +28,16 @@ public class ControllerPlugin extends AbstractUIPlugin {
     	return instance;
     }
 
+	
+	public static SvgImageRegistryHelper images() {
+	    return instance().images;
+	}
+
+	
+	// instance *******************************************
+	
+	private SvgImageRegistryHelper         images = new SvgImageRegistryHelper( this );
+	
 	
     public void start( BundleContext context ) throws Exception {
 		super.start( context );

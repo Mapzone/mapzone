@@ -72,7 +72,7 @@ public class StartPanel
         anonDashboard = new Dashboard( getSite(), ANON_DASHBOARD_ID );
         anonDashboard.addDashlet( new WelcomeMessageDashlet() );
         anonDashboard.addDashlet( new LoginDashlet( cookieRepo ) );
-        anonDashboard.addDashlet( new FeaturedProjectsDashlet() );
+//        anonDashboard.addDashlet( new FeaturedProjectsDashlet() );
         anonDashboard.createContents( parent );
 
         // margins / spacing        

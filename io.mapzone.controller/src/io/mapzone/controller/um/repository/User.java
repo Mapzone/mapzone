@@ -1,5 +1,7 @@
 package io.mapzone.controller.um.repository;
 
+import org.polymap.model2.BidiManyAssociationConcern;
+import org.polymap.model2.Concerns;
 import org.polymap.model2.Defaults;
 import org.polymap.model2.ManyAssociation;
 import org.polymap.model2.Nullable;
@@ -12,7 +14,7 @@ import org.polymap.model2.Queryable;
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class User
-        extends Named {
+        extends ProjectHolder {
 
     public static User              TYPE;
 
@@ -26,10 +28,11 @@ public class User
     @Nullable
     public Property<String>         company;
     
+    /** 
+     * Bidirectional association to {@link Organization#members}.
+     */
     @Defaults
+    @Concerns(BidiManyAssociationConcern.class)
     public ManyAssociation<Organization> organizations;
 
-    @Defaults
-    public ManyAssociation<Project> projects;
-    
 }

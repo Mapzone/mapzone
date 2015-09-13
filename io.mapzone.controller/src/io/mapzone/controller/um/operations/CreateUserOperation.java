@@ -26,11 +26,11 @@ import org.polymap.core.runtime.i18n.IMessages;
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-public class NewUserOperation
+public class CreateUserOperation
         extends AbstractOperation
         implements IUndoableOperation {
 
-    private static Log log = LogFactory.getLog( NewUserOperation.class );
+    private static Log log = LogFactory.getLog( CreateUserOperation.class );
 
     public static final IMessages i18n = Messages.forPrefix( "NewUserOperation" );
     
@@ -44,7 +44,7 @@ public class NewUserOperation
     public Config<String>               password;
 
     
-    public NewUserOperation( ProjectRepository repo, User user, String password  ) {
+    public CreateUserOperation( ProjectRepository repo, User user, String password  ) {
         super( i18n.get( "title" ) );
         ConfigurationFactory.inject( this );
         this.user.set( user );

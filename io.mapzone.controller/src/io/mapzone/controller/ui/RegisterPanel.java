@@ -1,5 +1,7 @@
 package io.mapzone.controller.ui;
 
+import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL24;
+
 import java.util.Optional;
 
 import io.mapzone.controller.ControllerPlugin;
@@ -117,7 +119,7 @@ public class RegisterPanel
     public void createContents( Composite parent ) {
         this.panelContainer = parent;
         getSite().setTitle( i18n.get( "title" ) );
-        getSite().setIcon( BatikPlugin.instance().imageForName( "resources/icons/user.png" ) );
+        getSite().setIcon( BatikPlugin.images().svgImage( "account.svg", NORMAL24 ) );
         IPanelToolkit tk = getSite().toolkit();
 
         // welcome section

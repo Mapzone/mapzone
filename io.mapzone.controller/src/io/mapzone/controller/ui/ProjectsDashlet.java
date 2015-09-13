@@ -14,11 +14,15 @@
  */
 package io.mapzone.controller.ui;
 
-import java.util.stream.Collectors;
-
+import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL24;
+import io.mapzone.controller.ControllerPlugin;
+import io.mapzone.controller.http.ProxyServlet;
 import io.mapzone.controller.ui.ProjectLabelProvider.Type;
+import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
+
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,10 +30,22 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
+import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.IOpenListener;
+import org.eclipse.jface.viewers.OpenEvent;
+import org.eclipse.jface.viewers.ViewerCell;
+
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.service.UrlLauncher;
+
+import org.polymap.core.ui.SelectionAdapter;
+
+import org.polymap.rhei.batik.BatikApplication;
 import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.dashboard.DashletSite;
 import org.polymap.rhei.batik.dashboard.DefaultDashlet;
+import org.polymap.rhei.batik.toolkit.md.ActionProvider;
 import org.polymap.rhei.batik.toolkit.md.ListTreeContentProvider;
 import org.polymap.rhei.batik.toolkit.md.MdListViewer;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
@@ -67,11 +83,39 @@ public class ProjectsDashlet
     @Override
     public void createContents( Composite parent ) {
         MdToolkit tk = (MdToolkit)getSite().toolkit(); 
-        viewer = tk.createListViewer( parent, SWT.NONE );
+        viewer = tk.createListViewer( parent, SWT.FULL_SELECTION );
         viewer.setContentProvider( new ListTreeContentProvider() );
         
         viewer.firstLineLabelProvider.set( new ProjectLabelProvider( Type.Name ) );
         viewer.secondLineLabelProvider.set( new ProjectLabelProvider( Type.Description ) );
+        viewer.iconProvider.set( new CellLabelProvider() {
+            @Override
+            public void update( ViewerCell cell ) {
+                cell.setImage( ControllerPlugin.images().svgImage( "map.svg", NORMAL24 ) );
+            }
+        });
+        viewer.firstSecondaryActionProvider.set( new ActionProvider() {
+            @Override
+            public void update( ViewerCell cell ) {
+                cell.setImage( ControllerPlugin.images().svgImage( "rocket.svg", NORMAL24 ) );
+            }
+            @Override
+            public void perform( @SuppressWarnings("hiding") MdListViewer viewer, Object elm ) {
+                Project project = (Project)elm;
+                String projectUrl = ProxyServlet.projectUrl( project );
+                UrlLauncher launcher = RWT.getClient().getService( UrlLauncher.class );
+                launcher.openURL( projectUrl );
+            }
+        });
+        
+        viewer.addOpenListener( new IOpenListener() {
+            @Override
+            public void open( OpenEvent ev ) {
+                SelectionAdapter.on( ev.getSelection() ).forEach( elm -> {
+                    BatikApplication.instance().getContext().openPanel( getSite().panelSite().getPath(), EditProjectPanel.ID );                        
+                });
+            }
+        } );
         viewer.setInput( user.projects.stream().collect( Collectors.toList() ) );        
     }
     

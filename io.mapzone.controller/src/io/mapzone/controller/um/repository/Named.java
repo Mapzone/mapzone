@@ -10,7 +10,7 @@ import org.polymap.model2.Queryable;
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-public class Named
+public abstract class Named
         extends Entity {
 
     @Defaults

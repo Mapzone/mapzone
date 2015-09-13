@@ -4,8 +4,6 @@ import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.Messages;
 import io.mapzone.controller.um.repository.LoginCookie;
 import io.mapzone.controller.um.repository.ProjectRepository;
-import io.mapzone.controller.um.xauth.UmLoginModule.UmUserPrincipal;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -240,8 +238,7 @@ public class LoginDashlet
         protected boolean login( final String name, final String passwd ) {
             SecurityContext sc = SecurityContext.instance();
             if (sc.login( name, passwd )) {
-                UmUserPrincipal up = (UmUserPrincipal)sc.getUser();
-                userPrincipal.set( up );
+                userPrincipal.set( (UserPrincipal)sc.getUser() );
 //                user.set( up.getUser() );
                 return true;
             }

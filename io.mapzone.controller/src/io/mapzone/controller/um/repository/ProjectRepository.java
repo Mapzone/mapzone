@@ -1,9 +1,7 @@
 package io.mapzone.controller.um.repository;
 
-import static org.polymap.model2.query.Expressions.and;
 import static org.polymap.model2.query.Expressions.eq;
 import static org.polymap.model2.query.Expressions.or;
-import static org.polymap.model2.query.Expressions.the;
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.um.repository.LifecycleEvent.Type;
 
@@ -22,7 +20,6 @@ import org.polymap.core.runtime.session.SessionContext;
 import org.polymap.core.runtime.session.SessionSingleton;
 
 import org.polymap.model2.Entity;
-import org.polymap.model2.query.Expressions;
 import org.polymap.model2.query.Query;
 import org.polymap.model2.query.ResultSet;
 import org.polymap.model2.runtime.EntityRepository;
@@ -75,12 +72,6 @@ public class ProjectRepository
                     proto.name.set( "first" );
                     proto.description.set( "The first registered project at mapzone.io" );
                     proto.maxRamMb.set( 256 );
-                    proto.storedAt.createValue( storedAt -> {
-                        storedAt.hostId.set( "local" );
-                        storedAt.exePath.set( "/home/falko/servers/polymap4/" );
-                        storedAt.dataPath.set( "/home/falko/servers/workspace-alkis" );
-                        return storedAt;
-                    });
                     return proto;
                 });
                 // Organization
@@ -91,7 +82,7 @@ public class ProjectRepository
                     proto.projects.add( project );
                     return proto;
                 });
-                project.organization.set( organization );
+                assert project.organization.get() == organization : "Check bidi association.";
                 _uow.commit();
             }
         }
@@ -139,15 +130,21 @@ public class ProjectRepository
 
     
     public Optional<Project> findProject( String organizationOrUser, String project ) {
-        ResultSet<Project> rs = uow.query( Project.class )
-                .where( and( 
-                        Expressions.or(
-                                the( Project.TYPE.user, eq( User.TYPE.name, organizationOrUser ) ),
-                                the( Project.TYPE.organization, eq( Organization.TYPE.name, organizationOrUser ) ) ),
-                        eq( Project.TYPE.name, project ) ) )
-                .execute();
-        assert rs.size() <= 1;
-        return rs.stream().findAny();
+        ProjectHolder projects = uow.query( User.class ).where( eq( User.TYPE.name, organizationOrUser ) ).execute().stream().findAny().get();
+        if (projects == null) {
+            projects = uow.query( Organization.class ).where( eq( Organization.TYPE.name, organizationOrUser ) ).execute().stream().findAny().get();
+        }
+        return projects.projects.stream().filter( p -> p.name.get().equals( project ) ).findAny();
+        
+//        ResultSet<Project> rs = uow.query( Project.class )
+//                .where( and( 
+//                        Expressions.or(
+//                                the( Project.TYPE.user, eq( User.TYPE.name, organizationOrUser ) ),
+//                                the( Project.TYPE.organization, eq( Organization.TYPE.name, organizationOrUser ) ) ),
+//                        eq( Project.TYPE.name, project ) ) )
+//                .execute();
+//        assert rs.size() <= 1;
+//        return rs.stream().findAny();
     }
 
     

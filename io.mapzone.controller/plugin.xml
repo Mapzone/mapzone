@@ -76,6 +76,10 @@
             class="io.mapzone.controller.ui.CreateProjectPanel"
             id="io.mapzone.controller.CreateProjectPanel">
       </panel>
+      <panel
+            class="io.mapzone.controller.ui.EditProjectPanel"
+            id="io.mapzone.controller.EditProjectPanel">
+      </panel>
    </extension>
 
 </plugin>

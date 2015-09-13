@@ -32,6 +32,7 @@ public class DashboardPanel
         getSite().setTitle( "Dashboard" );
         
         dashboard = new Dashboard( getSite(), DASHBOARD_ID );
+        dashboard.addDashlet( new WelcomeMessageDashlet() );
         dashboard.addDashlet( new ProjectsDashlet() );
         dashboard.addDashlet( new UserProfileDashlet() );
         dashboard.createContents( parent );        

@@ -16,6 +16,7 @@ import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 
 /**
  * 
+ * @deprecated Use {@link ProjectsDashlet}.
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class FeaturedProjectsDashlet
