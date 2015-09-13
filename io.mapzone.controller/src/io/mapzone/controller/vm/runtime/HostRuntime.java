@@ -4,6 +4,7 @@ import java.io.File;
 
 import io.mapzone.controller.vm.repository.RegisteredHost;
 import io.mapzone.controller.vm.repository.RegisteredHost.HostType;
+import io.mapzone.controller.vm.repository.RegisteredInstance;
 import io.mapzone.controller.vm.repository.RegisteredProcess;
 
 import org.polymap.core.runtime.config.Configurable;
@@ -45,7 +46,16 @@ public abstract class HostRuntime
      * @param result The {@link RegisteredProcess} to create or connect to.
      * @return Newly created process runtime instance.
      */
-    public abstract ProcessRuntime process( RegisteredProcess result );
+    public abstract ProcessRuntime process( RegisteredProcess target );
+
+    
+    /**
+     * Creates a runtime for an installed instance.
+     *
+     * @param result The {@link RegisteredInstance} to create or connect to.
+     * @return Newly created process runtime instance.
+     */
+    public abstract InstanceRuntime instance( RegisteredInstance target );
 
     
     /**

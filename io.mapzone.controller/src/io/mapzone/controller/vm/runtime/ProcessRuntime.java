@@ -1,6 +1,5 @@
 package io.mapzone.controller.vm.runtime;
 
-import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.vm.repository.RegisteredProcess;
 
 import org.polymap.core.runtime.config.Configurable;
@@ -13,41 +12,15 @@ import org.polymap.core.runtime.config.Configurable;
 public abstract class ProcessRuntime
         extends Configurable {
     
-    protected RegisteredProcess     rprocess;
+    protected RegisteredProcess     process;
     
     
     public ProcessRuntime( RegisteredProcess rprocess ) {
-        this.rprocess = rprocess;
+        this.process = rprocess;
     }
     
 
-//    @Immutable
-//    @Mandatory
-//    public Config2<ProcessRuntime,String>       executablePath;
-//    
-//    @Immutable
-//    @Mandatory
-//    public Config2<ProcessRuntime,String>       homePath;
-//    
-//    @Immutable
-//    @Mandatory
-//    @Check(value=NumberRangeValidator.class, args={"1024","65535"})
-//    public Config2<ProcessRuntime,Integer>      port;
-//    
-//    @Immutable
-//    @Mandatory
-//    public Config2<ProcessRuntime,String>       logPath;
-//
-//    @Immutable
-//    @Defaults
-//    public Config2<ProcessRuntime,List<String>> args;
-//
-//    @Immutable
-//    @Defaults
-//    public Config2<ProcessRuntime,List<String>> vmargs;
-
-    
-    public abstract void start( Project project ) throws Exception;
+    public abstract void start( ) throws Exception;
     
     public abstract void stop() throws Exception;
     

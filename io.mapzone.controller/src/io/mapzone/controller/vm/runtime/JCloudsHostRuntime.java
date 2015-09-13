@@ -2,6 +2,7 @@ package io.mapzone.controller.vm.runtime;
 
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.vm.repository.RegisteredHost;
+import io.mapzone.controller.vm.repository.RegisteredInstance;
 import io.mapzone.controller.vm.repository.RegisteredProcess;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,10 +13,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 
 import org.jclouds.compute.ComputeService;
 import org.jclouds.compute.domain.ExecResponse;
 import org.jclouds.compute.options.RunScriptOptions.Builder;
+import org.jclouds.io.payloads.ByteArrayPayload;
 import org.jclouds.scriptbuilder.ScriptBuilder;
 import org.jclouds.scriptbuilder.domain.Statements;
 import org.jclouds.ssh.SshClient;
@@ -26,6 +29,8 @@ import org.apache.commons.logging.LogFactory;
 
 import com.google.common.base.Joiner;
 import com.google.common.util.concurrent.ListenableFuture;
+
+import org.eclipse.core.runtime.IProgressMonitor;
 
 import org.polymap.core.runtime.Timer;
 
@@ -39,7 +44,9 @@ public class JCloudsHostRuntime
 
     private static Log log = LogFactory.getLog( JCloudsHostRuntime.class );
 
-    public static final Pattern     NO_FILENAME_CHAR = Pattern.compile( "[^a-zA-Z_-]" );
+    public static final Pattern     NO_FILENAME_CHAR = Pattern.compile( "[^a-zA-Z0-9_-]" );
+
+    public static final String      INSTANCES_BASE_DIR = "/tmp/";
     
     // FIXME super hack to find "free" port
     private static AtomicInteger    portCount = new AtomicInteger( 32768 );
@@ -53,11 +60,17 @@ public class JCloudsHostRuntime
 
 
     @Override
-    public ProcessRuntime process( RegisteredProcess template ) {
-        return new JCloudsProcessRuntime( template );
+    public ProcessRuntime process( RegisteredProcess target ) {
+        return new JCloudsProcessRuntime( target );
     }
 
     
+    @Override
+    public InstanceRuntime instance( RegisteredInstance target ) {
+        return new JCloudsInstanceRuntime( target );
+    }
+
+
     @Override
     public int findFreePort() {
         return portCount.getAndIncrement();
@@ -73,34 +86,112 @@ public class JCloudsHostRuntime
     /**
      * 
      */
+    protected class JCloudsInstanceRuntime
+            extends InstanceRuntime {
+
+        public JCloudsInstanceRuntime( RegisteredInstance instance ) {
+            super( instance );
+        }
+
+        @Override
+        public void prepareInstall( Project project, IProgressMonitor monitor ) throws Exception {
+            monitor.beginTask( "Preparing instance", 11 );
+            
+            // find free space on disk
+            String basename = Joiner.on( "_" ).skipNulls().join( 
+                    project.organizationOrUser().name.get(), 
+                    project.name.get()/*, instance.version.get()*/ );
+            basename = NO_FILENAME_CHAR.matcher( basename ).replaceAll( "" );            
+
+            instance.homePath.set( INSTANCES_BASE_DIR + basename );
+            instance.dataPath.set( INSTANCES_BASE_DIR + basename + "/data" );
+            instance.exePath.set( INSTANCES_BASE_DIR + basename + "/bin" );
+            instance.logPath.set( INSTANCES_BASE_DIR + basename + "/log" );
+            
+            // make directories
+            monitor.subTask( "Making directories" );
+            String script = new ScriptBuilder()
+            .addStatement( Statements.exec( "mkdir " + instance.homePath.get() ) )
+                    .addStatement( Statements.exec( "mkdir " + instance.homePath.get() ) )
+                    .addStatement( Statements.exec( "mkdir " + instance.logPath.get() ) )
+                    .addStatement( Statements.exec( "mkdir " + instance.exePath.get() ) )
+                    .addStatement( Statements.exec( "mkdir " + instance.dataPath.get() ) )
+                    .render( org.jclouds.scriptbuilder.domain.OsFamily.UNIX );
+    
+            log.info( "SCRIPT: " + script );
+    
+            ComputeService cs = JCloudsRuntime.instance.get().computeService();
+            ExecResponse response = cs.runScriptOnNode( 
+                    rhost.hostId.get(), 
+                    Statements.exec( script ), 
+                    Builder.blockOnComplete( true ).wrapInInitScript( false ).runAsRoot( false ) );
+
+            // XXX check response
+            log.info( "RESPONSE: " + response.getError() );
+            log.info( "RESPONSE: " + response.getExitStatus() );
+            log.info( "RESPONSE: " + response.getOutput() );
+            monitor.worked( 1 );
+            
+            // copy bin there
+            monitor.subTask( "Copying runtime" );
+            URL exeTgzSource = new URL( "file:///tmp/p4.tgz" );
+            File exeTgz = new File( instance.homePath.get(), "p4.tgz" );
+            try (
+                InputStream in = exeTgzSource.openStream();
+                OutputStream out = file( exeTgz ).outputStream();
+            ){
+                IOUtils.copy( in, out );
+            }
+            monitor.worked( 5 );
+            
+            // unpack
+            response = cs.runScriptOnNode( 
+                    rhost.hostId.get(), 
+                    Statements.exec( "tar -x -z -C " + instance.homePath.get() + " -f " + exeTgz ), 
+                    Builder.blockOnComplete( true ).wrapInInitScript( false ).runAsRoot( false ) );
+            
+            // XXX check response
+            log.info( "RESPONSE: " + response.getError() );
+            log.info( "RESPONSE: " + response.getExitStatus() );
+            log.info( "RESPONSE: " + response.getOutput() );
+            monitor.worked( 5 );
+            
+            monitor.done();
+        }
+    }
+    
+    
+    /**
+     * 
+     */
     protected class JCloudsProcessRuntime
             extends ProcessRuntime {
 
-        public JCloudsProcessRuntime( RegisteredProcess template ) {
-            super( template );            
+        public JCloudsProcessRuntime( RegisteredProcess process ) {
+            super( process );
+            assert process.instance.get() != null;
         }
 
         
         @Override
-        public void start( Project project ) throws Exception {
+        public void start() throws Exception {
             ComputeService cs = JCloudsRuntime.instance.get().computeService();
 
-            String baseFilename = Joiner.on( "_" ).skipNulls().join( 
-                    rprocess.organisation.get(), rprocess.project.get(), rprocess.version.get() );
-            baseFilename = NO_FILENAME_CHAR.matcher( baseFilename ).replaceAll( "" );            
-            String logFile = "/tmp/" + baseFilename + ".log";
-            String pidFile = "/tmp/" + baseFilename + ".pid";
-            rprocess.logPath.set( logFile );
+            RegisteredInstance instance = process.instance.get();
+            String logFile = instance.logPath.get() + "/console.log"; 
+            String pidFile = instance.homePath.get() + "/pid";
+            String exePath = instance.exePath.get();
+            String dataPath = instance.dataPath.get();
 
             String command = Joiner.on( " " ).join( 
                   "nohup",
                   "setsid",
-                      project.storedAt.get().exePath.get() + "/eclipse", 
+                      exePath + "/eclipse", 
                       "-vm /home/falko/bin/jdk1.8/bin/java",
                       "-console -consolelog -registryMultiLanguage",
-                      "-data", project.storedAt.get().dataPath.get(),
+                      "-data", dataPath,
                       "-vmargs -server -XX:+TieredCompilation -ea -Xmx256m -XX:+UseG1GC -XX:SoftRefLRUPolicyMSPerMB=1000",
-                      "-Dorg.osgi.service.http.port=" + rprocess.port.get(),
+                      "-Dorg.osgi.service.http.port=" + process.port.get(),
                       "-Dorg.eclipse.equinox.http.jetty.log.stderr.threshold=info",
                       ">", logFile, "2>", logFile, "&" );
           
@@ -123,7 +214,7 @@ public class JCloudsHostRuntime
 
             // XXX better poll HTTP?
             log.info( "SLEEP: 1s (allow instance to start up)" );
-            Thread.sleep( 1000 );
+            Thread.sleep( 3000 );
             
             // fail on exception
             log.info( "PID: " + file( new File( pidFile ) ).content() );
@@ -189,8 +280,20 @@ public class JCloudsHostRuntime
 
         @Override
         public OutputStream outputStream() {
-            // XXX Auto-generated method stub
-            throw new RuntimeException( "not yet implemented." );
+            // XXX make it stream
+            return new ByteArrayOutputStream() {
+                @Override
+                public void close() throws IOException {
+                    SshClient ssh = JCloudsRuntime.instance.get().sshForNode( rhost.hostId.get() );
+                    try {
+                        ssh.connect();
+                        ssh.put( f.getAbsolutePath(), new ByteArrayPayload( toByteArray() ) );
+                    } 
+                    finally {
+                        if (ssh != null) { ssh.disconnect(); }
+                    }
+                }                
+            };            
         }
 
         @Override

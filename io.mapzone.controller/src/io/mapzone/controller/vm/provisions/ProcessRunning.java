@@ -1,15 +1,13 @@
 package io.mapzone.controller.vm.provisions;
 
-import static io.mapzone.controller.provision.Provision.Status.Severity.FAILED_CHECK_AGAIN;
 import io.mapzone.controller.http.DefaultProvision;
 import io.mapzone.controller.http.OkToForwardRequest;
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.vm.repository.RegisteredHost;
+import io.mapzone.controller.vm.repository.RegisteredInstance;
 import io.mapzone.controller.vm.repository.RegisteredProcess;
-
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,6 +28,8 @@ public class ProcessRunning
     
     private Context<RegisteredHost>         host;
 
+    private Context<RegisteredInstance>     instance;
+
     private Context<RegisteredProcess>      process;
 
     private Status                          cause;
@@ -39,7 +39,7 @@ public class ProcessRunning
     public boolean init( Provision failed, @SuppressWarnings("hiding") Status cause ) {
         this.cause = cause;
         return failed instanceof OkToForwardRequest
-                && cause.getCause().equals( OkToForwardRequest.NO_PROCESS );
+                /*&& cause.getCause().equals( OkToForwardRequest.NO_PROCESS )*/;
     }
 
     
@@ -48,24 +48,44 @@ public class ProcessRunning
         // lock others while we change things
         vmRepo.get().lock();
 
-        // find host to use
-        List<RegisteredHost> hosts = vmRepo.get().allHosts();
-        if (hosts.isEmpty()) {
-            return new Status( FAILED_CHECK_AGAIN, NO_HOST );
-        }
-        if (hosts.size() > 1) {
-            throw new RuntimeException( "FIXME find the most suited host to run this project" );
-        }
-        host.set( hosts.get( 0 ) );
+//        // find host to use
+//        List<RegisteredHost> hosts = vmRepo.get().allHosts();
+//        if (hosts.isEmpty()) {
+//            return new Status( FAILED_CHECK_AGAIN, NO_HOST );
+//        }
+//        if (hosts.size() > 1) {
+//            throw new RuntimeException( "FIXME find the most suited host to run this project" );
+//        }
+//        host.set( hosts.get( 0 ) );
 
+        // find instance on host
+        instance.set( vmRepo.get().findInstance( 
+                project.get().organizationOrUser().name.get(),
+                project.get().name.get(),
+                null )
+                .orElseThrow( () -> new RuntimeException( "No project instance found for: " + project ) ) );
+        
+        // XXX check this again if process cleaning is in place
+       // assert instance.get().process.get() == null;
+        RegisteredProcess currentProcess = instance.get().process.get();
+        if (currentProcess != null) {
+            log.warn( "Registered process found. Deleting without checking OS process!" );
+            instance.get().process.set( null );
+            vmRepo.get().removeProcess( currentProcess );
+        }
+        
+        host.set( instance.get().host.get() );
+        assert host.get() != null;
+        
         // start process
         int port = host.get().runtime.get().findFreePort();
-        process.set( host.get().startProcess( project.get(), (RegisteredProcess proto) -> {
-            proto.organisation.set( project.get().organization.get().name.get() );
-            proto.project.set( project.get().name.get() );
+        process.set( host.get().startInstance( instance.get(), (RegisteredProcess proto) -> {
+            proto.instance.set( instance.get() );
             proto.port.set( port );
             return proto;
         }));
+        assert process.get().instance.get() == instance.get();
+        assert instance.get().process.get() == process.get();
 
         return OK_STATUS;
     }

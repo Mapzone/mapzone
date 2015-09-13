@@ -4,20 +4,23 @@ import static io.mapzone.controller.provision.Provision.Status.Severity.OK;
 import io.mapzone.controller.provision.Provision;
 import io.mapzone.controller.provision.Provision.Status;
 import io.mapzone.controller.provision.ProvisionExecutor;
+import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.vm.provisions.ProcessRunning;
 import io.mapzone.controller.vm.repository.VmRepository;
 
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
+
+import com.google.common.base.Joiner;
 
 import org.polymap.core.runtime.Closer;
 
@@ -36,7 +39,31 @@ public class ProxyServlet
 
     /** The provisions to be handled before forwarding the response back to the sender. */
     private static final Class[]    forwardResponseProvisions = {OkToForwardResponse.class};
-        
+
+    private static final String     SERVLET_ALIAS = "/projects";
+    
+    /**
+     * 
+     *
+     * @param request
+     * @return 0: organization/user, 1: project, 2: version
+     */
+    public static String[] projectName( HttpServletRequest request ) {
+        return StringUtils.split( request.getPathInfo(), "/" );
+    }
+    
+    
+    public static String projectUrl( Project project ) {
+        // FIXME
+        return Joiner.on( "/" ).join( "http://localhost:8080",
+                StringUtils.substringAfter( SERVLET_ALIAS, "/" ),
+                project.organizationOrUser().name.get(),
+                project.name.get(),
+                StringUtils.substringAfter( project.servletAlias.get(), "/" ) );
+    }
+    
+    
+    // instance *******************************************
     
     @Override
     public void init() throws ServletException {
@@ -88,7 +115,7 @@ public class ProxyServlet
         protected Status executeProvision( Provision provision ) throws Exception {
             VmRepository vmRepo = VmRepository.instance();
             // the projectRepo does/must not change during provisioning
-            ProjectRepository projectRepo = ProjectRepository.instance();
+            ProjectRepository projectRepo = ProjectRepository.newInstance();
             try {
                 ((DefaultProvision)provision).vmRepo.set( vmRepo );
                 ((DefaultProvision)provision).projectRepo.set( projectRepo );

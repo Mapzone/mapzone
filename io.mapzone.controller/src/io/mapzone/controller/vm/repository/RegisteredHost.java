@@ -1,14 +1,21 @@
 package io.mapzone.controller.vm.repository;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import io.mapzone.controller.um.repository.Project;
+import io.mapzone.controller.um.repository.ProjectHolder;
 import io.mapzone.controller.vm.runtime.HostRuntime;
 
 import org.polymap.core.runtime.Lazy;
 import org.polymap.core.runtime.LockedLazyInit;
 
+import org.polymap.model2.BidiManyAssociationConcern;
+import org.polymap.model2.Concerns;
+import org.polymap.model2.Defaults;
 import org.polymap.model2.Entity;
 import org.polymap.model2.ManyAssociation;
 import org.polymap.model2.Property;
+import org.polymap.model2.runtime.UnitOfWork;
 import org.polymap.model2.runtime.ValueInitializer;
 
 /**
@@ -40,11 +47,16 @@ public class RegisteredHost
      */
     public Property<String>                     inetAddress;
     
-    public ManyAssociation<RegisteredProcess>   processes;
+    @Defaults
+    @Concerns( BidiManyAssociationConcern.class )
+    public ManyAssociation<RegisteredInstance>  instances;
+    
+//    public ManyAssociation<RegisteredProcess>   processes;
 
     public Lazy<HostRuntime>                    runtime = new LockedLazyInit( () -> HostRuntime.forHost( this ) ); 
     
 
+    
     /**
      * Starts a new process and associates it with this host.
      *
@@ -52,16 +64,47 @@ public class RegisteredHost
      * @return Newly created entity.
      * @throws Exception 
      */
-    public RegisteredProcess startProcess( Project project, ValueInitializer<RegisteredProcess> initializer ) throws Exception {
+    public RegisteredProcess startInstance( RegisteredInstance instance, ValueInitializer<RegisteredProcess> initializer ) throws Exception {
+        // XXX activate when process cleaning works?
+       // assert instance.process.get() == null;
+        
         // create new entity
-        RegisteredProcess result = context.getUnitOfWork()
-                .createEntity( RegisteredProcess.class, null, initializer, (RegisteredProcess proto) -> {
-                    proto.host.set( this );
-                    return proto;
-                });
+        UnitOfWork uow = context.getUnitOfWork();
+        RegisteredProcess result = uow.createEntity( RegisteredProcess.class, null, initializer, (RegisteredProcess proto) -> {
+            proto.instance.set( instance );
+            return proto;
+        });
         
         // start process (sets port)
-        runtime.get().process( result ).start( project );
+        runtime.get().process( result ).start();
+        return result;
+    }
+
+
+    /**
+     * Creates a new project instance for the given {@link Project}. Creates a new
+     * {@link RegisteredInstance}, initializes properties, prepares filesystem on the
+     * host.
+     *
+     * @param project
+     * @param projectHolder 
+     * @param monitor 
+     * @return Newly created entity.
+     * @throws Exception 
+     */
+    public RegisteredInstance createProjectInstance( Project project, ProjectHolder projectHolder, IProgressMonitor monitor ) throws Exception {
+        // create new entity
+        UnitOfWork uow = context.getUnitOfWork();
+        RegisteredInstance result = uow.createEntity( RegisteredInstance.class, null, (RegisteredInstance proto) -> {
+            proto.organisation.set( projectHolder.name.get() );
+            proto.project.set( project.name.get() );
+            return proto;
+        });
+        instances.add( result );
+        assert result.host.get() == this;
+
+        // prepare the instance on the host
+        runtime.get().instance( result ).prepareInstall( project, monitor );
         return result;
     }
     

@@ -58,7 +58,7 @@ public class OkToForwardRequest
 
     @Override
     public Status execute() throws Exception {
-        String[] path = StringUtils.split( request.get().getPathInfo(), "/" );
+        String[] path = ProxyServlet.projectName( request.get() );
         String projectName = path[1];
         String organizationName = path[0];
         
@@ -72,7 +72,10 @@ public class OkToForwardRequest
                 return OK_STATUS;
             }
             catch (IOException e) {
-                log.info( "Forwarding request failed.", e );
+                log.warn( "Forwarding request failed. (" + e .getMessage() + ")" );
+                project.set( projectRepo.get()
+                        .findProject( organizationName, projectName )
+                        .orElseThrow( () -> new RuntimeException( "No such project: " + organizationName + "/" + projectName ) ) ); 
                 return new Status( Severity.FAILED_CHECK_AGAIN, BAD_RESPONSE, e );                
             }
         }
@@ -98,9 +101,9 @@ public class OkToForwardRequest
         HttpServletRequest r = request.get();
         String method = r.getMethod();
         
-        String path = StringUtils.substringAfter( r.getPathInfo(), process.project.get() );
+        String path = StringUtils.substringAfter( r.getPathInfo(), process.instance.get().project.get() );
         URI proxyUri = new URIBuilder().setScheme( "http")
-                .setHost( process.host.get().inetAddress.get() )
+                .setHost( process.instance.get().host.get().inetAddress.get() )
                 .setPort( process.port.get() )
                 .setPath( path )
                 .setQuery( request.get().getQueryString() )
@@ -123,7 +126,7 @@ public class OkToForwardRequest
         copyRequest( r, proxyRequest.get() );
         log.info( "PROXY REQUEST: " + proxyRequest.get() );
         
-        HttpHost host = new HttpHost( process.host.get().inetAddress.get(), process.port.get(), "http" ); 
+        HttpHost host = new HttpHost( process.instance.get().host.get().inetAddress.get(), process.port.get(), "http" ); 
         proxyResponse.set( httpclient.execute( host, proxyRequest.get() ) );
         log.info( "PROXY RESPONSE: " + proxyResponse.get().getStatusLine() );
     }
