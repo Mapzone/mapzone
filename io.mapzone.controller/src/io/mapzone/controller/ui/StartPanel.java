@@ -53,7 +53,7 @@ public class StartPanel
     @Override
     public void createContents( Composite parent ) {
         getSite().setPreferredWidth( 650 );
-        getSite().setTitle( "Start" );
+        getSite().setTitle( "Welcome" );
         
         // login cookie
         Optional<LoginCookie> loginCookie = LoginCookie.findAndUpdate( cookieRepo );

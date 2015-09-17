@@ -18,7 +18,6 @@ import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL24;
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.http.ProxyServlet;
 import io.mapzone.controller.ui.ProjectLabelProvider.Type;
-import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
@@ -39,8 +38,6 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.UrlLauncher;
 
-import org.polymap.core.runtime.event.EventHandler;
-import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.ui.SelectionAdapter;
 
 import org.polymap.rhei.batik.BatikApplication;
@@ -48,7 +45,6 @@ import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.dashboard.DashletSite;
 import org.polymap.rhei.batik.dashboard.DefaultDashlet;
-import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.md.ActionProvider;
 import org.polymap.rhei.batik.toolkit.md.ListTreeContentProvider;
 import org.polymap.rhei.batik.toolkit.md.MdListViewer;
@@ -59,10 +55,10 @@ import org.polymap.rhei.batik.toolkit.md.MdToolkit;
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-public class ProjectsDashlet
+public class ActivitiesDashlet
         extends DefaultDashlet {
 
-    private static Log log = LogFactory.getLog( ProjectsDashlet.class );
+    private static Log log = LogFactory.getLog( ActivitiesDashlet.class );
     
     @Scope("io.mapzone.controller")
     private Context<String>                 username;
@@ -77,23 +73,13 @@ public class ProjectsDashlet
     @Override
     public void init( DashletSite site ) {
         super.init( site );
-        site.title.set( "Projects" );
-        site.constraints.get().add( new MinWidthConstraint( 350, 10 ) );
+        site.title.set( "Activities" );
         
         repo = ProjectRepository.instance();
         user = repo.findUser( username.get() ).orElseThrow( () -> new RuntimeException( "No such user: " + username.get() ) );
-        
-        EventManager.instance().subscribe( this, ev -> ev instanceof EntityChangedEvent && 
-                ((EntityChangedEvent)ev).getEntity() instanceof Project );
     }
 
 
-    @EventHandler( display=true )
-    protected void projectChanged( EntityChangedEvent ev ) {
-        viewer.setInput( user.projects.stream().collect( Collectors.toList() ) );        
-    }
-
-    
     @Override
     public void createContents( Composite parent ) {
         MdToolkit tk = (MdToolkit)getSite().toolkit(); 

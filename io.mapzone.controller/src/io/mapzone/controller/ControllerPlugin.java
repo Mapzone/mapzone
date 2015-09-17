@@ -1,11 +1,14 @@
 package io.mapzone.controller;
 
+import io.mapzone.controller.ui.SvgImageRenderer;
+
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import org.polymap.core.security.SecurityContext;
 import org.polymap.core.security.StandardConfiguration;
 
 import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
+import org.polymap.rhei.batik.toolkit.DefaultToolkit;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 
 import org.osgi.framework.BundleContext;
@@ -41,7 +44,10 @@ public class ControllerPlugin extends AbstractUIPlugin {
 	
     public void start( BundleContext context ) throws Exception {
 		super.start( context );
-		instance = this;        
+		instance = this;
+		
+		// allow SVG images in markdown
+		DefaultToolkit.registerMarkdownRenderer( () -> new SvgImageRenderer() );
 		
 		// JAAS config: no dialog; let LoginDashlet create UI
         SecurityContext.registerConfiguration( () -> new StandardConfiguration() {

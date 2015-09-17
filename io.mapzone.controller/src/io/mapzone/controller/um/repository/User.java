@@ -1,7 +1,10 @@
 package io.mapzone.controller.um.repository;
 
+import java.util.Date;
+
 import org.polymap.model2.BidiManyAssociationConcern;
 import org.polymap.model2.Concerns;
+import org.polymap.model2.DefaultValue;
 import org.polymap.model2.Defaults;
 import org.polymap.model2.ManyAssociation;
 import org.polymap.model2.Nullable;
@@ -22,11 +25,15 @@ public class User
     
     @Queryable
     @Nullable
+    @DefaultValue( "[No fullname yet]" )
     public Property<String>         fullname;
     
     @Queryable
-    @Nullable
+    @DefaultValue( "" )
     public Property<String>         company;
+    
+    @Queryable
+    public Property<Date>           joined;
     
     /** 
      * Bidirectional association to {@link Organization#members}.

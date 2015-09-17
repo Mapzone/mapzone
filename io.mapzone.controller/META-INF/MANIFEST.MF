@@ -56,3 +56,4 @@ Bundle-ClassPath: lib/commons-codec-1.9.jar,
  lib/commons-email-1.4.jar,
  lib/javax.mail-1.5.2.jar,
  lib/jsch-0.1.49.jar
+Import-Package: org.polymap.rap.updownload.download

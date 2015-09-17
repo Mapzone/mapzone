@@ -1,6 +1,7 @@
 package io.mapzone.controller.um.operations;
 
 import io.mapzone.controller.Messages;
+import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectHolder;
 import io.mapzone.controller.um.repository.ProjectRepository;
@@ -24,6 +25,7 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.ConfigurationFactory;
 import org.polymap.core.runtime.config.Mandatory;
+import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.runtime.i18n.IMessages;
 
 /**
@@ -78,6 +80,7 @@ public class CreateProjectOperation
             
             vmRepo.commit();
             repo.get().commit();
+            EventManager.instance().publish( new EntityChangedEvent( project.get() ) );
             return Status.OK_STATUS;
         }
         catch (Exception e) {

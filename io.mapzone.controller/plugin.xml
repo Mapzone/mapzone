@@ -80,6 +80,10 @@
             class="io.mapzone.controller.ui.EditProjectPanel"
             id="io.mapzone.controller.EditProjectPanel">
       </panel>
+      <panel
+            class="io.mapzone.controller.ui.EditUserPanel"
+            id="io.mapzone.controller.EditUserPanel">
+      </panel>
    </extension>
 
 </plugin>

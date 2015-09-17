@@ -2,6 +2,7 @@ package io.mapzone.controller.ui;
 
 import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL24;
 
+import java.util.Date;
 import java.util.Optional;
 
 import io.mapzone.controller.ControllerPlugin;
@@ -35,6 +36,7 @@ import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.IPanel;
 import org.polymap.rhei.batik.PanelIdentifier;
+import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.IPanelToolkit;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
@@ -84,6 +86,22 @@ public class RegisterPanel
 
     private IPanelSection               formSection;
     
+
+    @Override
+    public boolean wantsToBeShown() {
+        if (parentPanel().get() instanceof StartPanel) {
+            getSite().setTitle( "" );
+            getSite().setIcon( ControllerPlugin.images().svgImage( "account-plus.svg", SvgImageRegistryHelper.NORMAL24 ) ); 
+
+//            getSite().setIcon( ControllerPlugin.images().svgOverlayedImage( 
+//                    "account.svg", SvgImageRegistryHelper.NORMAL24, 
+//                    "plus-circle-filled.svg", SvgImageRegistryHelper.OVR12_ACTION,
+//                    Quadrant.TopLeft ) );
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
     public void init() {
@@ -137,6 +155,7 @@ public class RegisterPanel
             proto.name.set( "" );
             proto.email.set( "" );
             proto.passwordHash.set( "" );
+            proto.joined.set( new Date() );
             return proto;
         });
         

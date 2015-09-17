@@ -14,6 +14,7 @@
  */
 package io.mapzone.controller.ui;
 
+import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
 
@@ -23,12 +24,15 @@ import org.apache.commons.logging.LogFactory;
 import com.google.common.base.Joiner;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+
+import org.polymap.core.runtime.event.EventHandler;
+import org.polymap.core.runtime.event.EventManager;
 
 import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.dashboard.DashletSite;
 import org.polymap.rhei.batik.dashboard.DefaultDashlet;
-import org.polymap.rhei.batik.toolkit.md.MdListViewer;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
 /**
@@ -48,24 +52,42 @@ public class UserProfileDashlet
     
     private User                            user;
     
-    private MdListViewer                    viewer;
+    private Label                           flowtext;
 
     
     @Override
     public void init( DashletSite site ) {
         super.init( site );
-        site.title.set( "Profile" );
         this.user = repo.findUser( username.get() ).orElseThrow( () -> new RuntimeException( "No such user: " + username.get() ) );
+        site.title.set( "Profile of " + user.name.get() );
+        
+        EventManager.instance().subscribe( this, ev -> ev instanceof EntityChangedEvent && 
+                ((EntityChangedEvent)ev).getEntity().id().equals( user.id() ) );
     }
 
+    
+    @EventHandler( display=true )
+    protected void userChanged( EntityChangedEvent ev ) {
+        flowtext.setText( createFlowtext() );
+    }
 
+    
     @Override
     public void createContents( Composite parent ) {
         MdToolkit tk = (MdToolkit)getSite().toolkit();
-        tk.createFlowText( parent, Joiner.on( "<br/>\n" ).join(
-                "#" + user.name.get(),
-                user.email.get()
-                ) );
+        flowtext = tk.createFlowText( parent, createFlowtext() );
+    }
+    
+    
+    protected String createFlowtext() {
+        return Joiner.on( "\n" ).join(
+                "## " + user.fullname.get(),
+                "* <span style=\"vertical-align:middle\">![email](#account-multiple-outline.svg)</span> " + user.company.get() + "</span>",
+                "* <span style=\"vertical-align:middle\">![email](#email-outline.svg)</span> [" + user.email.get() + "](mailto:" + user.email.get() + ")<br/>",
+                "* <span style=\"vertical-align:middle\">![web](#link-variant.svg)</span> [" + user.website.get() + "](http://" + user.website.get() + ")<br/>",
+                "* <span style=\"vertical-align:middle\">![location](#map-marker.svg)</span> " + user.location.get() + "<br/>",
+                "* <span style=\"vertical-align:middle\">![clock](#clock.svg)</span> Joined on ..." + "<br/>",
+                "<br/>" );
     }
     
 }

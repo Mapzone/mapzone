@@ -4,6 +4,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import org.polymap.core.ui.FormDataFactory;
 import org.polymap.core.ui.FormLayoutFactory;
 import org.polymap.core.ui.UIUtils;
 
@@ -21,9 +22,10 @@ public class CtrlAppDesign
     protected Composite fillHeaderArea( Composite parent ) {
         Composite result = new Composite( parent, SWT.NO_FOCUS | SWT.BORDER );
         UIUtils.setVariant( result, IAppDesign.CSS_HEADER );
-        result.setLayout( FormLayoutFactory.defaults().margins( 0, 0 ).create() );
+        result.setLayout( FormLayoutFactory.defaults().margins( 0, 0 ).margins( 0, 3 ).create() );
         Label title = UIUtils.setVariant( new Label( result, SWT.NONE ), IAppDesign.CSS_HEADER );
-        title.setText( "Mapzone" );
+        title.setText( "mapzone" );
+        FormDataFactory.on( title ).fill();
         return result;
     }
 

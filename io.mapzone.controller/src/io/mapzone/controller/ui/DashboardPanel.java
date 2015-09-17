@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.dashboard.Dashboard;
+import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 
 /**
  * 
@@ -32,8 +33,8 @@ public class DashboardPanel
         getSite().setTitle( "Dashboard" );
         
         dashboard = new Dashboard( getSite(), DASHBOARD_ID );
-        dashboard.addDashlet( new WelcomeMessageDashlet() );
-        dashboard.addDashlet( new ProjectsDashlet() );
+        dashboard.addDashlet( new ProjectsDashlet().addConstraint( new PriorityConstraint( 10 ) ) );
+        dashboard.addDashlet( new ActivitiesDashlet() );
         dashboard.addDashlet( new UserProfileDashlet() );
         dashboard.createContents( parent );        
     }

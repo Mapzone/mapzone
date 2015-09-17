@@ -1,5 +1,7 @@
 package io.mapzone.controller.ui;
 
+import static org.polymap.rhei.batik.toolkit.md.dp.dp;
+import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.um.operations.CreateProjectOperation;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectHolder;
@@ -15,8 +17,11 @@ import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+
+import org.eclipse.ui.forms.widgets.ColumnLayoutData;
 
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.UIThreadExecutor;
@@ -28,8 +33,9 @@ import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PanelPath;
 import org.polymap.rhei.batik.Scope;
+import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
+import org.polymap.rhei.batik.app.SvgImageRegistryHelper.Quadrant;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
-import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 import org.polymap.rhei.field.FormFieldEvent;
 import org.polymap.rhei.field.IFormFieldListener;
@@ -51,7 +57,12 @@ public class CreateProjectPanel
     private static Log log = LogFactory.getLog( CreateProjectPanel.class );
 
     public static final PanelIdentifier ID = PanelIdentifier.parse( "createProject" );
-    
+
+    private static final Image      icon = ControllerPlugin.images().svgOverlayedImage( 
+            "map.svg", SvgImageRegistryHelper.NORMAL24,
+            "plus-circle-filled.svg", SvgImageRegistryHelper.OVR12_ACTION, 
+            Quadrant.TopLeft );
+
     @Scope("io.mapzone.controller")
     private Context<String>         username;
     
@@ -72,7 +83,8 @@ public class CreateProjectPanel
     @Override
     public boolean wantsToBeShown() {
         if (parentPanel().get() instanceof DashboardPanel) {
-            getSite().setTitle( "Create project" );
+            getSite().setTitle( "+" );
+            getSite().setIcon( ControllerPlugin.images().svgImage( "map.svg", SvgImageRegistryHelper.NORMAL24 ) );
             return true;
         }
         return false;
@@ -81,6 +93,7 @@ public class CreateProjectPanel
 
     @Override
     public void init() {
+        getSite().setTitle( "New project" );
         nested = ProjectRepository.instance().newNested();
         user = nested.findUser( username.get() ).orElseThrow( () -> new RuntimeException( "No user!" ) );
         project = nested.createEntity( Project.class, null );
@@ -94,20 +107,24 @@ public class CreateProjectPanel
         
 //        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( 10 ).create() );
         
-        // welcome
-        IPanelSection welcomeSection = tk.createPanelSection( parent, "New project" );
-        welcomeSection.addConstraint( new MinWidthConstraint( 350, 1 ) );
-        tk.createFlowText( welcomeSection.getBody(), "Choose an **Organization** your are member of. Or you choose to create a **personal** project. Personal projects can be asigned to an Organization later." );
+//        // welcome
+//        IPanelSection welcomeSection = tk.createPanelSection( parent, "New project" );
+//        welcomeSection.addConstraint( new MinWidthConstraint( 350, 1 ) );
+//        tk.createFlowText( welcomeSection.getBody(), "Choose an **Organization** your are member of. Or you choose to create a **personal** project. Personal projects can be asigned to an Organization later." );
 
         // form
-        IPanelSection formSection = tk.createPanelSection( parent, "Set up the project" );
+        IPanelSection formSection = tk.createPanelSection( parent, "Set up a new project" );
+        formSection.getBody().setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( dp(10).pix() ).create() );
+        
+        tk.createFlowText( formSection.getBody(), "Choose an **Organization** your are member of. Or you choose to create a **personal** project. Personal projects can be asigned to an Organization later." )
+                .setLayoutData( new ColumnLayoutData( 350 ) );
+
         form = new BatikFormContainer( new ProjectForm() );
         form.createContents( formSection.getBody() );
 
         // FAB
         fab = tk.createFab();
         fab.setToolTipText( "Create the new project" );
-        fab.setEnabled( false );
         fab.addSelectionListener( new SelectionAdapter() {
             @Override
             public void widgetSelected( SelectionEvent ev ) {
@@ -144,7 +161,7 @@ public class CreateProjectPanel
 
     
     protected void updateEnabled() {
-        fab.setEnabled( form.isDirty() && form.isValid() );
+        fab.setVisible( form.isDirty() && form.isValid() );
     }
     
     
@@ -168,6 +185,7 @@ public class CreateProjectPanel
             Map<String,ProjectHolder> orgs = user.organizations.stream().collect( Collectors.toMap( o -> o.name.get(), o -> o ) );
             orgs.put( user.name.get(), user );
             site.newFormField( new PlainValuePropertyAdapter( "organizationOrUser", null ) )
+                    .label.put( "Organization or User" )
                     .field.put( new PicklistFormField( orgs ) )
                     .tooltip.put( "" )
                     .create();
