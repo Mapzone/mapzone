@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-package io.mapzone.controller.ui;
+package io.mapzone.controller.ui.user;
 
 import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.ProjectRepository;
@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Label;
 
 import org.polymap.core.runtime.event.EventHandler;
 import org.polymap.core.runtime.event.EventManager;
+import org.polymap.core.security.UserPrincipal;
 
 import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.Scope;
@@ -46,7 +47,7 @@ public class UserProfileDashlet
     private static Log log = LogFactory.getLog( UserProfileDashlet.class );
     
     @Scope("io.mapzone.controller")
-    private Context<String>                 username;
+    protected Context<UserPrincipal>        userPrincipal;
     
     private ProjectRepository               repo = ProjectRepository.instance();
     
@@ -58,7 +59,9 @@ public class UserProfileDashlet
     @Override
     public void init( DashletSite site ) {
         super.init( site );
-        this.user = repo.findUser( username.get() ).orElseThrow( () -> new RuntimeException( "No such user: " + username.get() ) );
+        user = repo.findUser( userPrincipal.get().getName() )
+                .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) );
+        
         site.title.set( "Profile of " + user.name.get() );
         
         EventManager.instance().subscribe( this, ev -> ev instanceof EntityChangedEvent && 
@@ -82,12 +85,21 @@ public class UserProfileDashlet
     protected String createFlowtext() {
         return Joiner.on( "\n" ).join(
                 "## " + user.fullname.get(),
-                "* <span style=\"vertical-align:middle\">![email](#account-multiple-outline.svg)</span> " + user.company.get() + "</span>",
-                "* <span style=\"vertical-align:middle\">![email](#email-outline.svg)</span> [" + user.email.get() + "](mailto:" + user.email.get() + ")<br/>",
-                "* <span style=\"vertical-align:middle\">![web](#link-variant.svg)</span> [" + user.website.get() + "](http://" + user.website.get() + ")<br/>",
-                "* <span style=\"vertical-align:middle\">![location](#map-marker.svg)</span> " + user.location.get() + "<br/>",
-                "* <span style=\"vertical-align:middle\">![clock](#clock.svg)</span> Joined on ..." + "<br/>",
+                createLine( "account-multiple-outline.svg", user.company.get(), null ),
+                createLine( "email-outline.svg", user.email.get(), "mailto:" + user.email.get() ),
+                createLine( "link-variant.svg", user.website.get(), "http://" + user.website.get() ),
+                createLine( "map-marker.svg", user.location.get(), null ),
+                createLine( "clock.svg", "Joined on ...", null ),
                 "<br/>" );
     }
+
     
+    protected String createLine( String svg, String text, String link ) {
+        return Joiner.on( "" ).join( 
+                "* <span style=\"vertical-align:middle\">![", svg, "](#", svg, "@normal12)</span> ",
+                (link != null
+                        ? Joiner.on( "" ).join( "[", text, "](", link, ")" )
+                        : text),
+                "<br/>" );
+    }
 }

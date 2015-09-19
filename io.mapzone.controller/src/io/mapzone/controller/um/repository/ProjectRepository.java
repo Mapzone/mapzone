@@ -174,6 +174,11 @@ public class ProjectRepository
     }
 
 
+    public void removeEntity( Entity entity ) {
+        uow.removeEntity( entity );
+    }
+
+    
     public void rollback() {
         EventManager.instance().publish( new LifecycleEvent( this, Type.BEFORE_ROLLBACK ) );
         uow.rollback();

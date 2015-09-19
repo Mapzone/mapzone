@@ -17,7 +17,9 @@ package io.mapzone.controller.ui;
 import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL24;
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.http.ProxyServlet;
-import io.mapzone.controller.ui.ProjectLabelProvider.Type;
+import io.mapzone.controller.ui.project.EditProjectPanel;
+import io.mapzone.controller.ui.project.ProjectLabelProvider;
+import io.mapzone.controller.ui.project.ProjectLabelProvider.Type;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
@@ -38,10 +40,12 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.UrlLauncher;
 
+import org.polymap.core.security.UserPrincipal;
 import org.polymap.core.ui.SelectionAdapter;
 
 import org.polymap.rhei.batik.BatikApplication;
 import org.polymap.rhei.batik.Context;
+import org.polymap.rhei.batik.Mandatory;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.dashboard.DashletSite;
 import org.polymap.rhei.batik.dashboard.DefaultDashlet;
@@ -60,8 +64,9 @@ public class ActivitiesDashlet
 
     private static Log log = LogFactory.getLog( ActivitiesDashlet.class );
     
+    @Mandatory
     @Scope("io.mapzone.controller")
-    private Context<String>                 username;
+    protected Context<UserPrincipal>        userPrincipal;
     
     private ProjectRepository               repo;
     
@@ -76,7 +81,8 @@ public class ActivitiesDashlet
         site.title.set( "Activities" );
         
         repo = ProjectRepository.instance();
-        user = repo.findUser( username.get() ).orElseThrow( () -> new RuntimeException( "No such user: " + username.get() ) );
+        user = repo.findUser( userPrincipal.get().getName() )
+                .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) );
     }
 
 

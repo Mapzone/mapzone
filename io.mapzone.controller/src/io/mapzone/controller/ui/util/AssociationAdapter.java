@@ -1,4 +1,4 @@
-package io.mapzone.controller.ui;
+package io.mapzone.controller.ui.util;
 
 import java.util.Map;
 

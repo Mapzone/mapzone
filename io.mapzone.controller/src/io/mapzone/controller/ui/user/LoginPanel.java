@@ -1,34 +1,47 @@
-package io.mapzone.controller.ui;
+/* 
+ * polymap.org
+ * Copyright (C) 2015, Falko Bräutigam. All rights reserved.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3.0 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
+package io.mapzone.controller.ui.user;
 
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.Messages;
+import io.mapzone.controller.ui.StartPanel;
 import io.mapzone.controller.um.repository.LoginCookie;
 import io.mapzone.controller.um.repository.ProjectRepository;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Link;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.security.SecurityContext;
 import org.polymap.core.security.UserPrincipal;
 import org.polymap.core.ui.ColumnLayoutFactory;
 
-import org.polymap.rhei.batik.BatikApplication;
 import org.polymap.rhei.batik.Context;
-import org.polymap.rhei.batik.IAppContext;
+import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.IPanelSite;
+import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.Scope;
-import org.polymap.rhei.batik.dashboard.DashletSite;
-import org.polymap.rhei.batik.dashboard.DefaultDashlet;
+import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
+import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.field.CheckboxFormField;
 import org.polymap.rhei.field.FormFieldEvent;
 import org.polymap.rhei.field.IFormFieldListener;
@@ -45,71 +58,65 @@ import org.polymap.rhei.form.batik.BatikFormContainer;
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-public class LoginDashlet
-        extends DefaultDashlet {
+public class LoginPanel
+        extends DefaultPanel {
 
-    private static Log log = LogFactory.getLog( LoginDashlet.class );
-
+    public static final PanelIdentifier ID = new PanelIdentifier( "login" );
+    
     private static final IMessages      i18n = Messages.forPrefix( "LoginForm" );
-    
-    protected IPanelSite                panelSite;
-    
-    protected IAppContext               context;
 
     @Scope("io.mapzone.controller")
     protected Context<UserPrincipal>    userPrincipal;
 
-//    @Mandatory
-//    @Scope("io.mapzone.controller")
-//    protected Context<User>             user;
-
-    private ProjectRepository           repo;
-
     
-    public LoginDashlet( ProjectRepository repo ) {
-        this.repo = repo;
+    @Override
+    public boolean wantsToBeShown() {
+        if (parentPanel().get() instanceof StartPanel) {
+            getSite().setTitle( "" );
+            getSite().setIcon( ControllerPlugin.images().svgImage( "account-key.svg", SvgImageRegistryHelper.NORMAL24 ) ); 
+
+//            getSite().setIcon( ControllerPlugin.images().svgOverlayedImage( 
+//                    "account.svg", SvgImageRegistryHelper.NORMAL24, 
+//                    "plus-circle-filled.svg", SvgImageRegistryHelper.OVR12_ACTION,
+//                    Quadrant.TopLeft ) );
+            return true;
+        }
+        return false;
     }
 
 
     @Override
-    public void init( DashletSite site ) {
-        super.init( site );
-        getSite().title.set( "Register / Login" );
+    public void init() {
+        getSite().setTitle( "Sign in" );
+        getSite().setPreferredWidth( 450 );
     }
-
-
+    
+    
     @Override
     public void createContents( Composite parent ) {
-        context = BatikApplication.instance().getContext();
-        panelSite = getSite().panelSite();
-        
-        getSite().title.set( "Login" );
-//        getSite().setIcon( BatikPlugin.instance().imageForName( "resources/icons/user.png" ) );
-        
-        parent.setLayout( new FillLayout() );
-//        section.addConstraint( new PriorityConstraint( 10 ), AzvPlugin.MIN_COLUMN_WIDTH );
+        IPanelSection section = getSite().toolkit().createPanelSection( parent, null );
         
         LoginForm loginForm = new LoginForm() {
             protected boolean login( String name, String passwd ) {
                 if (super.login( name, passwd )) {
-                    panelSite.setStatus( new Status( IStatus.OK, ControllerPlugin.ID, "Successfully logged in" ) );
-                    context.openPanel( panelSite.getPath(), DashboardPanel.ID );
+                    getSite().setStatus( new Status( IStatus.OK, ControllerPlugin.ID, "Successfully signed in" ) );
+                    getContext().closePanel( getSite().getPath() );
                     return true;
                 }
                 else {
-                    panelSite.setStatus( new Status( IStatus.OK, ControllerPlugin.ID, "Successfully logged in" ) );
+                    getSite().setStatus( new Status( IStatus.WARNING, ControllerPlugin.ID, "Username and/or password not correct." ) );
                     return false;
                 }
             }
             
         };        
-        loginForm.setShowRegisterLink( true );
+        loginForm.setShowRegisterLink( false );
         loginForm.setShowStoreCheck( true );
         loginForm.setShowLostLink( true );
 
-        new BatikFormContainer( loginForm ).createContents( parent );
+        new BatikFormContainer( loginForm ).createContents( section );
     }
-    
+
     
     /**
      * 
@@ -152,6 +159,7 @@ public class LoginDashlet
         @Override
         public void createFormContents( final IFormPageSite site ) {
             formSite = site;
+            IPanelSite panelSite = getSite();
             Composite body = site.getPageBody();
             body.setLayout( ColumnLayoutFactory.defaults()
                     .spacing( 5 /*panelSite.getLayoutPreference( LAYOUT_SPACING_KEY ) / 4*/ )
@@ -182,7 +190,7 @@ public class LoginDashlet
                 public void widgetSelected( SelectionEvent ev ) {
                     login( username, password );
                     if (storeLogin) {
-                        LoginCookie.create( repo, username );
+                        LoginCookie.create( ProjectRepository.newInstance(), username );
                     }
                 }
             });
@@ -206,7 +214,7 @@ public class LoginDashlet
                 Link registerLnk = panelSite.toolkit().createLink( links, i18n.get( "register" ) );
                 registerLnk.addSelectionListener( new SelectionAdapter() {
                     public void widgetSelected( SelectionEvent e ) {
-                        context.openPanel( panelSite.getPath(), RegisterPanel.ID );
+                        getContext().openPanel( panelSite.getPath(), RegisterPanel.ID );
                     }
                 });
             }

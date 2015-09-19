@@ -12,9 +12,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-package io.mapzone.controller.ui;
+package io.mapzone.controller.ui.util;
 
-import static org.apache.commons.lang3.StringUtils.substringAfter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import io.mapzone.controller.ControllerPlugin;
 
 import java.io.ByteArrayInputStream;
@@ -50,20 +52,21 @@ public class SvgImageRenderer
 
     private static Log log = LogFactory.getLog( SvgImageRenderer.class );
     
+    public static final Pattern                 urlPattern = Pattern.compile( "#([^@]+)[@]?([a-zA-Z0-9_-]*)" );
+            
     private DownloadService.ContentProvider     provider;
     
     
     @Override
     public boolean render( DefaultToolkit toolkit, IMarkdownNode node, MarkdownRenderOutput out, Widget widget ) {
-        if (node.type() == IMarkdownNode.Type.ExpImage
-                || node.type() == IMarkdownNode.Type.ExpLink && node.url().startsWith( "#" )) {
-            log.info( "url=" + node.url() + ", text=" + node.text() );
+        Matcher urlMatcher = urlPattern.matcher( node.url() );
+        if (node.type() == IMarkdownNode.Type.ExpImage && urlMatcher.matches()) {
+            log.debug( "url=" + node.url() + ", text=" + node.text() );
 
-            String nodeUrl = node.url().startsWith( "#" ) 
-                    ? substringAfter( node.url(), "#" )
-                    : node.url();
+            String svgName = urlMatcher.group( 1 );
+            String configName = urlMatcher.group( 2 ).length() > 0 ? urlMatcher.group( 2 ) : SvgImageRegistryHelper.NORMAL24; 
                     
-            Image image = ControllerPlugin.images().svgImage( nodeUrl, SvgImageRegistryHelper.NORMAL12 );
+            Image image = ControllerPlugin.images().svgImage( svgName, configName );
             
             ImageLoader loader = new ImageLoader();
             loader.data = new ImageData[] { image.getImageData() };
@@ -79,7 +82,7 @@ public class SvgImageRenderer
                 }
                 @Override
                 public String getFilename() {
-                    return nodeUrl;
+                    return svgName;
                 }
                 @Override
                 public String getContentType() {

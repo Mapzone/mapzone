@@ -69,20 +69,24 @@
             id="io.mapzone.controller.StartPanel">
       </panel>
       <panel
-            class="io.mapzone.controller.ui.RegisterPanel"
+            class="io.mapzone.controller.ui.user.RegisterPanel"
             id="io.mapzone.controller.RegisterPanel">
       </panel>
       <panel
-            class="io.mapzone.controller.ui.CreateProjectPanel"
+            class="io.mapzone.controller.ui.project.CreateProjectPanel"
             id="io.mapzone.controller.CreateProjectPanel">
       </panel>
       <panel
-            class="io.mapzone.controller.ui.EditProjectPanel"
+            class="io.mapzone.controller.ui.project.EditProjectPanel"
             id="io.mapzone.controller.EditProjectPanel">
       </panel>
       <panel
-            class="io.mapzone.controller.ui.EditUserPanel"
+            class="io.mapzone.controller.ui.user.EditUserPanel"
             id="io.mapzone.controller.EditUserPanel">
+      </panel>
+      <panel
+            class="io.mapzone.controller.ui.user.LoginPanel"
+            id="io.mapzone.controller.LoginPanel">
       </panel>
    </extension>
 

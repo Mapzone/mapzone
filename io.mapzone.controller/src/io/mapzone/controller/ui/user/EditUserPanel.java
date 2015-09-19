@@ -1,7 +1,10 @@
-package io.mapzone.controller.ui;
+package io.mapzone.controller.ui.user;
 
 import io.mapzone.controller.ControllerPlugin;
+import io.mapzone.controller.ui.DashboardPanel;
+import io.mapzone.controller.ui.util.PropertyAdapter;
 import io.mapzone.controller.um.repository.EntityChangedEvent;
+import io.mapzone.controller.um.repository.LoginCookie;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
 import io.mapzone.controller.um.xauth.PasswordEncryptor;
@@ -22,12 +25,15 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 
 import org.polymap.core.operation.DefaultOperation;
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.runtime.event.EventHandler;
 import org.polymap.core.runtime.event.EventManager;
+import org.polymap.core.security.UserPrincipal;
 import org.polymap.core.ui.ColumnLayoutFactory;
 import org.polymap.core.ui.StatusDispatcher;
 
@@ -67,7 +73,7 @@ public class EditUserPanel
     public static final PanelIdentifier ID = PanelIdentifier.parse( "editUser" );
     
     @Scope("io.mapzone.controller")
-    private Context<String>         username;
+    protected Context<UserPrincipal>    userPrincipal;
     
     private ProjectRepository       nested;
     
@@ -96,7 +102,8 @@ public class EditUserPanel
     @Override
     public void init() {
         nested = ProjectRepository.instance().newNested();
-        user = nested.findUser( username.get() ).orElseThrow( () -> new RuntimeException( "No user!" ) );
+        user = nested.findUser( userPrincipal.get().getName() )
+                .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) );
         getSite().setTitle( "Account: " + user.name.get() );
     }
 
@@ -119,7 +126,15 @@ public class EditUserPanel
 
         // sign out
         IPanelSection signOutSection = tk.createPanelSection( parent, "Sign out" );
-        tk.createButton( signOutSection.getBody(), "Sign out", SWT.PUSH );
+        tk.createButton( signOutSection.getBody(), "Sign out", SWT.PUSH )
+                .addSelectionListener( new SelectionAdapter() {
+                    @Override
+                    public void widgetSelected( SelectionEvent e ) {
+                        LoginCookie.destroy( ProjectRepository.newInstance() );
+                        JavaScriptExecutor executor = RWT.getClient().getService( JavaScriptExecutor.class );
+                        executor.execute( "window.location.reload(true);" );
+                    }
+                });
 
         // FAB
         fab = tk.createFab();

@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-package io.mapzone.controller.ui;
+package io.mapzone.controller.ui.project;
 
 import io.mapzone.controller.um.repository.Project;
 

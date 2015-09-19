@@ -1,4 +1,4 @@
-package io.mapzone.controller.ui;
+package io.mapzone.controller.ui.project;
 
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.Messages;

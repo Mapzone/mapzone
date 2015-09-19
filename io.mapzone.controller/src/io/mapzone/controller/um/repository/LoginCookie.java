@@ -100,6 +100,26 @@ public class LoginCookie
     /**
      * 
      */
+    public static void destroy( ProjectRepository repo ) {
+        Arrays.stream( RWT.getRequest().getCookies() )
+                .filter( cookie -> cookie.getName().equals( COOKIE_NAME ) )
+                .forEach( cookie -> {
+                    log.info( "Found: " + cookie.getValue() );
+                    
+                    Iterable<LoginCookie> storedCookies = repo.query( LoginCookie.class )
+                            .where( eq( LoginCookie.TYPE.value, cookie.getValue() ) )
+                            .execute();
+
+                    for (LoginCookie storedCookie : storedCookies) {
+                        repo.removeEntity( storedCookie );
+                    }
+                    repo.commit();
+                });
+    }
+
+    /**
+     * 
+     */
     protected static void sendCookie( String value ) {
         Cookie cookie = new Cookie( COOKIE_NAME, value );
         cookie.setHttpOnly( true );

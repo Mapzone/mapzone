@@ -1,4 +1,4 @@
-package io.mapzone.controller.ui;
+package io.mapzone.controller.ui.user;
 
 import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL24;
 
@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.Messages;
+import io.mapzone.controller.ui.StartPanel;
+import io.mapzone.controller.ui.util.PropertyAdapter;
 import io.mapzone.controller.um.operations.CreateUserOperation;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
@@ -53,6 +55,8 @@ import org.polymap.rhei.field.Validators;
 import org.polymap.rhei.form.DefaultFormPage;
 import org.polymap.rhei.form.IFormPageSite;
 import org.polymap.rhei.form.batik.BatikFormContainer;
+
+import org.polymap.cms.ContentProvider;
 
 /**
  * 
@@ -141,12 +145,12 @@ public class RegisterPanel
         IPanelToolkit tk = getSite().toolkit();
 
         // welcome section
-        welcomeSection = tk.createPanelSection( parent, i18n.get( "welcomeTitle" ) );
+        welcomeSection = tk.createPanelSection( parent, null );
         welcomeSection.addConstraint( new PriorityConstraint( 10 ), new MinWidthConstraint( 450, 0 ) );
-        tk.createFlowText( welcomeSection.getBody(), i18n.get( "welcomeText" ) );
+        tk.createFlowText( welcomeSection.getBody(), ContentProvider.instance().findContent( "register-welcome.md").content() );
 
         // form section
-        formSection = tk.createPanelSection( parent, null );
+        formSection = tk.createPanelSection( parent, "Personal account settings" );
         Composite body = formSection.getBody();
         body.setLayout( ColumnLayoutFactory.defaults().spacing( 5 ).margins( 0, 0 ).create() );
 

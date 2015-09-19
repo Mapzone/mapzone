@@ -1,6 +1,6 @@
 package io.mapzone.controller;
 
-import io.mapzone.controller.ui.SvgImageRenderer;
+import io.mapzone.controller.ui.util.SvgImageRenderer;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 

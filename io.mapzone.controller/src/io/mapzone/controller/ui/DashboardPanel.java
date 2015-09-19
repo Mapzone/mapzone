@@ -1,5 +1,8 @@
 package io.mapzone.controller.ui;
 
+import io.mapzone.controller.ui.project.ProjectsDashlet;
+import io.mapzone.controller.ui.user.UserProfileDashlet;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
