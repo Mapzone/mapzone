@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.security.AuthorizationModule;
+import org.polymap.core.security.ServicesCallbackHandler;
 import org.polymap.core.security.UserPrincipal;
 
 /**
@@ -58,6 +59,10 @@ public class UmLoginModule
         this.repo = ProjectRepository.newInstance();
         this.subject = subject;
         this.callbackHandler = callbackHandler;
+        if (this.callbackHandler == null) {
+            log.warn( "No callbackHandler!?" );
+            this.callbackHandler = new ServicesCallbackHandler();
+        }
         
         this.authModule = new UmAuthorizationModule();
         this.authModule.init( this );

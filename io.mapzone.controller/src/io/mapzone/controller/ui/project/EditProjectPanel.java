@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.UIThreadExecutor;
+import org.polymap.core.security.UserPrincipal;
 import org.polymap.core.ui.ColumnLayoutFactory;
 import org.polymap.core.ui.StatusDispatcher;
 
@@ -54,19 +55,19 @@ public class EditProjectPanel
     public static final PanelIdentifier ID = PanelIdentifier.parse( "editProject" );
     
     @Scope("io.mapzone.controller")
-    private Context<String>         username;
+    protected Context<UserPrincipal>    userPrincipal;
     
-    private ProjectRepository       nested;
+    private ProjectRepository           nested;
     
-    private Project                 project;
+    private Project                     project;
     
-    private User                    user;
+    private User                        user;
 
-    private BatikFormContainer      form;
+    private BatikFormContainer          form;
 
-    private Button                  fab;
+    private Button                      fab;
 
-    private Optional<ProjectHolder> organizationOrUser = Optional.empty();
+    private Optional<ProjectHolder>     organizationOrUser = Optional.empty();
 
     
 //    @Override
@@ -83,7 +84,8 @@ public class EditProjectPanel
     public void init() {
         getSite().setTitle( "Project" );
         nested = ProjectRepository.instance().newNested();
-        user = nested.findUser( username.get() ).orElseThrow( () -> new RuntimeException( "No user!" ) );
+        user = nested.findUser( userPrincipal.get().getName() )
+                .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) );
         project = nested.createEntity( Project.class, null );
     }
 

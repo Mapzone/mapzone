@@ -36,8 +36,8 @@ public class DashboardPanel
         getSite().setTitle( "Dashboard" );
         
         dashboard = new Dashboard( getSite(), DASHBOARD_ID );
-        dashboard.addDashlet( new ProjectsDashlet().addConstraint( new PriorityConstraint( 10 ) ) );
-        dashboard.addDashlet( new ActivitiesDashlet() );
+        dashboard.addDashlet( new ProjectsDashlet().addConstraint( new PriorityConstraint( 5 ) ) );
+        dashboard.addDashlet( new ActivitiesDashlet().addConstraint( new PriorityConstraint( 10 ) ) );
         dashboard.addDashlet( new UserProfileDashlet() );
         dashboard.createContents( parent );        
     }
