@@ -1,0 +1,24 @@
+
+<div style="width: 100px; margin: 150px auto; color:#d0d0d0; font: normal 20px Roboto, Helvetica, sans-serif;">
+  <!--center><img src="../batikres/icons/loading24.gif" /></center-->
+  <span id="loading">Loading</span>
+</div>
+
+<script type="text/javascript">
+var i = 0, j = 0;
+function f() {
+    if (i <= 4) {
+        var text = document.getElementById( 'loading').innerHTML;
+        document.getElementById( 'loading').innerHTML = text + ".";
+    }
+    i++;
+    if (i == 4) {
+        document.getElementById( 'loading').innerHTML = "Loading";
+        i=0;
+    }
+    if (j++ < 20) {
+        setTimeout( f, 750 );
+    }
+}
+f();
+</script>
