@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import org.jclouds.compute.ComputeService;
 import org.jclouds.compute.domain.ExecResponse;
@@ -99,8 +100,8 @@ public class JCloudsHostRuntime
             
             // find free space on disk
             String basename = Joiner.on( "/" ).skipNulls().join( 
-                    project.organizationOrUser().name.get(), 
-                    NO_FILENAME_CHAR.matcher( project.name.get() ).replaceAll( "_" )
+                    URLEncoder.encode( project.organizationOrUser().name.get(), "UTF8" ), 
+                    URLEncoder.encode( project.name.get(), "UTF8" )
                     /*, instance.version.get()*/ );
 
             instance.homePath.set( INSTANCES_BASE_DIR + basename );

@@ -14,6 +14,7 @@
  */
 package io.mapzone.controller.ui.project;
 
+import static org.polymap.core.ui.ColumnDataFactory.Alignment.CENTER;
 import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL24;
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.http.ProxyServlet;
@@ -29,6 +30,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -42,9 +45,12 @@ import org.eclipse.rap.rwt.client.service.UrlLauncher;
 import org.polymap.core.runtime.event.EventHandler;
 import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.security.UserPrincipal;
+import org.polymap.core.ui.ColumnDataFactory;
+import org.polymap.core.ui.ColumnLayoutFactory;
 import org.polymap.core.ui.FormDataFactory;
 import org.polymap.core.ui.FormLayoutFactory;
 import org.polymap.core.ui.SelectionAdapter;
+import org.polymap.core.ui.UIUtils;
 
 import org.polymap.rhei.batik.BatikApplication;
 import org.polymap.rhei.batik.Context;
@@ -57,6 +63,8 @@ import org.polymap.rhei.batik.toolkit.md.ActionProvider;
 import org.polymap.rhei.batik.toolkit.md.ListTreeContentProvider;
 import org.polymap.rhei.batik.toolkit.md.MdListViewer;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
+
+import org.polymap.cms.ContentProvider;
 
 /**
  * 
@@ -81,6 +89,8 @@ public class ProjectsDashlet
     
     private MdListViewer                    viewer;
 
+    private Composite                       parent;
+
     
     @Override
     public void init( DashletSite site ) {
@@ -98,14 +108,69 @@ public class ProjectsDashlet
     }
 
 
+    @Override
+    public void dispose() {
+        EventManager.instance().unsubscribe( this ); 
+    }
+
+
     @EventHandler( display=true )
     protected void projectChanged( EntityChangedEvent ev ) {
-        viewer.setInput( user.projects.stream().collect( Collectors.toList() ) );        
+        if (parent.isDisposed()) {
+            return;
+        }
+        // first project created
+        if (viewer == null && !user.projects.isEmpty()) {
+            UIUtils.disposeChildren( parent );
+            createListContents();
+        }
+        // last project removed
+        else if (viewer != null && user.projects.isEmpty()) {
+            UIUtils.disposeChildren( parent );
+            createWelcomeContents();
+        }
+        // both empty!?
+        else if (viewer == null && user.projects.isEmpty()) {
+            // just keep the welcome message
+        }
+        else {
+            // just update list
+            viewer.setInput( user.projects.stream().collect( Collectors.toList() ) );
+        }
     }
 
     
     @Override
-    public void createContents( Composite parent ) {
+    public void createContents( @SuppressWarnings("hiding") Composite parent ) {
+        this.parent = parent;
+        if (user.projects.isEmpty()) {
+            createWelcomeContents();
+        }
+        else {
+            createListContents();            
+        }
+    }
+
+    
+    protected void createWelcomeContents() {
+        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( 5 ).create() );
+        
+        MdToolkit tk = (MdToolkit)getSite().toolkit(); 
+        tk.createFlowText( parent, ContentProvider.instance().findContent( "ui/projects-welcome.md").content() );
+        
+        Button btn = tk.createButton( parent, "Create a project", SWT.PUSH );
+        btn.setLayoutData( ColumnDataFactory.defaults().widthHint( 200 ).horizAlign( CENTER ).create() );
+        btn.addSelectionListener( new org.eclipse.swt.events.SelectionAdapter() {
+            @Override
+            public void widgetSelected( SelectionEvent ev ) {
+                selected.set( null );
+                BatikApplication.instance().getContext().openPanel( getSite().panelSite().getPath(), CreateProjectPanel.ID );                        
+            }
+        });
+    }
+    
+    
+    protected void createListContents() {
         parent.setLayout( FormLayoutFactory.defaults().create() );
         
         MdToolkit tk = (MdToolkit)getSite().toolkit(); 

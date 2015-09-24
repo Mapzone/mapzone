@@ -102,10 +102,10 @@ public class EditProjectPanel
         
 //        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( 10 ).create() );
         
-        // welcome
-        IPanelSection welcomeSection = tk.createPanelSection( parent, null );
-        welcomeSection.addConstraint( new MinWidthConstraint( 350, 1 ) );
-        tk.createFlowText( welcomeSection.getBody(), "Changing orginization or name is not yet supported." );
+//        // welcome
+//        IPanelSection welcomeSection = tk.createPanelSection( parent, null );
+//        welcomeSection.addConstraint( new MinWidthConstraint( 350, 1 ) );
+//        tk.createFlowText( welcomeSection.getBody(), "Changing orginization or name is not yet supported." );
 
 //        // toolbar
 //        tk.createToolbar( "Toolbar", SWT.NONE ).addAction( new ActionConfiguration()
@@ -116,6 +116,7 @@ public class EditProjectPanel
         
         // form
         IPanelSection formSection = tk.createPanelSection( parent, "Basic settings" );
+        formSection.addConstraint( new MinWidthConstraint( 350, 1 ) );
         form = new BatikFormContainer( new ProjectForm() );
         form.createContents( formSection.getBody() );
 
@@ -207,11 +208,13 @@ public class EditProjectPanel
             // organization
             site.newFormField( new PlainValuePropertyAdapter( "organizationOrUser", nestedProject.organizationOrUser().name.get() ) )
                     .label.put( "Organization" )
+                    .tooltip.put( "Changing organization is not yet supported." )
                     .fieldEnabled.put( false )
                     .create();
             
             // name
             site.newFormField( new PropertyAdapter( nestedProject.name ) )
+                    .tooltip.put( "Changing name is not yet supported." )
                     .fieldEnabled.put( false )
                     .create();
             

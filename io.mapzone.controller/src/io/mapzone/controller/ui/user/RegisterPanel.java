@@ -1,17 +1,17 @@
 package io.mapzone.controller.ui.user;
 
 import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL24;
-
-import java.util.Date;
-import java.util.Optional;
-
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.Messages;
 import io.mapzone.controller.ops.CreateUserOperation;
+import io.mapzone.controller.ui.DashboardPanel;
 import io.mapzone.controller.ui.StartPanel;
 import io.mapzone.controller.ui.util.PropertyAdapter;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
+
+import java.util.Date;
+import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.i18n.IMessages;
+import org.polymap.core.security.SecurityContext;
 import org.polymap.core.security.UserPrincipal;
 import org.polymap.core.ui.ColumnLayoutFactory;
 
@@ -38,6 +39,7 @@ import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.IPanel;
 import org.polymap.rhei.batik.PanelIdentifier;
+import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.IPanelToolkit;
@@ -76,6 +78,7 @@ public class RegisterPanel
     /** The nested transaction that allows to rollback. */
     private ProjectRepository           repo;
     
+    @Scope("io.mapzone.controller")
     private Context<UserPrincipal>      userPrincipal;
 
     private Button                      okBtn;
@@ -147,7 +150,7 @@ public class RegisterPanel
         // welcome section
         welcomeSection = tk.createPanelSection( parent, null );
         welcomeSection.addConstraint( new PriorityConstraint( 10 ), new MinWidthConstraint( 450, 0 ) );
-        tk.createFlowText( welcomeSection.getBody(), ContentProvider.instance().findContent( "register-welcome.md").content() );
+        tk.createFlowText( welcomeSection.getBody(), ContentProvider.instance().findContent( "ui/register-welcome.md").content() );
 
         // form section
         formSection = tk.createPanelSection( parent, "Personal account settings" );
@@ -184,8 +187,11 @@ public class RegisterPanel
                     @Override
                     public void done( IJobChangeEvent ev2 ) {
                         if (ev2.getResult().isOK()) {
+                            userPrincipal.set( SecurityContext.instance().loginTrusted( user.name.get() ) );
+                            
                             getSite().setStatus( new Status( IStatus.OK, ControllerPlugin.ID, i18n.get( "okText" ) ) );
-                            getContext().closePanel( getSite().getPath() );
+                            getContext().closePanel( site().path() );
+                            getContext().openPanel( site().path(), DashboardPanel.ID );                        
                         }
                         else {
                             getSite().setStatus( new Status( IStatus.ERROR, ControllerPlugin.ID, i18n.get( "errorText", ev2.getResult().getMessage() ) ) );                                
