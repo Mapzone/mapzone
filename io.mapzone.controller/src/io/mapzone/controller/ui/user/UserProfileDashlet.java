@@ -34,6 +34,8 @@ import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.dashboard.DashletSite;
 import org.polymap.rhei.batik.dashboard.DefaultDashlet;
+import org.polymap.rhei.batik.toolkit.ConstraintData;
+import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
 /**
@@ -69,20 +71,28 @@ public class UserProfileDashlet
     }
 
     
+    @Override
+    public void dispose() {
+        EventManager.instance().unsubscribe( this ); 
+    }
+
+
     @EventHandler( display=true )
-    protected void userChanged( EntityChangedEvent ev ) {
-        flowtext.setText( createFlowtext() );
+    protected void userModified( EntityChangedEvent ev ) {
+        flowtext.setText( createUserText() );
     }
 
     
     @Override
     public void createContents( Composite parent ) {
         MdToolkit tk = (MdToolkit)getSite().toolkit();
-        flowtext = tk.createFlowText( parent, createFlowtext() );
+        flowtext = tk.createFlowText( parent, createUserText() );
+        flowtext.setLayoutData( new ConstraintData( new PriorityConstraint( 10 ) ) );
+        tk.createFlowText( parent, createOrgsText() );
     }
     
     
-    protected String createFlowtext() {
+    protected String createUserText() {
         return Joiner.on( "\n" ).join(
                 "## " + user.fullname.get(),
                 createLine( "account-multiple-outline.svg", user.company.get(), null ),
@@ -90,6 +100,14 @@ public class UserProfileDashlet
                 createLine( "link-variant.svg", user.website.get(), "http://" + user.website.get() ),
                 createLine( "map-marker.svg", user.location.get(), null ),
                 createLine( "clock.svg", "Joined on ...", null ),
+                "<br/>" );
+    }
+
+    
+    protected String createOrgsText() {
+        return Joiner.on( "\n" ).join(
+                "## Organizations",
+                "No organizations yet.",
                 "<br/>" );
     }
 

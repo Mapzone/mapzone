@@ -63,6 +63,14 @@ public class StartPanel
     }
     
     
+    @Override
+    public void dispose() {
+        if (anonDashboard != null) {
+            anonDashboard.dispose();
+        }
+    }
+
+
     protected void createDashboardContents() {
         UIThreadExecutor.async( () -> getContext().openPanel( getSite().getPath(), DashboardPanel.ID ) );
         

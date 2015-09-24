@@ -11,8 +11,6 @@ import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.rhei.batik.dashboard.DashletSite;
 import org.polymap.rhei.batik.dashboard.DefaultDashlet;
 import org.polymap.rhei.batik.dashboard.IDashlet;
-import org.polymap.rhei.batik.toolkit.PriorityConstraint;
-
 import org.polymap.cms.ContentProvider;
 import org.polymap.cms.ContentProvider.ContentObject;
 
@@ -26,29 +24,39 @@ public class WelcomeDashlet
     
     private static final IMessages      i18n = Messages.forPrefix( "WelcomeMessage" );
     
+    private String          contentPath;
+    
     private String          content;
     
     private String          title;
 
     
+    public WelcomeDashlet( String contentPath ) {
+        this( contentPath, null );
+    }
+
+
+    public WelcomeDashlet( String contentPath, String title ) {
+        assert contentPath != null;
+        this.contentPath = contentPath;
+        this.title = title;
+    }
+
+
     @Override
     public void init( DashletSite site ) {
         super.init( site );
 
         ContentProvider cp = ContentProvider.instance();
-        ContentObject co = cp.findContent( "frontpage/welcome.md" );
-        if (!co.exists()) {
-            co.putContent( "# Welcome" );
-        }
+        ContentObject co = cp.findContent( contentPath );
 
         content = co.content();
-        if (content.startsWith( "#" )) {
+        if (title == null && content.startsWith( "#" )) {
               title = StringUtils.substringBefore( content, "\n" ).substring( 1 );
               content = content.substring( title.length() + 2 );
         }
 
         site.title.set( title );
-        site.constraints.get().add( new PriorityConstraint( 100 ) );
     }
 
     
