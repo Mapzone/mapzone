@@ -20,7 +20,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -91,7 +90,7 @@ public class EditUserPanel
     @Override
     public boolean wantsToBeShown() {
         if (parentPanel().get() instanceof DashboardPanel) {
-            getSite().setTitle( "" );
+            getSite().setTitle( "" ).setTooltip( "Edit account and profile settings" );
             getSite().setIcon( ControllerPlugin.images().svgImage( "account.svg", SvgImageRegistryHelper.NORMAL24 ) );
             return true;
         }
@@ -152,27 +151,21 @@ public class EditUserPanel
                 }
                 
                 // operation
-                DefaultOperation op = new DefaultOperation( "" ) {
+                DefaultOperation op = new DefaultOperation( "Update user" ) {
                     @Override
-                    public IStatus execute( IProgressMonitor monitor, IAdaptable info ) throws ExecutionException {
-                        try {
-                            monitor.beginTask( getLabel(), 3 );
-                            
-                            // password hash
-                            newPassword.ifPresent( password -> {
-                                PasswordEncryptor encryptor = PasswordEncryptor.instance();
-                                String hash = encryptor.encryptPassword( password );
-                                user.passwordHash.set( hash );
-                            });
-                            
-                            nested.commit();
-                            EventManager.instance().publish( new EntityChangedEvent( user ) );
-                            
-                            return Status.OK_STATUS;
-                        }
-                        catch (Exception e) {
-                            throw new ExecutionException( e.getMessage(), e );
-                        }
+                    public IStatus doExecute( IProgressMonitor monitor, IAdaptable info ) throws Exception {
+                        monitor.beginTask( getLabel(), 3 );
+
+                        // password hash
+                        newPassword.ifPresent( password -> {
+                            PasswordEncryptor encryptor = PasswordEncryptor.instance();
+                            String hash = encryptor.encryptPassword( password );
+                            user.passwordHash.set( hash );
+                        });
+
+                        nested.commit();
+                        EventManager.instance().publish( new EntityChangedEvent( user ) );
+                        return Status.OK_STATUS;
                     }
                 };
                     

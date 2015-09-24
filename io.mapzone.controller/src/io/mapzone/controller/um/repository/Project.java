@@ -36,7 +36,7 @@ public class Project
      * The servlet path to access this project. For URL "http://localhost:8080/p4"
      * this is "/p4". Starts with "/".
      */
-    @DefaultValue( "/alkis" )  // XXX
+    @DefaultValue( "/p4" )  // XXX
     public Property<String>             servletAlias;
     
     @DefaultInt( 256 )

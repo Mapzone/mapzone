@@ -17,11 +17,13 @@ import org.apache.commons.logging.LogFactory;
 
 import org.polymap.core.CorePlugin;
 
+import org.polymap.model2.Entity;
 import org.polymap.model2.query.ResultSet;
 import org.polymap.model2.runtime.CommitLockStrategy;
 import org.polymap.model2.runtime.EntityRepository;
 import org.polymap.model2.runtime.ModelRuntimeException;
 import org.polymap.model2.runtime.UnitOfWork;
+import org.polymap.model2.runtime.ValueInitializer;
 import org.polymap.model2.store.OptimisticLocking;
 import org.polymap.model2.store.recordstore.RecordStoreAdapter;
 import org.polymap.recordstore.lucene.LuceneRecordStore;
@@ -145,13 +147,19 @@ public class VmRepository {
     }
 
     
-    public void removeProcess( RegisteredProcess process ) {
-        uow.removeEntity( process );
+    
+    public void removeEntity( Entity entity ) {
+        uow.removeEntity( entity );
     }
-    
-    
+
+
     public List<RegisteredHost> allHosts() {
         return uow.query( RegisteredHost.class ).execute().stream().collect( Collectors.toList() );
+    }
+
+
+    public <T extends Entity> T createEntity( Class<T> entityClass, Object id, ValueInitializer<T>... initializers ) {
+        return uow.createEntity( entityClass, id, initializers );
     }
 
 

@@ -9,7 +9,13 @@ import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.vm.provisions.ProcessRunning;
 import io.mapzone.controller.vm.repository.VmRepository;
 
+import java.util.regex.Pattern;
+
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +47,10 @@ public class ProxyServlet
     private static final Class[]    forwardResponseProvisions = {OkToForwardResponse.class};
 
     private static final String     SERVLET_ALIAS = "/projects";
-    
+
+    /** A bit restrictive, just to make sure :) */
+    private static final Pattern    NO_URL_CHAR = Pattern.compile( "[^a-zA-Z0-9_-]" );
+
     /**
      * 
      *
@@ -49,17 +58,27 @@ public class ProxyServlet
      * @return 0: organization/user, 1: project, 2: version
      */
     public static String[] projectName( HttpServletRequest request ) {
-        return StringUtils.split( request.getPathInfo(), "/" );
+        try {
+            return StringUtils.split( URLDecoder.decode( request.getPathInfo(), "UTF8" ), "/" );
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new RuntimeException( e );
+        }
     }
     
     
     public static String projectUrl( Project project ) {
-        // FIXME
-        return Joiner.on( "/" ).join( "http://localhost:8080",
-                StringUtils.substringAfter( SERVLET_ALIAS, "/" ),
-                project.organizationOrUser().name.get(),
-                project.name.get(),
-                StringUtils.substringAfter( project.servletAlias.get(), "/" ) );
+        try {
+            // FIXME
+            return Joiner.on( "/" ).join( "http://localhost:8080",
+                    StringUtils.substringAfter( SERVLET_ALIAS, "/" ),
+                    URLEncoder.encode( project.organizationOrUser().name.get(), "UTF8" ),
+                    URLEncoder.encode( project.name.get(), "UTF8" ),
+                    StringUtils.substringAfter( project.servletAlias.get(), "/" ) );
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new RuntimeException( e );
+        }
     }
     
     

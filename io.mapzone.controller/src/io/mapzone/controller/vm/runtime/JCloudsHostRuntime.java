@@ -46,7 +46,7 @@ public class JCloudsHostRuntime
 
     public static final Pattern     NO_FILENAME_CHAR = Pattern.compile( "[^a-zA-Z0-9_-]" );
 
-    public static final String      INSTANCES_BASE_DIR = "/tmp/";
+    public static final String      INSTANCES_BASE_DIR = "/tmp/mapzone/";
     
     // FIXME super hack to find "free" port
     private static AtomicInteger    portCount = new AtomicInteger( 32768 );
@@ -94,14 +94,14 @@ public class JCloudsHostRuntime
         }
 
         @Override
-        public void prepareInstall( Project project, IProgressMonitor monitor ) throws Exception {
+        public void install( Project project, IProgressMonitor monitor ) throws Exception {
             monitor.beginTask( "Preparing instance", 11 );
             
             // find free space on disk
-            String basename = Joiner.on( "_" ).skipNulls().join( 
+            String basename = Joiner.on( "/" ).skipNulls().join( 
                     project.organizationOrUser().name.get(), 
-                    project.name.get()/*, instance.version.get()*/ );
-            basename = NO_FILENAME_CHAR.matcher( basename ).replaceAll( "" );            
+                    NO_FILENAME_CHAR.matcher( project.name.get() ).replaceAll( "_" )
+                    /*, instance.version.get()*/ );
 
             instance.homePath.set( INSTANCES_BASE_DIR + basename );
             instance.dataPath.set( INSTANCES_BASE_DIR + basename + "/data" );
@@ -111,8 +111,7 @@ public class JCloudsHostRuntime
             // make directories
             monitor.subTask( "Making directories" );
             String script = new ScriptBuilder()
-            .addStatement( Statements.exec( "mkdir " + instance.homePath.get() ) )
-                    .addStatement( Statements.exec( "mkdir " + instance.homePath.get() ) )
+                    .addStatement( Statements.exec( "mkdir -p " + instance.homePath.get() ) )
                     .addStatement( Statements.exec( "mkdir " + instance.logPath.get() ) )
                     .addStatement( Statements.exec( "mkdir " + instance.exePath.get() ) )
                     .addStatement( Statements.exec( "mkdir " + instance.dataPath.get() ) )
@@ -157,6 +156,25 @@ public class JCloudsHostRuntime
             monitor.worked( 5 );
             
             monitor.done();
+        }
+
+        
+        @Override
+        public void uninstall( IProgressMonitor monitor ) throws Exception {
+            ComputeService cs = JCloudsRuntime.instance.get().computeService();
+
+            log.info( "home: " + instance.homePath.get() );
+//            assert instance.homePath.get().startsWith( INSTANCES_BASE_DIR );
+            ExecResponse response = cs.runScriptOnNode( 
+                    rhost.hostId.get(),
+                    Statements.exec( "tar -c -z --remove-files -f /tmp/mapzone-last-removed.tgz " + instance.homePath.get() ),
+                    Builder.blockOnComplete( true ).wrapInInitScript( false ).runAsRoot( false ) );
+
+            // XXX check response
+            log.info( "RESPONSE: " + response.getError() );
+            log.info( "RESPONSE: " + response.getExitStatus() );
+            log.info( "RESPONSE: " + response.getOutput() );
+            monitor.worked( 1 );
         }
     }
     
@@ -208,6 +226,7 @@ public class JCloudsHostRuntime
                     Statements.exec( script ), 
                     Builder.blockOnComplete( true ).wrapInInitScript( false ).runAsRoot( false ) );
 
+            // FIXME check
             log.info( "RESPONSE: " + response.get().getError() );
             log.info( "RESPONSE: " + response.get().getExitStatus() );
             log.info( "RESPONSE: " + response.get().getOutput() );
@@ -223,10 +242,25 @@ public class JCloudsHostRuntime
         
         @Override
         public void stop() {
-            // XXX Auto-generated method stub
-            throw new RuntimeException( "not yet implemented." );
+            ComputeService cs = JCloudsRuntime.instance.get().computeService();
+
+            RegisteredInstance instance = process.instance.get();
+            String pidFile = instance.homePath.get() + "/pid";
+            
+            ExecResponse response = cs.runScriptOnNode( 
+                    rhost.hostId.get(), 
+                    Statements.newStatementList(
+                            Statements.exec( "kill -- -`cat " + pidFile + "`" ),
+                            Statements.exec( "rm " + pidFile ) ),
+                    Builder.blockOnComplete( true ).wrapInInitScript( false ).runAsRoot( false ) );
+
+            // FIXME check
+            log.info( "RESPONSE: " + response.getError() );
+            log.info( "RESPONSE: " + response.getExitStatus() );
+            log.info( "RESPONSE: " + response.getOutput() );
         }
 
+        
         @Override
         public boolean isRunning() {
             // XXX Auto-generated method stub

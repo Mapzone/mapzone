@@ -72,7 +72,7 @@ public class LoginPanel
     @Override
     public boolean wantsToBeShown() {
         if (parentPanel().get() instanceof StartPanel) {
-            getSite().setTitle( "" );
+            getSite().setTitle( "" ).setTooltip( "Sign in" );
             getSite().setIcon( ControllerPlugin.images().svgImage( "account-key.svg", SvgImageRegistryHelper.NORMAL24 ) ); 
 
 //            getSite().setIcon( ControllerPlugin.images().svgOverlayedImage( 

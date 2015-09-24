@@ -23,39 +23,19 @@ public abstract class InstanceRuntime
     }
     
 
-//    @Immutable
-//    @Mandatory
-//    public Config2<ProcessRuntime,String>       executablePath;
-//    
-//    @Immutable
-//    @Mandatory
-//    public Config2<ProcessRuntime,String>       homePath;
-//    
-//    @Immutable
-//    @Mandatory
-//    @Check(value=NumberRangeValidator.class, args={"1024","65535"})
-//    public Config2<ProcessRuntime,Integer>      port;
-//    
-//    @Immutable
-//    @Mandatory
-//    public Config2<ProcessRuntime,String>       logPath;
-//
-//    @Immutable
-//    @Defaults
-//    public Config2<ProcessRuntime,List<String>> args;
-//
-//    @Immutable
-//    @Defaults
-//    public Config2<ProcessRuntime,List<String>> vmargs;
-
-    
     /**
-     * Initializes properties of the target {@link #instance}. Prepares filesystem on the host.
+     * Prepares filesystem on the host.
      *
      * @param project
      * @param monitor 
      * @throws Exception
      */
-    public abstract void prepareInstall( Project project, IProgressMonitor monitor ) throws Exception;
+    public abstract void install( Project project, IProgressMonitor monitor ) throws Exception;
+    
+    
+    /**
+     * Deletes filesystem on the host.
+     */
+    public abstract void uninstall( IProgressMonitor monitor ) throws Exception;
     
 }

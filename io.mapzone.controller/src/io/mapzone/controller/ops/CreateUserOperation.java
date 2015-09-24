@@ -1,4 +1,4 @@
-package io.mapzone.controller.um.operations;
+package io.mapzone.controller.ops;
 
 import io.mapzone.controller.Messages;
 import io.mapzone.controller.um.repository.EntityChangedEvent;

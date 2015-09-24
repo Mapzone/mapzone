@@ -71,7 +71,7 @@ public class ProcessRunning
         if (currentProcess != null) {
             log.warn( "Registered process found. Deleting without checking OS process!" );
             instance.get().process.set( null );
-            vmRepo.get().removeProcess( currentProcess );
+            vmRepo.get().removeEntity( currentProcess );
         }
         
         host.set( instance.get().host.get() );

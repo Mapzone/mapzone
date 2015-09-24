@@ -42,6 +42,8 @@ import org.eclipse.rap.rwt.client.service.UrlLauncher;
 import org.polymap.core.runtime.event.EventHandler;
 import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.security.UserPrincipal;
+import org.polymap.core.ui.FormDataFactory;
+import org.polymap.core.ui.FormLayoutFactory;
 import org.polymap.core.ui.SelectionAdapter;
 
 import org.polymap.rhei.batik.BatikApplication;
@@ -70,6 +72,9 @@ public class ProjectsDashlet
     @Scope("io.mapzone.controller")
     protected Context<UserPrincipal>        userPrincipal;
     
+    @Scope("io.mapzone.controller")
+    protected Context<Project>              selected;
+    
     private ProjectRepository               repo;
     
     private User                            user;
@@ -82,6 +87,7 @@ public class ProjectsDashlet
         super.init( site );
         site.title.set( "Projects" );
         site.constraints.get().add( new MinWidthConstraint( 350, 10 ) );
+//        site.constraints.get().add( new MinHeightConstraint( dp(72)*3 , 10 ) );
         
         repo = ProjectRepository.instance();
         user = repo.findUser( userPrincipal.get().getName() )
@@ -100,6 +106,8 @@ public class ProjectsDashlet
     
     @Override
     public void createContents( Composite parent ) {
+        parent.setLayout( FormLayoutFactory.defaults().create() );
+        
         MdToolkit tk = (MdToolkit)getSite().toolkit(); 
         viewer = tk.createListViewer( parent, SWT.FULL_SELECTION );
         viewer.setContentProvider( new ListTreeContentProvider() );
@@ -130,11 +138,14 @@ public class ProjectsDashlet
             @Override
             public void open( OpenEvent ev ) {
                 SelectionAdapter.on( ev.getSelection() ).forEach( elm -> {
+                    selected.set( (Project)elm );
                     BatikApplication.instance().getContext().openPanel( getSite().panelSite().getPath(), EditProjectPanel.ID );                        
                 });
             }
         } );
-        viewer.setInput( user.projects.stream().collect( Collectors.toList() ) );        
+        viewer.setInput( user.projects.stream().collect( Collectors.toList() ) );
+        
+        viewer.getControl().setLayoutData( FormDataFactory.filled()/*.height( dp(72)*2  )*/.create() );
     }
     
 }

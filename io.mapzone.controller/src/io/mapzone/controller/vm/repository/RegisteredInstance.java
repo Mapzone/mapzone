@@ -42,7 +42,7 @@ public class RegisteredInstance
     public Property<String>                 version;
     
     @Nullable  // XXX
-    @Immutable
+    //FIXME @Immutable  
     @Concerns( BidiAssociationConcern.class )
     public Association<RegisteredHost>      host;
     

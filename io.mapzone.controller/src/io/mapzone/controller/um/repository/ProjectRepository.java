@@ -219,6 +219,11 @@ public class ProjectRepository
     }
 
     
+    public <T extends Entity> T entity( T entity ) {
+        return uow.entity( entity );
+    }
+
+    
     /**
      * Registers the given handler for {@link LifecycleEvent}s. 
      * 
@@ -230,6 +235,7 @@ public class ProjectRepository
         EventManager.instance().subscribe( annotated, ev -> ev.getSource() == this );
         return this;
     }
+    
     
     public boolean removeLifecycleListener( Object annotated ) {
         return EventManager.instance().unsubscribe( annotated );    

@@ -7,9 +7,9 @@ import java.util.Optional;
 
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.Messages;
+import io.mapzone.controller.ops.CreateUserOperation;
 import io.mapzone.controller.ui.StartPanel;
 import io.mapzone.controller.ui.util.PropertyAdapter;
-import io.mapzone.controller.um.operations.CreateUserOperation;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
 
@@ -94,7 +94,7 @@ public class RegisterPanel
     @Override
     public boolean wantsToBeShown() {
         if (parentPanel().get() instanceof StartPanel) {
-            getSite().setTitle( "" );
+            getSite().setTitle( "" ).setTooltip( "Sign up" );
             getSite().setIcon( ControllerPlugin.images().svgImage( "account-plus.svg", SvgImageRegistryHelper.NORMAL24 ) ); 
 
 //            getSite().setIcon( ControllerPlugin.images().svgOverlayedImage( 
