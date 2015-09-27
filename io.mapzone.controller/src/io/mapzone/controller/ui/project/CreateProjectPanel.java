@@ -100,7 +100,7 @@ public class CreateProjectPanel
         nested = ProjectRepository.instance().newNested();
         user = nested.findUser( userPrincipal.get().getName() )
                 .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) );
-        project = nested.createEntity( Project.class, null );
+        project = nested.createEntity( Project.class, null, Project.defaults );
     }
 
 

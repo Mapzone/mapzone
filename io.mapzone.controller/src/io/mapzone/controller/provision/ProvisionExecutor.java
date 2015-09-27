@@ -1,7 +1,19 @@
+/* 
+ * Copyright (C) 2015, the @authors. All rights reserved.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3.0 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
 package io.mapzone.controller.provision;
 
 import io.mapzone.controller.provision.Provision.Status;
-import io.mapzone.controller.provision.Provision.Status.Severity;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,21 +21,21 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
- * 
+ * Find a way to execute a given target {@link Provision}.
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-public class ProvisionExecutor {
+public abstract class ProvisionExecutor {
 
-    private ContextFactory                  contextFactory;
+    protected ContextFactory                  contextFactory;
 
-    private Map<Pair<Class,String>,Object>  contextValues;
+    protected Map<Pair<Class,String>,Object>  contextValues;
     
-    private Class<? extends Provision>[]    provisions;
+    protected Class<? extends Provision>[]    preliminaries;
     
     
-    public ProvisionExecutor( Class<? extends Provision>[] provisions ) {
-        this.provisions = provisions;
+    public ProvisionExecutor( Class<? extends Provision>[] preliminaries ) {
+        this.preliminaries = preliminaries;
         
         contextValues = new HashMap();
         contextFactory = new ContextFactory() {
@@ -43,69 +55,32 @@ public class ProvisionExecutor {
         return contextValues;
     }
     
+    
     public ProvisionExecutor setContextValues( Map<Pair<Class,String>,Object> contextValues ) {
         this.contextValues = new HashMap( contextValues );
         return this;
     }
 
 
-    public Status execute( Provision target ) throws Exception {
-        int provisionIndex = 0;
-        Provision failed = null;
-        Status cause = null;
-        
-        while (provisionIndex < provisions.length) {
-            Class<? extends Provision> type = provisions[ provisionIndex ];
-            Provision provision = createProvision( type );
-            assert provision.init( failed, cause ) : failed.getClass().getSimpleName() + " provision is unable to handle: " + cause;
-            
-            // execute
-            Status status = executeProvision( provision );
-            
-            // OK: one step up, or return if index==0
-            if (status.severityEquals( Severity.OK )) {
-                if (provisionIndex == 0) {
-                    return status;
-                }
-                else {
-                    failed = null;
-                    cause = null;
-                    provisionIndex --;
-                }
-            }
-            // FAILED: return
-            else if (status.severityEquals( Severity.FAILED )) {
-                return status;
-            }
-            // FAILED_CHECK_AGAIN: one provision step down
-            else if (status.severityEquals( Severity.FAILED_CHECK_AGAIN )) {
-                failed = provision;
-                cause = status;
-                provisionIndex ++;
-            }
-            // not supported (yet)
-            else {
-                throw new RuntimeException( "Not supported status: " + status );
-            }
-        }
-        throw new RuntimeException( "we should never get here." );
-    }
-
-    
-    protected Status executeProvision( Provision provision ) throws Exception {
-        return provision.execute();
-    }
-    
-    
-    public <T extends Provision> T newTargetProvision( Class<T> type ) throws Exception {
-        return createProvision( type );
-    }
-
-    
-    protected <T extends Provision> T createProvision( Class<T> type ) throws InstantiationException, IllegalAccessException {
+    public <T extends Provision> T newProvision( Class<T> type ) throws Exception {
         T result = type.newInstance();
         contextFactory.inject( result );
         return result;
+    }
+
+
+    /**
+     * Try to find a way to execute the given <code>target</code> together with the
+     * given {@link #preliminaries}.
+     */
+    public abstract Status execute( Provision target ) throws Exception;
+
+    
+    /**
+     * Execute this very single Provision. Allows to entercept algorithm.
+     */
+    protected Status executeProvision( Provision provision ) throws Exception {
+        return provision.execute();
     }
     
 }

@@ -18,7 +18,6 @@ import org.polymap.core.runtime.config.Configurable;
 public abstract class HostRuntime
         extends Configurable {
     
-    
     public static HostRuntime forHost( RegisteredHost rhost ) {
         HostType hostType = rhost.hostType.get();
         if (hostType.equals( HostType.JCLOUDS )) {

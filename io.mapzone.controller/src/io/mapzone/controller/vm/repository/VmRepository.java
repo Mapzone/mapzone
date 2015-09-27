@@ -2,20 +2,18 @@ package io.mapzone.controller.vm.repository;
 
 import static org.polymap.model2.query.Expressions.and;
 import static org.polymap.model2.query.Expressions.eq;
-import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.vm.repository.RegisteredHost.HostType;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.polymap.core.CorePlugin;
 
 import org.polymap.model2.Entity;
 import org.polymap.model2.query.ResultSet;
@@ -29,7 +27,12 @@ import org.polymap.model2.store.recordstore.RecordStoreAdapter;
 import org.polymap.recordstore.lucene.LuceneRecordStore;
 
 /**
- * The registry of all currently active/running VMs. 
+ * The registry of all currently active/running VMs.
+ * <p/>
+ * There is one global {@link #instance()}. In order to synchronize concurrent
+ * access it exposes the {@link #lock()} method. 
+ * <p/>
+ * XXX {@link Entity} is not for concurrent modifications. Is this a problem? 
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
@@ -39,33 +42,29 @@ public class VmRepository {
     
     private static EntityRepository     repo;
     
-    static {
-        try {
-            File dir = new File( CorePlugin.getDataLocation( ControllerPlugin.instance() ), "vm" );
-            LuceneRecordStore store = new LuceneRecordStore( dir, false );
-            repo = EntityRepository.newConfiguration()
-                    .entities.set( new Class[] {
+    public static void init( File basedir ) throws IOException {
+        File dir  = new File( basedir, "um" );
+        LuceneRecordStore store = new LuceneRecordStore( dir, false );
+        repo = EntityRepository.newConfiguration()
+                .entities.set( new Class[] {
                             RegisteredHost.class,
                             RegisteredInstance.class,
                             RegisteredProcess.class })
-                    .store.set( 
+                .store.set( 
                             // make sure to never loose updates or something
+                            // we may skip this later for performance
                             new OptimisticLocking(
                             new RecordStoreAdapter( store ) ) )
-                    .commitLockStrategy.set( () ->
-                            // #lock synchronized writes -> concurrent commit is a programming error
+                .commitLockStrategy.set( () ->
+                            // lock synchronized writes -> concurrent commit is a program error
                             new CommitLockStrategy.FailOnConcurrentCommit() )
-                    .create();
-            
-            checkInit();
-        }
-        catch (Exception e) {
-            throw new RuntimeException( e );
-        }
+                .create();            
+        instance = new VmRepository( repo.newUnitOfWork() );
+        checkInit();
     }
     
     
-    public static void checkInit() {
+    protected static void checkInit() {
         try (
             UnitOfWork _uow = repo.newUnitOfWork()
         ){
@@ -74,7 +73,8 @@ public class VmRepository {
                     proto.hostType.set( HostType.JCLOUDS );
                     proto.hostId.set( "local" );
                     proto.inetAddress.set( "localhost" );
-                    return proto;
+                    proto.statistics.createValue( HostRuntimeStatistics.defaults );
+                    return RegisteredHost.defaults.initialize( proto );
                 });
                 _uow.commit();
             }
@@ -82,7 +82,7 @@ public class VmRepository {
     }
     
     
-    private static VmRepository         instance = new VmRepository( repo.newUnitOfWork() );
+    private static VmRepository         instance;
     
     public static VmRepository instance() {
         return instance;
@@ -95,14 +95,18 @@ public class VmRepository {
 
     /**
      * Synchronizes modifications of {@link VmRepository} and the real host/process
-     * state. A lock must be aquired *before* accessing the entity to modify.
+     * state. This implements pessimistic locking. A lock must be aquired *before*
+     * accessing the entity to modify. See {@link VmRepository} for detail.
      * <p/>
      * XXX This might get a huge bottleneck. We will find a more fine grained
      * solution later. However, the API will not change to much. The Provision sees a
      * lock in its context which it aquires for modification. It does not know where
      * it comes from.
      */
-    private ReentrantLock               lock = new ReentrantLock();
+    public ReentrantReadWriteLock       lock = new ReentrantReadWriteLock();
+    
+    /** Global write lock count. Helps to find intercepted read->write upgrade. */
+    private volatile int                globalLockCount;
 
     
     public VmRepository( UnitOfWork uow ) {
@@ -111,23 +115,37 @@ public class VmRepository {
 
     
     /**
-     * Synchronizes modifications of entities and the real host/process
-     * state. A lock must be aquired *before* accessing the entity to modify.
+     * Aquires a write lock for the current thread. This possibly blocks execution until
+     * it is possible to aquire the lock. A lock must be aquired *before* accessing
+     * the entity to modify.
      */
     public void lock() {
-        lock.lock();
+        int readLocKCount = globalLockCount;
+        if (lock.getReadHoldCount() > 0) {
+            lock.readLock().unlock();
+        }
+        assert !lock.isWriteLockedByCurrentThread();
+        lock.writeLock().lock();
+        globalLockCount++;
+
+        // XXX does this actually work? Doug?
+        if (globalLockCount > readLocKCount+1) {
+            // FIXME
+            throw new RuntimeException( "FIXME: Atomically upgrading lock failed." );
+        }
     }
     
     
-    public void unlock() {
-        if (lock.isLocked()) {
-            lock.unlock();
+    protected void unlock() {
+        if (lock.isWriteLockedByCurrentThread()) {
+            lock.readLock().lock();
+            lock.writeLock().unlock();
         }
     }
 
     
-    public boolean isLocked() {
-        return lock.isLocked();
+    public boolean isLockeByCurrentThread() {
+        return lock.isWriteLockedByCurrentThread();
     }
     
     
@@ -164,16 +182,18 @@ public class VmRepository {
 
 
     public void commit() throws ModelRuntimeException {
-        if (lock.isLocked()) {
+        if (isLockeByCurrentThread()) {
+            log.info( "COMMIT provision: ..." );
             uow.commit();
-            lock.unlock();
+            unlock();
         }
     }
 
     public void rollback() throws ModelRuntimeException {
-        if (lock.isLocked()) {
+        if (isLockeByCurrentThread()) {
+            log.info( "ROLLBACK provision: ..." );
             uow.rollback();
-            lock.unlock();
+            unlock();
         }
     }
 

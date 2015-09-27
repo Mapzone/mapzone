@@ -209,7 +209,7 @@ public class JCloudsHostRuntime
                       "-vm /home/falko/bin/jdk1.8/bin/java",
                       "-console -consolelog -registryMultiLanguage",
                       "-data", dataPath,
-                      "-vmargs -server -XX:+TieredCompilation -ea -Xmx256m -XX:+UseG1GC -XX:SoftRefLRUPolicyMSPerMB=1000",
+                      "-vmargs -server -XX:+TieredCompilation -ea -Xmx128m -XX:+UseG1GC -XX:SoftRefLRUPolicyMSPerMB=1000",
                       "-Dorg.osgi.service.http.port=" + process.port.get(),
                       "-Dorg.eclipse.equinox.http.jetty.log.stderr.threshold=info",
                       ">", logFile, "2>", logFile, "&" );

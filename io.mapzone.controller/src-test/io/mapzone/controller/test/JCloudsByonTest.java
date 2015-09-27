@@ -24,8 +24,6 @@ import org.jclouds.ssh.SshClient;
 import org.jclouds.ssh.jsch.config.JschSshClientModule;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
-
 import org.apache.commons.io.IOUtils;
 
 import com.google.common.base.Predicates;
@@ -41,6 +39,7 @@ public class JCloudsByonTest {
 
    private static ComputeServiceContext context;
 
+   
    @BeforeClass
    public static void setup() throws FileNotFoundException, IOException {
        Properties contextProperties = new Properties();
@@ -68,7 +67,14 @@ public class JCloudsByonTest {
    }
 
    
-   @Test
+   @AfterClass
+   public static void close() throws FileNotFoundException, IOException {
+      if (context != null)
+         context.close();
+   }
+
+
+   //@Test
    public void testCanRunCommandAsCurrentUser() throws Exception {
        Map<? extends NodeMetadata, ExecResponse> responses = context
                .getComputeService()
@@ -85,7 +91,7 @@ public class JCloudsByonTest {
    }
 
    
-   @Test
+   //@Test
    public void testScript() throws Exception {
        String script = new ScriptBuilder()
                .addStatement( Statements.exec( "cd /tmp" ) )
@@ -119,13 +125,6 @@ public class JCloudsByonTest {
                ssh.disconnect();
            }
        }
-   }
-   
-   
-   @AfterClass
-   public static void close() throws FileNotFoundException, IOException {
-      if (context != null)
-         context.close();
    }
    
 }

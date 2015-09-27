@@ -10,7 +10,6 @@ import io.mapzone.controller.ui.util.PropertyAdapter;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
 
-import java.util.Date;
 import java.util.Optional;
 
 import org.apache.commons.logging.Log;
@@ -157,14 +156,7 @@ public class RegisterPanel
         Composite body = formSection.getBody();
         body.setLayout( ColumnLayoutFactory.defaults().spacing( 5 ).margins( 0, 0 ).create() );
 
-        user = repo.createEntity( User.class, null, (User proto) -> {
-            // FIXME
-            proto.name.set( "" );
-            proto.email.set( "" );
-            proto.passwordHash.set( "" );
-            proto.joined.set( new Date() );
-            return proto;
-        });
+        user = repo.createEntity( User.class, null, User.defaults );
         
         form = new BatikFormContainer( new NamePasswordForm() );
         form.createContents( formSection );

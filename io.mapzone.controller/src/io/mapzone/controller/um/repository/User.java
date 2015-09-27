@@ -10,6 +10,7 @@ import org.polymap.model2.ManyAssociation;
 import org.polymap.model2.Nullable;
 import org.polymap.model2.Property;
 import org.polymap.model2.Queryable;
+import org.polymap.model2.runtime.ValueInitializer;
 
 /**
  * 
@@ -21,6 +22,15 @@ public class User
 
     public static User              TYPE;
 
+    public static ValueInitializer<User> defaults = (User proto) -> {
+        // FIXME
+        proto.name.set( "" );
+        proto.email.set( "" );
+        proto.passwordHash.set( "" );
+        proto.joined.set( new Date() );
+        return proto; };
+    
+        
     public Property<String>         passwordHash;
     
     @Queryable

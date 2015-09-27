@@ -1,5 +1,7 @@
 package io.mapzone.controller.vm.repository;
 
+import java.util.Date;
+
 import io.mapzone.controller.vm.runtime.HostRuntime;
 
 import org.polymap.core.runtime.Lazy;
@@ -25,6 +27,14 @@ public class RegisteredHost
 
     public static RegisteredHost        TYPE;
     
+    public static ValueInitializer<RegisteredHost> defaults = (RegisteredHost proto) -> {
+        proto.hostType.set( HostType.JCLOUDS );
+        proto.hostId.set( "local" );
+        proto.inetAddress.set( "localhost" );
+        proto.updateStatistics();
+        return proto;
+    };
+    
     public enum HostType {
         JCLOUDS
     }
@@ -47,9 +57,10 @@ public class RegisteredHost
     @Concerns( BidiManyAssociationConcern.class )
     public ManyAssociation<RegisteredInstance>  instances;
     
+    public Property<HostRuntimeStatistics>      statistics;
+    
     public Lazy<HostRuntime>                    runtime = new LockedLazyInit( () -> HostRuntime.forHost( this ) ); 
     
-
     
     /**
      * Starts a new process and associates it with this host.
@@ -75,32 +86,8 @@ public class RegisteredHost
     }
 
 
-//    /**
-//     * Creates a new project instance for the given {@link Project}. Creates a new
-//     * {@link RegisteredInstance}, initializes properties, prepares filesystem on the
-//     * host.
-//     *
-//     * @param project
-//     * @param projectHolder 
-//     * @param monitor 
-//     * @return Newly created entity.
-//     * @throws Exception 
-//     */
-//    public RegisteredInstance createInstance( Project project, ProjectHolder projectHolder, IProgressMonitor monitor ) 
-//            throws Exception {
-//        // create new entity
-//        UnitOfWork uow = context.getUnitOfWork();
-//        RegisteredInstance result = uow.createEntity( RegisteredInstance.class, null, (RegisteredInstance proto) -> {
-//            proto.organisation.set( projectHolder.name.get() );
-//            proto.project.set( project.name.get() );
-//            return proto;
-//        });
-//        instances.add( result );
-//        assert result.host.get() == this;
-//
-//        // prepare the instance on the host
-//        runtime.get().instance( result ).prepareInstall( project, monitor );
-//        return result;
-//    }
+    public void updateStatistics() {
+        statistics.get().lastChecked.set( new Date() );
+    }
 
 }

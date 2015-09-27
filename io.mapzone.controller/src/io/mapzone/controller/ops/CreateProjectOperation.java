@@ -2,9 +2,11 @@ package io.mapzone.controller.ops;
 
 import io.mapzone.controller.Messages;
 import io.mapzone.controller.um.repository.EntityChangedEvent;
+import io.mapzone.controller.um.repository.Organization;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectHolder;
 import io.mapzone.controller.um.repository.ProjectRepository;
+import io.mapzone.controller.um.repository.User;
 import io.mapzone.controller.vm.repository.RegisteredHost;
 import io.mapzone.controller.vm.repository.RegisteredInstance;
 import io.mapzone.controller.vm.repository.VmRepository;
@@ -43,6 +45,7 @@ public class CreateProjectOperation
     @Mandatory
     public Config<ProjectRepository>    repo;
     
+    /** Preset, not yet commited project. */
     @Mandatory
     public Config<Project>              project;
     
@@ -73,6 +76,14 @@ public class CreateProjectOperation
             }
             RegisteredHost host = hosts.get( 0 );
             monitor.worked( 1 );
+
+            // set user/org on project
+            if (organizationOrUser.get() instanceof User) {
+                project.get().user.set( (User)organizationOrUser.get() );
+            }
+            else {
+                project.get().organization.set( (Organization)organizationOrUser.get() );
+            }
             
             // create new instance
             RegisteredInstance instance = vmRepo.createEntity( RegisteredInstance.class, null, (RegisteredInstance proto) -> {
@@ -94,11 +105,10 @@ public class CreateProjectOperation
             return Status.OK_STATUS;
         }
         catch (Exception e) {
+            log.warn( "", e );
             vmRepo.rollback();
+            repo.get().rollback();
             throw new ExecutionException( i18n.get( "errorMsg", e.getLocalizedMessage() ), e );
-        }
-        finally {
-            vmRepo.unlock();
         }
     }
 

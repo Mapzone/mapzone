@@ -1,10 +1,7 @@
 package io.mapzone.controller.vm.provisions;
 
 import io.mapzone.controller.http.DefaultProvision;
-import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
-import io.mapzone.controller.vm.repository.RegisteredHost;
-import io.mapzone.controller.vm.runtime.HostRuntime;
 
 /**
  * 
@@ -14,14 +11,9 @@ import io.mapzone.controller.vm.runtime.HostRuntime;
 public class HostRunning
         extends DefaultProvision {
 
-    private Context<RegisteredHost>     registeredHost;
-
-    private Context<HostRuntime>        host;
-
-    
     @Override
-    public boolean init( Provision failed , Status cause  ) {
-        return failed instanceof ProcessRunning;
+    public boolean init( Provision failed, Status cause ) {
+        return failed instanceof ProcessStarted;
     }
 
 

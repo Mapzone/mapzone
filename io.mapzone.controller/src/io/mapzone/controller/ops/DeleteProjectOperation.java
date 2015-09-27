@@ -69,24 +69,23 @@ public class DeleteProjectOperation
             // stop process
             RegisteredProcess process = instance.process.get();
             if (process != null) {
-                process.runtime.get().stop();
-                vmRepo.removeEntity( process );
+                new StopProcessOperation().process.put( process ).vmRepo.put( vmRepo ).execute( null, null );
             }
             monitor.worked( 1 );
             
-            // uninstall filesystem on host
-            RegisteredHost host = instance.host.get();
-            host.runtime.get().instance( instance ).uninstall( new SubProgressMonitor( monitor, 7 ) );
-
             // remove instance and association
-            instance.host.set( null );
-            assert !host.instances.contains( instance );
+            RegisteredHost host = instance.host.get();
+            host.instances.remove( instance );
+            assert instance.host.get() == null;
             vmRepo.removeEntity( instance );
             
             // remove project
             project.get().organization.set( null );
             project.get().user.set( null );
             repo.get().removeEntity( project.get() );
+
+            // uninstall filesystem on host
+            host.runtime.get().instance( instance ).uninstall( new SubProgressMonitor( monitor, 7 ) );
             
             // commit
             vmRepo.commit();
@@ -96,11 +95,9 @@ public class DeleteProjectOperation
             return Status.OK_STATUS;
         }
         catch (Exception e) {
+            log.warn( "", e );
             vmRepo.rollback();
             throw new ExecutionException( i18n.get( "errorMsg", e.getLocalizedMessage() ), e );
-        }
-        finally {
-            vmRepo.unlock();
         }
     }
 

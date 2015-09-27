@@ -2,11 +2,10 @@ package io.mapzone.controller.vm.provisions;
 
 import io.mapzone.controller.http.DefaultProvision;
 import io.mapzone.controller.http.ForwardRequest;
+import io.mapzone.controller.http.ProxyServlet;
 import io.mapzone.controller.ops.StartProcessOperation;
-import io.mapzone.controller.ops.StopProcessOperation;
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
-import io.mapzone.controller.vm.repository.RegisteredHost;
 import io.mapzone.controller.vm.repository.RegisteredInstance;
 import io.mapzone.controller.vm.repository.RegisteredProcess;
 
@@ -18,21 +17,16 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-public class ProcessRunning
+public class ProcessStarted
         extends DefaultProvision {
 
-    private static Log log = LogFactory.getLog( ProcessRunning.class );
+    private static Log log = LogFactory.getLog( ProcessStarted.class );
 
     public static final String              NO_HOST = "_no_host_";
-
-    private Context<RegisteredHost>         host;
 
     private Context<RegisteredInstance>     instance;
 
     private Context<RegisteredProcess>      process;
-
-    /** Prevents multiple runs. */
-    private Context<ProcessRunning>         checked;
 
     private Status                          cause;
 
@@ -41,31 +35,35 @@ public class ProcessRunning
     public boolean init( Provision failed, @SuppressWarnings("hiding") Status cause ) {
         this.cause = cause;
         return failed instanceof ForwardRequest
-                && cause != null
-                && !checked.isPresent()
-                && process.isPresent()
+                && !process.isPresent()
+                && cause == null
                 /*&& cause.getCause().equals( OkToForwardRequest.NO_PROCESS )*/;
     }
 
     
     @Override
     public Status execute() throws Exception {
-        vmRepo.get().lock();
+        // find process
+        String[] path = ProxyServlet.projectName( request.get() );
+        String projectName = path[1];
+        String orgName = path[0];
 
-        // stop
-        log.warn( "Killing process without checking OS process!" );
-        StopProcessOperation op = new StopProcessOperation().vmRepo
-                .put( vmRepo.get() )
-                .process.put( process.get() );
-        op.execute( null, null );
+        // find instance -> process
+        vmRepo.get().findInstance( orgName, projectName, null ).ifPresent( i -> instance.set( i ) );
+        assert instance.isPresent() : "No project instance found for: " + orgName + "/" + projectName;
+
+        process.set( instance.get().process.get() );
         
-        // start
-        StartProcessOperation op2 = new StartProcessOperation()
-                .instance.put( instance.get() );
-        op2.execute( null, null );
-        process.set( op2.process.get() );
+        if (!process.isPresent()) {
+            // lock others while we change things
+            vmRepo.get().lock();
 
-        checked.set( this );
+            // start instance
+            StartProcessOperation op = new StartProcessOperation()
+                    .instance.put( instance.get() );
+            op.execute( null, null );
+            process.set( op.process.get() );
+        }
         return OK_STATUS;
     }
     

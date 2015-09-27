@@ -4,9 +4,11 @@ import static io.mapzone.controller.provision.Provision.Status.Severity.OK;
 import io.mapzone.controller.provision.Provision;
 import io.mapzone.controller.provision.Provision.Status;
 import io.mapzone.controller.provision.ProvisionExecutor;
+import io.mapzone.controller.provision.ProvisionExecutor2;
 import io.mapzone.controller.um.repository.Project;
-import io.mapzone.controller.um.repository.ProjectRepository;
+import io.mapzone.controller.vm.provisions.MaxProcesses;
 import io.mapzone.controller.vm.provisions.ProcessRunning;
+import io.mapzone.controller.vm.provisions.ProcessStarted;
 import io.mapzone.controller.vm.repository.VmRepository;
 
 import java.util.regex.Pattern;
@@ -29,6 +31,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import com.google.common.base.Joiner;
 
 import org.polymap.core.runtime.Closer;
+import org.polymap.core.runtime.Timer;
 
 /**
  * 
@@ -41,10 +44,10 @@ public class ProxyServlet
     private static Log log = LogFactory.getLog( ProxyServlet.class );
     
     /** The provisions to be handled before forwarding the request to the instance. */
-    private static final Class[]    forwardRequestProvisions = {OkToForwardRequest.class, ProcessRunning.class};
+    private static final Class[]    forwardRequestProvisions = {ProcessStarted.class, ProcessRunning.class, MaxProcesses.class };
 
     /** The provisions to be handled before forwarding the response back to the sender. */
-    private static final Class[]    forwardResponseProvisions = {OkToForwardResponse.class};
+    private static final Class[]    forwardResponseProvisions = {};
 
     private static final String     SERVLET_ALIAS = "/projects";
 
@@ -80,7 +83,7 @@ public class ProxyServlet
             throw new RuntimeException( e );
         }
     }
-    
+
     
     // instance *******************************************
     
@@ -94,24 +97,26 @@ public class ProxyServlet
     protected void service( HttpServletRequest req, HttpServletResponse resp ) throws ServletException, IOException {
         CloseableHttpResponse proxyResponse = null;
         try {
-            // request provisioning
-            // XXX job/thread to make in cancelable or timeout?
-            ProvisionExecutor executor = new LockingProvisionExecutor( forwardRequestProvisions );
-            OkToForwardRequest forwardRequest = executor.newTargetProvision( OkToForwardRequest.class );
-            forwardRequest.request.set( req );
-            forwardRequest.response.set( resp );
-            Status status = executor.execute( forwardRequest );
-            assert status.severityEquals( OK );
+                // request provisioning
+                // XXX job/thread to make it cancelable or timeout?
+                ProvisionExecutor executor = new LockingProvisionExecutor( forwardRequestProvisions );
+                ForwardRequest forwardRequest = executor.newProvision( ForwardRequest.class );
+                forwardRequest.request.set( req );
+                forwardRequest.response.set( resp );
+                forwardRequest.vmRepo.set( VmRepository.instance() );
+//                forwardRequest.projectRepo.set( ProjectRepository.newInstance() );
+                Status status = executor.execute( forwardRequest );
+                assert status.severity( OK );
 
-            // response provisioning
-            executor = new LockingProvisionExecutor( forwardResponseProvisions )
-                    .setContextValues( executor.getContextValues() );
-            OkToForwardResponse forwardResponse = executor.newTargetProvision( OkToForwardResponse.class );
-            status = executor.execute( forwardResponse );
-            assert status.severityEquals( OK );
+                // response provisioning
+                ProvisionExecutor executor2 = new LockingProvisionExecutor( forwardResponseProvisions )
+                        .setContextValues( executor.getContextValues() );
+                ForwardResponse forwardResponse = executor2.newProvision( ForwardResponse.class );
+                Status status2 = executor2.execute( forwardResponse );
+                assert status2.severity( OK );
         }
         catch (Exception e) {
-            // XXX log, reset instance(?), send error page
+            // XXX log, reset instance(?), send error page?
             throw new RuntimeException( e );
         }
         finally {
@@ -119,40 +124,48 @@ public class ProxyServlet
         }
     }
 
-    
+
     /**
-     * 
+     * Handle {@link VmRepository} lock for every run a {@link Provision}.
      */
     class LockingProvisionExecutor
-            extends ProvisionExecutor {
+            extends ProvisionExecutor2 {
         
-        public LockingProvisionExecutor( Class<? extends Provision>[] provisions ) {
+        public LockingProvisionExecutor( Class<Provision>[] provisions ) {
             super( provisions );
         }
 
         @Override
+        public Status execute( Provision target ) throws Exception {
+            return super.execute( target );
+        }
+
+        @Override
         protected Status executeProvision( Provision provision ) throws Exception {
-            VmRepository vmRepo = VmRepository.instance();
-            // the projectRepo does/must not change during provisioning
-            ProjectRepository projectRepo = ProjectRepository.newInstance();
+            Timer timer = new Timer();
+            VmRepository vmRepo = ((DefaultProvision)provision).vmRepo.get();
+
+            // FIXME read lock should span execute() *and* init()
+            assert vmRepo.lock.getReadHoldCount() == 0;
+            vmRepo.lock.readLock().lock();
+            
             try {
-                ((DefaultProvision)provision).vmRepo.set( vmRepo );
-                ((DefaultProvision)provision).projectRepo.set( projectRepo );
-       
                 Status result = super.executeProvision( provision );
 
-                if (vmRepo.isLocked()) {
-                    log.info( "COMMIT provision: " + provision.getClass().getSimpleName() );
-                }
                 vmRepo.commit();
                 return result;
             }
             catch (Exception e) {
-                if (vmRepo.isLocked()) {
-                    log.info( "ROLLBACK provision: " + provision.getClass().getSimpleName() );
-                }
+                log.warn( "", e );
                 vmRepo.rollback();
                 throw e;
+            }
+            finally {
+                vmRepo.lock.readLock().unlock();
+                log.info( "Provision: " + provision.getClass().getSimpleName() + " (" + timer.elapsedTime() + "ms)" );
+                
+                assert !vmRepo.lock.writeLock().isHeldByCurrentThread();
+                assert vmRepo.lock.getReadHoldCount() == 0 : "read hold count: " + vmRepo.lock.getReadHoldCount();
             }
         }
 

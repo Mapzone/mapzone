@@ -2,7 +2,6 @@ package io.mapzone.controller.um.repository;
 
 import static org.polymap.model2.query.Expressions.eq;
 import static org.polymap.model2.query.Expressions.or;
-import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.um.repository.LifecycleEvent.Type;
 
 import java.util.Collections;
@@ -10,11 +9,11 @@ import java.util.Optional;
 import java.util.Set;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.polymap.core.CorePlugin;
 import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.runtime.session.SessionContext;
 import org.polymap.core.runtime.session.SessionSingleton;
@@ -38,31 +37,26 @@ public class ProjectRepository
 
     private static Log log = LogFactory.getLog( ProjectRepository.class );
     
-    static {
-        try {
-            File dir = new File( CorePlugin.getDataLocation( ControllerPlugin.instance() ), "um" );
-            LuceneRecordStore store = new LuceneRecordStore( dir, false );
-            repo = EntityRepository.newConfiguration()
-                    .entities.set( new Class[] {
-                            User.class,
-                            LoginCookie.class,
-                            Project.class,
-                            Organization.class })
-                    .store.set( 
-                            // make sure to never loose updates or something
-                            //new OptimisticLocking(
-                            new RecordStoreAdapter( store ) )
-                    .create();
+    public static void init( File basedir ) throws IOException {
+        File dir  = new File( basedir, "um" );
+        LuceneRecordStore store = new LuceneRecordStore( dir, false );
+        repo = EntityRepository.newConfiguration()
+                .entities.set( new Class[] {
+                        User.class,
+                        LoginCookie.class,
+                        Project.class,
+                        Organization.class })
+                .store.set( 
+                        // make sure to never loose updates or something
+                        //new OptimisticLocking(
+                        new RecordStoreAdapter( store ) )
+                .create();
             
-            checkInit();
-        }
-        catch (Exception e) {
-            throw new RuntimeException( e );
-        }
+        checkInit();
     }
     
     
-    public static void checkInit() {
+    protected static void checkInit() {
         try (
             UnitOfWork _uow = repo.newUnitOfWork()
         ){

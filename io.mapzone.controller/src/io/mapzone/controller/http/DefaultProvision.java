@@ -2,7 +2,6 @@ package io.mapzone.controller.http;
 
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
-import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.vm.repository.VmRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +35,6 @@ public abstract class DefaultProvision
      */
     public Context<VmRepository>            vmRepo;
     
-    public Context<ProjectRepository>       projectRepo;
+//    public Context<ProjectRepository>       projectRepo;
     
 }

@@ -16,10 +16,10 @@ import org.apache.http.HttpEntity;
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-public class OkToForwardResponse
+public class ForwardResponse
         extends DefaultProvision {
 
-    private static Log log = LogFactory.getLog( OkToForwardResponse.class );
+    private static Log log = LogFactory.getLog( ForwardResponse.class );
 
     
     @Override
@@ -32,7 +32,7 @@ public class OkToForwardResponse
     public Status execute() throws Exception {
         // copy headers
         for (Header header : proxyResponse.get().getAllHeaders() ) {
-            log.info( "    response header: " + header.getName() + " = " + header.getValue() );
+            log.debug( "    response header: " + header.getName() + " = " + header.getValue() );
             response.get().addHeader( header.getName(), header.getValue() );
         }
 
@@ -45,6 +45,7 @@ public class OkToForwardResponse
             ){
                 IOUtils.copy( in, out );
             }
+            proxyResponse.get().close();
             response.get().flushBuffer();
         }
         return OK_STATUS;

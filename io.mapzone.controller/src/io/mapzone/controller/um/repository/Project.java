@@ -6,6 +6,7 @@ import org.polymap.model2.Concerns;
 import org.polymap.model2.DefaultValue;
 import org.polymap.model2.Nullable;
 import org.polymap.model2.Property;
+import org.polymap.model2.runtime.ValueInitializer;
 import org.polymap.model2.runtime.config.DefaultInt;
 
 /**
@@ -17,6 +18,8 @@ public class Project
         extends Named {
 
     public static Project               TYPE;
+    
+    public static ValueInitializer<Project> defaults = (Project proto) -> { return proto; };
     
     /**
      * @see #organizationOrUser()

@@ -1,17 +1,20 @@
 package io.mapzone.controller;
 
 import io.mapzone.controller.ui.util.SvgImageRenderer;
+import io.mapzone.controller.um.repository.ProjectRepository;
+import io.mapzone.controller.vm.repository.VmRepository;
+
+import org.osgi.framework.BundleContext;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
+import org.polymap.core.CorePlugin;
 import org.polymap.core.security.SecurityContext;
 import org.polymap.core.security.StandardConfiguration;
 
 import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.toolkit.DefaultToolkit;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
-
-import org.osgi.framework.BundleContext;
 
 /**
  * 
@@ -57,6 +60,9 @@ public class ControllerPlugin extends AbstractUIPlugin {
             }
         });
 
+        // init repositories
+        ProjectRepository.init( CorePlugin.getDataLocation( ControllerPlugin.instance() ) );
+        VmRepository.init( CorePlugin.getDataLocation( ControllerPlugin.instance() ) );
 	}
 
     
