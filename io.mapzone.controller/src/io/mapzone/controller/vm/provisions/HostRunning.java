@@ -1,6 +1,6 @@
 package io.mapzone.controller.vm.provisions;
 
-import io.mapzone.controller.http.DefaultProvision;
+import io.mapzone.controller.http.HttpProxyProvision;
 import io.mapzone.controller.provision.Provision;
 
 /**
@@ -9,7 +9,7 @@ import io.mapzone.controller.provision.Provision;
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class HostRunning
-        extends DefaultProvision {
+        extends HttpProxyProvision {
 
     @Override
     public boolean init( Provision failed, Status cause ) {

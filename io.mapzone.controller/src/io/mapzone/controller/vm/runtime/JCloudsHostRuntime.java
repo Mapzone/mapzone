@@ -5,7 +5,6 @@ import io.mapzone.controller.vm.repository.RegisteredHost;
 import io.mapzone.controller.vm.repository.RegisteredInstance;
 import io.mapzone.controller.vm.repository.RegisteredProcess;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 import java.io.ByteArrayOutputStream;
@@ -49,9 +48,6 @@ public class JCloudsHostRuntime
 
     public static final String      INSTANCES_BASE_DIR = "/tmp/mapzone/";
     
-    // FIXME super hack to find "free" port
-    private static AtomicInteger    portCount = new AtomicInteger( 32768 );
-    
     
     // instance *******************************************
     
@@ -74,7 +70,10 @@ public class JCloudsHostRuntime
 
     @Override
     public int findFreePort() {
-        return portCount.getAndIncrement();
+        // XXX assuming that anybody else has locked VmRepository
+        Integer port = rhost.portCount.get();
+        rhost.portCount.set( port == 65535 ? 32768 : port + 1 );
+        return port;
     }
 
 

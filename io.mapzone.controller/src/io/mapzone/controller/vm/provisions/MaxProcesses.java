@@ -1,6 +1,6 @@
 package io.mapzone.controller.vm.provisions;
 
-import io.mapzone.controller.http.DefaultProvision;
+import io.mapzone.controller.http.HttpProxyProvision;
 import io.mapzone.controller.http.ForwardRequest;
 import io.mapzone.controller.ops.StopProcessOperation;
 import io.mapzone.controller.provision.Context;
@@ -22,11 +22,11 @@ import org.apache.commons.logging.LogFactory;
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class MaxProcesses
-        extends DefaultProvision {
+        extends HttpProxyProvision {
 
     private static Log log = LogFactory.getLog( MaxProcesses.class );
 
-    public static final int                 MAX_PROCESSES = 2;
+    public static final int                 MAX_PROCESSES = 1;
     
     private Context<RegisteredProcess>      process;
 

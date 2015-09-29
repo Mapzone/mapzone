@@ -1,6 +1,6 @@
 package io.mapzone.controller.vm.provisions;
 
-import io.mapzone.controller.http.DefaultProvision;
+import io.mapzone.controller.http.HttpProxyProvision;
 import io.mapzone.controller.http.ForwardRequest;
 import io.mapzone.controller.http.ProxyServlet;
 import io.mapzone.controller.ops.StartProcessOperation;
@@ -18,7 +18,7 @@ import org.apache.commons.logging.LogFactory;
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class ProcessStarted
-        extends DefaultProvision {
+        extends HttpProxyProvision {
 
     private static Log log = LogFactory.getLog( ProcessStarted.class );
 

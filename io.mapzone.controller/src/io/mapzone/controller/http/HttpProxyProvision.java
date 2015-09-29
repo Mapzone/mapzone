@@ -10,17 +10,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpRequest;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.HttpResponse;
 
 /**
  * Provides basic context variables.
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-public abstract class DefaultProvision
+public abstract class HttpProxyProvision
         implements Provision {
 
-    private static Log log = LogFactory.getLog( DefaultProvision.class );
+    private static Log log = LogFactory.getLog( HttpProxyProvision.class );
 
     protected Context<HttpServletRequest>   request;
     
@@ -28,7 +28,7 @@ public abstract class DefaultProvision
 
     protected Context<HttpRequest>          proxyRequest;
     
-    protected Context<CloseableHttpResponse> proxyResponse;
+    protected Context<HttpResponse>         proxyResponse;
 
     /**
      * {@link VmRepository#lock()} before any modifications!

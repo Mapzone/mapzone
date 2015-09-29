@@ -1,15 +1,10 @@
 package io.mapzone.controller.http;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-
+import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 
 /**
  * 
@@ -17,9 +12,11 @@ import org.apache.http.HttpEntity;
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class ForwardResponse
-        extends DefaultProvision {
+        extends HttpProxyProvision {
 
     private static Log log = LogFactory.getLog( ForwardResponse.class );
+
+    private Context<HttpRequestForwarder>   requestForwarder;
 
     
     @Override
@@ -30,23 +27,10 @@ public class ForwardResponse
 
     @Override
     public Status execute() throws Exception {
-        // copy headers
-        for (Header header : proxyResponse.get().getAllHeaders() ) {
-            log.debug( "    response header: " + header.getName() + " = " + header.getValue() );
-            response.get().addHeader( header.getName(), header.getValue() );
-        }
-
-        // copy stream
-        HttpEntity entity = proxyResponse.get().getEntity();
-        if (entity != null) {
-            try (
-                InputStream in = proxyResponse.get().getEntity().getContent();
-                OutputStream out = response.get().getOutputStream();
-            ){
-                IOUtils.copy( in, out );
-            }
-            proxyResponse.get().close();
-            response.get().flushBuffer();
+        try (
+            HttpResponseForwarder forwarder = new HttpResponseForwarder( requestForwarder.get() );
+        ) {
+            forwarder.service( request.get(), response.get() );
         }
         return OK_STATUS;
     }

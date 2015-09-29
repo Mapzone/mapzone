@@ -9,6 +9,7 @@ import org.polymap.core.runtime.LockedLazyInit;
 
 import org.polymap.model2.BidiManyAssociationConcern;
 import org.polymap.model2.Concerns;
+import org.polymap.model2.DefaultValue;
 import org.polymap.model2.Defaults;
 import org.polymap.model2.Entity;
 import org.polymap.model2.ManyAssociation;
@@ -52,6 +53,12 @@ public class RegisteredHost
      * The host's IP or DnS name. This is used to build URIs for the instances.
      */
     public Property<String>                     inetAddress;
+    
+    /**
+     * The next free port on the host.
+     */
+    @DefaultValue( "32768" )
+    public Property<Integer>                    portCount;
     
     @Defaults
     @Concerns( BidiManyAssociationConcern.class )

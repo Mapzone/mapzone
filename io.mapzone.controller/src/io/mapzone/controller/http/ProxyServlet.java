@@ -143,7 +143,7 @@ public class ProxyServlet
         @Override
         protected Status executeProvision( Provision provision ) throws Exception {
             Timer timer = new Timer();
-            VmRepository vmRepo = ((DefaultProvision)provision).vmRepo.get();
+            VmRepository vmRepo = ((HttpProxyProvision)provision).vmRepo.get();
 
             // FIXME read lock should span execute() *and* init()
             assert vmRepo.lock.getReadHoldCount() == 0;

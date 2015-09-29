@@ -43,7 +43,7 @@ public class VmRepository {
     private static EntityRepository     repo;
     
     public static void init( File basedir ) throws IOException {
-        File dir  = new File( basedir, "um" );
+        File dir  = new File( basedir, "vm" );
         LuceneRecordStore store = new LuceneRecordStore( dir, false );
         repo = EntityRepository.newConfiguration()
                 .entities.set( new Class[] {
