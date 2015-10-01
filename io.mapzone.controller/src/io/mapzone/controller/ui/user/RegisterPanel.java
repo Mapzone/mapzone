@@ -98,11 +98,6 @@ public class RegisterPanel
         if (parentPanel().get() instanceof StartPanel) {
             getSite().setTitle( "" ).setTooltip( "Sign up" );
             getSite().setIcon( ControllerPlugin.images().svgImage( "account-plus.svg", SvgImageRegistryHelper.NORMAL24 ) ); 
-
-//            getSite().setIcon( ControllerPlugin.images().svgOverlayedImage( 
-//                    "account.svg", SvgImageRegistryHelper.NORMAL24, 
-//                    "plus-circle-filled.svg", SvgImageRegistryHelper.OVR12_ACTION,
-//                    Quadrant.TopLeft ) );
             return true;
         }
         return false;
@@ -147,12 +142,12 @@ public class RegisterPanel
         IPanelToolkit tk = getSite().toolkit();
 
         // welcome section
-        welcomeSection = tk.createPanelSection( parent, null );
+        welcomeSection = tk.createPanelSection( parent, i18n.get( "title" ) );
         welcomeSection.addConstraint( new PriorityConstraint( 10 ), new MinWidthConstraint( 450, 0 ) );
         tk.createFlowText( welcomeSection.getBody(), ContentProvider.instance().findContent( "ui/register-welcome.md").content() );
 
         // form section
-        formSection = tk.createPanelSection( parent, "Personal account settings" );
+        formSection = tk.createPanelSection( parent, "Personal account settings", SWT.BORDER );
         Composite body = formSection.getBody();
         body.setLayout( ColumnLayoutFactory.defaults().spacing( 5 ).margins( 0, 0 ).create() );
 

@@ -17,13 +17,12 @@ import java.util.stream.Collectors;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-
-import org.eclipse.ui.forms.widgets.ColumnLayoutData;
 
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.UIThreadExecutor;
@@ -39,6 +38,7 @@ import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.app.SvgImageRegistryHelper.Quadrant;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
+import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 import org.polymap.rhei.field.FormFieldEvent;
 import org.polymap.rhei.field.IFormFieldListener;
@@ -111,17 +111,17 @@ public class CreateProjectPanel
         
 //        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( 10 ).create() );
         
-//        // welcome
-//        IPanelSection welcomeSection = tk.createPanelSection( parent, "New project" );
-//        welcomeSection.addConstraint( new MinWidthConstraint( 350, 1 ) );
-//        tk.createFlowText( welcomeSection.getBody(), "Choose an **Organization** your are member of. Or you choose to create a **personal** project. Personal projects can be asigned to an Organization later." );
+        // welcome
+        IPanelSection welcomeSection = tk.createPanelSection( parent, "Set up a new project" );
+        welcomeSection.addConstraint( new MinWidthConstraint( 350, 1 ) );
+        tk.createFlowText( welcomeSection.getBody(), "Choose an **Organization** your are member of. Or you choose to create a **personal** project. Personal projects can be asigned to an Organization later." );
 
         // form
-        IPanelSection formSection = tk.createPanelSection( parent, "Set up a new project" );
+        IPanelSection formSection = tk.createPanelSection( parent, "Project data", SWT.BORDER );
         formSection.getBody().setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( dp(10).pix() ).create() );
         
-        tk.createFlowText( formSection.getBody(), "Choose an **Organization** your are member of. Or you choose to create a **personal** project. Personal projects can be asigned to an Organization later." )
-                .setLayoutData( new ColumnLayoutData( 350 ) );
+//        tk.createFlowText( formSection.getBody(), "Choose an **Organization** your are member of. Or you choose to create a **personal** project. Personal projects can be asigned to an Organization later." )
+//                .setLayoutData( new ColumnLayoutData( 350 ) );
 
         form = new BatikFormContainer( new ProjectForm() );
         form.createContents( formSection.getBody() );

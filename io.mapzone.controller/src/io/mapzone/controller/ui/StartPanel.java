@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 import org.polymap.core.runtime.StreamIterable;
 import org.polymap.core.runtime.UIThreadExecutor;
@@ -19,13 +20,16 @@ import org.polymap.core.runtime.event.EventHandler;
 import org.polymap.core.security.SecurityContext;
 import org.polymap.core.security.UserPrincipal;
 
+import org.polymap.rhei.batik.BatikApplication;
 import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PropertyAccessEvent;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.dashboard.Dashboard;
+import org.polymap.rhei.batik.toolkit.ConstraintData;
 import org.polymap.rhei.batik.toolkit.ConstraintLayout;
+import org.polymap.rhei.batik.toolkit.IPanelToolkit;
 import org.polymap.rhei.batik.toolkit.LayoutSupplier;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
@@ -81,63 +85,53 @@ public class StartPanel
     }
 
     protected void createFrontpageContents() {
-        anonDashboard = new Dashboard( getSite(), ANON_DASHBOARD_ID );
-//      anonDashboard.addDashlet( new LoginDashlet( cookieRepo ) );
-//      anonDashboard.addDashlet( new FeaturedProjectsDashlet() );
+        IPanelToolkit tk = site().toolkit();
+        
+        // banner
+        ContentProvider cp = ContentProvider.instance();
+        Label banner = tk.createFlowText( parent, cp.findContent( "frontpage/1welcome.md" ).content() );
+        banner.setLayoutData( new ConstraintData( new MinWidthConstraint( 650, 10 ) ) );
+        
+        // dashboard
+        anonDashboard = new Dashboard( getSite(), ANON_DASHBOARD_ID )
+                .defaultBorder.put( true );
 
-      // articles
-      ContentProvider cp = ContentProvider.instance();
-      AtomicInteger prio = new AtomicInteger( 10 );
-      StreamIterable.of( cp.listContent( "frontpage" ) ).stream()
-              .sorted( (co1, co2) -> co1.name().compareToIgnoreCase( co2.name() ) )
-              .forEach( co -> {
-                  ArticleDashlet dashlet = new ArticleDashlet( co );
-                  dashlet.addConstraint( new PriorityConstraint( prio.getAndDecrement() ) );
-                  dashlet.addConstraint( new MinWidthConstraint( 350, 10 ) );
-                  anonDashboard.addDashlet( dashlet );
-              });
-      anonDashboard.createContents( parent );
+        // articles
+        AtomicInteger prio = new AtomicInteger( 10 );
+        StreamIterable.of( cp.listContent( "frontpage" ) ).stream()
+                .filter( co -> !co.name().equals( "1welcome" ) )
+                .sorted( (co1, co2) -> co1.name().compareToIgnoreCase( co2.name() ) )
+                .forEach( co -> {
+                    ArticleDashlet dashlet = new ArticleDashlet( co );
+                    dashlet.addConstraint( new PriorityConstraint( prio.getAndDecrement() ) );
+                    dashlet.addConstraint( new MinWidthConstraint( 350, 10 ) );
+                    anonDashboard.addDashlet( dashlet );
+                });
+        ConstraintLayout dashboardLayout = new ConstraintLayout( site().layoutPreferences() );
+        anonDashboard.createContents( tk.createComposite( parent, dashboardLayout ) );
 
-      // margins / spacing
-      LayoutSupplier prefs = getSite().getLayoutPreference();
-      ConstraintLayout layout = (ConstraintLayout)parent.getLayout();
-      
-      layout.setMargins( new LayoutSupplier() {
-          private final float       factor = 2f;
-          @Override
-          public int getSpacing() {
-              // code from DefaultAppDesign
-              int spacing = -1;
-              Rectangle displayArea = parent.getBounds();
-              if (displayArea.width < 500) {
-                  spacing = 1;
-              }
-              else if (displayArea.width < 1366) { // many current notebook displays?
-                  spacing = (int)Math.round( displayArea.width * 0.045 );
-              }
-              else {
-                  spacing = (int)Math.round( displayArea.width * 0.045 );
-              }
-              //log.info( "Frontpage: " + displayArea.width + " -> " + spacing );
-              return spacing;
-          }
-          @Override
-          public int getMarginTop() {
-              return prefs.getMarginTop();
-          }
-          @Override
-          public int getMarginRight() {
-              return Math.round( getSpacing() * factor );
-          }
-          @Override
-          public int getMarginLeft() {
-              return Math.round( getSpacing() * factor );
-          }
-          @Override
-          public int getMarginBottom() {
-              return prefs.getMarginBottom() + 10;
-          }
-      });
+        // page layout
+        ((ConstraintLayout)parent.getLayout()).setMargins( new LayoutSupplier() {
+            LayoutSupplier layoutPrefs = site().layoutPreferences();
+            LayoutSupplier appLayoutPrefs = BatikApplication.instance().getAppDesign().getAppLayoutSettings();
+            @Override
+            public int getSpacing() {
+                return 0; //layoutPrefs.getSpacing() * 2;
+            }
+            protected int margins() {
+                Rectangle bounds = parent.getParent().getBounds();
+                int availWidth = bounds.width-(appLayoutPrefs.getMarginLeft()+appLayoutPrefs.getMarginRight());
+                return Math.max( (availWidth-800)/2, layoutPrefs.getMarginLeft());
+            }
+            @Override
+            public int getMarginTop() { return layoutPrefs.getMarginTop(); }
+            @Override
+            public int getMarginRight() { return margins(); }
+            @Override
+            public int getMarginLeft() { return margins(); }
+            @Override
+            public int getMarginBottom() { return layoutPrefs.getMarginBottom() /*+ 10*/; }
+        });
     }
     
     
@@ -145,7 +139,7 @@ public class StartPanel
     public void createContents( @SuppressWarnings("hiding") Composite parent ) {
         this.parent = parent;
         getSite().setPreferredWidth( 650 );
-        getSite().setTitle( "Welcome" );
+        getSite().setTitle( "Welcome to..." );
         
         // login cookie -> dashboard
         Optional<LoginCookie> loginCookie = LoginCookie.findAndUpdate( cookieRepo );
@@ -156,6 +150,7 @@ public class StartPanel
             createDashboardContents();            
         }
         // frontpage, always created in case we get back from dashboard
+        // XXX delay to avoid frontpage showing short before dashboard
         createFrontpageContents();
         userPrincipal.addListener( this, (PropertyAccessEvent ev) -> ev.getType() == PropertyAccessEvent.TYPE.SET );
     }

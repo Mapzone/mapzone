@@ -94,7 +94,7 @@ public class LoginPanel
     
     @Override
     public void createContents( Composite parent ) {
-        IPanelSection section = getSite().toolkit().createPanelSection( parent, null );
+        IPanelSection section = getSite().toolkit().createPanelSection( parent, "Sign in", SWT.BORDER );
         
         LoginForm loginForm = new LoginForm() {
             protected boolean login( String name, String passwd ) {

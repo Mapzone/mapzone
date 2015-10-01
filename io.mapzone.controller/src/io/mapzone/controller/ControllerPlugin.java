@@ -1,5 +1,7 @@
 package io.mapzone.controller;
 
+import java.util.Locale;
+
 import io.mapzone.controller.ui.util.SvgImageRenderer;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.vm.repository.VmRepository;
@@ -15,6 +17,8 @@ import org.polymap.core.security.StandardConfiguration;
 import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.toolkit.DefaultToolkit;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
+
+import org.polymap.cms.ContentProvider;
 
 /**
  * 
@@ -48,6 +52,9 @@ public class ControllerPlugin extends AbstractUIPlugin {
     public void start( BundleContext context ) throws Exception {
 		super.start( context );
 		instance = this;
+		
+		// english is default
+		ContentProvider.instance().defaultLocale.set( Locale.ENGLISH );
 		
 		// allow SVG images in markdown
 		DefaultToolkit.registerMarkdownRenderer( () -> new SvgImageRenderer() );

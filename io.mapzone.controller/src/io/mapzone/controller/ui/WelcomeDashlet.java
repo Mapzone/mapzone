@@ -57,6 +57,7 @@ public class WelcomeDashlet
         }
 
         site.title.set( title );
+        site.border.set( false );
     }
 
     
