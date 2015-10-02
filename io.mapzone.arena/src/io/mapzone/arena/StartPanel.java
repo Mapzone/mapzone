@@ -10,7 +10,6 @@ import org.polymap.core.ui.UIUtils;
 import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.IPanel;
 import org.polymap.rhei.batik.PanelIdentifier;
-import org.polymap.rhei.batik.dashboard.Dashboard;
 
 /**
  * 
@@ -25,10 +24,6 @@ public class StartPanel
 
     public static final PanelIdentifier ID = PanelIdentifier.parse( "start" );
 
-    public static final String          DASHBOARD_ID = "start-dashboard";
-
-    private Dashboard                   dashboard;
-    
     
     @Override
     public boolean wantsToBeShown() {
@@ -45,17 +40,6 @@ public class StartPanel
     public void createContents( Composite parent ) {
         // FIXME
         UIUtils.activateCallback( "fix-flowtext-link-actions" );
-        
-        getSite().setTitle( "Dashboard" );
-        getSite().setPreferredWidth( 450 );
-        //getSite().setIcon( BatikPlugin.instance().imageForName( "resources/icons/house.png" ) );
-
-        dashboard = new Dashboard( getSite(), DASHBOARD_ID );
-        dashboard.addDashlet( new ProjectsDashlet() );
-        dashboard.addDashlet( new ActivitiesDashlet() );
-//        dashboard.addDashlet( new MapDashlet() );
-        
-        dashboard.createContents( parent );
     }
 
 }
