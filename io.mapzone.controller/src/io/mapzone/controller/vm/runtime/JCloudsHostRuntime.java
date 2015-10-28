@@ -201,11 +201,14 @@ public class JCloudsHostRuntime
             String exePath = instance.exePath.get();
             String dataPath = instance.dataPath.get();
 
+            // XXX this just work if running on the same machine
+            String javaHome = System.getProperty( "java.home" );
+                    
             String command = Joiner.on( " " ).join( 
                   "nohup",
                   "setsid",
                       exePath + "/eclipse", 
-                      "-vm /home/falko/bin/jdk1.8/bin/java",
+                      "-vm " + javaHome + "/bin/java",
                       "-console -consolelog -registryMultiLanguage",
                       "-data", dataPath,
                       "-vmargs -server -XX:+TieredCompilation -ea -Xmx128m -XX:+UseG1GC -XX:SoftRefLRUPolicyMSPerMB=1000",
