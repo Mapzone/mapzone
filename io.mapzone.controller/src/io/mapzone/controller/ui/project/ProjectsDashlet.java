@@ -24,6 +24,7 @@ import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
@@ -116,7 +117,7 @@ public class ProjectsDashlet
 
     @EventHandler( display=true )
     protected void projectChanged( EntityChangedEvent ev ) {
-        if (parent.isDisposed()) {
+        if (parent.isDisposed() || viewer != null && viewer.getControl().isDisposed()) {
             return;
         }
         // first project created
@@ -153,7 +154,8 @@ public class ProjectsDashlet
 
     
     protected void createWelcomeContents() {
-        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( 5 ).create() );
+        // margin: shadows
+        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( 5 ).margins( 0, 3 ).create() );
         
         MdToolkit tk = (MdToolkit)getSite().toolkit(); 
         tk.createFlowText( parent, ContentProvider.instance().findContent( "ui/projects-welcome.md").content() );
@@ -208,7 +210,8 @@ public class ProjectsDashlet
                 });
             }
         } );
-        viewer.setInput( user.projects.stream().collect( Collectors.toList() ) );
+        List<Project> projects = user.projects.stream().collect( Collectors.toList() );
+        viewer.setInput( projects );
         
         viewer.getControl().setLayoutData( FormDataFactory.filled()/*.height( dp(72)*2  )*/.create() );
     }

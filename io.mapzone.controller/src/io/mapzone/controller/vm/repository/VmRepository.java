@@ -138,7 +138,6 @@ public class VmRepository {
     
     protected void unlock() {
         if (lock.isWriteLockedByCurrentThread()) {
-            lock.readLock().lock();
             lock.writeLock().unlock();
         }
     }

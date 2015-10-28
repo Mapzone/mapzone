@@ -1,5 +1,6 @@
 package io.mapzone.controller.ui.project;
 
+import static org.polymap.core.runtime.UIThreadExecutor.asyncFast;
 import io.mapzone.controller.ops.DeleteProjectOperation;
 import io.mapzone.controller.ui.util.PropertyAdapter;
 import io.mapzone.controller.um.repository.EntityChangedEvent;
@@ -171,7 +172,8 @@ public class EditProjectPanel
                 op.repo.set( nested );
                 op.project.set( nestedProject );
 
-                OperationSupport.instance().execute2( op, true, false, ev2 -> UIThreadExecutor.asyncFast( () -> {
+                // execute sync as long as there is no progress indicator
+                OperationSupport.instance().execute2( op, false, false, ev2 -> asyncFast( () -> {
                     if (ev2.getResult().isOK()) {
                         getContext().closePanel( site().path() );
                     }

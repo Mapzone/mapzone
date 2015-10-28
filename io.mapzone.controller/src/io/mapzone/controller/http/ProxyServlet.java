@@ -27,7 +27,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
-
 import com.google.common.base.Joiner;
 
 import org.polymap.core.runtime.Closer;
@@ -72,8 +71,8 @@ public class ProxyServlet
     
     public static String projectUrl( Project project ) {
         try {
-            // FIXME
-            return Joiner.on( "/" ).join( "http://localhost:8080",
+            // assuming that we are in /dashboard servlet
+            return Joiner.on( "/" ).join( "..",
                     StringUtils.substringAfter( SERVLET_ALIAS, "/" ),
                     URLEncoder.encode( project.organizationOrUser().name.get(), "UTF8" ),
                     URLEncoder.encode( project.name.get(), "UTF8" ),
@@ -161,7 +160,9 @@ public class ProxyServlet
                 throw e;
             }
             finally {
-                vmRepo.lock.readLock().unlock();
+                if (vmRepo.lock.getReadHoldCount() > 0) {
+                    vmRepo.lock.readLock().unlock();
+                }
                 log.info( "Provision: " + provision.getClass().getSimpleName() + " (" + timer.elapsedTime() + "ms)" );
                 
                 assert !vmRepo.lock.writeLock().isHeldByCurrentThread();

@@ -14,6 +14,11 @@
  */
 package io.mapzone.controller.ui.user;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
@@ -25,6 +30,8 @@ import com.google.common.base.Joiner;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+
+import org.eclipse.rap.rwt.RWT;
 
 import org.polymap.core.runtime.event.EventHandler;
 import org.polymap.core.runtime.event.EventManager;
@@ -93,13 +100,14 @@ public class UserProfileDashlet
     
     
     protected String createUserText() {
+        DateFormat df = SimpleDateFormat.getDateInstance( SimpleDateFormat.MEDIUM, RWT.getLocale() );
         return Joiner.on( "\n" ).join(
                 "## " + user.fullname.get(),
                 createLine( "account-multiple-outline.svg", user.company.get(), null ),
                 createLine( "email-outline.svg", user.email.get(), "mailto:" + user.email.get() ),
                 createLine( "link-variant.svg", user.website.get(), "http://" + user.website.get() ),
                 createLine( "map-marker.svg", user.location.get(), null ),
-                createLine( "clock.svg", "Joined on ...", null ),
+                createLine( "clock.svg", "Joined on " + df.format( user.joined.get() ), null ),
                 "<br/>" );
     }
 
@@ -115,7 +123,7 @@ public class UserProfileDashlet
     protected String createLine( String svg, String text, String link ) {
         return Joiner.on( "" ).join( 
                 "* <span style=\"vertical-align:middle\">![", svg, "](#", svg, "@normal12)</span> ",
-                (link != null
+                (!isEmpty( link ) && !isEmpty( text )
                         ? Joiner.on( "" ).join( "[", text, "](", link, ")" )
                         : text),
                 "<br/>" );

@@ -223,6 +223,7 @@ public class HttpRequestForwarder
                         headerValue += ":" + host.getPort();
                     }
                 }
+                //
                 else if (headerName.equalsIgnoreCase( org.apache.http.cookie.SM.COOKIE )) {
                     headerValue = getRealCookie( headerValue );
                 }
@@ -320,5 +321,4 @@ public class HttpRequestForwarder
     protected String rewriteQueryString( String queryString ) {
         return queryString;
     }
-
 }

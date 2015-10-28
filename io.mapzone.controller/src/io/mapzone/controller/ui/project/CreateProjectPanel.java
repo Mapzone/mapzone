@@ -1,5 +1,6 @@
 package io.mapzone.controller.ui.project;
 
+import static org.polymap.core.runtime.UIThreadExecutor.asyncFast;
 import static org.polymap.rhei.batik.toolkit.md.dp.dp;
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.ops.CreateProjectOperation;
@@ -25,7 +26,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 import org.polymap.core.operation.OperationSupport;
-import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.security.UserPrincipal;
 import org.polymap.core.ui.ColumnLayoutFactory;
 import org.polymap.core.ui.StatusDispatcher;
@@ -149,8 +149,8 @@ public class CreateProjectPanel
                 op.project.set( project );
                 op.organizationOrUser.set( organizationOrUser.get() );
                 
-                // execute
-                OperationSupport.instance().execute2( op, true, false, ev2 -> UIThreadExecutor.asyncFast( () -> {
+                // execute sync as long as there is no progress indicator
+                OperationSupport.instance().execute2( op, false, false, ev2 -> asyncFast( () -> {
                     if (ev2.getResult().isOK()) {
                         PanelPath panelPath = getSite().getPath();
                         getContext().closePanel( panelPath );                        
