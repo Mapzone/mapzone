@@ -1,7 +1,5 @@
 package io.mapzone.controller;
 
-import org.eclipse.rap.rwt.RWT;
-
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.runtime.i18n.MessagesImpl;
 
@@ -26,17 +24,17 @@ public class Messages {
         // prevent instantiation
     }
 
-    public static String get( String key, Object... args ) {
-        return instance.get( key, args );
-    }
-
-    public static String get2( Object caller, String key, Object... args ) {
-        return instance.get( caller, key, args );
-    }
-    
-    public static Messages get() {
-        Class clazz = Messages.class;
-        return (Messages)RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
-    }
+//    public static String get( String key, Object... args ) {
+//        return instance.get( key, args );
+//    }
+//
+//    public static String get2( Object caller, String key, Object... args ) {
+//        return instance.get( caller, key, args );
+//    }
+//    
+//    public static Messages get() {
+//        Class clazz = Messages.class;
+//        return (Messages)RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, clazz );
+//    }
 
 }

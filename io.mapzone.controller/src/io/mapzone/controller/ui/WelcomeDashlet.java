@@ -16,6 +16,7 @@ import org.polymap.cms.ContentProvider.ContentObject;
 
 /**
  * 
+ * 
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class WelcomeDashlet
