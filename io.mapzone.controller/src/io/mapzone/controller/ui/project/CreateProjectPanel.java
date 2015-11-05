@@ -133,7 +133,7 @@ public class CreateProjectPanel
             @Override
             public void widgetSelected( SelectionEvent ev ) {
                 try {
-                    form.submit();
+                    form.submit( null );
                 }
                 catch (Exception e) {
                     StatusDispatcher.handleError( "Unable to create project.", e );

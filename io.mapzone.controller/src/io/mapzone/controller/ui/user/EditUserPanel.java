@@ -143,7 +143,7 @@ public class EditUserPanel
             public void widgetSelected( SelectionEvent ev ) {
                 // submit form
                 try {
-                    profileForm.submit();
+                    profileForm.submit( null );
                 }
                 catch (Exception e) {
                     StatusDispatcher.handleError( "Unable to submit form.", e );

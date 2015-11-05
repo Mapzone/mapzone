@@ -162,7 +162,7 @@ public class RegisterPanel
         okBtn.addSelectionListener( new SelectionAdapter() {
             public void widgetSelected( SelectionEvent ev ) {
                 try {
-                    form.submit();
+                    form.submit( null );
                 }
                 catch (Exception e ) {
                     getSite().setStatus( new Status( IStatus.ERROR, ControllerPlugin.ID, i18n.get( "errorText", e.getMessage() ) ) );
