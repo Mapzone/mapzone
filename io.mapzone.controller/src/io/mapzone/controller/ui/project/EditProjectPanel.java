@@ -41,8 +41,6 @@ import org.polymap.rhei.batik.PanelPath;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
-import org.polymap.rhei.batik.toolkit.md.AbstractFeedbackComponent.MessageType;
-import org.polymap.rhei.batik.toolkit.md.MdSnackbar;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 import org.polymap.rhei.field.FormFieldEvent;
 import org.polymap.rhei.field.IFormFieldListener;
@@ -165,8 +163,8 @@ public class EditProjectPanel
         deleteBtn.addSelectionListener( new SelectionAdapter() {
             @Override
             public void widgetSelected( SelectionEvent e ) {
-                MdSnackbar snackbar = tk.createSnackbar();
-                snackbar.showIssue( MessageType.WARNING, "We are going to delete the project." );
+//                MdSnackbar snackbar = tk.createSnackbar();
+//                snackbar.showIssue( MessageType.WARNING, "We are going to delete the project." );
                 
                 DeleteProjectOperation op = new DeleteProjectOperation();
                 op.repo.set( nested );

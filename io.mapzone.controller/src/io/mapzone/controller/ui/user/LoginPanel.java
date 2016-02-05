@@ -14,21 +14,12 @@
  */
 package io.mapzone.controller.ui.user;
 
-import io.mapzone.controller.ControllerPlugin;
-import io.mapzone.controller.Messages;
-import io.mapzone.controller.ui.StartPanel;
-import io.mapzone.controller.um.repository.LoginCookie;
-import io.mapzone.controller.um.repository.ProjectRepository;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Link;
-
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.security.SecurityContext;
@@ -42,6 +33,7 @@ import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
+import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
 import org.polymap.rhei.field.CheckboxFormField;
 import org.polymap.rhei.field.FormFieldEvent;
 import org.polymap.rhei.field.IFormFieldListener;
@@ -52,6 +44,12 @@ import org.polymap.rhei.field.StringFormField.Style;
 import org.polymap.rhei.form.DefaultFormPage;
 import org.polymap.rhei.form.IFormPageSite;
 import org.polymap.rhei.form.batik.BatikFormContainer;
+
+import io.mapzone.controller.ControllerPlugin;
+import io.mapzone.controller.Messages;
+import io.mapzone.controller.ui.StartPanel;
+import io.mapzone.controller.um.repository.LoginCookie;
+import io.mapzone.controller.um.repository.ProjectRepository;
 
 /**
  * 
@@ -99,12 +97,11 @@ public class LoginPanel
         LoginForm loginForm = new LoginForm() {
             protected boolean login( String name, String passwd ) {
                 if (super.login( name, passwd )) {
-                    getSite().setStatus( new Status( IStatus.OK, ControllerPlugin.ID, "Successfully signed in" ) );
                     getContext().closePanel( getSite().getPath() );
                     return true;
                 }
                 else {
-                    getSite().setStatus( new Status( IStatus.WARNING, ControllerPlugin.ID, "Username and/or password not correct." ) );
+                    getSite().toolkit().createSnackbar( Appearance.FadeIn, "Username or password is not correct." );
                     return false;
                 }
             }

@@ -22,8 +22,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 import org.eclipse.core.commands.operations.IUndoableOperation;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
@@ -44,6 +42,7 @@ import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.IPanelToolkit;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
+import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
 import org.polymap.rhei.field.EMailAddressValidator;
 import org.polymap.rhei.field.FormFieldEvent;
 import org.polymap.rhei.field.IFormFieldListener;
@@ -165,7 +164,7 @@ public class RegisterPanel
                     form.submit( null );
                 }
                 catch (Exception e ) {
-                    getSite().setStatus( new Status( IStatus.ERROR, ControllerPlugin.ID, i18n.get( "errorText", e.getMessage() ) ) );
+                    site().toolkit().createSnackbar( Appearance.FadeIn, i18n.get( "errorText", e.getMessage() ) );
                     return;
                 }
 
@@ -176,12 +175,12 @@ public class RegisterPanel
                         if (ev2.getResult().isOK()) {
                             userPrincipal.set( SecurityContext.instance().loginTrusted( user.name.get() ) );
                             
-                            getSite().setStatus( new Status( IStatus.OK, ControllerPlugin.ID, i18n.get( "okText" ) ) );
+                            //getSite().setStatus( new Status( IStatus.OK, ControllerPlugin.ID, i18n.get( "okText" ) ) );
                             getContext().closePanel( site().path() );
                             getContext().openPanel( site().path(), DashboardPanel.ID );                        
                         }
                         else {
-                            getSite().setStatus( new Status( IStatus.ERROR, ControllerPlugin.ID, i18n.get( "errorText", ev2.getResult().getMessage() ) ) );                                
+                            site().toolkit().createSnackbar( Appearance.FadeIn, i18n.get( "errorText", ev2.getResult().getMessage() ) );                                
                         }
                     }
                 });                    

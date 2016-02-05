@@ -1,6 +1,5 @@
 package io.mapzone.controller.ui.user;
 
-import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.Messages;
 import io.mapzone.controller.ui.DashboardPanel;
 import io.mapzone.controller.um.repository.LoginCookie;
@@ -17,9 +16,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Link;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.security.SecurityContext;
 import org.polymap.core.security.UserPrincipal;
@@ -32,6 +28,7 @@ import org.polymap.rhei.batik.IPanelSite;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.dashboard.DashletSite;
 import org.polymap.rhei.batik.dashboard.DefaultDashlet;
+import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
 import org.polymap.rhei.field.CheckboxFormField;
 import org.polymap.rhei.field.FormFieldEvent;
 import org.polymap.rhei.field.IFormFieldListener;
@@ -95,12 +92,11 @@ public class LoginDashlet
         LoginForm loginForm = new LoginForm() {
             protected boolean login( String name, String passwd ) {
                 if (super.login( name, passwd )) {
-                    panelSite.setStatus( new Status( IStatus.OK, ControllerPlugin.ID, "Successfully logged in" ) );
                     context.openPanel( panelSite.getPath(), DashboardPanel.ID );
                     return true;
                 }
                 else {
-                    panelSite.setStatus( new Status( IStatus.OK, ControllerPlugin.ID, "Successfully logged in" ) );
+                    panelSite.toolkit().createSnackbar( Appearance.FadeIn, "Username or password is not correct." );
                     return false;
                 }
             }
