@@ -14,6 +14,7 @@
  */
 package io.mapzone.controller.ui.util;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,10 +67,14 @@ public class SvgImageRenderer
             String svgName = urlMatcher.group( 1 );
             String configName = urlMatcher.group( 2 ).length() > 0 ? urlMatcher.group( 2 ) : SvgImageRegistryHelper.NORMAL24; 
                     
-            Image image = ControllerPlugin.images().svgImage( svgName, configName );
+            Optional<Image> image = ControllerPlugin.images().svgImageOpt( svgName, configName );
+            if (!image.isPresent()) {
+                log.warn( "File not found: " + svgName);
+                return false;
+            }
             
             ImageLoader loader = new ImageLoader();
-            loader.data = new ImageData[] { image.getImageData() };
+            loader.data = new ImageData[] { image.get().getImageData() };
             ByteArrayOutputStream encoded = new ByteArrayOutputStream();
             loader.save( encoded, SWT.IMAGE_PNG );
             
