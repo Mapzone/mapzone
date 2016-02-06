@@ -99,8 +99,9 @@ public class StartPanel
         // articles
         AtomicInteger prio = new AtomicInteger( 10 );
         StreamIterable.of( cp.listContent( "frontpage" ) ).stream()
+                .filter( co -> co.contentType().startsWith( "text" ) )
                 .filter( co -> !co.name().equals( "1welcome" ) )
-                .sorted( (co1, co2) -> co1.name().compareToIgnoreCase( co2.name() ) )
+                .sorted( (co1,co2) -> co1.name().compareToIgnoreCase( co2.name() ) )
                 .forEach( co -> {
                     ArticleDashlet dashlet = new ArticleDashlet( co );
                     dashlet.addConstraint( new PriorityConstraint( prio.getAndDecrement() ) );
