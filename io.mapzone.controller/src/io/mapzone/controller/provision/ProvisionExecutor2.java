@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2015, the @authors. All rights reserved.
+ * Copyright (C) 2015-2016, the @authors. All rights reserved.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * The shiny new provisioning algotithm :)
+ * The shiny new provisioning algorithm :)
  * 
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */

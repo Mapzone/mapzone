@@ -1,0 +1,134 @@
+/* 
+ * mapzone.io
+ * Copyright (C) 2016, the @authors. All rights reserved.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3.0 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
+package io.mapzone.controller.um.launcher;
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLEncoder;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.google.common.base.Joiner;
+import org.eclipse.core.runtime.IProgressMonitor;
+
+import org.polymap.model2.Property;
+
+import io.mapzone.controller.vm.repository.HostRecord;
+import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
+import io.mapzone.controller.vm.runtime.Script;
+
+/**
+ * Install an instance from a tgz/zip archive from a given URI.
+ *
+ * @author Falko Bräutigam
+ */
+public abstract class ArchiveLauncher
+        extends ProjectLauncher {
+
+    private static Log log = LogFactory.getLog( ArchiveLauncher.class );
+
+    public static final String          INSTANCES_BASE_DIR = System.getProperty( "io.mapzone.controller.instancesBaseDir", "/home/mapzone/instances/" );
+
+    /** file:///tmp/p4.[tgz|zip] */
+    public Property<String>             installArchiveUri;
+
+    
+    public String logPath( ProjectInstanceRecord instance ) {
+        return instance.homePath.get() + "/log";
+    }
+    
+    public String dataPath( ProjectInstanceRecord instance ) {
+        return instance.homePath.get() + "/data";
+    }
+    
+    public String binPath( ProjectInstanceRecord instance ) {
+        return instance.homePath.get() + "/bin";
+    }
+    
+    
+    @Override
+    public void install( ProjectInstanceRecord instance, IProgressMonitor monitor ) throws Exception {
+        monitor.beginTask( "Install instance", 11 );
+
+        // basename
+        String basename = Joiner.on( "/" ).skipNulls().join( 
+                URLEncoder.encode( project().organizationOrUser().name.get(), "UTF8" ), 
+                URLEncoder.encode( project().name.get(), "UTF8" )
+                /*, instance.version.get()*/ );
+
+        
+        instance.homePath.set( INSTANCES_BASE_DIR + basename );
+
+        // XXX check free space on disk
+
+        // make directories
+        monitor.subTask( "Making directories" );
+        HostRecord host = instance.host.get();
+        host.runtime.get().execute( new Script()
+                .add( "mkdir -p " + instance.homePath.get() )
+                .add( "mkdir " + logPath( instance ) )
+                .add( "mkdir " + binPath( instance ) )
+                .add( "mkdir " + dataPath( instance ) )
+                .blockOnComplete.put( true )
+                .exceptionOnFail.put( true ) );
+        monitor.worked( 1 );
+
+        // copy archive there
+        monitor.subTask( "Copying runtime" );
+        URL archiveSource = new URL( installArchiveUri.get() );
+        File archiveTarget = new File( instance.homePath.get(), "install.archive" );
+        try (
+            InputStream in = archiveSource.openStream();
+            OutputStream out = host.runtime.get().file( archiveTarget ).outputStream();
+        ){
+            IOUtils.copy( in, out );
+        }
+        monitor.worked( 5 );
+
+        // unpack
+        host.runtime.get().execute( new Script()
+                .add( "tar -x -z -C " + binPath( instance ) + " -f " + archiveTarget )
+                .blockOnComplete.put( true )
+                .exceptionOnFail.put( true ) );
+        monitor.worked( 5 );
+
+        monitor.done();
+    }
+
+
+    @Override
+    public void uninstall( ProjectInstanceRecord instance, IProgressMonitor monitor ) throws Exception {
+        throw new RuntimeException( "not yet..." );
+//        ComputeService cs = JCloudsRuntime.instance.get().computeService();
+//
+//        JCloudsHostRuntime.log.info( "home: " + instance.homePath.get() );
+//        //            assert instance.homePath.get().startsWith( INSTANCES_BASE_DIR );
+//        ExecResponse response = cs.runScriptOnNode( 
+//                this.host.rhost.hostId.get(),
+//                Statements.exec( "tar -c -z --remove-files -f /tmp/mapzone-last-removed.tgz " + instance.homePath.get() ),
+//                Builder.blockOnComplete( true ).wrapInInitScript( false ).runAsRoot( false ) );
+//
+//        // XXX check response
+//        log.info( "RESPONSE: " + response.getError() );
+//        log.info( "RESPONSE: " + response.getExitStatus() );
+//        log.info( "RESPONSE: " + response.getOutput() );
+//        monitor.worked( 1 );
+    }
+    
+}

@@ -6,16 +6,18 @@ import io.mapzone.controller.http.ProxyServlet;
 import io.mapzone.controller.ops.StartProcessOperation;
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
-import io.mapzone.controller.vm.repository.RegisteredInstance;
-import io.mapzone.controller.vm.repository.RegisteredProcess;
+import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
+import io.mapzone.controller.vm.repository.ProcessRecord;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ * Finds the {@link ProjectInstanceRecord} and its {@link ProcessRecord} for the org
+ * and project name in the request. Puts both into the provision {@link Context}. If
+ * no process is found then {@link StartProcessOperation}.
  * 
- *
- * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
+ * @author Falko Bräutigam
  */
 public class ProcessStarted
         extends HttpProxyProvision {
@@ -24,9 +26,9 @@ public class ProcessStarted
 
     public static final String              NO_HOST = "_no_host_";
 
-    private Context<RegisteredInstance>     instance;
+    private Context<ProjectInstanceRecord>  instance;
 
-    private Context<RegisteredProcess>      process;
+    private Context<ProcessRecord>          process;
 
     private Status                          cause;
 
@@ -49,18 +51,20 @@ public class ProcessStarted
         String orgName = path[0];
 
         // find instance -> process
-        vmRepo.get().findInstance( orgName, projectName, null ).ifPresent( i -> instance.set( i ) );
-        assert instance.isPresent() : "No project instance found for: " + orgName + "/" + projectName;
+        // XXX store in HTTP session context?
+        instance.set( vmRepo().findInstance( orgName, projectName, null )
+                .orElseThrow( () -> new IllegalStateException( "No project instance found for: " + orgName + "/" + projectName ) ) );
 
         process.set( instance.get().process.get() );
         
         if (!process.isPresent()) {
             // lock others while we change things
-            vmRepo.get().lock();
+            vmRepo().lock();
 
             // start instance
-            StartProcessOperation op = new StartProcessOperation()
-                    .instance.put( instance.get() );
+            StartProcessOperation op = new StartProcessOperation();
+            op.instance.set( instance.get() );
+                    
             op.execute( null, null );
             process.set( op.process.get() );
         }

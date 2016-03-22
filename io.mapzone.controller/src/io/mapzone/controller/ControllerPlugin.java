@@ -29,9 +29,13 @@ public class ControllerPlugin extends AbstractUIPlugin {
 	public static final String ID = "io.mapzone.controller"; //$NON-NLS-1$
 
 	/** Default minimum width of sections. */
-	public static final MinWidthConstraint MIN_WIDTH = new MinWidthConstraint( 500, 0 );
-	
-	private static ControllerPlugin        instance;
+    public static final MinWidthConstraint  MIN_WIDTH = new MinWidthConstraint( 500, 0 );
+    
+    public static final String              HEADER_ICON_CONFIG = SvgImageRegistryHelper.WHITE24;
+    
+    public static final String              TOOLBAR_ICON_CONFIG = SvgImageRegistryHelper.NORMAL24;
+
+    private static ControllerPlugin         instance;
 	
 
 	public static ControllerPlugin instance() {

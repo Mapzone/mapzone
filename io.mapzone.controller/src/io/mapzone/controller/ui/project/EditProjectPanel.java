@@ -54,7 +54,6 @@ import org.polymap.rhei.form.batik.BatikFormContainer;
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-@SuppressWarnings("deprecation")
 public class EditProjectPanel
         extends DefaultPanel {
 

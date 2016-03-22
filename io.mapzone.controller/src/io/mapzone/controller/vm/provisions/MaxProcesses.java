@@ -5,8 +5,8 @@ import io.mapzone.controller.http.ForwardRequest;
 import io.mapzone.controller.ops.StopProcessOperation;
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
-import io.mapzone.controller.vm.repository.RegisteredHost;
-import io.mapzone.controller.vm.repository.RegisteredProcess;
+import io.mapzone.controller.vm.repository.HostRecord;
+import io.mapzone.controller.vm.repository.ProcessRecord;
 
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
@@ -26,11 +26,11 @@ public class MaxProcesses
 
     private static Log log = LogFactory.getLog( MaxProcesses.class );
 
-    public static final int                 MAX_PROCESSES = 1;
+    public static final int             MAX_PROCESSES = 1;
     
-    private Context<RegisteredProcess>      process;
+    private Context<ProcessRecord>      process;
 
-    private Context<MaxProcesses>           checked;
+    private Context<MaxProcesses>       checked;
 
     
     @Override
@@ -46,14 +46,14 @@ public class MaxProcesses
         checked.set( this );
         assert process.isPresent() : "No process in context. Make sure that MaxProcesses executes after ProcessStarted.";
         
-        RegisteredHost host = process.get().instance.get().host.get();
+        HostRecord host = process.get().instance.get().host.get();
         if (host.statistics.get() == null || host.statistics.get().olderThan( 10, TimeUnit.SECONDS )) {
 
-            vmRepo.get().lock();
+            vmRepo().lock();
             host.updateStatistics();
             
             // lowest start time (oldest) first
-            LinkedList<RegisteredProcess> sortedProcesses = host.instances.stream()
+            LinkedList<ProcessRecord> sortedProcesses = host.instances.stream()
                     .filter( i -> i.process.get() != null )
                     .map( i -> i.process.get() )
                     .sorted( (p1, p2) -> p1.started.get().compareTo( p2.started.get() ))
@@ -62,12 +62,12 @@ public class MaxProcesses
             
             // stop processes, oldest first
             while (sortedProcesses.size() > MAX_PROCESSES) {
-                RegisteredProcess p = sortedProcesses.remove( 0 );
+                ProcessRecord p = sortedProcesses.remove( 0 );
                 
                 log.info( "    stopping process: " + p.instance.get().project.get() + " -- started at " + p.started.get() );
-                StopProcessOperation op = new StopProcessOperation()
-                        .process.put( p )
-                        .vmRepo.put( vmRepo.get() );
+                StopProcessOperation op = new StopProcessOperation();
+                op.process.set( p );
+                op.vmRepo.set( vmRepo() );
                 op.execute( null, null );
             }
         }

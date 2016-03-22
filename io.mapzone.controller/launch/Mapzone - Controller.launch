@@ -27,7 +27,7 @@
 <stringAttribute key="org.eclipse.rap.launch.browserMode" value="EXTERNAL"/>
 <stringAttribute key="org.eclipse.rap.launch.contextpath" value=""/>
 <stringAttribute key="org.eclipse.rap.launch.dataLocation" value="${env_var:HOME}/servers/workspace-controller"/>
-<booleanAttribute key="org.eclipse.rap.launch.developmentMode" value="true"/>
+<booleanAttribute key="org.eclipse.rap.launch.developmentMode" value="false"/>
 <stringAttribute key="org.eclipse.rap.launch.entryPoint" value="default"/>
 <stringAttribute key="org.eclipse.rap.launch.libraryVariant" value="STANDARD"/>
 <stringAttribute key="org.eclipse.rap.launch.logLevel" value="OFF"/>

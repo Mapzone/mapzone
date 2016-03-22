@@ -25,14 +25,14 @@ import org.polymap.model2.runtime.ValueInitializer;
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-public class HostRuntimeStatistics
+public class HostStatistics
         extends Composite {
 
     /** Injected, static {@link Composite} type information. */
-    public static HostRuntimeStatistics TYPE;
+    public static HostStatistics TYPE;
     
     /** Default initialization */
-    public static ValueInitializer<HostRuntimeStatistics> defaults = (HostRuntimeStatistics proto) -> {
+    public static ValueInitializer<HostStatistics> defaults = (HostStatistics proto) -> {
         proto.lastChecked.set( new Date() );
         return proto;
     };

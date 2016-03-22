@@ -2,26 +2,27 @@ package io.mapzone.controller.vm.runtime;
 
 import java.io.File;
 
-import io.mapzone.controller.vm.repository.RegisteredHost;
-import io.mapzone.controller.vm.repository.RegisteredHost.HostType;
-import io.mapzone.controller.vm.repository.RegisteredInstance;
-import io.mapzone.controller.vm.repository.RegisteredProcess;
+import com.google.common.util.concurrent.ListenableFuture;
 
+import io.mapzone.controller.vm.repository.HostRecord;
+import io.mapzone.controller.vm.repository.HostRecord.HostType;
+
+import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.Configurable;
 
 /**
  * The runtime interface of a physical or virtual OS instance that is able to host
- * multiple VMs/processes {@link ProcessRuntime}.
+ * multiple {@link ProcessRuntime VMs/processes}.
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public abstract class HostRuntime
         extends Configurable {
     
-    public static HostRuntime forHost( RegisteredHost rhost ) {
-        HostType hostType = rhost.hostType.get();
+    public static HostRuntime forHost( HostRecord host ) {
+        HostType hostType = host.hostType.get();
         if (hostType.equals( HostType.JCLOUDS )) {
-            return new JCloudsHostRuntime( rhost );
+            return new JCloudsHostRuntime( host );
         }
         else {
             throw new RuntimeException( "Unhandled host type: " + hostType );
@@ -31,30 +32,12 @@ public abstract class HostRuntime
     
     // instance *******************************************
 
-    protected RegisteredHost            rhost;
+    protected HostRecord                host;
     
     
-    protected HostRuntime( RegisteredHost rhost ) {
-        this.rhost = rhost;
+    protected HostRuntime( HostRecord host ) {
+        this.host = host;
     }
-
-
-    /**
-     * Creates a runtime for process that is to be started or is running already.
-     *
-     * @param result The {@link RegisteredProcess} to create or connect to.
-     * @return Newly created process runtime instance.
-     */
-    public abstract ProcessRuntime process( RegisteredProcess target );
-
-    
-    /**
-     * Creates a runtime for an installed instance.
-     *
-     * @param result The {@link RegisteredInstance} to create or connect to.
-     * @return Newly created process runtime instance.
-     */
-    public abstract InstanceRuntime instance( RegisteredInstance target );
 
     
     /**
@@ -69,5 +52,19 @@ public abstract class HostRuntime
      * @param f The file(name)
      */
     public abstract HostFile file( File f );
+    
+    
+    /**
+     * Executes the given script on this host. Options are given via {@link Config}
+     * properties on the script.
+     */
+    public abstract ScriptExecutionResult execute( Script script );
+    
+
+    /**
+     * Executes the given script in the background typically with nohup. Options are
+     * given via {@link Config} properties on the script.
+     */
+    public abstract ListenableFuture<ScriptExecutionResult> nohupExecute( Script script );
     
 }

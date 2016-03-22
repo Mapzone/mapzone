@@ -1,12 +1,26 @@
+/* 
+ * mapzone.io
+ * Copyright (C) 2016, the @authors. All rights reserved.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3.0 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
 package io.mapzone.controller.ops;
 
 import io.mapzone.controller.Messages;
 import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
-import io.mapzone.controller.vm.repository.RegisteredHost;
-import io.mapzone.controller.vm.repository.RegisteredInstance;
-import io.mapzone.controller.vm.repository.RegisteredProcess;
+import io.mapzone.controller.vm.repository.HostRecord;
+import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
+import io.mapzone.controller.vm.repository.ProcessRecord;
 import io.mapzone.controller.vm.repository.VmRepository;
 
 import org.apache.commons.logging.Log;
@@ -59,7 +73,7 @@ public class DeleteProjectOperation
             vmRepo.lock();
 
             // find instance on host
-            RegisteredInstance instance = vmRepo.findInstance( 
+            ProjectInstanceRecord instance = vmRepo.findInstance( 
                     project.get().organizationOrUser().name.get(),
                     project.get().name.get(),
                     null )
@@ -67,14 +81,20 @@ public class DeleteProjectOperation
             monitor.worked( 1 );
 
             // stop process
-            RegisteredProcess process = instance.process.get();
+            ProcessRecord process = instance.process.get();
             if (process != null) {
-                new StopProcessOperation().process.put( process ).vmRepo.put( vmRepo ).execute( null, null );
+                StopProcessOperation op = new StopProcessOperation();
+                op.process.set( process );
+                op.vmRepo.set( vmRepo );
+                op.execute( null, null );
             }
             monitor.worked( 1 );
             
+            // uninstall filesystem on host
+            project.get().launcher.get().uninstall( instance, new SubProgressMonitor( monitor, 7 ) );
+            
             // remove instance and association
-            RegisteredHost host = instance.host.get();
+            HostRecord host = instance.host.get();
             host.instances.remove( instance );
             assert instance.host.get() == null;
             vmRepo.removeEntity( instance );
@@ -84,9 +104,6 @@ public class DeleteProjectOperation
             project.get().user.set( null );
             repo.get().removeEntity( project.get() );
 
-            // uninstall filesystem on host
-            host.runtime.get().instance( instance ).uninstall( new SubProgressMonitor( monitor, 7 ) );
-            
             // commit
             vmRepo.commit();
             repo.get().commit();

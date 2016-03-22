@@ -19,7 +19,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Defines and provides access to an {@link Provision} property.
+ * Declares and provides access to an {@link Provision} property.
  * <p/>
  * The value of a context property is shared by all instances within the same scope!
  * By default the <b>scope</b> of the property is the <b>package</b> of the
@@ -41,6 +41,11 @@ public interface Context<T> {
     
     public void set( T value );
     
+    /**
+     * If a value {@link #isPresent()} then return this value, otherwise calls the
+     * given supplier, set the value and returns thies newly set value.
+     */
+    public T get( Supplier<T> supplier ); 
     
     /**
      * Atomically sets the value to the given updated value if the current value
@@ -51,7 +56,7 @@ public interface Context<T> {
      * @return true if successful. False return indicates that the actual value was
      *         not equal to the expected value.
      */
-    public boolean compareAndSet( T expect , T update );
+    public boolean compareAndSet( T expect, T update );
     
     public Class<T> getDeclaredType();
     

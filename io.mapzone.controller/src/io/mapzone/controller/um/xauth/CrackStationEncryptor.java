@@ -1,5 +1,5 @@
 /* 
- * polymap.org
+ * mapzone.io
  * Copyright (C) 2013, Falko Bräutigam. All rights reserved.
  *
  * This is free software; you can redistribute it and/or modify it

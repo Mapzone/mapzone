@@ -3,9 +3,8 @@ package io.mapzone.controller.http;
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
 import io.mapzone.controller.provision.Provision.Status.Severity;
-import io.mapzone.controller.um.repository.Project;
-import io.mapzone.controller.vm.repository.RegisteredInstance;
-import io.mapzone.controller.vm.repository.RegisteredProcess;
+import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
+import io.mapzone.controller.vm.repository.ProcessRecord;
 
 import java.io.IOException;
 import java.net.URI;
@@ -33,11 +32,10 @@ public class ForwardRequest
 
     public static CloseableHttpClient       httpclient = HttpClients.createDefault();
 
-    private Context<RegisteredProcess>      process;
-    
-    private Context<Project>                project;
+    private Context<ProcessRecord>          process;
     
     private Context<HttpRequestForwarder>   forwarder;
+    
     
     @Override
     public boolean init( Provision failed, Status cause ) {
@@ -72,9 +70,11 @@ public class ForwardRequest
      * @throws IOException
      * @throws Exception
      */
-    protected void forwardRequest( @SuppressWarnings("hiding") RegisteredProcess process ) throws ClientProtocolException, IOException, Exception {
-        RegisteredInstance instance = process.instance.get();
-        URI targetUri = new URIBuilder().setScheme( "http")
+    protected void forwardRequest( @SuppressWarnings("hiding") ProcessRecord process )
+            throws ClientProtocolException, IOException, Exception {
+        
+        ProjectInstanceRecord instance = process.instance.get();
+        URI targetUri = new URIBuilder().setScheme( "http" )
                 .setHost( instance.host.get().inetAddress.get() )
                 .setPort( process.port.get() )
                 .build();

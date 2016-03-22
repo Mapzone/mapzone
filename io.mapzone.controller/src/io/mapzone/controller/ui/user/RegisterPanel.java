@@ -36,7 +36,6 @@ import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.Scope;
-import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.IPanelToolkit;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
@@ -95,7 +94,7 @@ public class RegisterPanel
     public boolean wantsToBeShown() {
         if (parentPanel().get() instanceof StartPanel) {
             getSite().setTitle( "" ).setTooltip( "Sign up" );
-            getSite().setIcon( ControllerPlugin.images().svgImage( "account-plus.svg", SvgImageRegistryHelper.NORMAL24 ) ); 
+            getSite().setIcon( ControllerPlugin.images().svgImage( "account-plus.svg", ControllerPlugin.HEADER_ICON_CONFIG ) ); 
             return true;
         }
         return false;

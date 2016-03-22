@@ -42,10 +42,10 @@ public class ProxyServlet
 
     private static Log log = LogFactory.getLog( ProxyServlet.class );
     
-    /** The provisions to be handled before forwarding the request to the instance. */
+    /** The provisions to be handled before {@link ForwardRequest} to the instance. */
     private static final Class[]    forwardRequestProvisions = {ProcessStarted.class, ProcessRunning.class, MaxProcesses.class };
 
-    /** The provisions to be handled before forwarding the response back to the sender. */
+    /** The provisions to be handled before {@link ForwardResponse} back to the sender. */
     private static final Class[]    forwardResponseProvisions = {};
 
     private static final String     SERVLET_ALIAS = "/projects";
@@ -96,23 +96,21 @@ public class ProxyServlet
     protected void service( HttpServletRequest req, HttpServletResponse resp ) throws ServletException, IOException {
         CloseableHttpResponse proxyResponse = null;
         try {
-                // request provisioning
-                // XXX job/thread to make it cancelable or timeout?
-                ProvisionExecutor executor = new LockingProvisionExecutor( forwardRequestProvisions );
-                ForwardRequest forwardRequest = executor.newProvision( ForwardRequest.class );
-                forwardRequest.request.set( req );
-                forwardRequest.response.set( resp );
-                forwardRequest.vmRepo.set( VmRepository.instance() );
-//                forwardRequest.projectRepo.set( ProjectRepository.newInstance() );
-                Status status = executor.execute( forwardRequest );
-                assert status.severity( OK );
+            // request provisioning
+            // XXX job/thread to make it cancelable or timeout?
+            ProvisionExecutor executor = new LockingProvisionExecutor( forwardRequestProvisions );
+            ForwardRequest forwardRequest = executor.newProvision( ForwardRequest.class );
+            forwardRequest.request.set( req );
+            forwardRequest.response.set( resp );
+            Status status = executor.execute( forwardRequest );
+            assert status.severity( OK );
 
-                // response provisioning
-                ProvisionExecutor executor2 = new LockingProvisionExecutor( forwardResponseProvisions )
-                        .setContextValues( executor.getContextValues() );
-                ForwardResponse forwardResponse = executor2.newProvision( ForwardResponse.class );
-                Status status2 = executor2.execute( forwardResponse );
-                assert status2.severity( OK );
+            // response provisioning
+            ProvisionExecutor executor2 = new LockingProvisionExecutor( forwardResponseProvisions )
+                    .setContextValues( executor.getContextValues() );
+            ForwardResponse forwardResponse = executor2.newProvision( ForwardResponse.class );
+            Status status2 = executor2.execute( forwardResponse );
+            assert status2.severity( OK );
         }
         catch (Exception e) {
             // XXX log, reset instance(?), send error page?
@@ -142,7 +140,7 @@ public class ProxyServlet
         @Override
         protected Status executeProvision( Provision provision ) throws Exception {
             Timer timer = new Timer();
-            VmRepository vmRepo = ((HttpProxyProvision)provision).vmRepo.get();
+            VmRepository vmRepo = ((HttpProxyProvision)provision).vmRepo();
 
             // FIXME read lock should span execute() *and* init()
             assert vmRepo.lock.getReadHoldCount() == 0;

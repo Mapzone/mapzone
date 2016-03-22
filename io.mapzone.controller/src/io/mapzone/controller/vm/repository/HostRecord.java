@@ -14,7 +14,6 @@ import org.polymap.model2.Defaults;
 import org.polymap.model2.Entity;
 import org.polymap.model2.ManyAssociation;
 import org.polymap.model2.Property;
-import org.polymap.model2.runtime.UnitOfWork;
 import org.polymap.model2.runtime.ValueInitializer;
 
 /**
@@ -23,12 +22,12 @@ import org.polymap.model2.runtime.ValueInitializer;
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 //@Concerns(PessimisticLocking.class)
-public class RegisteredHost
+public class HostRecord
         extends Entity {
 
-    public static RegisteredHost        TYPE;
+    public static HostRecord        TYPE;
     
-    public static ValueInitializer<RegisteredHost> defaults = (RegisteredHost proto) -> {
+    public static ValueInitializer<HostRecord> defaults = (HostRecord proto) -> {
         proto.hostType.set( HostType.JCLOUDS );
         proto.hostId.set( "local" );
         proto.inetAddress.set( "localhost" );
@@ -50,7 +49,7 @@ public class RegisteredHost
     public Property<String>                     hostId;
     
     /**
-     * The host's IP or DnS name. This is used to build URIs for the instances.
+     * The host's IP or DNS name. This is used to build URIs for the instances.
      */
     public Property<String>                     inetAddress;
     
@@ -62,35 +61,35 @@ public class RegisteredHost
     
     @Defaults
     @Concerns( BidiManyAssociationConcern.class )
-    public ManyAssociation<RegisteredInstance>  instances;
+    public ManyAssociation<ProjectInstanceRecord>  instances;
     
-    public Property<HostRuntimeStatistics>      statistics;
+    public Property<HostStatistics>             statistics;
     
     public Lazy<HostRuntime>                    runtime = new LockedLazyInit( () -> HostRuntime.forHost( this ) ); 
     
     
-    /**
-     * Starts a new process and associates it with this host.
-     *
-     * @param initializer
-     * @return Newly created entity.
-     * @throws Exception 
-     */
-    public RegisteredProcess startInstance( RegisteredInstance instance, ValueInitializer<RegisteredProcess> initializer ) throws Exception {
-        // XXX activate when process cleaning works?
-       // assert instance.process.get() == null;
-        
-        // create new entity
-        UnitOfWork uow = context.getUnitOfWork();
-        RegisteredProcess result = uow.createEntity( RegisteredProcess.class, null, initializer, (RegisteredProcess proto) -> {
-            proto.instance.set( instance );
-            return proto;
-        });
-        
-        // start process (sets port)
-        runtime.get().process( result ).start();
-        return result;
-    }
+//    /**
+//     * Starts a new process and associates it with this host.
+//     *
+//     * @param initializer
+//     * @return Newly created entity.
+//     * @throws Exception 
+//     */
+//    public ProcessRecord startInstance( ProjectInstanceRecord instance, ValueInitializer<ProcessRecord> initializer ) throws Exception {
+//        // XXX activate when process cleaning works?
+//       // assert instance.process.get() == null;
+//        
+//        // create new entity
+//        UnitOfWork uow = context.getUnitOfWork();
+//        ProcessRecord result = uow.createEntity( ProcessRecord.class, null, initializer, (ProcessRecord proto) -> {
+//            proto.instance.set( instance );
+//            return proto;
+//        });
+//        
+//        // start process (sets port)
+//        runtime.get().process( result ).start();
+//        return result;
+//    }
 
 
     public void updateStatistics() {

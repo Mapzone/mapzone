@@ -1,8 +1,22 @@
+/* 
+ * mapzone.io
+ * Copyright (C) 2016, the @authors. All rights reserved.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3.0 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
 package io.mapzone.controller.vm.repository;
 
 import static org.polymap.model2.query.Expressions.and;
 import static org.polymap.model2.query.Expressions.eq;
-import io.mapzone.controller.vm.repository.RegisteredHost.HostType;
+import io.mapzone.controller.vm.repository.HostRecord.HostType;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,22 +26,26 @@ import java.util.stream.Collectors;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.polymap.core.runtime.cache.Cache;
+import org.polymap.core.runtime.cache.CacheConfig;
+
 import org.polymap.model2.Entity;
 import org.polymap.model2.query.ResultSet;
-import org.polymap.model2.runtime.CommitLockStrategy;
 import org.polymap.model2.runtime.EntityRepository;
 import org.polymap.model2.runtime.ModelRuntimeException;
 import org.polymap.model2.runtime.UnitOfWork;
 import org.polymap.model2.runtime.ValueInitializer;
-import org.polymap.model2.store.OptimisticLocking;
+import org.polymap.model2.runtime.locking.CommitLockStrategy;
+import org.polymap.model2.runtime.locking.OptimisticLocking;
 import org.polymap.model2.store.recordstore.RecordStoreAdapter;
 import org.polymap.recordstore.lucene.LuceneRecordStore;
 
 /**
- * The registry of all currently active/running VMs.
+ * The registry of all currently active/running Hosts, VMs, processes.
  * <p/>
  * There is one global {@link #instance()}. In order to synchronize concurrent
  * access it exposes the {@link #lock()} method. 
@@ -42,14 +60,15 @@ public class VmRepository {
     
     private static EntityRepository     repo;
     
+    
     public static void init( File basedir ) throws IOException {
         File dir  = new File( basedir, "vm" );
         LuceneRecordStore store = new LuceneRecordStore( dir, false );
         repo = EntityRepository.newConfiguration()
                 .entities.set( new Class[] {
-                            RegisteredHost.class,
-                            RegisteredInstance.class,
-                            RegisteredProcess.class })
+                            HostRecord.class,
+                            ProjectInstanceRecord.class,
+                            ProcessRecord.class })
                 .store.set( 
                             // make sure to never loose updates or something
                             // we may skip this later for performance
@@ -58,7 +77,8 @@ public class VmRepository {
                 .commitLockStrategy.set( () ->
                             // lock synchronized writes -> concurrent commit is a program error
                             new CommitLockStrategy.FailOnConcurrentCommit() )
-                .create();            
+                .create();
+        
         instance = new VmRepository( repo.newUnitOfWork() );
         checkInit();
     }
@@ -68,13 +88,13 @@ public class VmRepository {
         try (
             UnitOfWork _uow = repo.newUnitOfWork()
         ){
-            if (_uow.query( RegisteredHost.class ).execute().size() == 0) {
-                _uow.createEntity( RegisteredHost.class, "local", (RegisteredHost proto) -> {
+            if (_uow.query( HostRecord.class ).execute().size() == 0) {
+                _uow.createEntity( HostRecord.class, "local", (HostRecord proto) -> {
                     proto.hostType.set( HostType.JCLOUDS );
                     proto.hostId.set( "local" );
                     proto.inetAddress.set( "localhost" );
-                    proto.statistics.createValue( HostRuntimeStatistics.defaults );
-                    return RegisteredHost.defaults.initialize( proto );
+                    proto.statistics.createValue( HostStatistics.defaults );
+                    return HostRecord.defaults.initialize( proto );
                 });
                 _uow.commit();
             }
@@ -107,6 +127,9 @@ public class VmRepository {
     
     /** Global write lock count. Helps to find intercepted read->write upgrade. */
     private volatile int                globalLockCount;
+    
+    private Cache<Pair<String,String>,Optional<ProjectInstanceRecord>> 
+                                        instanceCache = CacheConfig.defaults().initSize( 256 ).createCache();
 
     
     public VmRepository( UnitOfWork uow ) {
@@ -148,21 +171,22 @@ public class VmRepository {
     }
     
     
-    public Optional<RegisteredInstance> findInstance( String organisation, String project, String version ) {
-        ResultSet<RegisteredInstance> rs = uow.query( RegisteredInstance.class )
-                .where( and( 
-                        eq( RegisteredInstance.TYPE.organisation, organisation ),
-                        eq( RegisteredInstance.TYPE.project, project ) ) )
-                .execute();
-        assert rs.size() < 2;
-        return rs.stream().findAny();
+    public Optional<ProjectInstanceRecord> findInstance( String org, String project, String version ) {
+        return instanceCache.get( Pair.of( org, project ), key -> {
+            ResultSet<ProjectInstanceRecord> rs = uow.query( ProjectInstanceRecord.class )
+                    .where( and( 
+                            eq( ProjectInstanceRecord.TYPE.organisation, org ),
+                            eq( ProjectInstanceRecord.TYPE.project, project ) ) )
+                    .execute();
+            assert rs.size() < 2;
+            return rs.stream().findAny();
+        });
     }
 
     
-    public Optional<RegisteredProcess> findProcess( String organisation, String project, String version ) {
+    public Optional<ProcessRecord> findProcess( String organisation, String project, String version ) {
         return findInstance( organisation, project, version ).map( _instance -> _instance.process.get() );
     }
-
     
     
     public void removeEntity( Entity entity ) {
@@ -170,8 +194,8 @@ public class VmRepository {
     }
 
 
-    public List<RegisteredHost> allHosts() {
-        return uow.query( RegisteredHost.class ).execute().stream().collect( Collectors.toList() );
+    public List<HostRecord> allHosts() {
+        return uow.query( HostRecord.class ).execute().stream().collect( Collectors.toList() );
     }
 
 

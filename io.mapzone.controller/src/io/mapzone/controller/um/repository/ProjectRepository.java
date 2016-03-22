@@ -2,6 +2,9 @@ package io.mapzone.controller.um.repository;
 
 import static org.polymap.model2.query.Expressions.eq;
 import static org.polymap.model2.query.Expressions.or;
+
+import io.mapzone.controller.um.launcher.EclipseProjectLauncher;
+import io.mapzone.controller.um.launcher.JvmProjectLauncher;
 import io.mapzone.controller.um.repository.LifecycleEvent.Type;
 
 import java.util.Collections;
@@ -24,6 +27,7 @@ import org.polymap.model2.query.ResultSet;
 import org.polymap.model2.runtime.EntityRepository;
 import org.polymap.model2.runtime.UnitOfWork;
 import org.polymap.model2.runtime.ValueInitializer;
+import org.polymap.model2.runtime.locking.OptimisticLocking;
 import org.polymap.model2.store.recordstore.RecordStoreAdapter;
 import org.polymap.recordstore.lucene.LuceneRecordStore;
 
@@ -33,7 +37,8 @@ import org.polymap.recordstore.lucene.LuceneRecordStore;
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class ProjectRepository
-        extends SessionSingleton {
+        extends SessionSingleton
+        implements AutoCloseable {
 
     private static Log log = LogFactory.getLog( ProjectRepository.class );
     
@@ -44,12 +49,14 @@ public class ProjectRepository
                 .entities.set( new Class[] {
                         User.class,
                         LoginCookie.class,
-                        Project.class,
+                        Project.class, 
+                        JvmProjectLauncher.class,
+                        EclipseProjectLauncher.class,
                         Organization.class })
                 .store.set( 
                         // make sure to never loose updates or something
-                        //new OptimisticLocking(
-                        new RecordStoreAdapter( store ) )
+                        new OptimisticLocking(
+                        new RecordStoreAdapter( store ) ) )
                 .create();
             
         checkInit();
@@ -65,14 +72,14 @@ public class ProjectRepository
                 Project project = _uow.createEntity( Project.class, null, (Project proto) -> {
                     proto.name.set( "first" );
                     proto.description.set( "The first registered project at mapzone.io" );
-                    proto.maxRamMb.set( 256 );
+                    proto.launcher.createValue( EclipseProjectLauncher.arenaDefaults );
                     return proto;
                 });
                 // Organization
                 Organization organization = _uow.createEntity( Organization.class, null, (Organization proto) -> {
                     proto.name.set( "First" );
                     proto.description.set( "The first organization hosted at mapzone.io :)" );
-                    proto.website.set( "www.polymap.org" );
+                    proto.website.set( "www.mapzone.io" );
                     proto.projects.add( project );
                     return proto;
                 });
@@ -194,6 +201,7 @@ public class ProjectRepository
 
     
     public ProjectRepository newNested() {
+        @SuppressWarnings("resource")
         ProjectRepository parent = this;
         return new ProjectRepository( uow.newUnitOfWork() ) {
             @Override

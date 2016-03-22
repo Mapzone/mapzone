@@ -62,7 +62,10 @@ abstract class ContextFactory {
 
     
     /**
-     * 
+     * The default {@link Context} implementation.
+     * <p/>
+     * Impl. note: As provisioning runs in one thread there is no synchronization in
+     * order to make check/set operations atomically.
      */
     private class ContextImpl<V>
             implements Context<V> {
@@ -112,6 +115,14 @@ abstract class ContextFactory {
             return (V)getValue( type.get(), scope.get() );
         }
         
+        @Override
+        public V get( Supplier<V> supplier ) {
+            if (!isPresent()) {
+                set( supplier.get() );
+            }
+            return get();
+        }
+
         @Override
         public boolean isPresent() {
             return get() != null;

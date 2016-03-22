@@ -7,8 +7,8 @@ import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectHolder;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
-import io.mapzone.controller.vm.repository.RegisteredHost;
-import io.mapzone.controller.vm.repository.RegisteredInstance;
+import io.mapzone.controller.vm.repository.HostRecord;
+import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
 import io.mapzone.controller.vm.repository.VmRepository;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class CreateProjectOperation
     @Mandatory
     public Config<ProjectRepository>    repo;
     
-    /** Preset, not yet commited project. */
+    /** The preset, not yet committed project. */
     @Mandatory
     public Config<Project>              project;
     
@@ -67,14 +67,14 @@ public class CreateProjectOperation
             vmRepo.lock();
 
             // find host to use
-            List<RegisteredHost> hosts = vmRepo.allHosts();
+            List<HostRecord> hosts = vmRepo.allHosts();
             if (hosts.isEmpty()) {
                 throw new RuntimeException( "No host!" );
             }
             if (hosts.size() > 1) {
                 throw new RuntimeException( "FIXME find the most suited host to run this project" );
             }
-            RegisteredHost host = hosts.get( 0 );
+            HostRecord host = hosts.get( 0 );
             monitor.worked( 1 );
 
             // set user/org on project
@@ -86,7 +86,7 @@ public class CreateProjectOperation
             }
             
             // create new instance
-            RegisteredInstance instance = vmRepo.createEntity( RegisteredInstance.class, null, (RegisteredInstance proto) -> {
+            ProjectInstanceRecord instance = vmRepo.createEntity( ProjectInstanceRecord.class, null, (ProjectInstanceRecord proto) -> {
                 proto.organisation.set( organizationOrUser.get().name.get() );
                 proto.project.set( project.get().name.get() );
                 return proto;
@@ -96,7 +96,7 @@ public class CreateProjectOperation
             monitor.worked( 1 );
 
             // install the instance on the host
-            host.runtime.get().instance( instance ).install( project.get(), new SubProgressMonitor( monitor, 8 ) );
+            project.get().launcher.get().install( instance, new SubProgressMonitor( monitor, 8 ) );
             
             // commit
             vmRepo.commit();

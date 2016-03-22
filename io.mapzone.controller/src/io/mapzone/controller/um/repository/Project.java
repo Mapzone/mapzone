@@ -7,7 +7,8 @@ import org.polymap.model2.DefaultValue;
 import org.polymap.model2.Nullable;
 import org.polymap.model2.Property;
 import org.polymap.model2.runtime.ValueInitializer;
-import org.polymap.model2.runtime.config.DefaultInt;
+
+import io.mapzone.controller.um.launcher.ProjectLauncher;
 
 /**
  * 
@@ -19,7 +20,9 @@ public class Project
 
     public static Project               TYPE;
     
-    public static ValueInitializer<Project> defaults = (Project proto) -> { return proto; };
+    public static final ValueInitializer<Project> defaults = (Project proto) -> { 
+        return proto; 
+    };
     
     /**
      * @see #organizationOrUser()
@@ -42,8 +45,7 @@ public class Project
     @DefaultValue( "/p4" )  // XXX
     public Property<String>             servletAlias;
     
-    @DefaultInt( 256 )
-    public Property<Integer>            maxRamMb;
+    public Property<ProjectLauncher>    launcher;
 
     
     public Named organizationOrUser() {

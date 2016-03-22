@@ -41,7 +41,6 @@ import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PanelPath;
 import org.polymap.rhei.batik.Scope;
-import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.toolkit.ConstraintData;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
@@ -91,7 +90,7 @@ public class EditUserPanel
     public boolean wantsToBeShown() {
         if (parentPanel().get() instanceof DashboardPanel) {
             getSite().setTitle( "" ).setTooltip( "Edit account and profile settings" );
-            getSite().setIcon( ControllerPlugin.images().svgImage( "account.svg", SvgImageRegistryHelper.NORMAL24 ) );
+            getSite().setIcon( ControllerPlugin.images().svgImage( "account.svg", ControllerPlugin.HEADER_ICON_CONFIG ) );
             return true;
         }
         return false;

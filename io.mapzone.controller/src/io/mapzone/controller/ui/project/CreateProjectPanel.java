@@ -6,6 +6,7 @@ import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.ops.CreateProjectOperation;
 import io.mapzone.controller.ui.DashboardPanel;
 import io.mapzone.controller.ui.util.PropertyAdapter;
+import io.mapzone.controller.um.launcher.EclipseProjectLauncher;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectHolder;
 import io.mapzone.controller.um.repository.ProjectRepository;
@@ -39,6 +40,7 @@ import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.app.SvgImageRegistryHelper.Quadrant;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
+import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 import org.polymap.rhei.field.FormFieldEvent;
 import org.polymap.rhei.field.IFormFieldListener;
@@ -62,7 +64,7 @@ public class CreateProjectPanel
     public static final PanelIdentifier ID = PanelIdentifier.parse( "createProject" );
 
     private final Image             icon = ControllerPlugin.images().svgOverlayedImage( 
-            "map.svg", SvgImageRegistryHelper.NORMAL24,
+            "map.svg", ControllerPlugin.HEADER_ICON_CONFIG,
             "plus-circle-filled.svg", SvgImageRegistryHelper.OVR12_ACTION, 
             Quadrant.TopRight );
 
@@ -75,7 +77,9 @@ public class CreateProjectPanel
     
     private User                    user;
 
-    private BatikFormContainer      form;
+    private BatikFormContainer      projectForm;
+
+    private BatikFormContainer      launcherForm;
 
     private Button                  fab;
 
@@ -100,7 +104,8 @@ public class CreateProjectPanel
         nested = ProjectRepository.instance().newNested();
         user = nested.findUser( userPrincipal.get().getName() )
                 .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) );
-        project = nested.createEntity( Project.class, null, Project.defaults );
+        project = nested.createEntity( Project.class, null, Project.defaults );        
+        project.launcher.createValue( EclipseProjectLauncher.arenaDefaults );
     }
 
 
@@ -113,18 +118,23 @@ public class CreateProjectPanel
         
         // welcome
         IPanelSection welcomeSection = tk.createPanelSection( parent, "Set up a new project" );
-        welcomeSection.addConstraint( new MinWidthConstraint( 350, 1 ) );
-        tk.createFlowText( welcomeSection.getBody(), "Choose an **Organization** your are member of. Or you choose to create a **personal** project. Personal projects can be asigned to an Organization later." );
+        welcomeSection.addConstraint( new PriorityConstraint( 100 ), new MinWidthConstraint( 350, 1 ) );
+        tk.createFlowText( welcomeSection.getBody(), "Choose an Organization your are member of. Or you choose to create a personal project. Personal projects can be asigned to an Organization later." );
 
-        // form
-        IPanelSection formSection = tk.createPanelSection( parent, "Project data", SWT.BORDER );
-        formSection.getBody().setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( dp(10).pix() ).create() );
+        // Project
+        IPanelSection projectSection = tk.createPanelSection( parent, "Project", SWT.BORDER );
+        projectSection.addConstraint( new PriorityConstraint( 10 ) );
+        projectSection.getBody().setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( dp(10).pix() ).create() );
         
-//        tk.createFlowText( formSection.getBody(), "Choose an **Organization** your are member of. Or you choose to create a **personal** project. Personal projects can be asigned to an Organization later." )
-//                .setLayoutData( new ColumnLayoutData( 350 ) );
+        projectForm = new BatikFormContainer( new ProjectForm() );
+        projectForm.createContents( projectSection.getBody() );
 
-        form = new BatikFormContainer( new ProjectForm() );
-        form.createContents( formSection.getBody() );
+//        // ProjectLauncher
+//        IPanelSection launcherSection = tk.createPanelSection( parent, "Project launcher", SWT.BORDER );
+//        launcherSection.getBody().setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( dp(10).pix() ).create() );
+//        
+//        launcherForm = new BatikFormContainer( new ProjectForm() );
+//        launcherForm.createContents( launcherSection.getBody() );
 
         // FAB
         fab = tk.createFab();
@@ -133,7 +143,7 @@ public class CreateProjectPanel
             @Override
             public void widgetSelected( SelectionEvent ev ) {
                 try {
-                    form.submit( null );
+                    projectForm.submit( null );
                 }
                 catch (Exception e) {
                     StatusDispatcher.handleError( "Unable to create project.", e );
@@ -149,7 +159,7 @@ public class CreateProjectPanel
                 op.project.set( project );
                 op.organizationOrUser.set( organizationOrUser.get() );
                 
-                // execute sync as long as there is no progress indicator
+                // XXX execute sync as long as there is no progress indicator
                 OperationSupport.instance().execute2( op, false, false, ev2 -> asyncFast( () -> {
                     if (ev2.getResult().isOK()) {
                         PanelPath panelPath = getSite().getPath();
@@ -165,12 +175,12 @@ public class CreateProjectPanel
 
     
     protected void updateEnabled() {
-        fab.setVisible( form.isDirty() && form.isValid() );
+        fab.setVisible( projectForm.isDirty() && projectForm.isValid() );
     }
     
     
     /**
-     * 
+     * {@link Project} settings. 
      */
     class ProjectForm
             extends DefaultFormPage 
@@ -237,6 +247,24 @@ public class CreateProjectPanel
             }
         }
         
+    }
+    
+    
+    /**
+     * {@link Project} settings. 
+     */
+    class ProjectLauncherForm
+            extends DefaultFormPage { 
+        
+        @Override
+        public void createFormContents( IFormPageSite site ) {
+            super.createFormContents( site );
+            
+            Composite body = site.getPageBody();
+            body.setLayout( ColumnLayoutFactory.defaults()
+                    .spacing( 5 /*panelSite.getLayoutPreference( LAYOUT_SPACING_KEY ) / 4*/ )
+                    .margins( getSite().getLayoutPreference().getSpacing() / 2 ).create() );
+        }
     }
     
 }

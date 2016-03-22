@@ -77,7 +77,7 @@ public abstract class ProvisionExecutor {
 
     
     /**
-     * Execute this very single Provision. Allows to entercept algorithm.
+     * Execute this very single Provision. Allows to intercept algorithm.
      */
     protected Status executeProvision( Provision provision ) throws Exception {
         return provision.execute();

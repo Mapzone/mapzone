@@ -1,5 +1,5 @@
 /* 
- * polymap.org
+ * mapzone.io
  * Copyright (C) 2015, Falko Bräutigam. All rights reserved.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -31,7 +31,6 @@ import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.IPanelSite;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.Scope;
-import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
 import org.polymap.rhei.field.CheckboxFormField;
@@ -71,7 +70,7 @@ public class LoginPanel
     public boolean wantsToBeShown() {
         if (parentPanel().get() instanceof StartPanel) {
             getSite().setTitle( "" ).setTooltip( "Sign in" );
-            getSite().setIcon( ControllerPlugin.images().svgImage( "account-key.svg", SvgImageRegistryHelper.NORMAL24 ) ); 
+            getSite().setIcon( ControllerPlugin.images().svgImage( "account-key.svg", ControllerPlugin.HEADER_ICON_CONFIG ) ); 
 
 //            getSite().setIcon( ControllerPlugin.images().svgOverlayedImage( 
 //                    "account.svg", SvgImageRegistryHelper.NORMAL24, 

@@ -8,23 +8,21 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.any;
 import io.mapzone.controller.ops.CreateProjectOperation;
 import io.mapzone.controller.ops.DeleteProjectOperation;
+import io.mapzone.controller.um.launcher.ProjectLauncher;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
-import io.mapzone.controller.vm.repository.RegisteredHost;
-import io.mapzone.controller.vm.repository.RegisteredInstance;
+import io.mapzone.controller.vm.repository.HostRecord;
+import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
 import io.mapzone.controller.vm.repository.VmRepository;
 import io.mapzone.controller.vm.runtime.HostRuntime;
-import io.mapzone.controller.vm.runtime.InstanceRuntime;
-
 import java.io.File;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Matchers;
 
 import org.apache.commons.io.FileUtils;
@@ -32,6 +30,10 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
 import org.polymap.core.runtime.LockedLazyInit;
+
+import org.polymap.model2.Property;
+import org.polymap.model2.runtime.PropertyInfo;
+import org.polymap.model2.runtime.ValueInitializer;
 
 /**
  * 
@@ -46,8 +48,6 @@ public class OperationsTest {
     protected ProjectRepository         nested;
 
     protected User                      defaultUser;
-    
-    protected InstanceRuntime           mockedInstanceRuntime;
     
     protected HostRuntime               mockedHostRuntime;
 
@@ -82,18 +82,23 @@ public class OperationsTest {
    protected void createProjectOperation() throws Exception {
        // check host
        assertEquals( 1, vmRepo.allHosts().size() );
-       RegisteredHost host = vmRepo.allHosts().get( 0 );
+       HostRecord host = vmRepo.allHosts().get( 0 );
        
        // mock runtime
-       mockedInstanceRuntime = mock( InstanceRuntime.class );
        mockedHostRuntime = mock( HostRuntime.class );
-       when( mockedHostRuntime.instance( any() ) ).thenReturn( mockedInstanceRuntime );
        vmRepo.allHosts().stream()
                .forEach( h -> h.runtime = new LockedLazyInit( () -> mockedHostRuntime ) );
 
        // prepare project
        project = nested.createEntity( Project.class, null, (Project proto) -> {
            proto.name.set( "cool" );
+           proto.launcher = new Property<ProjectLauncher>() {
+               ProjectLauncher mock = mock( ProjectLauncher.class );
+               public PropertyInfo info() { throw new RuntimeException( "not yet implemented." ); }
+               public ProjectLauncher get() { return mock; }
+               public <U extends ProjectLauncher> U createValue( ValueInitializer<U> initializer ) { throw new RuntimeException( "not yet implemented." ); }
+               public void set( ProjectLauncher value ) { throw new RuntimeException( "not yet implemented." ); }
+           };
            return Project.defaults.initialize( proto );
        });
        
@@ -106,8 +111,10 @@ public class OperationsTest {
        op.organizationOrUser.set( user );
        op.doExecute( new NullProgressMonitor(), null );
 
-       //check runtime
-       verify( mockedInstanceRuntime ).install( Matchers.eq( project ), Matchers.any() );
+       // check launcher call
+       verify( project.launcher.get() ).install( 
+               Matchers.argThat( instanceOfProject( project ) ), 
+               Matchers.any() );
 
        // check project
        assertSame( user, project.user.get() );
@@ -118,7 +125,7 @@ public class OperationsTest {
        assertEquals( 1, host.instances.size() );
        
        // check instance
-       RegisteredInstance instance = host.instances.iterator().next();
+       ProjectInstanceRecord instance = host.instances.iterator().next();
        assertTrue( host.instances.contains( instance ) );
        assertSame( host, instance.host.get() );
        assertEquals( project.name.get(), instance.project.get() );
@@ -132,9 +139,18 @@ public class OperationsTest {
    }
 
    
+   protected ArgumentMatcher<ProjectInstanceRecord> instanceOfProject( Project p ) {
+       return arg -> {
+           ProjectInstanceRecord instance = (ProjectInstanceRecord)arg;
+           return instance.organisation.get().equals( p.organizationOrUser().name.get() ) &&
+                   instance.project.get().equals( p.name.get() );
+       };
+   }
+
+   
    protected void deleteProjectOperation() throws Exception {
-       RegisteredHost host = vmRepo.allHosts().get( 0 );
-       RegisteredInstance instance = host.instances.iterator().next();
+       HostRecord host = vmRepo.allHosts().get( 0 );
+       ProjectInstanceRecord instance = host.instances.iterator().next();
        
        // operation (no process to stop)
        DeleteProjectOperation op = new DeleteProjectOperation();
@@ -149,8 +165,10 @@ public class OperationsTest {
        assertTrue( host.instances.isEmpty() );
        assertNull( instance.host.get() );
        
-       //check runtime
-       verify( mockedInstanceRuntime ).uninstall( Matchers.any() );
+       // check launcher call
+       verify( project.launcher.get() ).uninstall( 
+               Matchers.argThat( instanceOfProject( project ) ), 
+               Matchers.any() );
    }
    
    

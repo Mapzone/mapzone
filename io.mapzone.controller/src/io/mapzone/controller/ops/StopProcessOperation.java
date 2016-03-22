@@ -1,9 +1,5 @@
 package io.mapzone.controller.ops;
 
-import io.mapzone.controller.vm.repository.RegisteredInstance;
-import io.mapzone.controller.vm.repository.RegisteredProcess;
-import io.mapzone.controller.vm.repository.VmRepository;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -13,12 +9,16 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
 import org.polymap.core.operation.DefaultOperation;
-import org.polymap.core.runtime.config.Config2;
+import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.ConfigurationFactory;
 import org.polymap.core.runtime.config.Mandatory;
 
+import io.mapzone.controller.vm.repository.ProcessRecord;
+import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
+import io.mapzone.controller.vm.repository.VmRepository;
+
 /**
- * Stops a {@link RegisteredProcess}.
+ * Stops a {@link ProcessRecord}.
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
@@ -28,10 +28,10 @@ public class StopProcessOperation
     private static Log log = LogFactory.getLog( StopProcessOperation.class );
 
     @Mandatory
-    public Config2<StopProcessOperation,VmRepository>       vmRepo;
+    public Config<VmRepository>     vmRepo;
 
     @Mandatory
-    public Config2<StopProcessOperation,RegisteredProcess>  process;
+    public Config<ProcessRecord>    process;
     
     
     public StopProcessOperation() {
@@ -42,11 +42,12 @@ public class StopProcessOperation
 
     @Override
     public IStatus doExecute( IProgressMonitor monitor, IAdaptable info ) throws Exception {
+        ProjectInstanceRecord instance = process.get().instance.get();
+        
         // stop OS process
-        process.get().runtime.get().stop();
+        instance.executeLauncher( launcher -> launcher.stop( instance, monitor ) );
         
         // clear associations
-        RegisteredInstance instance = process.get().instance.get();
         process.get().instance.set( null );
         assert instance.process.get() == null;
         

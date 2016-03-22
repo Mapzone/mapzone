@@ -1,10 +1,24 @@
+/* 
+ * mapzone.io
+ * Copyright (C) 2016, the @authors. All rights reserved.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3.0 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
 package io.mapzone.controller.ops;
 
 import java.util.Date;
 
-import io.mapzone.controller.vm.repository.RegisteredHost;
-import io.mapzone.controller.vm.repository.RegisteredInstance;
-import io.mapzone.controller.vm.repository.RegisteredProcess;
+import io.mapzone.controller.vm.repository.HostRecord;
+import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
+import io.mapzone.controller.vm.repository.ProcessRecord;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,26 +29,29 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
 import org.polymap.core.operation.DefaultOperation;
-import org.polymap.core.runtime.config.Config2;
+import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.ConfigurationFactory;
 import org.polymap.core.runtime.config.Immutable;
 import org.polymap.core.runtime.config.Mandatory;
 
 /**
- * Starts a {@link RegisteredProcess} for a {@link RegisteredInstance}.
+ * Starts a {@link ProcessRecord process} for a {@link ProjectInstanceRecord project
+ * instance}.
  *
- * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
+ * @author Falko Bräutigam
  */
 public class StartProcessOperation
         extends DefaultOperation {
 
     private static Log log = LogFactory.getLog( StartProcessOperation.class );
 
-    @Mandatory
-    public Config2<StartProcessOperation,RegisteredInstance>   instance;
-
+    /** Inbound: */
     @Immutable
-    public Config2<StartProcessOperation,RegisteredProcess>    process;
+    @Mandatory
+    public Config<ProjectInstanceRecord>    instance;
+
+    /** Outbound: The started process. */
+    public Config<ProcessRecord>            process;
     
     
     public StartProcessOperation() {
@@ -47,17 +64,22 @@ public class StartProcessOperation
     public IStatus doExecute( IProgressMonitor monitor, IAdaptable info ) throws Exception {
         assert !process.isPresent();
         
-        // find port
-        RegisteredHost host = instance.get().host.get();
+        // find host and free port
+        HostRecord host = instance.get().host.get();
         int port = host.runtime.get().findFreePort();
         
-        // start instance
-        process.set( host.startInstance( instance.get(), (RegisteredProcess proto) -> {
+        // create process record
+        process.set( instance.get().uow().createEntity( ProcessRecord.class, null, (ProcessRecord proto) -> {
             proto.instance.set( instance.get() );
             proto.port.set( port );
             proto.started.set( new Date() );
             return proto;
         }));
+        
+        // start instance
+        instance.get().executeLauncher( launcher -> launcher.start( instance.get(), monitor ) );
+        
+        // sanity check
         assert process.get().instance.get() == instance.get();
         assert instance.get().process.get() == process.get();
         
