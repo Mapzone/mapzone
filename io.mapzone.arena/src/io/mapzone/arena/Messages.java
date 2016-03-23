@@ -24,6 +24,7 @@ import org.polymap.core.runtime.i18n.MessagesImpl;
  * 
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a> 
  */
+
 public class Messages {
 
     private static final String BUNDLE_NAME = ArenaPlugin.ID + ".messages"; //$NON-NLS-1$

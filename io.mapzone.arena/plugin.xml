@@ -14,7 +14,7 @@
          point="org.eclipse.rap.ui.branding">
       <branding
             id="io.mapzone.arena.branding"
-            themeId="org.polymap.rhei.batik.theme"
+            themeId="org.polymap.rhei.batik.materialDesign"
             title="Arena">
          <additionalHeaders>
             <link
@@ -32,23 +32,22 @@
          point="org.eclipse.rap.ui.themes">
       <themeContribution
             file="resources/css/arena.css"
-            themeId="org.polymap.rhei.batik.theme">
+            themeId="org.polymap.rhei.batik.materialDesign">
       </themeContribution>
+   </extension>
+   <extension
+         point="org.polymap.rhei.batik.design">
+      <design
+            class="org.polymap.p4.P4AppDesign"
+            id="org.polymap.arena.design"
+            servletNameMatcher="/arena">
+      </design>
    </extension>
    <extension
          point="org.polymap.rhei.batik.panels">
       <panel
-            class="io.mapzone.arena.StartPanel"
-            id="io.mapzone.arena.StartPanel"
-            stackPriority="100">
-      </panel>
-      <panel
-            class="io.mapzone.arena.ActivitiesPanel"
-            id="io.mapzone.arena.ActivitiesPanel">
-      </panel>
-      <panel
-            class="io.mapzone.arena.ProjectPanel"
-            id="io.mapzone.arena.ProjectPanel">
+            class="io.mapzone.arena.analytics.chart.ChartPanel"
+            id="io.mapzone.arena.ChartPanel">
       </panel>
    </extension>
 

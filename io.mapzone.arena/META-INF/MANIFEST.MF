@@ -5,12 +5,6 @@ Bundle-SymbolicName: io.mapzone.arena;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: io.mapzone.arena.ArenaPlugin
 Bundle-Vendor: mapzone.io
-Require-Bundle: org.eclipse.core.runtime,
- org.polymap.rap.openlayers;bundle-version="2.0.0",
- org.polymap.model2.store.recordstore,
- org.polymap.core.project;bundle-version="4.0.0",
- org.polymap.core.mapeditor,
- org.polymap.core.data,
- org.polymap.rhei.batik;bundle-version="4.0.0"
+Require-Bundle: org.polymap.p4
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
