@@ -50,8 +50,6 @@ public class ProcessRunning
     
     @Override
     public Status execute() throws Exception {
-        vmRepo().lock();
-
         // stop
         log.warn( "Killing process without checking OS process!" );
         StopProcessOperation op = new StopProcessOperation();

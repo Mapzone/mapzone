@@ -62,7 +62,7 @@ public class JvmProjectLauncher
     public CollectionProperty<String>   classpath;
 
     @JvmParam( "Xmx" )
-    @DefaultValue( "512" )
+    @DefaultValue( "256" )
     public Property<Integer>            xmxMB;
 
     /** Use -server VM, or not. */
@@ -139,7 +139,7 @@ public class JvmProjectLauncher
 
         // XXX better poll HTTP?
         log.info( "SLEEP: allow instance to start up..." );
-        Thread.sleep( 5000 );
+        Thread.sleep( 3000 );
         
         // fail on exception
         log.info( "PID: " + host.runtime.get().file( new File( pidFile ) ).content() );
@@ -220,7 +220,7 @@ public class JvmProjectLauncher
         
         HostRecord host = instance.host.get();
         host.runtime.get().execute( new Script()
-                .add( "kill -- -`cat " + pidFile + "`" )
+                .add( "kill -- `cat " + pidFile + "`" )
                 .add( "rm " + pidFile )
                 .blockOnComplete.put( true )
                 .exceptionOnFail.put( false ) );

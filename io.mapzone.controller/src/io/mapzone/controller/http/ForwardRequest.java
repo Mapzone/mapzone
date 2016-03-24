@@ -20,7 +20,7 @@ import org.apache.http.impl.client.HttpClients;
 /**
  * 
  *
- * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
+ * @author Falko Bräutigam
  */
 public class ForwardRequest
         extends HttpProxyProvision {

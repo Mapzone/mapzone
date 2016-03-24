@@ -9,7 +9,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * 
  *
- * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
+ * @author Falko Bräutigam
  */
 public class ForwardResponse
         extends HttpProxyProvision {

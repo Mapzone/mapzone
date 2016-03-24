@@ -1,8 +1,18 @@
+/* 
+ * mapzone.io
+ * Copyright (C) 2016, the @authors. All rights reserved.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3.0 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
 package io.mapzone.controller.vm.repository;
-
-import io.mapzone.controller.um.launcher.ProjectLauncher;
-import io.mapzone.controller.um.repository.Project;
-import io.mapzone.controller.um.repository.ProjectRepository;
 
 import org.polymap.core.runtime.collect.Consumer;
 
@@ -13,14 +23,18 @@ import org.polymap.model2.Immutable;
 import org.polymap.model2.Nullable;
 import org.polymap.model2.Property;
 import org.polymap.model2.Queryable;
+import org.polymap.model2.runtime.locking.OneReaderPessimisticLocking;
+
+import io.mapzone.controller.um.launcher.ProjectLauncher;
+import io.mapzone.controller.um.repository.Project;
+import io.mapzone.controller.um.repository.ProjectRepository;
 
 /**
  * Represents an installed instance of a {@link Project} consisting of exe/bin path,
  * workspace, log paths. Ready to run and spawn a {@link ProcessRecord}.
  *
- * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
+ * @author Falko Bräutigam
  */
-//@Concerns( PessimisticLocking.class )
 public class ProjectInstanceRecord
         extends VmEntity {
 
@@ -29,16 +43,19 @@ public class ProjectInstanceRecord
     /** Organization or user name. */
     @Queryable
     @Immutable
+    @Concerns( OneReaderPessimisticLocking.class )
     public Property<String>                 organisation;
     
     /** The name of the project. */
     @Queryable
     @Immutable
+    @Concerns( OneReaderPessimisticLocking.class )
     public Property<String>                 project;
     
     @Nullable
     @Queryable
     @Immutable
+    @Concerns( OneReaderPessimisticLocking.class )
     public Property<String>                 version;
     
     @Nullable  // XXX
@@ -51,6 +68,7 @@ public class ProjectInstanceRecord
     public Association<ProcessRecord>       process;
     
     @Immutable
+    @Concerns( OneReaderPessimisticLocking.class )
     public Property<String>                 homePath;
 
     /**

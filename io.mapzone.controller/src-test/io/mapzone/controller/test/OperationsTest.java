@@ -1,7 +1,6 @@
 package io.mapzone.controller.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -63,7 +62,7 @@ public class OperationsTest {
         VmRepository.init( basedir );
         ProjectRepository.init( basedir );
         
-        vmRepo = VmRepository.instance();
+        vmRepo = VmRepository.newInstance();
         repo = ProjectRepository.newInstance();
 
         nested = repo.newNested();
@@ -134,8 +133,6 @@ public class OperationsTest {
        ProjectRepository repo2 = ProjectRepository.newInstance();
        Project project2 = repo2.entity( project );
        assertNotSame( project, project2 );
-       
-       assertFalse( vmRepo.lock.isWriteLockedByCurrentThread() );
    }
 
    

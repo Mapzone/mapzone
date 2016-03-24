@@ -1,3 +1,17 @@
+/* 
+ * mapzone.io
+ * Copyright (C) 2016, the @authors. All rights reserved.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3.0 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
 package io.mapzone.controller.vm.repository;
 
 import java.util.Date;
@@ -11,19 +25,19 @@ import org.polymap.model2.BidiManyAssociationConcern;
 import org.polymap.model2.Concerns;
 import org.polymap.model2.DefaultValue;
 import org.polymap.model2.Defaults;
-import org.polymap.model2.Entity;
 import org.polymap.model2.ManyAssociation;
 import org.polymap.model2.Property;
 import org.polymap.model2.runtime.ValueInitializer;
+import org.polymap.model2.runtime.locking.OneReaderPessimisticLocking;
 
 /**
  * 
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-//@Concerns(PessimisticLocking.class)
+@Concerns( OneReaderPessimisticLocking.class )
 public class HostRecord
-        extends Entity {
+        extends VmEntity {
 
     public static HostRecord        TYPE;
     
@@ -68,30 +82,6 @@ public class HostRecord
     public Lazy<HostRuntime>                    runtime = new LockedLazyInit( () -> HostRuntime.forHost( this ) ); 
     
     
-//    /**
-//     * Starts a new process and associates it with this host.
-//     *
-//     * @param initializer
-//     * @return Newly created entity.
-//     * @throws Exception 
-//     */
-//    public ProcessRecord startInstance( ProjectInstanceRecord instance, ValueInitializer<ProcessRecord> initializer ) throws Exception {
-//        // XXX activate when process cleaning works?
-//       // assert instance.process.get() == null;
-//        
-//        // create new entity
-//        UnitOfWork uow = context.getUnitOfWork();
-//        ProcessRecord result = uow.createEntity( ProcessRecord.class, null, initializer, (ProcessRecord proto) -> {
-//            proto.instance.set( instance );
-//            return proto;
-//        });
-//        
-//        // start process (sets port)
-//        runtime.get().process( result ).start();
-//        return result;
-//    }
-
-
     public void updateStatistics() {
         statistics.get().lastChecked.set( new Date() );
     }

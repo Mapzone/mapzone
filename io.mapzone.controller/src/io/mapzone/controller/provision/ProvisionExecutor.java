@@ -62,7 +62,7 @@ public abstract class ProvisionExecutor {
     }
 
 
-    public <T extends Provision> T newProvision( Class<T> type ) throws Exception {
+    public <T extends Provision> T newProvision( Class<T> type ) throws InstantiationException, IllegalAccessException {
         T result = type.newInstance();
         contextFactory.inject( result );
         return result;

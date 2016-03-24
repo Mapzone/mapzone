@@ -13,9 +13,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Finds the {@link ProjectInstanceRecord} and its {@link ProcessRecord} for the org
- * and project name in the request. Puts both into the provision {@link Context}. If
- * no process is found then {@link StartProcessOperation}.
+ * Checks if the process for the project was started at all,
+ * {@link StartProcessOperation} if not. Finds the {@link ProjectInstanceRecord} and
+ * its {@link ProcessRecord} for the org and project name in the request. Puts both
+ * into the provision {@link Context}.
  * 
  * @author Falko Bräutigam
  */
@@ -55,12 +56,10 @@ public class ProcessStarted
         instance.set( vmRepo().findInstance( orgName, projectName, null )
                 .orElseThrow( () -> new IllegalStateException( "No project instance found for: " + orgName + "/" + projectName ) ) );
 
+        instance.get().homePath.get();  // force pessimistic lock
         process.set( instance.get().process.get() );
         
         if (!process.isPresent()) {
-            // lock others while we change things
-            vmRepo().lock();
-
             // start instance
             StartProcessOperation op = new StartProcessOperation();
             op.instance.set( instance.get() );

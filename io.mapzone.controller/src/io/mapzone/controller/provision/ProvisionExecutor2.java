@@ -23,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * The shiny new provisioning algorithm :)
  * 
- * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
+ * @author Falko Bräutigam
  */
 public class ProvisionExecutor2
         extends ProvisionExecutor {
@@ -46,7 +46,7 @@ public class ProvisionExecutor2
      * <ul>
      * <li>loop over <b>preliminaries</b> until <b>none</b> wants to execute</li>
      * <li>no particular order; Provisions are checked again and again for each run</li>
-     * <li>when executed apreliminary is executed as target in a <b>recursive</b> call of this method</li>
+     * <li>when executed a preliminary is executed as target in a <b>recursive</b> call of this method</li>
      * <br/>
      * <li>try to execute <b>target</b>
      * <li>OK -> return</li>
@@ -99,7 +99,7 @@ public class ProvisionExecutor2
             Provision candidate = newProvision( cl );
             if (candidate.init( target, targetStatus )) {
                 Status status = doExecute( candidate, level+1 );
-                log.warn( prefix( level) + "    status: " + status );
+                log.debug( prefix( level) + "    status: " + status );
                 return true;
             }
         }

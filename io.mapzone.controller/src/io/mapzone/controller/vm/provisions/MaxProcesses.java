@@ -1,3 +1,16 @@
+/* 
+ * Copyright (C) 2015-2016, the @authors. All rights reserved.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3.0 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
 package io.mapzone.controller.vm.provisions;
 
 import io.mapzone.controller.http.HttpProxyProvision;
@@ -19,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
  * This simulates a check for available memory on the host by limiting the number of
  * processes.
  *
- * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
+ * @author Falko Bräutigam
  */
 public class MaxProcesses
         extends HttpProxyProvision {
@@ -49,7 +62,6 @@ public class MaxProcesses
         HostRecord host = process.get().instance.get().host.get();
         if (host.statistics.get() == null || host.statistics.get().olderThan( 10, TimeUnit.SECONDS )) {
 
-            vmRepo().lock();
             host.updateStatistics();
             
             // lowest start time (oldest) first

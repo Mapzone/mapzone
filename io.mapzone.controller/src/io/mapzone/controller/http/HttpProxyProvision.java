@@ -31,15 +31,13 @@ public abstract class HttpProxyProvision
     
     protected Context<HttpResponse>         proxyResponse;
 
-    private Context<VmRepository>           vmRepo;
+    Context<VmRepository>           vmRepo;
     
-    private Context<ProjectRepository>      projectRepo;
+    Context<ProjectRepository>      projectRepo;
     
-    /**
-     * {@link VmRepository#lock()} before any modifications!
-     */
+
     public VmRepository vmRepo() {
-        return vmRepo.get( () -> VmRepository.instance() );
+        return vmRepo.get( () -> VmRepository.newInstance() );
     }
     
     public ProjectRepository projectRepo() {

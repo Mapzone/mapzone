@@ -61,10 +61,9 @@ public class CreateProjectOperation
 
     @Override
     public IStatus doExecute( IProgressMonitor monitor, IAdaptable info ) throws Exception {
-        VmRepository vmRepo = VmRepository.instance();
+        VmRepository vmRepo = VmRepository.newInstance();
         try {
             monitor.beginTask( getLabel(), 10 );
-            vmRepo.lock();
 
             // find host to use
             List<HostRecord> hosts = vmRepo.allHosts();

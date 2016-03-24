@@ -20,7 +20,6 @@ import io.mapzone.controller.vm.repository.HostRecord.HostType;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 import java.io.File;
@@ -41,6 +40,7 @@ import org.polymap.model2.runtime.UnitOfWork;
 import org.polymap.model2.runtime.ValueInitializer;
 import org.polymap.model2.runtime.locking.CommitLockStrategy;
 import org.polymap.model2.runtime.locking.OptimisticLocking;
+import org.polymap.model2.runtime.locking.PessimisticLocking;
 import org.polymap.model2.store.recordstore.RecordStoreAdapter;
 import org.polymap.recordstore.lucene.LuceneRecordStore;
 
@@ -79,7 +79,7 @@ public class VmRepository {
                             new CommitLockStrategy.FailOnConcurrentCommit() )
                 .create();
         
-        instance = new VmRepository( repo.newUnitOfWork() );
+//        instance = new VmRepository( repo.newUnitOfWork() );
         checkInit();
     }
     
@@ -102,73 +102,69 @@ public class VmRepository {
     }
     
     
-    private static VmRepository         instance;
-    
-    public static VmRepository instance() {
-        return instance;
+    /**
+     *
+     */
+    public static VmRepository newInstance() {
+        return new VmRepository();
     }
     
     
     // instance *******************************************
     
-    private UnitOfWork                  uow;
+    private UnitOfWork                  uow = repo.newUnitOfWork();
 
-    /**
-     * Synchronizes modifications of {@link VmRepository} and the real host/process
-     * state. This implements pessimistic locking. A lock must be aquired *before*
-     * accessing the entity to modify. See {@link VmRepository} for detail.
-     * <p/>
-     * XXX This might get a huge bottleneck. We will find a more fine grained
-     * solution later. However, the API will not change to much. The Provision sees a
-     * lock in its context which it aquires for modification. It does not know where
-     * it comes from.
-     */
-    public ReentrantReadWriteLock       lock = new ReentrantReadWriteLock();
+//    /**
+//     * Synchronizes modifications of {@link VmRepository} and the real host/process
+//     * state. This implements pessimistic locking. A lock must be aquired *before*
+//     * accessing the entity to modify. See {@link VmRepository} for detail.
+//     * <p/>
+//     * XXX This might get a huge bottleneck. We will find a more fine grained
+//     * solution later. However, the API will not change to much. The Provision sees a
+//     * lock in its context which it aquires for modification. It does not know where
+//     * it comes from.
+//     */
+//    public ReentrantReadWriteLock       lock = new ReentrantReadWriteLock();
     
     /** Global write lock count. Helps to find intercepted read->write upgrade. */
     private volatile int                globalLockCount;
     
     private Cache<Pair<String,String>,Optional<ProjectInstanceRecord>> 
                                         instanceCache = CacheConfig.defaults().initSize( 256 ).createCache();
-
-    
-    public VmRepository( UnitOfWork uow ) {
-        this.uow = uow;
-    }
-
-    
-    /**
-     * Aquires a write lock for the current thread. This possibly blocks execution until
-     * it is possible to aquire the lock. A lock must be aquired *before* accessing
-     * the entity to modify.
-     */
-    public void lock() {
-        int readLocKCount = globalLockCount;
-        if (lock.getReadHoldCount() > 0) {
-            lock.readLock().unlock();
-        }
-        assert !lock.isWriteLockedByCurrentThread();
-        lock.writeLock().lock();
-        globalLockCount++;
-
-        // XXX does this actually work? Doug?
-        if (globalLockCount > readLocKCount+1) {
-            // FIXME
-            throw new RuntimeException( "FIXME: Atomically upgrading lock failed." );
-        }
-    }
     
     
-    protected void unlock() {
-        if (lock.isWriteLockedByCurrentThread()) {
-            lock.writeLock().unlock();
-        }
-    }
-
-    
-    public boolean isLockeByCurrentThread() {
-        return lock.isWriteLockedByCurrentThread();
-    }
+//    /**
+//     * Aquires a write lock for the current thread. This possibly blocks execution until
+//     * it is possible to aquire the lock. A lock must be aquired *before* accessing
+//     * the entity to modify.
+//     */
+//    public void lock() {
+//        int readLocKCount = globalLockCount;
+//        if (lock.getReadHoldCount() > 0) {
+//            lock.readLock().unlock();
+//        }
+//        assert !lock.isWriteLockedByCurrentThread();
+//        lock.writeLock().lock();
+//        globalLockCount++;
+//
+//        // XXX does this actually work? Doug?
+//        if (globalLockCount > readLocKCount+1) {
+//            // FIXME
+//            throw new RuntimeException( "FIXME: Atomically upgrading lock failed." );
+//        }
+//    }
+//    
+//    
+//    protected void unlock() {
+//        if (lock.isWriteLockedByCurrentThread()) {
+//            lock.writeLock().unlock();
+//        }
+//    }
+//
+//    
+//    public boolean isLockeByCurrentThread() {
+//        return lock.isWriteLockedByCurrentThread();
+//    }
     
     
     public Optional<ProjectInstanceRecord> findInstance( String org, String project, String version ) {
@@ -205,23 +201,22 @@ public class VmRepository {
 
 
     public void commit() throws ModelRuntimeException {
-        if (isLockeByCurrentThread()) {
-            log.info( "COMMIT provision: ..." );
-            uow.commit();
-            unlock();
-        }
+        log.info( "COMMIT provision: ..." );
+        uow.commit();
+        close();
     }
 
+    
     public void rollback() throws ModelRuntimeException {
-        if (isLockeByCurrentThread()) {
-            log.info( "ROLLBACK provision: ..." );
-            uow.rollback();
-            unlock();
-        }
+        log.info( "ROLLBACK provision: ..." );
+        uow.rollback();
+        close();
     }
 
-//    public void close() {
-//        uow.close();
-//    }
+
+    public void close() {
+        uow.close();
+        PessimisticLocking.notifyClosed( uow );
+    }
 
 }

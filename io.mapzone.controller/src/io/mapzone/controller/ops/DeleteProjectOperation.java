@@ -67,10 +67,9 @@ public class DeleteProjectOperation
 
     @Override
     public IStatus doExecute( IProgressMonitor monitor, IAdaptable info ) throws Exception {
-        VmRepository vmRepo = VmRepository.instance();
+        VmRepository vmRepo = VmRepository.newInstance();
         try {
             monitor.beginTask( getLabel(), 10 );
-            vmRepo.lock();
 
             // find instance on host
             ProjectInstanceRecord instance = vmRepo.findInstance( 
