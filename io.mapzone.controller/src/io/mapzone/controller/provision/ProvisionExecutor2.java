@@ -60,8 +60,7 @@ public class ProvisionExecutor2
      * @throws Exception
      */
     protected Status doExecute( Provision target, int level ) throws Exception {
-        log.warn( prefix( level ) + "target: " + target.getClass().getSimpleName() + " ..." );
-
+        log.debug( prefix( level ) + "Target: " + target.getClass().getSimpleName() );
         Status targetStatus = null;
         for (;;) {
             // loop until no condition wants to execute
@@ -76,11 +75,12 @@ public class ProvisionExecutor2
             }
 
             // try target
+            log.warn( prefix( level ) + "Execute: " + target.getClass().getSimpleName() + " ..." );
             targetStatus = executeProvision( target );
             if (targetStatus.severity( Severity.OK )) {
                 // ok -> return
                 return targetStatus;
-            }            
+            }
         }
     }
     
@@ -99,7 +99,7 @@ public class ProvisionExecutor2
             Provision candidate = newProvision( cl );
             if (candidate.init( target, targetStatus )) {
                 Status status = doExecute( candidate, level+1 );
-                log.debug( prefix( level) + "    status: " + status );
+                log.debug( prefix( level ) + "    status: " + status );
                 return true;
             }
         }

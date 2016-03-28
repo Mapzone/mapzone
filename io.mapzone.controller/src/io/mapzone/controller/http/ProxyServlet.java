@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 import javax.servlet.ServletException;
@@ -38,6 +37,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import com.google.common.base.Joiner;
+import com.google.common.base.Throwables;
 
 import org.polymap.core.runtime.Closer;
 
@@ -62,21 +62,6 @@ public class ProxyServlet
     /** A bit restrictive, just to make sure :) */
     private static final Pattern    NO_URL_CHAR = Pattern.compile( "[^a-zA-Z0-9_-]" );
 
-    /**
-     * 
-     *
-     * @param request
-     * @return 0: organization/user, 1: project, 2: version
-     */
-    public static String[] projectName( HttpServletRequest request ) {
-        try {
-            return StringUtils.split( URLDecoder.decode( request.getPathInfo(), "UTF8" ), "/" );
-        }
-        catch (UnsupportedEncodingException e) {
-            throw new RuntimeException( e );
-        }
-    }
-    
     
     public static String projectUrl( Project project ) {
         try {
@@ -112,7 +97,7 @@ public class ProxyServlet
             forwardRequest.response.set( resp );
             try {
                 Status status = executor.execute( forwardRequest );
-                assert status.severity( OK );
+                assert status.severity( OK ) : "No success forwarding request: ...";
 
                 if (forwardRequest.vmRepo.isPresent()) {
                     forwardRequest.vmRepo.get().commit();
@@ -120,11 +105,10 @@ public class ProxyServlet
             }
             catch (Throwable e) {
                 // error while provisioning or upstream process
-                if (forwardRequest.vmRepo.isPresent()) {
-                    forwardRequest.vmRepo.get().close();
-                }
-                // XXX log, reset instance(?), send error page?
-                throw new ServletException( e );
+                Throwables.propagateIfPossible( e );
+            }
+            finally {
+                forwardRequest.vmRepo.ifPresent( vmRepo -> vmRepo.close() );
             }
 
             // response
@@ -139,7 +123,7 @@ public class ProxyServlet
             catch (Exception e) {
                 // error while provisioning or sending response
                 // XXX log, reset instance(?), send error page?
-                throw new ServletException( e );
+                throw new RuntimeException( e );
             }
             finally {
                 Closer.create().close( proxyResponse );
@@ -147,7 +131,7 @@ public class ProxyServlet
         }
         catch (Exception e) {
             // programming error
-            throw new ServletException( e );
+            Throwables.propagateIfPossible( e );
         }
     }
 

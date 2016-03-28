@@ -17,22 +17,32 @@ package io.mapzone.controller.um.launcher;
 import java.util.Collection;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpHost;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.SystemDefaultHttpClient;
+import org.apache.http.message.BasicHttpRequest;
 
 import com.google.common.base.Joiner;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import org.polymap.model2.CollectionProperty;
+import org.polymap.model2.Concerns;
 import org.polymap.model2.DefaultValue;
 import org.polymap.model2.Nullable;
 import org.polymap.model2.Property;
+import org.polymap.model2.PropertyConcernAdapter;
 import org.polymap.model2.runtime.PropertyInfo;
 
 import io.mapzone.controller.vm.repository.HostRecord;
@@ -49,7 +59,17 @@ public class JvmProjectLauncher
 
     private static final Log log = LogFactory.getLog( JvmProjectLauncher.class );
     
+    /** System.getProperty( "io.mapzone.controller.javaCommand" ) */
+    public static class SystemPropertyDefault
+            extends PropertyConcernAdapter<String> {
+        @Override
+        public String get() {
+            return System.getProperty( "io.mapzone.controller.javaCommand", super.get() );
+        }
+    }
+    
     @DefaultValue( "java" )
+    @Concerns( SystemPropertyDefault.class )
     public Property<String>             javaCommand;
 
     public Property<String>             mainClass;
@@ -137,14 +157,44 @@ public class JvmProjectLauncher
                 .blockOnComplete.put( true )
                 .exceptionOnFail.put( true ) );
 
-        // XXX better poll HTTP?
-        log.info( "SLEEP: allow instance to start up..." );
-        Thread.sleep( 3000 );
+        pollHttp( instance );
         
         // fail on exception
         log.info( "PID: " + host.runtime.get().file( new File( pidFile ) ).content() );
     }
 
+    
+    protected void pollHttp( ProjectInstanceRecord instance ) 
+            throws InterruptedException, ClientProtocolException, IOException {
+        log.info( "SLEEP 1s: allow instance to start up..." );
+        Thread.sleep( 1000 );
+        
+        try (
+            @SuppressWarnings("deprecation")
+            CloseableHttpClient httpClient = new SystemDefaultHttpClient();
+        ){
+            // XXX /p4
+            BasicHttpRequest request = new BasicHttpRequest( "GET", "/p4" );
+            HttpHost host = new HttpHost( instance.host.get().inetAddress.get(), instance.process.get().port.get() );
+            
+            // max 40x250ms => 10s
+            for (int i=0; i<40; i++) {
+                try (
+                    CloseableHttpResponse response = httpClient.execute( host, request );
+                ){
+                    log.info( request.getRequestLine().getUri() + " -> " + response.getStatusLine().getStatusCode() );
+                    if (response.getStatusLine().getStatusCode() == 200) {
+                        return;
+                    }
+                    Thread.sleep( 250 );
+                }
+                catch (IOException e) {
+                    log.info( "    response: " + e );
+                }
+            }
+        }
+    }
+    
     
     protected void addMainClassParam( StringBuilder commandLine, ProjectInstanceRecord instance ) {
         commandLine.append( " " ).append( mainClass.get() );

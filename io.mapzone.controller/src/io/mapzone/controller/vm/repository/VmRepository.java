@@ -16,6 +16,7 @@ package io.mapzone.controller.vm.repository;
 
 import static org.polymap.model2.query.Expressions.and;
 import static org.polymap.model2.query.Expressions.eq;
+
 import io.mapzone.controller.vm.repository.HostRecord.HostType;
 
 import java.util.List;
@@ -25,7 +26,6 @@ import java.util.stream.Collectors;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -129,50 +129,16 @@ public class VmRepository {
     /** Global write lock count. Helps to find intercepted read->write upgrade. */
     private volatile int                globalLockCount;
     
-    private Cache<Pair<String,String>,Optional<ProjectInstanceRecord>> 
+    private Cache<ProjectInstanceIdentifier,Optional<ProjectInstanceRecord>> 
                                         instanceCache = CacheConfig.defaults().initSize( 256 ).createCache();
     
     
-//    /**
-//     * Aquires a write lock for the current thread. This possibly blocks execution until
-//     * it is possible to aquire the lock. A lock must be aquired *before* accessing
-//     * the entity to modify.
-//     */
-//    public void lock() {
-//        int readLocKCount = globalLockCount;
-//        if (lock.getReadHoldCount() > 0) {
-//            lock.readLock().unlock();
-//        }
-//        assert !lock.isWriteLockedByCurrentThread();
-//        lock.writeLock().lock();
-//        globalLockCount++;
-//
-//        // XXX does this actually work? Doug?
-//        if (globalLockCount > readLocKCount+1) {
-//            // FIXME
-//            throw new RuntimeException( "FIXME: Atomically upgrading lock failed." );
-//        }
-//    }
-//    
-//    
-//    protected void unlock() {
-//        if (lock.isWriteLockedByCurrentThread()) {
-//            lock.writeLock().unlock();
-//        }
-//    }
-//
-//    
-//    public boolean isLockeByCurrentThread() {
-//        return lock.isWriteLockedByCurrentThread();
-//    }
-    
-    
-    public Optional<ProjectInstanceRecord> findInstance( String org, String project, String version ) {
-        return instanceCache.get( Pair.of( org, project ), key -> {
+    public Optional<ProjectInstanceRecord> findInstance( ProjectInstanceIdentifier pid ) {
+        return instanceCache.get( pid, key -> {
             ResultSet<ProjectInstanceRecord> rs = uow.query( ProjectInstanceRecord.class )
                     .where( and( 
-                            eq( ProjectInstanceRecord.TYPE.organisation, org ),
-                            eq( ProjectInstanceRecord.TYPE.project, project ) ) )
+                            eq( ProjectInstanceRecord.TYPE.organisation, pid.organization() ),
+                            eq( ProjectInstanceRecord.TYPE.project, pid.project() ) ) )
                     .execute();
             assert rs.size() < 2;
             return rs.stream().findAny();
@@ -180,8 +146,8 @@ public class VmRepository {
     }
 
     
-    public Optional<ProcessRecord> findProcess( String organisation, String project, String version ) {
-        return findInstance( organisation, project, version ).map( _instance -> _instance.process.get() );
+    public Optional<ProcessRecord> findProcess( ProjectInstanceIdentifier pid ) {
+        return findInstance( pid ).map( _instance -> _instance.process.get() );
     }
     
     

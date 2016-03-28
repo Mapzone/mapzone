@@ -21,6 +21,7 @@ import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.vm.repository.HostRecord;
 import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
 import io.mapzone.controller.vm.repository.ProcessRecord;
+import io.mapzone.controller.vm.repository.ProjectInstanceIdentifier;
 import io.mapzone.controller.vm.repository.VmRepository;
 
 import org.apache.commons.logging.Log;
@@ -72,11 +73,8 @@ public class DeleteProjectOperation
             monitor.beginTask( getLabel(), 10 );
 
             // find instance on host
-            ProjectInstanceRecord instance = vmRepo.findInstance( 
-                    project.get().organizationOrUser().name.get(),
-                    project.get().name.get(),
-                    null )
-                    .orElseThrow( () -> new RuntimeException( "No project instance found for: " + project ) );
+            ProjectInstanceRecord instance = vmRepo.findInstance( new ProjectInstanceIdentifier( project.get() ) )
+                    .orElseThrow( () -> new RuntimeException( "No project instance found for: " + project.get() ) );
             monitor.worked( 1 );
 
             // stop process
