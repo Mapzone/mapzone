@@ -5,6 +5,7 @@ Bundle-SymbolicName: io.mapzone.arena;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: io.mapzone.arena.ArenaPlugin
 Bundle-Vendor: mapzone.io
-Require-Bundle: org.polymap.p4
+Require-Bundle: org.polymap.p4,
+ org.polymap.core.data
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy

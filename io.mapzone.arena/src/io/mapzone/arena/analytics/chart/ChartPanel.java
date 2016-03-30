@@ -257,8 +257,8 @@ public class ChartPanel
                 ProcessorDescription proc = new ProcessorDescription( ChartGeometryProcessor.class, props );
                 PipelineProcessorSite procSite = new PipelineProcessorSite( props );
                 proc.processor().init( procSite );
-                featureRenderProc.pipeline.get().add( 0, proc );
-                log.info( "FeatureRender pipeline: " + featureRenderProc.pipeline.get() );
+//                featureRenderProc.pipeline.get().add( 0, proc );
+//                log.info( "FeatureRender pipeline: " + featureRenderProc.pipeline.get() );
                 
                 // register WMS servlet
                 servletAlias = "/chart" + hashCode();
@@ -309,7 +309,7 @@ public class ChartPanel
         
         @Override
         public void init( PipelineProcessorSite site ) throws Exception {
-            this.mappingFunction = site.getProperty( "mappingFunction" );
+//            this.mappingFunction = site.getProperty( "mappingFunction" );
             assert mappingFunction != null;
         }
 
