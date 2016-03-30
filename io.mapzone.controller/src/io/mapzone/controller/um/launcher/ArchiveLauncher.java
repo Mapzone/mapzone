@@ -104,6 +104,7 @@ public abstract class ArchiveLauncher
         // unpack
         host.runtime.get().execute( new Script()
                 .add( "tar -x -z -C " + binPath( instance ) + " -f " + archiveTarget )
+                .add( "rm " + archiveTarget.getAbsolutePath() )
                 .blockOnComplete.put( true )
                 .exceptionOnFail.put( true ) );
         monitor.worked( 5 );
@@ -114,21 +115,15 @@ public abstract class ArchiveLauncher
 
     @Override
     public void uninstall( ProjectInstanceRecord instance, IProgressMonitor monitor ) throws Exception {
-        throw new RuntimeException( "not yet..." );
-//        ComputeService cs = JCloudsRuntime.instance.get().computeService();
-//
-//        JCloudsHostRuntime.log.info( "home: " + instance.homePath.get() );
-//        //            assert instance.homePath.get().startsWith( INSTANCES_BASE_DIR );
-//        ExecResponse response = cs.runScriptOnNode( 
-//                this.host.rhost.hostId.get(),
-//                Statements.exec( "tar -c -z --remove-files -f /tmp/mapzone-last-removed.tgz " + instance.homePath.get() ),
-//                Builder.blockOnComplete( true ).wrapInInitScript( false ).runAsRoot( false ) );
-//
-//        // XXX check response
-//        log.info( "RESPONSE: " + response.getError() );
-//        log.info( "RESPONSE: " + response.getExitStatus() );
-//        log.info( "RESPONSE: " + response.getOutput() );
-//        monitor.worked( 1 );
+        monitor.beginTask( "Uninstall instance", 10 );
+        HostRecord host = instance.host.get();
+        
+        // pack/remove
+        host.runtime.get().execute( new Script()
+                .add( "tar -c -z --remove-files -f /tmp/mapzone-last-removed.tgz " + instance.homePath.get() )
+                .blockOnComplete.put( true )
+                .exceptionOnFail.put( false ) );  // don't fail if dir is removed already
+        monitor.done();
     }
     
 }

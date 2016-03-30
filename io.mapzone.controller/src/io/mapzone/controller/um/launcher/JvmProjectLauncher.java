@@ -165,9 +165,9 @@ public class JvmProjectLauncher
 
     
     protected void pollHttp( ProjectInstanceRecord instance ) 
-            throws InterruptedException, ClientProtocolException, IOException {
+            throws ClientProtocolException, IOException {
         log.info( "SLEEP 1s: allow instance to start up..." );
-        Thread.sleep( 1000 );
+        try { Thread.sleep( 1000 ); } catch (InterruptedException e) {}
         
         try (
             @SuppressWarnings("deprecation")
@@ -186,11 +186,11 @@ public class JvmProjectLauncher
                     if (response.getStatusLine().getStatusCode() == 200) {
                         return;
                     }
-                    Thread.sleep( 250 );
                 }
                 catch (IOException e) {
                     log.info( "    response: " + e );
                 }
+                try { Thread.sleep( 250 ); } catch (InterruptedException e) {}
             }
         }
     }

@@ -125,7 +125,7 @@ public class JCloudsHostRuntime
 
     @Override
     public int findFreePort() {
-        // XXX assuming that anybody else has locked VmRepository
+        // XXX assuming that anybody else commits
         Integer port = host.portCount.get();
         host.portCount.set( port == 65535 ? 32768 : port + 1 );
         return port;

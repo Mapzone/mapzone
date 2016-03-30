@@ -91,10 +91,10 @@ public class DeleteProjectOperation
             project.get().launcher.get().uninstall( instance, new SubProgressMonitor( monitor, 7 ) );
             
             // remove instance and association
-            HostRecord host = instance.host.get();
-            host.instances.remove( instance );
-            assert instance.host.get() == null;
+            Object instanceId = instance.id();
             vmRepo.removeEntity( instance );
+            HostRecord host = instance.host.get();
+            assert host.instances.stream().allMatch( i -> !i.id().equals( instanceId ) );
             
             // remove project
             project.get().organization.set( null );

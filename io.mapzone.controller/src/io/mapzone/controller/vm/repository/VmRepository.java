@@ -75,8 +75,7 @@ public class VmRepository {
                             new OptimisticLocking(
                             new RecordStoreAdapter( store ) ) )
                 .commitLockStrategy.set( () ->
-                            // lock synchronized writes -> concurrent commit is a program error
-                            new CommitLockStrategy.FailOnConcurrentCommit() )
+                            new CommitLockStrategy.Serialize() )
                 .create();
         
 //        instance = new VmRepository( repo.newUnitOfWork() );
