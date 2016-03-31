@@ -32,6 +32,8 @@ public class GraphLayerProvider
 
     private final VectorSource source;
 
+    private VectorLayer vector;
+
 
     public GraphLayerProvider( final VectorSource source ) {
         this.source = source;
@@ -40,10 +42,13 @@ public class GraphLayerProvider
 
     @Override
     public Layer getLayer( VectorLayer elm ) {
-        return new VectorLayer().style
+        if (vector == null) {
+            vector = new VectorLayer().style
                 .put( new Style().fill.put( new FillStyle().color.put( new Color( 0, 0, 255, 0.1f ) ) ).stroke
                         .put( new StrokeStyle().color.put( new Color( "red" ) ).width.put( 1f ) ) ).source
                                 .put( source );
+        }
+        return vector;
     }
 
 
