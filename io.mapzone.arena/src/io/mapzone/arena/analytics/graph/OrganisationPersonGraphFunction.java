@@ -32,7 +32,6 @@ import org.polymap.rap.openlayers.style.StyleFunction;
 import org.polymap.rap.openlayers.types.Color;
 
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
@@ -61,7 +60,7 @@ public class OrganisationPersonGraphFunction extends GraphFunction {
         // increase weight for each entry per organisation
         FeatureIterator iterator = featureCollection.features();
         int i = 0;
-        while (iterator.hasNext() && i < 50) {
+        while (iterator.hasNext() && i < 5000) {
             i++;
             SimpleFeature feature = (SimpleFeature) iterator.next();
             String organisationKey = (String) feature.getAttribute("Organisation");
@@ -74,7 +73,7 @@ public class OrganisationPersonGraphFunction extends GraphFunction {
             } else {
                 // add weight
                 int size = organisation2Persons.get(organisationFeature).size() + 1;
-                if (size <= 8) {
+                if (size <= 15) {
                     organisationFeature.style.set(organisationStyle(size));
                 }
                 graph.addOrUpdateNode(organisationFeature, 1);
@@ -87,7 +86,7 @@ public class OrganisationPersonGraphFunction extends GraphFunction {
                 graph.addOrUpdateNode(personFeature, 1);
             } else {
                 int size = person2Organisations.get(personFeature).size() + 1;
-                if (size <= 8) {
+                if (size <= 15) {
                     personFeature.style.set(personStyle(size));
                 }
                 graph.addOrUpdateNode(personFeature, 1);
@@ -110,6 +109,7 @@ public class OrganisationPersonGraphFunction extends GraphFunction {
         persons.clear();
         organisation2Persons.clear();
         person2Organisations.clear();
+        graph.reload();
     }
 
     private Base edgeStyle() {
