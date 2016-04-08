@@ -147,7 +147,7 @@ public class ChartPanel
 
     @Override
     public void init() {
-        site().title.set( "Chart :)" );
+        site().title.set( "Chart experiment" );
     }
 
 
