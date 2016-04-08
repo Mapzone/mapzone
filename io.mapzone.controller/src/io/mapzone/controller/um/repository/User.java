@@ -49,7 +49,7 @@ public class User
      * Bidirectional association to {@link Organization#members}.
      */
     @Defaults
-    @Concerns(BidiManyAssociationConcern.class)
+    @Concerns( BidiManyAssociationConcern.class )
     public ManyAssociation<Organization> organizations;
 
 }

@@ -32,6 +32,8 @@ public class Project
     public Association<Organization>    organization;
     
     /**
+     * Bidirectional to {@link ProjectHolder#projects}.
+     * 
      * @see #organizationOrUser()
      */
     @Nullable

@@ -14,7 +14,7 @@ public abstract class ProjectHolder
         extends Named {
 
     @Defaults
-    @Concerns(BidiManyAssociationConcern.class)
-    public ManyAssociation<Project> projects;
+    @Concerns( BidiManyAssociationConcern.class )
+    public ManyAssociation<Project>     projects;
     
 }
