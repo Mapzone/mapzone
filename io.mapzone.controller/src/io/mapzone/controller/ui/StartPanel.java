@@ -21,9 +21,12 @@ import io.mapzone.controller.um.repository.User;
 import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.polymap.core.ui.FormDataFactory.on;
 
+import java.util.List;
 import java.util.Optional;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.google.common.collect.Lists;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
@@ -101,10 +104,10 @@ public class StartPanel
         parent.setLayout( FormLayoutFactory.defaults().spacing( 10 ).margins( 0, 0, 10, 0 ).create() );
         
         ContentProvider cp = ContentProvider.instance();
+        List<String> specials = Lists.newArrayList( "1welcome", "99bottom" );
         
         // banner
         Composite banner = on( tk().createComposite( parent ) ).fill().noBottom().height( 220 ).control();
-//        banner.setBackground( UIUtils.getColor( 0xf0, 0xf0, 0xf0 ));
         banner.setLayout( FormLayoutFactory.defaults().margins( 0, 0 ).create() );
         on( tk().createFlowText( banner, cp.findContent( "frontpage/1welcome.md" ).content() ) ).fill().left( 10 ).right( 60 );
         
@@ -117,14 +120,16 @@ public class StartPanel
         btn.setToolTipText( "Ein Datenprojekt anlegen zum Testen und Probieren<br/>Es ist kein Login notwendig. Die Daten werden nicht dauerhaft gespeichert." );
         btn.moveAbove( null );
         
+        //on( tk().createFlowText( btnContainer, "Nutzungsbedingungen..." ) ).top( btn );
+        
         // article grid
-        Composite grid = on( tk().createComposite( parent ) ).fill().top( banner ).control();
+        Composite grid = on( tk().createComposite( parent ) ).fill().top( banner ).bottom( 100, -80 ).control();
         grid.setLayout( ColumnLayoutFactory.defaults().columns( 1, 3 ).spacing( 20 ).margins( 3, 3 ).create() );
 
         // articles
         StreamIterable.of( cp.listContent( "frontpage" ) ).stream()
                 .filter( co -> co.contentType().startsWith( "text" ) )
-                .filter( co -> !co.name().equals( "1welcome" ) )
+                .filter( co -> !specials.contains( co.name() ) )
                 .sorted( (co1,co2) -> co1.name().compareToIgnoreCase( co2.name() ) )
                 .forEach( co -> {
                     String content = co.content();
@@ -139,7 +144,13 @@ public class StartPanel
                     tk().createFlowText( article.getBody(), content );
                 });
         
-//        createPageLayout();
+        // bottom links
+        Composite bottom = on( tk().createComposite( parent ) ).fill().top( 100, -40 ).control();
+        bottom.setLayout( FormLayoutFactory.defaults().create() );
+        filled = on( tk().createComposite( bottom )).fill().control();
+        on( tk().createFlowText( bottom, cp.findContent( "frontpage/99bottom.md" ).content() ) )
+                .fill().left( filled, 0, Alignment.CENTER )
+                .control().moveAbove( null );
     }
 
     
