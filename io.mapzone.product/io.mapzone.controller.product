@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Controller" uid="io.mapzone.product" id="org.polymap.p4.product" application="org.eclipse.ui.ide.workbench" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="Controller" uid="io.mapzone.product" application="org.eclipse.ui.ide.workbench" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="false">
 
    <configIni use="">
    </configIni>
@@ -23,6 +23,7 @@
 
    <plugins>
       <plugin id="com.ibm.icu.base"/>
+      <plugin id="io.mapzone.arena"/>
       <plugin id="io.mapzone.controller"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.xml"/>
@@ -72,10 +73,17 @@
       <plugin id="org.polymap.core"/>
       <plugin id="org.polymap.core.catalog"/>
       <plugin id="org.polymap.core.data"/>
+      <plugin id="org.polymap.core.data.refine"/>
       <plugin id="org.polymap.core.data.rs"/>
+      <plugin id="org.polymap.core.data.shapefile"/>
+      <plugin id="org.polymap.core.data.wms"/>
+      <plugin id="org.polymap.core.mapeditor"/>
+      <plugin id="org.polymap.core.project"/>
       <plugin id="org.polymap.core.recordstore"/>
       <plugin id="org.polymap.model2"/>
       <plugin id="org.polymap.model2.store.recordstore"/>
+      <plugin id="org.polymap.p4"/>
+      <plugin id="org.polymap.p4.data.importer"/>
       <plugin id="org.polymap.rap.openlayers"/>
       <plugin id="org.polymap.rap.updownload"/>
       <plugin id="org.polymap.rhei.batik"/>
@@ -83,6 +91,7 @@
       <plugin id="org.polymap.rhei.form.batik"/>
       <plugin id="org.polymap.rhei.fulltext"/>
       <plugin id="org.polymap.rhei.um"/>
+      <plugin id="org.polymap.service.geoserver"/>
    </plugins>
 
    <configurations>
