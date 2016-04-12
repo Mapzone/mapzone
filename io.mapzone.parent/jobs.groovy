@@ -103,7 +103,7 @@ repoProjects.each {
                 mavenOpts('-DreleaseDeployRepo=http://build.mapzone.io/nexus/content/repositories/polymap4-releases/') 
                 mavenOpts('-Dpolymap4_target=file:/home/jenkins/.jenkins/jobs/polymap4-targetplatform/lastStable/archive/polymap4_target')
                 mavenOpts('-DmapzoneSnapshotDeployRepo=http://build.mapzone.io/nexus/content/repositories/mapzone-snapshots/') 
-                mavenOpts('-DmapzoneReleaseDeployRepo: 'http://build.mapzone.io/nexus/content/repositories/mapzone-releases/')
+                mavenOpts('-DmapzoneReleaseDeployRepo=http://build.mapzone.io/nexus/content/repositories/mapzone-releases/')
                 mavenOpts('-DbranchName=' + branchName)
         //       }
         //}
