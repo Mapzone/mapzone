@@ -91,7 +91,10 @@ repoProjects.each {
                 mavenInstallation('Maven 3.3.3')
                   providedSettings('JenkinsMavenSettings')
                   rootPOM(folder + projectName + '/pom.xml')
-                  goals('clean deploy')
+                  goals('clean')
+                  if (!archiveProduct) {
+                    goals('deploy')
+                  }
                   /*properties (
                      snapshotDeployRepo: 'http://build.mapzone.io/nexus/content/repositories/polymap4-snapshots/', 
                      releaseDeployRepo: 'http://build.mapzone.io/nexus/content/repositories/polymap4-releases/', 
