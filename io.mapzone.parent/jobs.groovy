@@ -93,9 +93,9 @@ repoProjects.each {
                   rootPOM(folder + projectName + '/pom.xml')
                   goals('clean')
                   if (archiveProduct) {
-                    goals('clean')
+                    goals('install')
                   } else {
-                    goals('clean deploy')
+                    goals('deploy')
                   }
                   /*properties (
                      snapshotDeployRepo: 'http://build.mapzone.io/nexus/content/repositories/polymap4-snapshots/', 
