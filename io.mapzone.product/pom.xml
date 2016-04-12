@@ -11,7 +11,7 @@
 
     <artifactId>io.mapzone.product</artifactId>
     <packaging>eclipse-repository</packaging>
-    <!-- build>
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
@@ -28,7 +28,7 @@
                 </executions>
             </plugin>
         </plugins>
-    </build-->
+    </build>
 
     <!-- profiles> <profile> <id>deploy-as-osgi</id> <activation> <activeByDefault>true</activeByDefault> 
         </activation> <build> <plugins> <plugin> <groupId>org.eclipse.tycho</groupId> 
