@@ -47,6 +47,7 @@ repoProjects.each {
 
    mavenJob(jobName) {
      logRotator(-1, 5)
+     quietPeriod(60)
      blockOnUpstreamProjects()
        properties {
           githubProjectUrl('git@github.com:Mapzone/' + repoName + '.git')
@@ -137,6 +138,12 @@ repoProjects.each {
           slackNotifications {
                 notifyFailure()
                 notifyBackToNormal()
+          }
+        }
+        configure { project -> 
+          project / 'scm' / 'extensions' / 'hudson.plugins.git.extensions.impl.PathRestriction' {
+            'includedRegions'( folder + projectName + '/.*')
+            'excludedRegions'()
           }
         }
     }
