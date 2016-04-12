@@ -99,11 +99,11 @@ repoProjects.each {
                      branchName: branchName
                   )*/
                   mavenOpts('-Dmaven.test.failure.ignore=true')
-                mavenOpts('-DsnapshotDeployRepo=http://build.mapzone.io/nexus/content/repositories/polymap4-snapshots/') 
-                mavenOpts('-DreleaseDeployRepo=http://build.mapzone.io/nexus/content/repositories/polymap4-releases/') 
+                mavenOpts('-DsnapshotDeployRepo=http://localhost:7581/nexus/content/repositories/polymap4-snapshots/') 
+                mavenOpts('-DreleaseDeployRepo=http://localhost:7581/nexus/content/repositories/polymap4-releases/') 
                 mavenOpts('-Dpolymap4_target=file:/home/jenkins/.jenkins/jobs/polymap4-targetplatform/lastStable/archive/polymap4_target')
-                mavenOpts('-DmapzoneSnapshotDeployRepo=http://build.mapzone.io/nexus/content/repositories/mapzone-snapshots/') 
-                mavenOpts('-DmapzoneReleaseDeployRepo=http://build.mapzone.io/nexus/content/repositories/mapzone-releases/')
+                mavenOpts('-DmapzoneSnapshotDeployRepo=http://localhost:7581/nexus/content/repositories/mapzone-snapshots/') 
+                mavenOpts('-DmapzoneReleaseDeployRepo=http://localhost:7581/nexus/content/repositories/mapzone-releases/')
                 mavenOpts('-DbranchName=' + branchName)
         //       }
         //}
@@ -124,11 +124,11 @@ repoProjects.each {
                 def successorJobName = successorProject.repository.replace('polymap4-', '') + '_' + successorProject.name + '_' + successorProject.branch
                 downstream(successorJobName, 'UNSTABLE')
             }*/
-            if (archiveProduct) {
+            /*if (archiveProduct) {
                 archiveArtifacts {
                     pattern('**/products/*.zip')
                 }
-            }
+            }*/
           slackNotifications {
                 notifyFailure()
                 notifyBackToNormal()
