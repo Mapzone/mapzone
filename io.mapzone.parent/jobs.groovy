@@ -3,21 +3,26 @@ def repoProjectsStr = '''[
       "repository" : "mapzone",
       "branch": "master",
       "ant": "true",
-      "successor": "io.mapzone.product"
+      "successor": "io.mapzone.controller.product"
    },
    { "name": "io.mapzone.arena",
       "repository" : "mapzone",
       "branch": "master",
       "ant": "false",
-      "successor": "io.mapzone.product"
+      "successor": "io.mapzone.arena.product"
    },
    { "name": "io.mapzone.parent",
       "repository" : "mapzone",
       "branch": "master",
-      "ant": "false",
-      "successor": "io.mapzone.product"
+      "ant": "false"
    },
-   { "name": "io.mapzone.product",
+   { "name": "io.mapzone.controller.product",
+      "repository" : "mapzone",
+      "branch": "master",
+      "ant": "false",
+      "archiveProduct": "true"
+   },
+   { "name": "io.mapzone.arena.product",
       "repository" : "mapzone",
       "branch": "master",
       "ant": "false",
@@ -124,11 +129,11 @@ repoProjects.each {
                     }
                 }
             }
-            /*if(successor != null) {
+            if(successor != null) {
                 def successorProject = repoProjects.find { it.name == successor }
-                def successorJobName = successorProject.repository.replace('polymap4-', '') + '_' + successorProject.name + '_' + successorProject.branch
+                def successorJobName = successorProject.repository.replace('mapzone-', '') + '_' + successorProject.name + '_' + successorProject.branch
                 downstream(successorJobName, 'UNSTABLE')
-            }*/
+            }
           slackNotifications {
                 notifyFailure()
                 notifyBackToNormal()
