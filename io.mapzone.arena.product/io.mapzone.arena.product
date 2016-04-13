@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Arena" uid="io.mapzone.arena.product" application="org.eclipse.ui.ide.workbench" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="Arena" uid="io.mapzone.arena.product" application="org.polymap.rhei.batik.app" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="">
    </configIni>
