@@ -39,7 +39,7 @@ public class MaxProcesses
 
     private static Log log = LogFactory.getLog( MaxProcesses.class );
 
-    public static final int             MAX_PROCESSES = 1;
+    public static final int             MAX_PROCESSES = Integer.valueOf( System.getProperty( "io.mapzone.controller.maxProcesses", "1" ) );
     
     private Context<ProcessRecord>      process;
 
