@@ -15,12 +15,9 @@
 package io.mapzone.controller.um.launcher;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -93,17 +90,15 @@ public abstract class ArchiveLauncher
         monitor.subTask( "Copying runtime" );
         URL archiveSource = new URL( installArchiveUri.get() );
         File archiveTarget = new File( instance.homePath.get(), "install.archive" );
-        try (
-            InputStream in = archiveSource.openStream();
-            OutputStream out = host.runtime.get().file( archiveTarget ).outputStream();
-        ){
-            IOUtils.copy( in, out );
-        }
+        host.runtime.get().file( archiveTarget ).write( archiveSource.openStream() );
         monitor.worked( 5 );
 
         // unpack
         host.runtime.get().execute( new Script()
-                .add( "tar -x -z -C " + binPath( instance ) + " -f " + archiveTarget )
+                .add( "cd " + binPath( instance ) )
+                .add( installArchiveUri.get().endsWith( "tgz" )
+                        ? "tar -x -z -f " + archiveTarget
+                        : "unzip " + archiveTarget )
                 .add( "rm " + archiveTarget.getAbsolutePath() )
                 .blockOnComplete.put( true )
                 .exceptionOnFail.put( true ) );

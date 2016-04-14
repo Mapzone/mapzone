@@ -13,11 +13,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import org.jclouds.compute.ComputeService;
 import org.jclouds.compute.domain.ExecResponse;
 import org.jclouds.compute.options.RunScriptOptions;
 import org.jclouds.io.payloads.ByteArrayPayload;
+import org.jclouds.io.payloads.InputStreamPayload;
 import org.jclouds.ssh.SshClient;
 
 import org.apache.commons.io.IOUtils;
@@ -155,25 +155,32 @@ public class JCloudsHostRuntime
         public String content() throws IOException {
             return content( "UTF8" );
         }
+
+        protected <R,E extends Exception> R withSshClient( Task<SshClient,R,E> task ) throws E {
+            SshClient ssh = JCloudsRuntime.instance.get().sshForNode( host.hostId.get() );
+            try {
+                ssh.connect();
+                return task.accept( ssh );
+            } 
+            finally {
+                if (ssh != null) { ssh.disconnect(); }
+            }
+        }
         
         @Override
         public String content( String charset ) throws IOException {
-            SshClient ssh = JCloudsRuntime.instance.get().sshForNode( host.hostId.get() );
-            Timer timer = new Timer();
-            InputStream in = null;
-            try {
-                ssh.connect();
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                in = ssh.get( f.getAbsolutePath() ).openStream();
-                IOUtils.copy( in, out );
-                System.out.println( "READ: " + out.size() + "bytes (" + timer.elapsedTime() + "ms)" );
-                
-                return out.toString( charset );
-            } 
-            finally {
-                if (in != null) { in.close(); }
-                if (ssh != null) { ssh.disconnect(); }
-            }
+            return withSshClient( ssh -> {
+                Timer timer = new Timer();
+                try (
+                    InputStream in = ssh.get( f.getAbsolutePath() ).openStream()
+                ){
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    IOUtils.copy( in, out );
+                    System.out.println( "READ: " + out.size() + "bytes (" + timer.elapsedTime() + "ms)" );
+
+                    return out.toString( charset );
+                } 
+            });
         }
         
         @Override
@@ -187,24 +194,42 @@ public class JCloudsHostRuntime
             return new ByteArrayOutputStream() {
                 @Override
                 public void close() throws IOException {
-                    SshClient ssh = JCloudsRuntime.instance.get().sshForNode( host.hostId.get() );
-                    try {
-                        ssh.connect();
+                    withSshClient( ssh -> {
                         ssh.put( f.getAbsolutePath(), new ByteArrayPayload( toByteArray() ) );
-                    } 
-                    finally {
-                        if (ssh != null) { ssh.disconnect(); }
-                    }
+                        return null;
+                    });
                 }                
             };            
         }
 
+        @Override
+        public void write( InputStream in ) throws IOException {
+            withSshClient( ssh -> {
+                try {
+                    ssh.put( f.getAbsolutePath(), new InputStreamPayload( in ) );
+                    return null;
+                }
+                finally {
+                    in.close();
+                }
+            });
+        }
+        
         @Override
         public boolean exists() {
             // XXX Auto-generated method stub
             throw new RuntimeException( "not yet implemented." );
         }
         
+    }
+
+
+    /**
+     * 
+     */
+    public interface Task<I,O,E extends Exception> {
+
+        public O accept( I input ) throws E;
     }
     
 }

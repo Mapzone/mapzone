@@ -72,9 +72,4 @@ public class JCloudsRuntime {
         return context.utils().sshForNode().apply( node );
     }
 
-
-//    public BlobService getBlobService() {
-//        return con
-//    }
-
 }

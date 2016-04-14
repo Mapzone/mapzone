@@ -13,7 +13,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-simple-1.7.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jclouds-bouncycastle-1.9.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jclouds-slf4j-1.9.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jclouds-sshj-1.9.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jclouds-sshj-1.9.1.jar" sourcepath="lib/sources/jclouds-sshj-1.9.1-sources.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/jna-4.1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jna-platform-4.1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jsch.agentproxy.connector-factory-0.0.8.jar"/>
