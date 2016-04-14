@@ -43,8 +43,5 @@
             servletNameMatcher="/arena">
       </design>
    </extension>
-   <extension
-         point="org.polymap.rhei.batik.panels">
-   </extension>
 
 </plugin>
