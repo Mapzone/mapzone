@@ -47,7 +47,7 @@ repoProjects.each {
 
    mavenJob(jobName) {
      logRotator(-1, 5)
-     quietPeriod(60)
+     quietPeriod(0)
      blockOnUpstreamProjects()
        properties {
           githubProjectUrl('git@github.com:Mapzone/' + repoName + '.git')
