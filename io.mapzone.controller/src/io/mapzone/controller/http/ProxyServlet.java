@@ -14,6 +14,8 @@
 package io.mapzone.controller.http;
 
 import static io.mapzone.controller.provision.Provision.Status.Severity.OK;
+import static org.apache.commons.lang3.StringUtils.substringAfter;
+
 import io.mapzone.controller.provision.Provision.Status;
 import io.mapzone.controller.provision.ProvisionExecutor;
 import io.mapzone.controller.provision.ProvisionExecutor2;
@@ -32,7 +34,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -67,10 +68,10 @@ public class ProxyServlet
         try {
             // assuming that we are in /dashboard servlet
             return Joiner.on( "/" ).join( "..",
-                    StringUtils.substringAfter( SERVLET_ALIAS, "/" ),
+                    substringAfter( SERVLET_ALIAS, "/" ),
                     URLEncoder.encode( project.organizationOrUser().name.get(), "UTF8" ),
                     URLEncoder.encode( project.name.get(), "UTF8" ),
-                    StringUtils.substringAfter( project.servletAlias.get(), "/" ) );
+                    substringAfter( project.servletAlias.get(), "/" ) );
         }
         catch (UnsupportedEncodingException e) {
             throw new RuntimeException( e );

@@ -145,8 +145,7 @@ public class RegisterPanel
 
         // form section
         formSection = tk.createPanelSection( parent, "Personal account settings", SWT.BORDER );
-        Composite body = formSection.getBody();
-        body.setLayout( ColumnLayoutFactory.defaults().spacing( 5 ).margins( 0, 0 ).create() );
+        formSection.getBody().setLayout( ColumnLayoutFactory.defaults().spacing( 8 ).margins( 0, 0 ).create() );
 
         user = repo.createEntity( User.class, null, User.defaults );
         
