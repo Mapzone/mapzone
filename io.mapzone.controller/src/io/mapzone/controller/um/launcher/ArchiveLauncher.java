@@ -15,12 +15,9 @@
 package io.mapzone.controller.um.launcher;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -93,17 +90,16 @@ public abstract class ArchiveLauncher
         monitor.subTask( "Copying runtime" );
         URL archiveSource = new URL( installArchiveUri.get() );
         File archiveTarget = new File( instance.homePath.get(), "install.archive" );
-        try (
-            InputStream in = archiveSource.openStream();
-            OutputStream out = host.runtime.get().file( archiveTarget ).outputStream();
-        ){
-            IOUtils.copy( in, out );
-        }
+        host.runtime.get().file( archiveTarget ).write( archiveSource.openStream() );
         monitor.worked( 5 );
 
         // unpack
         host.runtime.get().execute( new Script()
-                .add( "tar -x -z -C " + binPath( instance ) + " -f " + archiveTarget )
+                .add( "cd " + binPath( instance ) )
+                .add( installArchiveUri.get().endsWith( "tgz" )
+                        ? "tar -x -z -f " + archiveTarget
+                        : "unzip " + archiveTarget )
+                .add( "rm " + archiveTarget.getAbsolutePath() )
                 .blockOnComplete.put( true )
                 .exceptionOnFail.put( true ) );
         monitor.worked( 5 );
@@ -114,21 +110,15 @@ public abstract class ArchiveLauncher
 
     @Override
     public void uninstall( ProjectInstanceRecord instance, IProgressMonitor monitor ) throws Exception {
-        throw new RuntimeException( "not yet..." );
-//        ComputeService cs = JCloudsRuntime.instance.get().computeService();
-//
-//        JCloudsHostRuntime.log.info( "home: " + instance.homePath.get() );
-//        //            assert instance.homePath.get().startsWith( INSTANCES_BASE_DIR );
-//        ExecResponse response = cs.runScriptOnNode( 
-//                this.host.rhost.hostId.get(),
-//                Statements.exec( "tar -c -z --remove-files -f /tmp/mapzone-last-removed.tgz " + instance.homePath.get() ),
-//                Builder.blockOnComplete( true ).wrapInInitScript( false ).runAsRoot( false ) );
-//
-//        // XXX check response
-//        log.info( "RESPONSE: " + response.getError() );
-//        log.info( "RESPONSE: " + response.getExitStatus() );
-//        log.info( "RESPONSE: " + response.getOutput() );
-//        monitor.worked( 1 );
+        monitor.beginTask( "Uninstall instance", 10 );
+        HostRecord host = instance.host.get();
+        
+        // pack/remove
+        host.runtime.get().execute( new Script()
+                .add( "tar -c -z --remove-files -f /tmp/mapzone-last-removed.tgz " + instance.homePath.get() )
+                .blockOnComplete.put( true )
+                .exceptionOnFail.put( false ) );  // don't fail if dir is removed already
+        monitor.done();
     }
     
 }

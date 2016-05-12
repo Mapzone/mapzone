@@ -32,6 +32,8 @@ public class Project
     public Association<Organization>    organization;
     
     /**
+     * Bidirectional to {@link ProjectHolder#projects}.
+     * 
      * @see #organizationOrUser()
      */
     @Nullable
@@ -42,7 +44,7 @@ public class Project
      * The servlet path to access this project. For URL "http://localhost:8080/p4"
      * this is "/p4". Starts with "/".
      */
-    @DefaultValue( "/p4" )  // XXX
+    @DefaultValue( "/arena" )  // XXX
     public Property<String>             servletAlias;
     
     public Property<ProjectLauncher>    launcher;

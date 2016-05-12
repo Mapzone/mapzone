@@ -16,12 +16,15 @@ package io.mapzone.controller.vm.repository;
 
 import java.util.Date;
 
+import io.mapzone.controller.ops.CreateProjectOperation;
+import io.mapzone.controller.ops.StartProcessOperation;
 import io.mapzone.controller.vm.runtime.HostRuntime;
 
 import org.polymap.core.runtime.Lazy;
 import org.polymap.core.runtime.LockedLazyInit;
 
-import org.polymap.model2.BidiManyAssociationConcern;
+import org.polymap.model2.Computed;
+import org.polymap.model2.ComputedBidiManyAssocation;
 import org.polymap.model2.Concerns;
 import org.polymap.model2.DefaultValue;
 import org.polymap.model2.Defaults;
@@ -69,13 +72,21 @@ public class HostRecord
     
     /**
      * The next free port on the host.
+     * <p/>
+     * XXX This prevents multiple {@link StartProcessOperation}s run in parallel.
      */
     @DefaultValue( "32768" )
     public Property<Integer>                    portCount;
     
+    /**
+     * The instances running on this host currently.
+     * <p/>
+     * This is computed (instead of direct association) in order to prevent blocking of
+     * multiple {@link CreateProjectOperation} instances.
+     */
     @Defaults
-    @Concerns( BidiManyAssociationConcern.class )
-    public ManyAssociation<ProjectInstanceRecord>  instances;
+    @Computed( ComputedBidiManyAssocation.class )
+    public ManyAssociation<ProjectInstanceRecord> instances;
     
     public Property<HostStatistics>             statistics;
     

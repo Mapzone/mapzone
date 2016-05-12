@@ -48,6 +48,7 @@ public class StopProcessOperation
         instance.executeLauncher( launcher -> launcher.stop( instance, monitor ) );
         
         // clear associations
+        instance.homePath.get();  // force (pessimistic) lock of instance
         process.get().instance.set( null );
         assert instance.process.get() == null;
         

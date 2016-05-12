@@ -60,7 +60,6 @@ public class ProjectInstanceRecord
     
     @Nullable  // XXX
     //FIXME @Immutable  
-    @Concerns( BidiAssociationConcern.class )
     public Association<HostRecord>          host;
     
     @Nullable  // XXX

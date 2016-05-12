@@ -41,7 +41,11 @@ public abstract class ProvisionExecutor {
         contextFactory = new ContextFactory() {
             @Override
             protected void setValue( Class type, String scope, Object value ) {
-                contextValues.put( ImmutablePair.of( type, scope ), value ); 
+                if (value != null) {
+                    contextValues.put( ImmutablePair.of( type, scope ), value ); 
+                } else {
+                    contextValues.remove( ImmutablePair.of( type, scope ) );
+                }
             }
             @Override
             protected Object getValue( Class type, String scope ) {

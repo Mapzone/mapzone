@@ -1,3 +1,17 @@
+/* 
+ * mapzone.io
+ * Copyright (C) 2016, the @authors. All rights reserved.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3.0 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
 package io.mapzone.controller.ui;
 
 import io.mapzone.controller.ui.project.ProjectsDashlet;
@@ -8,18 +22,17 @@ import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.swt.widgets.Composite;
 
-import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.dashboard.Dashboard;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 
 /**
- * 
+ * The user's dashboard.
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class DashboardPanel
-        extends DefaultPanel {
+        extends CtrlPanel {
 
     private static Log log = LogFactory.getLog( DashboardPanel.class );
 

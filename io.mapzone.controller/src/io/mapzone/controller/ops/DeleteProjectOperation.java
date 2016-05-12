@@ -21,6 +21,7 @@ import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.vm.repository.HostRecord;
 import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
 import io.mapzone.controller.vm.repository.ProcessRecord;
+import io.mapzone.controller.vm.repository.ProjectInstanceIdentifier;
 import io.mapzone.controller.vm.repository.VmRepository;
 
 import org.apache.commons.logging.Log;
@@ -72,11 +73,8 @@ public class DeleteProjectOperation
             monitor.beginTask( getLabel(), 10 );
 
             // find instance on host
-            ProjectInstanceRecord instance = vmRepo.findInstance( 
-                    project.get().organizationOrUser().name.get(),
-                    project.get().name.get(),
-                    null )
-                    .orElseThrow( () -> new RuntimeException( "No project instance found for: " + project ) );
+            ProjectInstanceRecord instance = vmRepo.findInstance( new ProjectInstanceIdentifier( project.get() ) )
+                    .orElseThrow( () -> new RuntimeException( "No project instance found for: " + project.get() ) );
             monitor.worked( 1 );
 
             // stop process
@@ -93,10 +91,10 @@ public class DeleteProjectOperation
             project.get().launcher.get().uninstall( instance, new SubProgressMonitor( monitor, 7 ) );
             
             // remove instance and association
-            HostRecord host = instance.host.get();
-            host.instances.remove( instance );
-            assert instance.host.get() == null;
+            Object instanceId = instance.id();
             vmRepo.removeEntity( instance );
+            HostRecord host = instance.host.get();
+            assert host.instances.stream().allMatch( i -> !i.id().equals( instanceId ) );
             
             // remove project
             project.get().organization.set( null );

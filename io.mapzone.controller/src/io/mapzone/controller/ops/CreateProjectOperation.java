@@ -88,10 +88,11 @@ public class CreateProjectOperation
             ProjectInstanceRecord instance = vmRepo.createEntity( ProjectInstanceRecord.class, null, (ProjectInstanceRecord proto) -> {
                 proto.organisation.set( organizationOrUser.get().name.get() );
                 proto.project.set( project.get().name.get() );
+                proto.host.set( host );
                 return proto;
             });
-            host.instances.add( instance );
             assert instance.host.get() == host;
+            assert host.instances.stream().anyMatch( elm -> elm==instance );
             monitor.worked( 1 );
 
             // install the instance on the host

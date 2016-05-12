@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <modelVersion>4.0.0</modelVersion>
+    <prerequisites>
+        <maven>3.0</maven>
+    </prerequisites>
+
+    <parent>
+        <groupId>org.polymap</groupId>
+        <artifactId>org.polymap.parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>io.mapzone</groupId>
+    <artifactId>io.mapzone.parent</artifactId>
+    <packaging>pom</packaging>
+
+    <distributionManagement>
+        <repository>
+            <id>mapzone-releases</id>
+            <name>mapzone Releases</name>
+            <url>${mapzoneReleaseDeployRepo}</url>
+        </repository>
+        <snapshotRepository>
+            <id>mapzone-snapshots</id>
+            <name>mapzone Snapshots</name>
+            <url>${mapzoneSnapshotDeployRepo}</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>

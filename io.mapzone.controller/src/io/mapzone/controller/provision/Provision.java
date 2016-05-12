@@ -48,7 +48,7 @@ public interface Provision {
      * @param target The target Provision that is about to be executed.
      * @param cause The {@link Status} that caused the fail of the
      *        <code>target</code> {@link Provision}, or null if the target was not
-     *        executed. Non null signals that the target was tried and failed at
+     *        executed. Non-null signals that the target was tried and failed at
      *        least once.
      * @return True if this Provision wants to be executed for the given context and
      *         <code>target</code> Provision.

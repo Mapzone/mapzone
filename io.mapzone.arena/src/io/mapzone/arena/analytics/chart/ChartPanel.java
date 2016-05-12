@@ -147,7 +147,7 @@ public class ChartPanel
 
     @Override
     public void init() {
-        site().title.set( "Chart :)" );
+        site().title.set( "Chart experiment" );
     }
 
 
@@ -257,8 +257,8 @@ public class ChartPanel
                 ProcessorDescription proc = new ProcessorDescription( ChartGeometryProcessor.class, props );
                 PipelineProcessorSite procSite = new PipelineProcessorSite( props );
                 proc.processor().init( procSite );
-//                featureRenderProc.pipeline.get().add( 0, proc );
-//                log.info( "FeatureRender pipeline: " + featureRenderProc.pipeline.get() );
+                featureRenderProc.pipeline().add( 0, proc );
+                log.info( "FeatureRender pipeline: " + featureRenderProc.pipeline() );
                 
                 // register WMS servlet
                 servletAlias = "/chart" + hashCode();

@@ -29,7 +29,7 @@ public class ForwardResponse
     public Status execute() throws Exception {
         try (
             HttpResponseForwarder forwarder = new HttpResponseForwarder( requestForwarder.get() );
-        ) {
+        ){
             forwarder.service( request.get(), response.get() );
         }
         return OK_STATUS;
