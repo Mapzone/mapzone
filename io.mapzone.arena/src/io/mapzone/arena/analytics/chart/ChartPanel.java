@@ -15,8 +15,9 @@
 package io.mapzone.arena.analytics.chart;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 import java.util.Random;
 
 import java.io.IOException;
@@ -45,8 +46,10 @@ import com.vividsolutions.jts.geom.Point;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
+
 import org.polymap.core.data.feature.AddFeaturesRequest;
 import org.polymap.core.data.feature.FeatureRenderProcessor2;
 import org.polymap.core.data.feature.FeaturesProducer;
@@ -252,7 +255,7 @@ public class ChartPanel
 
                 // inject ChartGeometryProcessor
                 FeatureRenderProcessor2 featureRenderProc = (FeatureRenderProcessor2)pipeline.get( pipeline.length()-1 ).processor();
-                Properties props = new Properties();
+                Map<String,Object> props = new HashMap();
                 props.put( "mappingFunction", mappingFunctions.get( 0 ) );
                 ProcessorDescription proc = new ProcessorDescription( ChartGeometryProcessor.class, props );
                 PipelineProcessorSite procSite = new PipelineProcessorSite( props );
