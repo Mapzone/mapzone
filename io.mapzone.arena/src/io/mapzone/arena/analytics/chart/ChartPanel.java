@@ -309,7 +309,7 @@ public class ChartPanel
         
         @Override
         public void init( PipelineProcessorSite site ) throws Exception {
-            this.mappingFunction = site.getProperty( "mappingFunction" );
+//            this.mappingFunction = site.getProperty( "mappingFunction" );
             assert mappingFunction != null;
         }
 
