@@ -109,7 +109,7 @@ public class GraphPanel extends P4Panel {
     @Override
     public boolean wantsToBeShown() {
         if (site().path().size() == 2) {
-            site().icon.set(ArenaPlugin.images().svgImage("chart-bar.svg", P4Plugin.HEADER_ICON_CONFIG));
+            site().icon.set(ArenaPlugin.images().svgImage("graph.svg", P4Plugin.HEADER_ICON_CONFIG));
             site().tooltip.set("Network Analysis");
             site().title.set("");
             return true;

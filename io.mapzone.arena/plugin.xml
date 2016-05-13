@@ -57,4 +57,11 @@
             id="io.mapzone.arena.analytics.graph.GraphPanel">
       </panel>
    </extension>
+   <extension
+         point="org.polymap.rhei.batik.panels">
+      <panel
+            class="io.mapzone.arena.refine.RefinePanel"
+            id="io.mapzone.arena.refine.RefinePanel">
+      </panel>
+   </extension>
 </plugin>
