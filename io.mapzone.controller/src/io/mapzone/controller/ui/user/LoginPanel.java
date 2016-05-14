@@ -54,7 +54,6 @@ import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.Messages;
 import io.mapzone.controller.ui.StartPanel;
 import io.mapzone.controller.um.repository.LoginCookie;
-import io.mapzone.controller.um.repository.ProjectRepository;
 
 /**
  * 
@@ -137,7 +136,11 @@ public class LoginPanel
 
         protected String                        username, password;
 
-        protected boolean                       storeLogin;
+        /**
+         * Defaults to true. Otherwise project instance logins ask for login even if
+         * /dashboard has correct login.
+         */
+        protected boolean                       storeLogin = true;
         
         protected IFormPageSite                 formSite;
         
@@ -201,7 +204,7 @@ public class LoginPanel
                 public void widgetSelected( SelectionEvent ev ) {
                     login( username, password );
                     if (storeLogin) {
-                        LoginCookie.create( ProjectRepository.newInstance(), username );
+                        LoginCookie.access().create( username );
                     }
                 }
             });

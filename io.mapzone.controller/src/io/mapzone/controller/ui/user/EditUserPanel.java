@@ -128,7 +128,7 @@ public class EditUserPanel
                 .addSelectionListener( new SelectionAdapter() {
                     @Override
                     public void widgetSelected( SelectionEvent e ) {
-                        LoginCookie.destroy( ProjectRepository.newInstance() );
+                        LoginCookie.access().destroy();
                         JavaScriptExecutor executor = RWT.getClient().getService( JavaScriptExecutor.class );
                         executor.execute( "window.location.reload(true);" );
                     }

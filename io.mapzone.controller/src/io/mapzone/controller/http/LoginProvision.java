@@ -19,19 +19,23 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.rap.rwt.RWT;
+
 import org.polymap.core.ui.UIUtils;
 
 import io.mapzone.controller.LoginAppDesign;
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
 import io.mapzone.controller.provision.StopProvisionExecutionException;
+import io.mapzone.controller.um.repository.LoginCookie;
 import io.mapzone.controller.um.repository.User;
 
 /**
@@ -77,9 +81,17 @@ public class LoginProvision
         if (cookie.isPresent()) {
             String userId = loggedIn.get( cookie.get().getValue() );
             if (userId != null) {
-                log.info( "User:" + userId );
+                log.info( "User: " + userId );
                 return OK_STATUS;
             }
+        }
+
+        // check /dashboard login
+        Optional<LoginCookie> loginCookie = LoginCookie.access( request.get(), response.get() ).findAndUpdate();
+        if (loginCookie.isPresent()) {
+            log.info( "Login cookie found: " + loginCookie.get().user.get() );
+            registerUser( loginCookie.get().user.get(), response.get() );
+            return OK_STATUS;            
         }
         
         // no cookie -> /login
@@ -87,7 +99,7 @@ public class LoginProvision
         String handlerId = LoginAppDesign.registerHandler( user -> {
             try {
                 log.info( "Logged in: " + user );
-                registerUser( user );
+                registerUser( user, RWT.getResponse() );
                 UIUtils.exec( "window.location=\"", requestUrl, "\";" );
             }
             catch (Exception e) {
@@ -99,24 +111,24 @@ public class LoginProvision
     }
 
     
-    protected void registerUser( User user ) {
-        //
+    protected void registerUser( User user, @SuppressWarnings( "hiding" ) HttpServletResponse response ) {
+        // cookie token
         byte[] bytes = new byte[8];
         rand.nextBytes( bytes );
-        String handle = Base64.encodeBase64URLSafeString( bytes );
+        String token = Base64.encodeBase64URLSafeString( bytes );
         
         // FIXME Leak: entries are never removed (allow just one cookie/session per user?)
-        if (loggedIn.putIfAbsent( handle, (String)user.id() ) != null) {
-            throw new IllegalStateException( "Handle already exists: " + handle );
+        if (loggedIn.putIfAbsent( token, (String)user.id() ) != null) {
+            throw new IllegalStateException( "Token already exists: " + token );
         }
         
         // set cookie
-        Cookie newCookie = new Cookie( COOKIE_NAME, handle );
+        Cookie newCookie = new Cookie( COOKIE_NAME, token );
         newCookie.setHttpOnly( true );
         newCookie.setPath( COOKIE_PATH );
         newCookie.setSecure( false ); // XXX
         newCookie.setMaxAge( COOKIE_MAX_AGE );
-        RWT.getResponse().addCookie( newCookie );
+        response.addCookie( newCookie );
     }
     
 }

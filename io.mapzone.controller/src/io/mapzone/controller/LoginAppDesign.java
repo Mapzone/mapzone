@@ -108,7 +108,7 @@ public class LoginAppDesign
                 }
             };        
             loginForm.showRegisterLink.set( false );
-            loginForm.showStoreCheck.set( false );
+            loginForm.showStoreCheck.set( true );
             loginForm.showLostLink.set( false );  // XXX implement!
 
             new BatikFormContainer( loginForm ).createContents( parent );
