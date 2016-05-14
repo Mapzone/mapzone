@@ -13,6 +13,7 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.TextOutputCallback;
+import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
@@ -104,17 +105,15 @@ public class UmLoginModule
         // ordinary user
         Optional<User> user = repo.findUser( username );
 
-        return user.map( u -> {
+        if (user.isPresent()) {
             PasswordEncryptor encryptor = PasswordEncryptor.instance();
-            if (encryptor.checkPassword( password, u.passwordHash.get() )) {
-                log.info( "username: " + u.name.get() );
-                principal = new UmUserPrincipal( u );
+            if (encryptor.checkPassword( password, user.get().passwordHash.get() )) {
+                log.info( "username: " + user.get().name.get() );
+                principal = new UmUserPrincipal( user.get() );
                 return loggedIn = true;
             }
-            else {
-                return false;
-            }}
-        ).orElse( false );
+        }
+        throw new FailedLoginException( "Username or password not correct." );
     }
 
 

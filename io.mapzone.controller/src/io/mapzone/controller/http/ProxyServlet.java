@@ -19,6 +19,7 @@ import static org.apache.commons.lang3.StringUtils.substringAfter;
 import io.mapzone.controller.provision.Provision.Status;
 import io.mapzone.controller.provision.ProvisionExecutor;
 import io.mapzone.controller.provision.ProvisionExecutor2;
+import io.mapzone.controller.provision.StopProvisionExecutionException;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.vm.provisions.MaxProcesses;
 import io.mapzone.controller.vm.provisions.ProcessRunning;
@@ -43,7 +44,8 @@ import com.google.common.base.Throwables;
 import org.polymap.core.runtime.Closer;
 
 /**
- * 
+ * The proxy servlet takes request targeting a project instance and forwards it via
+ * provision framework.
  *
  * @author Falko Bräutigam
  */
@@ -53,12 +55,16 @@ public class ProxyServlet
     private static Log log = LogFactory.getLog( ProxyServlet.class );
     
     /** The provisions to be handled before {@link ForwardRequest} to the instance. */
-    private static final Class[]    forwardRequestProvisions = {ProcessStarted.class, ProcessRunning.class, MaxProcesses.class };
+    private static final Class[]    forwardRequestProvisions = {
+            LoginProvision.class,
+            ProcessStarted.class, 
+            ProcessRunning.class, 
+            MaxProcesses.class };
 
     /** The provisions to be handled before {@link ForwardResponse} back to the sender. */
     private static final Class[]    forwardResponseProvisions = {};
 
-    private static final String     SERVLET_ALIAS = "/projects";
+    public static final String      SERVLET_ALIAS = "/projects";
 
     /** A bit restrictive, just to make sure :) */
     private static final Pattern    NO_URL_CHAR = Pattern.compile( "[^a-zA-Z0-9_-]" );
@@ -103,6 +109,10 @@ public class ProxyServlet
                 if (forwardRequest.vmRepo.isPresent()) {
                     forwardRequest.vmRepo.get().commit();
                 }
+            }
+            catch (StopProvisionExecutionException e) {
+                // login redirect
+                return;
             }
             catch (Throwable e) {
                 // error while provisioning or upstream process
