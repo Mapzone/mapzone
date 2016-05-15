@@ -103,7 +103,7 @@ public class OrgPersonSplitTableRefineFunction
 
     @Override
     public String description() {
-        return "Q - Split mapzone recherche into Person, Organization and Role";
+        return "Q - Split mapzone recherche into Persons, Organizations and Roles; Geocode also Organizations";
     }
 
 
