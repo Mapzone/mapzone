@@ -37,6 +37,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.geotools.data.DataAccess;
 import org.geotools.data.FeatureSource;
@@ -73,6 +74,8 @@ import com.google.common.collect.Maps;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
+
+import io.mapzone.arena.analytics.graph.FeatureSourceSelectorUI;
 
 /**
  * hardcoded *splittable* for teamq
@@ -116,27 +119,7 @@ public class OrgPersonSplitTableRefineFunction
     @Override
     public void createContents( final MdToolkit tk, final Composite parent ) {
         try {
-            Combo combo = new Combo( parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN );
-
-            final List<Name> featureSourceNames = P4Plugin.localCatalog().localFeaturesStore().getNames();
-            // final List<String> featureSources = featureSourceNames.stream().map(
-            // name -> name.getLocalPart() ).collect( Collectors.toList() );
-            combo.setItems( featureSourceNames.stream().map( name -> name.getLocalPart() ).toArray( String[]::new ) );
-            combo.addSelectionListener( new SelectionAdapter() {
-
-                @Override
-                public void widgetSelected( SelectionEvent e ) {
-                    try {
-                        Name featureSourceName = featureSourceNames.get( combo.getSelectionIndex() );
-                        onSelectSource(
-                                P4Plugin.localCatalog().localFeaturesStore().getFeatureSource( featureSourceName ) );
-                    }
-                    catch (IOException e1) {
-                        StatusDispatcher.handleError( "", e1 );
-                    }
-                }
-
-            } );
+            Control combo = new FeatureSourceSelectorUI( tk, parent, fs -> onSelectSource( fs ) ).control();
 
             fab = tk.createFab();
             fab.setVisible( false );
@@ -145,6 +128,7 @@ public class OrgPersonSplitTableRefineFunction
                 @Override
                 public void widgetSelected( SelectionEvent e ) {
                     DefaultOperation op = new DefaultOperation( "Split Table" ) {
+
                         @Override
                         public IStatus doExecute( IProgressMonitor monitor, IAdaptable info ) throws Exception {
                             splitSource( tk, monitor );
@@ -152,7 +136,7 @@ public class OrgPersonSplitTableRefineFunction
                         }
                     };
                     // execute
-                    OperationSupport.instance().execute2( op, true, false);
+                    OperationSupport.instance().execute2( op, true, false );
                     fab.setVisible( false );
                 }
             } );
@@ -207,9 +191,9 @@ public class OrgPersonSplitTableRefineFunction
             tk.createSnackbar( Appearance.FadeIn, "Process started - stay tuned" );
             FeatureIterator iterator = fs.getFeatures().features();
             int max = fs.getFeatures().size();
-            monitor.beginTask( "Split Table", max);
+            monitor.beginTask( "Split Table", max );
             int i = 0;
-            while (iterator.hasNext()) {
+            while (iterator.hasNext() && i < 10) {
                 i++;
                 SimpleFeature baseFeature = (SimpleFeature)iterator.next();
                 String organisationKey = (String)baseFeature.getAttribute( "Organisation" );
@@ -236,7 +220,7 @@ public class OrgPersonSplitTableRefineFunction
                 }
                 monitor.worked( i );
                 if (i % 300 == 0) {
-                    tk.createSnackbar( Appearance.FadeIn,  i + " of " +  max );
+                    tk.createSnackbar( Appearance.FadeIn, i + " of " + max );
                 }
             }
             addLayerAndStore( organisations );
@@ -328,8 +312,8 @@ public class OrgPersonSplitTableRefineFunction
                 strasse = strasseHausNr;
             }
         }
-        builder.add(
-                coordinateForOrganisation( (String)baseFeature.getAttribute( "Organisation" ), !StringUtils.isBlank( plz ) ? plz : plzOrt, strasseHausNr ) );
+        builder.add( coordinateForOrganisation( (String)baseFeature.getAttribute( "Organisation" ),
+                !StringUtils.isBlank( plz ) ? plz : plzOrt, strasseHausNr ) );
 
         builder.add( ((String)baseFeature.getAttribute( "Organisation" )).trim() );
         builder.add( plz );
@@ -337,15 +321,15 @@ public class OrgPersonSplitTableRefineFunction
         builder.add( strasse );
         builder.add( hausNr );
         builder.add( baseFeature.getAttribute( "Orga_Kategorie" ) );
-        return builder.buildFeature( (String)baseFeature.getAttribute( "Organisation" ) );
+        return builder.buildFeature( null);
     }
 
 
     protected Point coordinateForOrganisation( final String organisation, final String plz, final String strasseHausNr )
             throws Exception {
-       if (StringUtils.isBlank( plz  ) || StringUtils.isBlank( strasseHausNr )) {
-           return null;
-       }
+        if (StringUtils.isBlank( plz ) || StringUtils.isBlank( strasseHausNr )) {
+            return null;
+        }
         final String search1 = "\"lat\":";
         final String search2 = ",\"lng\":";
         final String search3 = "}";
@@ -429,7 +413,7 @@ public class OrgPersonSplitTableRefineFunction
         builder.add( baseFeature.getAttribute( "Bearbeitet von" ) );
         builder.add( baseFeature.getAttribute( "Internet-Quelle für Gemeinderat ( nur einmal pro Person ausfüllen)" ) );
         builder.add( baseFeature.getAttribute( "weitere Internet-Quelle" ) );
-        return builder.buildFeature( baseFeature.getAttribute( "Vorname" ) + "_" + baseFeature.getAttribute( "Name" ) );
+        return builder.buildFeature( null );
     }
 
 
@@ -455,7 +439,7 @@ public class OrgPersonSplitTableRefineFunction
         builder.add( baseFeature.getAttribute( "Orga_Position_2" ) );
         builder.add( person.getID() );
         builder.add( organisation.getID() );
-        return builder.buildFeature( person.getID() + "_" + organisation.getID() );
+        return builder.buildFeature( null );
     }
 
 

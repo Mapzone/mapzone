@@ -17,29 +17,32 @@ package io.mapzone.arena.analytics.graph;
 import static org.polymap.p4.layer.FeatureSelection.ff;
 
 import java.util.Optional;
+import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.rap.rwt.service.ServerPushSession;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.json.JSONArray;
-import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.polymap.core.data.util.Geometries;
-import org.polymap.core.data.util.NameImpl;
 import org.polymap.core.mapeditor.MapViewer;
 import org.polymap.core.project.ILayer;
 import org.polymap.core.runtime.Lazy;
 import org.polymap.core.runtime.PlainLazyInit;
 import org.polymap.core.runtime.event.EventManager;
+import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.ui.FormDataFactory;
 import org.polymap.core.ui.FormLayoutFactory;
+import org.polymap.core.ui.SelectionAdapter;
 import org.polymap.core.ui.StatusDispatcher;
+import org.polymap.core.ui.UIUtils;
 import org.polymap.p4.P4Panel;
 import org.polymap.p4.P4Plugin;
 import org.polymap.p4.layer.FeatureClickEvent;
@@ -52,31 +55,36 @@ import org.polymap.rap.openlayers.layer.VectorLayer;
 import org.polymap.rap.openlayers.source.VectorSource;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PanelPath;
+import org.polymap.rhei.batik.toolkit.IPanelSection;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import io.mapzone.arena.ArenaPlugin;
+import io.mapzone.arena.Messages;
 
 /**
  * Proof-of-concept for generated geometries and graph displayed in an OL map.
  *
  * @author Steffen Stundzig
  */
-public class GraphPanel extends P4Panel {
+public class GraphPanel
+        extends P4Panel {
 
-    private final ServerPushSession pushSession = new ServerPushSession();
+    private static Log log = LogFactory.getLog( GraphPanel.class );
 
-    private static Log log = LogFactory.getLog(GraphPanel.class);
+    private static final IMessages i18n = Messages.forPrefix( "GraphPanel" );
 
-    public static final PanelIdentifier ID = PanelIdentifier.parse("graph");
+    public static final PanelIdentifier ID = PanelIdentifier.parse( "graph" );
 
-    public static final Lazy<CoordinateReferenceSystem> CRS = new PlainLazyInit(() -> {
+    public static final Lazy<CoordinateReferenceSystem> CRS = new PlainLazyInit( () -> {
         try {
-            return Geometries.crs("EPSG:3857");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            return Geometries.crs( "EPSG:3857" );
         }
-    });
+        catch (Exception e) {
+            throw new RuntimeException( e );
+        }
+    } );
 
     // instance *******************************************
 
@@ -106,140 +114,129 @@ public class GraphPanel extends P4Panel {
 
     private PanelPath path;
 
+
     @Override
     public boolean wantsToBeShown() {
         if (site().path().size() == 2) {
-            site().icon.set(ArenaPlugin.images().svgImage("graph.svg", P4Plugin.HEADER_ICON_CONFIG));
-            site().tooltip.set("Network Analysis");
-            site().title.set("");
+            site().icon.set( ArenaPlugin.images().svgImage( "graph.svg", P4Plugin.HEADER_ICON_CONFIG ) );
+            site().tooltip.set( i18n.get( "tooltip" ) );
+            site().title.set( "" );
             return true;
         }
         return false;
     }
 
+
     @Override
     public void init() {
-        pushSession.start();
-        site().title.set("Network Analysis");
+        site().title.set( i18n.get( "title" ) );
     }
 
-    @Override
-    public void dispose() {
-        pushSession.stop();
-        super.dispose();
-    }
+    // XXX replace with extension point
+    public static final Class<GraphFunction>[] availableFunctions = new Class[] { HiddenOrganisationPersonGraphFunction.class, OrganisationPersonGraphFunction.class,
+            SingleSourceNodeGraphFunction.class };
+
 
     @Override
-    public void createContents(@SuppressWarnings("hiding") Composite parent) {
+    public void createContents( final Composite parent ) {
         try {
-            Filter filter = null;
-            if (!featureSelection.isPresent()) {
-                // tk().createFlowText( parent, "Select a layer to by **active**
-                // first." );
-                // return;
-                // TODO combobox with all available layers
-                P4Plugin.localCatalog().localFeaturesStore().getNames()
-                        .forEach(name -> System.out.println("local:" + name));
-                fs = P4Plugin.localCatalog().localFeaturesStore()
-                        .getFeatureSource(new NameImpl("Mapzone-Recherche-06"));
-            } else {
-                // this.layer = featureSelection.get().layer();
-                fs = featureSelection.get().waitForFs().get();
-                filter = featureSelection.get().filter();
-            }
-            // this.parent = parent;
-            parent.setLayout(FormLayoutFactory.defaults().spacing(5).margins(0, 5).create());
 
-            // SimpleFeatureType schema = (SimpleFeatureType)fs.getSchema();
-            // availableAttributes = new ArrayList();
-            // for (AttributeDescriptor prop : schema.getAttributeDescriptors())
-            // {
-            // if (Number.class.isAssignableFrom( prop.getType().getBinding() )
-            // || String.class.isAssignableFrom( prop.getType().getBinding() ))
-            // {
-            // availableAttributes.add( prop.getLocalName() );
-            // }
-            // }
-            // if (availableAttributes.isEmpty()) {
-            // tk().createFlowText( parent, "No number attributes in the active
-            // layer."
-            // );
-            // return;
-            // }
-            // // combo
-            // ComboViewer combo = new ComboViewer( parent );
-            // combo.setContentProvider( new ArrayContentProvider() );
-            // combo.setInput( availableAttributes.toArray() );
-            // combo.addSelectionChangedListener( ev -> {
-            // NumberMappingFunction mappingFunction = new
-            // NumberMappingFunction();
-            // mappingFunction.init( SelectionAdapter.on( ev.getSelection()
-            // ).first(
-            // String.class ).get(), fs );
-            // mappingFunctions.add( mappingFunction );
-            //
-            // });
-            // //combo.setSelection( new StructuredSelection(
-            // availableAttributes.get( 0
-            // ) ) );
+            // this.parent = parent;
+            parent.setLayout( FormLayoutFactory.defaults().create() );
+
+            final TreeMap<String,GraphFunction> functions = Maps.newTreeMap();
+            for (Class<GraphFunction> cl : availableFunctions) {
+                try {
+                    GraphFunction function = cl.newInstance();
+                    functions.put( function.title(), function );
+                }
+                catch (Exception e) {
+                    throw new RuntimeException( e );
+                }
+            }
+
+            final Composite functionContainer = tk().createComposite( parent, SWT.NONE );
+
+            final ComboViewer combo = new ComboViewer( parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN );
+            combo.setContentProvider( new ArrayContentProvider() );
+            combo.setInput( functions.keySet() );
+            combo.addSelectionChangedListener( ev -> {
+                String selected = SelectionAdapter.on( ev.getSelection() ).first( String.class ).get();
+                GraphFunction function = functions.get( selected );
+                
+                FormDataFactory.on( functionContainer ).top( combo.getCombo(), 5 ).height( function.preferredHeight() ).left( 0 ).right( 100 );
+                
+                UIUtils.disposeChildren( functionContainer );
+                // create panel
+                IPanelSection section = tk().createPanelSection( functionContainer, function.description(),
+                        SWT.BORDER );
+                section.setExpanded( true );
+                section.getBody().setLayout( FormLayoutFactory.defaults().create() );
+                function.createContents( tk(), section.getBody(), source, mapViewer.getMap() );
+                FormDataFactory.on( section.getBody() ).fill();
+
+//                functionContainer.layout();
+                parent.layout();
+            } );
+
             //
             // mapContainer
-            mapContainer = tk().createComposite(parent, SWT.BORDER);
-            mapContainer.setLayout(new FillLayout());
-            //
-            // // layout
-            // FormDataFactory.on( combo.getCombo()
-            // ).fill().noBottom().control();
-            FormDataFactory.on(mapContainer).fill();// .top( combo.getCombo() );
+            mapContainer = tk().createComposite( parent, SWT.BORDER );
+            mapContainer.setLayout( new FillLayout() );
             if (mapViewer != null) {
                 mapViewer.dispose();
             }
             createMapViewer();
 
-            OrganisationPersonGraphFunction omf = new OrganisationPersonGraphFunction();
-            omf.init(source, mapViewer);
-            omf.addFeatures(fs.getFeatures(filter));
-        } catch (Exception e) {
-            StatusDispatcher.handleError("", e);
+            // layout
+            final Label selectLabel = tk().createLabel( parent, i18n.get( "selectFunction" ), SWT.NONE );
+            FormDataFactory.on( selectLabel ).top( 1 ).left( 1 );
+            FormDataFactory.on( combo.getCombo() ).top( selectLabel, 2 ).left(1);
+            FormDataFactory.on( functionContainer ).top( combo.getCombo(), 5 ).height( 0 ).left( 0 ).right( 100 );
+            FormDataFactory.on( mapContainer ).fill().top( functionContainer, 5 );
+        }
+        catch (Exception e) {
+            StatusDispatcher.handleError( "", e );
         }
     }
 
+
     protected void createMapViewer() {
-        mapViewer = new MapViewer<VectorLayer>(mapContainer);
-        source = new VectorSource().format.put(new GeoJSONFormat());
-        GraphLayerProvider graphLayerProvider = new GraphLayerProvider(source);
-        mapViewer.layerProvider.set(graphLayerProvider);
-        mapViewer.contentProvider.set(new ArrayContentProvider());
-        mapViewer.maxExtent.set(new ReferencedEnvelope(-10000, -10000, 10000, 10000, CRS.get()));
+        mapViewer = new MapViewer<VectorLayer>( mapContainer );
+        source = new VectorSource().format.put( new GeoJSONFormat() );
+        GraphLayerProvider graphLayerProvider = new GraphLayerProvider( source );
+        mapViewer.layerProvider.set( graphLayerProvider );
+        mapViewer.contentProvider.set( new ArrayContentProvider() );
+        mapViewer.maxExtent.set( new ReferencedEnvelope( -10000, -10000, 10000, 10000, CRS.get() ) );
         // mapViewer.addMapControl( new MousePositionControl() );
-        mapViewer.addMapControl(new ScaleLineControl());
-        SelectInteraction selectInteraction = new SelectInteraction((VectorLayer) graphLayerProvider.getLayer(null));
+        mapViewer.addMapControl( new ScaleLineControl() );
+        SelectInteraction selectInteraction = new SelectInteraction( (VectorLayer)graphLayerProvider.getLayer( null ) );
         selectFeatureListener = event -> {
-            log.info("Selected: " + event.properties().get("selected").toString());
-            JSONArray ids = event.properties().getJSONArray("selected");
+            log.info( "Selected: " + event.properties().get( "selected" ).toString() );
+            JSONArray ids = event.properties().getJSONArray( "selected" );
             if (ids != null && ids.length() > 0) {
 
                 try {
-                    String id = ids.getString(0);
-                    if (id.startsWith("p:") || id.startsWith("o:")) {
-                        id = id.substring(2);
+                    String id = ids.getString( 0 );
+                    if (id.startsWith( "p:" ) || id.startsWith( "o:" )) {
+                        id = id.substring( 2 );
                     }
-                    EventManager.instance()
-                            .publish(new FeatureClickEvent(featureSelection.get(),
-                                    Optional.ofNullable(
-                                            fs.getFeatures(ff.id(Sets.newHashSet(ff.featureId(id)))).features().next()),
-                            Optional.empty()));
-                } catch (Exception e) {
+                    EventManager.instance().publish( new FeatureClickEvent(
+                            featureSelection.get(), Optional.ofNullable( fs
+                                    .getFeatures( ff.id( Sets.newHashSet( ff.featureId( id ) ) ) ).features().next() ),
+                            Optional.empty() ) );
+                }
+                catch (Exception e) {
                     e.printStackTrace();
                 }
                 path = site().path();
-                getContext().openPanel(site().path(), FeaturePanel.ID);
+                getContext().openPanel( site().path(), FeaturePanel.ID );
             }
         };
-        selectInteraction.addEventListener(SelectInteraction.Event.select, selectFeatureListener);
-        mapViewer.addMapInteraction(selectInteraction);
+        selectInteraction.addEventListener( SelectInteraction.Event.select, selectFeatureListener );
+        mapViewer.addMapInteraction( selectInteraction );
 
-        mapViewer.setInput(new ILayer[] { null });
+        mapViewer.setInput( new ILayer[] { null } );
         mapContainer.layout();
     }
 }

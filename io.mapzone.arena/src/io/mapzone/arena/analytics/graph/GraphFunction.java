@@ -1,26 +1,40 @@
 package io.mapzone.arena.analytics.graph;
 
-import org.geotools.feature.FeatureCollection;
-import org.polymap.core.mapeditor.MapViewer;
-import org.polymap.rap.openlayers.graph.OlFeatureGephiGraph;
-import org.polymap.rap.openlayers.layer.VectorLayer;
+import org.eclipse.swt.widgets.Composite;
+import org.polymap.rap.openlayers.base.OlMap;
 import org.polymap.rap.openlayers.source.VectorSource;
+import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
-public abstract class GraphFunction {
+public interface GraphFunction {
 
-    protected VectorSource           source;
-
-    protected MapViewer<VectorLayer> map;
-
-    protected OlFeatureGephiGraph    graph;
+    String title();
 
 
-    public void init( final VectorSource source, final MapViewer<VectorLayer> map ) {
-        this.source = source;
-        this.map = map;
-        this.graph = new OlFeatureGephiGraph( source, map.getMap() );
+    String description();
+
+
+    /**
+     * creates the configuration part of this graph function
+     * 
+     * @param olMap
+     * @param source
+     */
+    void createContents( final MdToolkit tk, final Composite parent, final VectorSource source, final OlMap olMap );
+
+
+    /**
+     * @return the preferred configuration panel height
+     */
+    default int preferredHeight() {
+        return 100;
     }
 
 
-    public abstract void addFeatures( FeatureCollection features ) throws Exception;
+    /**
+     * method call signals that edge function is completely configured
+     * XXX remove bei EventHandler
+     */
+    default void edgeFunctionConfigurationDone() {
+    }
+
 }

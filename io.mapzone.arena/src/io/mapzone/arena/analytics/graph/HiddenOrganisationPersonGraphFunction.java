@@ -57,12 +57,12 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
-public class OrganisationPersonGraphFunction
+public class HiddenOrganisationPersonGraphFunction
         implements GraphFunction {
 
     private final ServerPushSession pushSession = new ServerPushSession();
 
-    private static Log log = LogFactory.getLog( OrganisationPersonGraphFunction.class );
+    private static Log log = LogFactory.getLog( HiddenOrganisationPersonGraphFunction.class );
 
     private final Style edgeStyle = new Style().stroke
             .put( new StrokeStyle().color.put( new Color( "black" ) ).width.put( 1f ) ).zIndex.put( 0f );
@@ -70,13 +70,13 @@ public class OrganisationPersonGraphFunction
 
     @Override
     public String title() {
-        return "Q - raw mapzone recherche";
+        return "Q - raw mapzone recherche, hidden organizations";
     }
 
 
     @Override
     public String description() {
-        return "Q - raw mapzone recherche as persons and organizations based on 'Mapzone-Recherche-6'";
+        return "Q - raw mapzone recherche as persons and organizations with hidden organizations nodes based on 'Mapzone-Recherche-6'";
     }
 
 
@@ -121,8 +121,9 @@ public class OrganisationPersonGraphFunction
             }
         } );
 
-        final Label selectLabel = tk.createLabel( parent, "using mapzone-recherche-06", SWT.BORDER );
+        final Label selectLabel = tk.createLabel( parent, "using mapzone-recherche-06 directly", SWT.BORDER );
         FormDataFactory.on( selectLabel ).fill().top( 15 ).left( 1 ).noBottom();
+        // FormDataFactory.on( combo ).top( selectLabel, 3 ).left( 1 );
     }
 
 
@@ -150,7 +151,7 @@ public class OrganisationPersonGraphFunction
             OlFeature organisationFeature = organisations.get( organisationKey );
             if (organisationFeature == null) {
                 organisationFeature = new OlFeature( "o:" + feature.getID() ).name.put( organisationKey ).style
-                        .put( organisationStyle( 1 ) );
+                        .put( organizationStyle() );
                 organisations.put( organisationKey, organisationFeature );
                 graph.addOrUpdateNode( organisationFeature );
             }
@@ -158,7 +159,7 @@ public class OrganisationPersonGraphFunction
                 // add weight
                 int size = organisation2Persons.get( organisationFeature ).size() + 1;
                 if (size <= 15) {
-                    organisationFeature.style.set( organisationStyle( size ) );
+                    organisationFeature.style.set( organizationStyle() );
                 }
                 graph.addOrUpdateNode( organisationFeature, 1 );
             }
@@ -189,8 +190,8 @@ public class OrganisationPersonGraphFunction
                 log.info( "added " + i );
             }
         }
-        tk.createSnackbar( Appearance.FadeIn, organisations.size() + " organisations, " + persons.size() + " persons and " + organisation2Persons.size()
-                + " relations analysed" );
+        tk.createSnackbar( Appearance.FadeIn, organisations.size() + " organisations, " + persons.size()
+                + " persons and " + organisation2Persons.size() + " relations analysed" );
         organisations.clear();
         persons.clear();
         organisation2Persons.clear();
@@ -206,37 +207,56 @@ public class OrganisationPersonGraphFunction
         return edgeStyle;
     }
 
+    private StyleFunction organizationStyle;
 
-    private Base organisationStyle( int weight ) {
-        return new StyleFunction( circle( weight, "blue" ) );
+
+    private StyleFunction organizationStyle() {
+        if (organizationStyle == null) {
+            organizationStyle = new StyleFunction( organization() );
+        }
+        return organizationStyle;
     }
 
 
     private Base personStyle( int weight ) {
-        return new StyleFunction( circle( weight, "red" ) );
+        return new StyleFunction( person( weight ) );
     }
 
+    private final static String PERSONCOLOR = "red";
 
-    private String circle( int radius, String color ) {
+
+    private String person( int weight ) {
         StringBuffer sb = new StringBuffer();
-        // sb.append(
-        // "console.log('singlefeature');console.log(feature);console.log(this);"
-        // );
         sb.append( "return [new ol.style.Style({" );
         sb.append( "  zIndex: 1," );
         sb.append( "  image: new ol.style.Circle({" );
-        sb.append( "      radius: " ).append( radius ).append( "," );
+        sb.append( "      radius: '" ).append( weight ).append( "'," );
         sb.append( "    stroke: new ol.style.Stroke({" );
-        sb.append( "      color: '" ).append( color ).append( "'" );
+        sb.append( "      color: '" ).append( PERSONCOLOR ).append( "'" );
         sb.append( "    })," );
         sb.append( "    fill: new ol.style.Fill({" );
-        sb.append( "      color: '" ).append( color ).append( "'" );
+        sb.append( "      color: '" ).append( PERSONCOLOR ).append( "'" );
         sb.append( "    })" );
         sb.append( "  })," );
         sb.append( "  text: new ol.style.Text({" );
         sb.append( "    text: this.get('name')," );
         sb.append( "    fill: new ol.style.Fill({" );
-        sb.append( "      color: '" ).append( color ).append( "'" );
+        sb.append( "      color: 'black'" );
+        sb.append( "    })" );
+        sb.append( "  })" );
+        sb.append( "})];" );
+        return sb.toString();
+    }
+
+
+    private String organization() {
+        StringBuffer sb = new StringBuffer();
+        sb.append( "return [new ol.style.Style({" );
+        sb.append( "  zIndex: 1," );
+        sb.append( "  image: new ol.style.Circle({" );
+        sb.append( "    radius: 0.1," );
+        sb.append( "    fill: new ol.style.Fill({" );
+        sb.append( "      color: 'black'" );
         sb.append( "    })" );
         sb.append( "  })" );
         sb.append( "})];" );
