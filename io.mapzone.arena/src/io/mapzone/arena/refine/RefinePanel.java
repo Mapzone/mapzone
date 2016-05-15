@@ -143,8 +143,8 @@ public class RefinePanel
 
         // layout
         final Label selectLabel = tk().createLabel( parent, i18n.get( "selectFunction" ), SWT.NONE );
-        FormDataFactory.on( selectLabel ).top( 1 ).left( 2 );
-        FormDataFactory.on( combo ).top( selectLabel, 1 ).left( 1 ).noBottom();
-        FormDataFactory.on( functionContainer ).fill().top( combo, 2 );
+        FormDataFactory.on( selectLabel ).top( 1 ).left( 1 );
+        FormDataFactory.on( combo ).top( selectLabel, 3 ).left( 1 ).noBottom();
+        FormDataFactory.on( functionContainer ).fill().top( combo, 5 );
     }
 }

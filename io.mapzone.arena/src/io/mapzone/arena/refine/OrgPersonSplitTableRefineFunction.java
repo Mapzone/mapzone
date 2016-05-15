@@ -15,14 +15,22 @@
 package io.mapzone.arena.refine;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -37,6 +45,7 @@ import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -45,6 +54,7 @@ import org.polymap.core.catalog.resolve.IResolvableInfo;
 import org.polymap.core.catalog.resolve.IResourceInfo;
 import org.polymap.core.data.rs.catalog.RServiceInfo;
 import org.polymap.core.data.util.NameImpl;
+import org.polymap.core.operation.DefaultOperation;
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.project.IMap;
 import org.polymap.core.project.operations.NewLayerOperation;
@@ -58,7 +68,10 @@ import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Maps;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 /**
@@ -71,6 +84,8 @@ public class OrgPersonSplitTableRefineFunction
 
     private static Log log = LogFactory.getLog( OrgPersonSplitTableRefineFunction.class );
 
+    private final static GeometryFactory GEOMETRYFACTORY = JTSFactoryFinder.getGeometryFactory( null );
+
     private final static SimpleDateFormat sdf = new SimpleDateFormat( "yyyyMMddHHmm" );
 
     private Button fab;
@@ -82,13 +97,13 @@ public class OrgPersonSplitTableRefineFunction
 
     @Override
     public String title() {
-        return "Recherchedaten aufspalten";
+        return "Q - Split mapzone recherche";
     }
 
 
     @Override
     public String description() {
-        return "Recherche Daten aufspalten in Personen, Organisationen und Rollen";
+        return "Q - Split mapzone recherche into Person, Organization and Role";
     }
 
 
@@ -129,13 +144,21 @@ public class OrgPersonSplitTableRefineFunction
 
                 @Override
                 public void widgetSelected( SelectionEvent e ) {
-                    splitSource( tk );
+                    DefaultOperation op = new DefaultOperation( "Split Table" ) {
+                        @Override
+                        public IStatus doExecute( IProgressMonitor monitor, IAdaptable info ) throws Exception {
+                            splitSource( tk, monitor );
+                            return Status.OK_STATUS;
+                        }
+                    };
+                    // execute
+                    OperationSupport.instance().execute2( op, true, false);
                     fab.setVisible( false );
                 }
             } );
-            final Label selectLabel = tk.createLabel( parent, "Wähle die Ausgangsdaten: ", SWT.NONE );
+            final Label selectLabel = tk.createLabel( parent, "Choose your source table: ", SWT.NONE );
             FormDataFactory.on( selectLabel ).top( 5 ).left( 1 );
-            FormDataFactory.on( combo ).top( selectLabel, 1 ).left( 1 );
+            FormDataFactory.on( combo ).top( selectLabel, 3 ).left( 1 );
         }
         catch (Exception e) {
             StatusDispatcher.handleError( "", e );
@@ -161,7 +184,7 @@ public class OrgPersonSplitTableRefineFunction
     }
 
 
-    protected void splitSource( final MdToolkit tk ) {
+    protected void splitSource( final MdToolkit tk, final IProgressMonitor monitor ) {
         try {
             final SimpleFeatureType organisationType = buildOrganisationType( fs );
             final SimpleFeatureBuilder organisationBuilder = new SimpleFeatureBuilder( organisationType );
@@ -181,15 +204,19 @@ public class OrgPersonSplitTableRefineFunction
             // iterate on features
             // create OlFeature for each organisation
             // increase weight for each entry per organisation
+            tk.createSnackbar( Appearance.FadeIn, "Process started - stay tuned" );
             FeatureIterator iterator = fs.getFeatures().features();
+            int max = fs.getFeatures().size();
+            monitor.beginTask( "Split Table", max);
             int i = 0;
             while (iterator.hasNext()) {
                 i++;
                 SimpleFeature baseFeature = (SimpleFeature)iterator.next();
-                if (!StringUtils.isBlank( (String)baseFeature.getAttribute( "Organisation" ) )
+                String organisationKey = (String)baseFeature.getAttribute( "Organisation" );
+                if (!StringUtils.isBlank( organisationKey ) && !"?".equals( organisationKey )
                         && !StringUtils.isBlank( (String)baseFeature.getAttribute( "Name" ) )
                         && !StringUtils.isBlank( (String)baseFeature.getAttribute( "Vorname" ) )) {
-                    String organisationKey = (String)baseFeature.getAttribute( "Organisation" );
+                    organisationKey = organisationKey.trim();
                     SimpleFeature organisation = organisationCache.get( organisationKey );
                     if (organisation == null) {
                         organisation = createOrganisation( organisationBuilder, baseFeature );
@@ -206,6 +233,10 @@ public class OrgPersonSplitTableRefineFunction
                     }
                     // create also the association
                     associations.add( createAssociation( associationBuilder, baseFeature, organisation, person ) );
+                }
+                monitor.worked( i );
+                if (i % 300 == 0) {
+                    tk.createSnackbar( Appearance.FadeIn,  i + " of " +  max );
                 }
             }
             addLayerAndStore( organisations );
@@ -260,25 +291,101 @@ public class OrgPersonSplitTableRefineFunction
         builder.add( "theGeom", Point.class );
 
         builder.add( "Name", String.class );
-        builder.add( "PLZ_Ort", String.class );
-        builder.add( "Str_HN", String.class );
+        builder.add( "PLZ", String.class );
+        builder.add( "Ort", String.class );
+        builder.add( "Strasse", String.class );
+        builder.add( "Hausnummer", String.class );
         builder.add( "Kategorie", String.class );
         return builder.buildFeatureType();
     }
 
 
-    private SimpleFeature createOrganisation( SimpleFeatureBuilder builder, SimpleFeature baseFeature ) {
-        builder.add( coordinateForOrganisation( (String)baseFeature.getAttribute( "Organisation" ) ) );
+    private SimpleFeature createOrganisation( SimpleFeatureBuilder builder, SimpleFeature baseFeature )
+            throws Exception {
+        final String plzOrt = (String)baseFeature.getAttribute( "Orga_Adresse_PLZ_Ort" );
+        String plz = "";
+        String ort = "";
+        if (!StringUtils.isBlank( plzOrt )) {
+            int index = plzOrt.indexOf( " " );
+            if (index != -1) {
+                plz = plzOrt.substring( 0, index );
+                ort = plzOrt.substring( index + 1 );
+            }
+            else {
+                ort = plzOrt;
+            }
+        }
+        final String strasseHausNr = (String)baseFeature.getAttribute( "Orga_Adresse_Str_HN" );
+        String strasse = "";
+        String hausNr = "";
+        if (!StringUtils.isBlank( strasseHausNr )) {
+            int index = strasseHausNr.lastIndexOf( " " );
+            if (index != -1) {
+                strasse = strasseHausNr.substring( 0, index );
+                hausNr = strasseHausNr.substring( index + 1 );
+            }
+            else {
+                strasse = strasseHausNr;
+            }
+        }
+        builder.add(
+                coordinateForOrganisation( (String)baseFeature.getAttribute( "Organisation" ), !StringUtils.isBlank( plz ) ? plz : plzOrt, strasseHausNr ) );
 
-        builder.add( baseFeature.getAttribute( "Organisation" ) );
-        builder.add( baseFeature.getAttribute( "Orga_Adresse_PLZ_Ort" ) );
-        builder.add( baseFeature.getAttribute( "Orga_Adresse_Str_HN" ) );
+        builder.add( ((String)baseFeature.getAttribute( "Organisation" )).trim() );
+        builder.add( plz );
+        builder.add( ort );
+        builder.add( strasse );
+        builder.add( hausNr );
         builder.add( baseFeature.getAttribute( "Orga_Kategorie" ) );
         return builder.buildFeature( (String)baseFeature.getAttribute( "Organisation" ) );
     }
 
 
-    private Object coordinateForOrganisation( String organisation ) {
+    protected Point coordinateForOrganisation( final String organisation, final String plz, final String strasseHausNr )
+            throws Exception {
+       if (StringUtils.isBlank( plz  ) || StringUtils.isBlank( strasseHausNr )) {
+           return null;
+       }
+        final String search1 = "\"lat\":";
+        final String search2 = ",\"lng\":";
+        final String search3 = "}";
+        final String key = "AAdiimU0EwFAoY3G7M7hFx694EdRTuSa";
+        final String location = URLEncoder.encode( Joiner.on( ", " ).join( plz, strasseHausNr ), "UTF-8" );
+        final String url = String.format( "http://www.mapquestapi.com/geocoding/v1/address?key=%1$2s&location=%2$2s",
+                key, location );
+        final HttpURLConnection con = (HttpURLConnection)new URL( url ).openConnection();
+        con.setRequestMethod( "GET" );
+        con.addRequestProperty( "Accept", "application/json" );
+        con.setDoInput( true );
+        con.setDoOutput( true );
+        try {
+            if (con.getResponseCode() != 200) {
+                System.err.println( "Keine Koordinate für " + organisation + ": " + con.getResponseMessage() );
+            }
+            else {
+                final String out = IOUtils.toString( con.getInputStream() );
+                int index1 = out.indexOf( search1 );
+                if (index1 > 0) {
+                    String out2 = out.substring( index1 + search1.length() );
+                    int index3 = out2.indexOf( search3 );
+                    if (index3 > 0) {
+                        out2 = out2.substring( 0, index3 );
+                        int index2 = out2.indexOf( search2 );
+                        if (index2 > 0) {
+                            final String latitude = out2.substring( 0, index2 );
+                            final String longitude = out2.substring( index2 + search2.length() );
+                            Point point = (latitude != null && longitude != null) ? GEOMETRYFACTORY.createPoint(
+                                    new Coordinate( Double.parseDouble( longitude ), Double.parseDouble( latitude ) ) )
+                                    : null;
+                            return point;
+                        }
+                    }
+                }
+            }
+        }
+        finally {
+            con.disconnect();
+        }
         return null;
     }
 
@@ -309,8 +416,8 @@ public class OrgPersonSplitTableRefineFunction
 
     private SimpleFeature createPerson( SimpleFeatureBuilder builder, SimpleFeature baseFeature ) {
         builder.add( null ); // theGeom
-        builder.add( baseFeature.getAttribute( "Name" ) );
-        builder.add( baseFeature.getAttribute( "Vorname" ) );
+        builder.add( ((String)baseFeature.getAttribute( "Name" )).trim() );
+        builder.add( ((String)baseFeature.getAttribute( "Vorname" )).trim() );
         builder.add( baseFeature.getAttribute( "Titel" ) );
         builder.add( baseFeature.getAttribute( "Position_1" ) );
         builder.add( baseFeature.getAttribute( "Position_2" ) );
@@ -351,4 +458,16 @@ public class OrgPersonSplitTableRefineFunction
         return builder.buildFeature( person.getID() + "_" + organisation.getID() );
     }
 
+
+    public static void main( String[] args ) {
+        try {
+            Point coordinateForOrganisation = new OrgPersonSplitTableRefineFunction().coordinateForOrganisation( "foo",
+                    "49565", "Fasanenweg 12" );
+            System.err.println(
+                    coordinateForOrganisation.getCoordinate().x + " " + coordinateForOrganisation.getCoordinate().y );
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
