@@ -21,15 +21,21 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Link;
 
+import org.polymap.core.runtime.config.Config;
+import org.polymap.core.runtime.config.ConfigurationFactory;
+import org.polymap.core.runtime.config.DefaultBoolean;
+import org.polymap.core.runtime.config.Mandatory;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.security.SecurityContext;
 import org.polymap.core.security.UserPrincipal;
+import org.polymap.core.ui.ColumnDataFactory;
 import org.polymap.core.ui.ColumnLayoutFactory;
 
+import org.polymap.rhei.batik.BatikApplication;
 import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.DefaultPanel;
-import org.polymap.rhei.batik.IPanelSite;
 import org.polymap.rhei.batik.PanelIdentifier;
+import org.polymap.rhei.batik.PanelSite;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
@@ -48,7 +54,6 @@ import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.Messages;
 import io.mapzone.controller.ui.StartPanel;
 import io.mapzone.controller.um.repository.LoginCookie;
-import io.mapzone.controller.um.repository.ProjectRepository;
 
 /**
  * 
@@ -94,8 +99,11 @@ public class LoginPanel
         IPanelSection section = getSite().toolkit().createPanelSection( parent, "Sign in", SWT.BORDER );
         
         LoginForm loginForm = new LoginForm() {
+            @Override
             protected boolean login( String name, String passwd ) {
-                if (super.login( name, passwd )) {
+                SecurityContext sc = SecurityContext.instance();
+                if (sc.login( name, passwd )) {
+                    userPrincipal.set( (UserPrincipal)sc.getUser() );
                     getContext().closePanel( getSite().getPath() );
                     return true;
                 }
@@ -104,11 +112,15 @@ public class LoginPanel
                     return false;
                 }
             }
-            
+
+            @Override
+            protected PanelSite panelSite() {
+                return LoginPanel.this.site();
+            }
         };        
-        loginForm.setShowRegisterLink( false );
-        loginForm.setShowStoreCheck( true );
-        loginForm.setShowLostLink( true );
+        loginForm.showRegisterLink.set( false );
+        loginForm.showStoreCheck.set( true );
+        loginForm.showLostLink.set( false );  // XXX implement!
 
         new BatikFormContainer( loginForm ).createContents( section );
     }
@@ -117,54 +129,59 @@ public class LoginPanel
     /**
      * 
      */
-    public class LoginForm
+    public static abstract class LoginForm
             extends DefaultFormPage {
 
         protected Button                        loginBtn;
 
         protected String                        username, password;
 
-        protected boolean                       storeLogin;
+        /**
+         * Defaults to true. Otherwise project instance logins ask for login even if
+         * /dashboard has correct login.
+         */
+        protected boolean                       storeLogin = true;
         
         protected IFormPageSite                 formSite;
         
         private IFormFieldListener              fieldListener;
         
-        private boolean                         showRegisterLink;
+        @Mandatory @DefaultBoolean( false )
+        public Config<Boolean>                  showRegisterLink;
 
-        private boolean                         showStoreCheck;
+        @Mandatory @DefaultBoolean( false )
+        public Config<Boolean>                  showStoreCheck;
         
-        private boolean                         showLostLink;
+        @Mandatory @DefaultBoolean( false )
+        public Config<Boolean>                  showLostLink;
 
         
-        public LoginForm setShowRegisterLink( boolean showRegisterLink ) {
-            this.showRegisterLink = showRegisterLink;
-            return this;
+        public LoginForm() {
+            ConfigurationFactory.inject( this );
         }
         
-        public LoginForm setShowStoreCheck( boolean showStoreCheck ) {
-            this.showStoreCheck = showStoreCheck;
-            return this;
-        }
         
-        public void setShowLostLink( boolean showLostLink ) {
-            this.showLostLink = showLostLink;
-        }
+        protected abstract boolean login( final String name, final String passwd );
 
-
+        protected abstract PanelSite panelSite();
+        
+        
         @Override
         public void createFormContents( final IFormPageSite site ) {
             formSite = site;
-            IPanelSite panelSite = getSite();
             Composite body = site.getPageBody();
             body.setLayout( ColumnLayoutFactory.defaults()
                     .spacing( 5 /*panelSite.getLayoutPreference( LAYOUT_SPACING_KEY ) / 4*/ )
-                    .margins( panelSite.getLayoutPreference().getSpacing() / 2 ).create() );
+                    .margins( 10 /*panelSite().getLayoutPreference().getSpacing() / 2*/ ).create() );
             // username
-            site.newFormField( new PlainValuePropertyAdapter( "username", username ) )
+            Composite nameField = site.newFormField( new PlainValuePropertyAdapter( "username", username ) )
                     .field.put( new StringFormField() ).validator.put( new NotEmptyValidator() )
                     .label.put( i18n.get( "username" ) ).tooltip.put( i18n.get( "usernameTip" ) )
-                    .create().setFocus();
+                    .create();
+            // default width for use in dialog
+            nameField.setLayoutData( ColumnDataFactory.defaults().widthHint( 300 ).create() );
+            nameField.setFocus();
+            
             // password
             site.newFormField( new PlainValuePropertyAdapter( "password", password ) )
                     .field.put( new StringFormField( Style.PASSWORD ) )
@@ -173,7 +190,7 @@ public class LoginPanel
                     .create();
 
             // store login
-            if (showStoreCheck) {
+            if (showStoreCheck.get()) {
                 site.newFormField( new PlainValuePropertyAdapter( "store", storeLogin ) )
                         .field.put( new CheckboxFormField() )
                         .label.put( i18n.get( "storeLogin" ) ).tooltip.put( i18n.get( "storeLoginTip" ) )
@@ -181,20 +198,21 @@ public class LoginPanel
             }
             // btn
             loginBtn = site.getToolkit().createButton( body, i18n.get( "login" ), SWT.PUSH );
+            loginBtn.setLayoutData( ColumnDataFactory.defaults().heightHint( 35 ).create() );
             loginBtn.setEnabled( username != null );
             loginBtn.addSelectionListener( new SelectionAdapter() {
                 public void widgetSelected( SelectionEvent ev ) {
                     login( username, password );
                     if (storeLogin) {
-                        LoginCookie.create( ProjectRepository.newInstance(), username );
+                        LoginCookie.access().create( username );
                     }
                 }
             });
 
             Composite links = null;
-            if (showLostLink) {
-                links = panelSite.toolkit().createComposite( body );
-                Link lnk = panelSite.toolkit().createLink( links, i18n.get( "lost" ) );
+            if (showLostLink.get()) {
+                links = panelSite().toolkit().createComposite( body );
+                Link lnk = panelSite().toolkit().createLink( links, i18n.get( "lost" ) );
                 lnk.setToolTipText( i18n.get( "lostTip" ) );
                 lnk.addSelectionListener( new SelectionAdapter() {
                     public void widgetSelected( SelectionEvent ev ) {
@@ -205,12 +223,12 @@ public class LoginPanel
                 });
             }
 
-            if (showRegisterLink) {
-                links = links != null ? links : panelSite.toolkit().createComposite( body );
-                Link registerLnk = panelSite.toolkit().createLink( links, i18n.get( "register" ) );
+            if (showRegisterLink.get()) {
+                links = links != null ? links : panelSite().toolkit().createComposite( body );
+                Link registerLnk = panelSite().toolkit().createLink( links, i18n.get( "register" ) );
                 registerLnk.addSelectionListener( new SelectionAdapter() {
                     public void widgetSelected( SelectionEvent e ) {
-                        getContext().openPanel( panelSite.getPath(), RegisterPanel.ID );
+                        BatikApplication.instance().getContext().openPanel( panelSite().path(), RegisterPanel.ID );
                     }
                 });
             }
@@ -239,19 +257,6 @@ public class LoginPanel
         }
 
         
-        protected boolean login( final String name, final String passwd ) {
-            SecurityContext sc = SecurityContext.instance();
-            if (sc.login( name, passwd )) {
-                userPrincipal.set( (UserPrincipal)sc.getUser() );
-//                user.set( up.getUser() );
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-
-
         protected void sendNewPassword( String name ) {
             throw new RuntimeException( "Not yet..." );
 //            User umuser = repo.findUser( name );

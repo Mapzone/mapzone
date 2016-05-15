@@ -31,6 +31,12 @@
             id="io.mapzone.controller.entrypoint"
             path="/dashboard">
       </entrypoint>
+      <entrypoint
+            brandingId="io.mapzone.controller.branding"
+            class="org.polymap.rhei.batik.BatikApplication"
+            id="io.mapzone.controller.entrypoint"
+            path="/login">
+      </entrypoint>
    </extension>
    <extension
          point="org.eclipse.rap.ui.branding">
@@ -57,6 +63,14 @@
             class="io.mapzone.controller.CtrlAppDesign"
             id="io.mapzone.controller.design"
             servletNameMatcher="/dashboard">
+      </design>
+   </extension>
+   <extension
+         point="org.polymap.rhei.batik.design">
+      <design
+            class="io.mapzone.controller.LoginAppDesign"
+            id="io.mapzone.controller.logindesign"
+            servletNameMatcher="/login">
       </design>
    </extension>
    <extension

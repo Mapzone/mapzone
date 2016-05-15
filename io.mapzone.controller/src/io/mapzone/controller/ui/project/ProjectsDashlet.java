@@ -1,6 +1,6 @@
 /* 
  * mapzone.io
- * Copyright (C) 2015, Falko Bräutigam. All rights reserved.
+ * Copyright (C) 2015-2016, Falko Bräutigam. All rights reserved.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -14,6 +14,7 @@
  */
 package io.mapzone.controller.ui.project;
 
+import static io.mapzone.controller.ControllerPlugin.OK_ICON_CONFIG;
 import static org.polymap.core.ui.ColumnDataFactory.Alignment.CENTER;
 import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL24;
 import io.mapzone.controller.ControllerPlugin;
@@ -190,7 +191,7 @@ public class ProjectsDashlet
         viewer.firstSecondaryActionProvider.set( new ActionProvider() {
             @Override
             public void update( ViewerCell cell ) {
-                cell.setImage( ControllerPlugin.images().svgImage( "rocket.svg", NORMAL24 ) );
+                cell.setImage( ControllerPlugin.images().svgImage( "rocket.svg", OK_ICON_CONFIG ) );
             }
             @Override
             public void perform( @SuppressWarnings("hiding") MdListViewer viewer, Object elm ) {

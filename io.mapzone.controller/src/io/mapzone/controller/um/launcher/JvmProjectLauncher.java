@@ -50,7 +50,7 @@ import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
 import io.mapzone.controller.vm.runtime.Script;
 
 /**
- * 
+ *
  *
  * @author Falko Bräutigam
  */

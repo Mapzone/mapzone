@@ -40,7 +40,6 @@ public interface Provision {
     
     public static final Status  OK_STATUS = new Status( Severity.OK, "" );
     
-    
     /**
      * Decides if this Provision wants to run in the current status and for the given
      * <code>target</code> Provision. All {@link Context} members are initialized.

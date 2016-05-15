@@ -21,7 +21,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import org.polymap.model2.DefaultValue;
 import org.polymap.model2.Property;
-import org.polymap.model2.runtime.TypedValueInitializer;
+import org.polymap.model2.runtime.ValueInitializer;
+
 import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
 
 /**
@@ -34,7 +35,7 @@ public class EclipseProjectLauncher
 
     private static Log log = LogFactory.getLog( EclipseProjectLauncher.class );
 
-    public static final TypedValueInitializer<EclipseProjectLauncher> defaults = new TypedValueInitializer<EclipseProjectLauncher>() {
+    public static final ValueInitializer<EclipseProjectLauncher> defaults = new ValueInitializer<EclipseProjectLauncher>() {
         @Override
         public EclipseProjectLauncher initialize( EclipseProjectLauncher proto ) throws Exception {
             proto.mainClass.set( "org.eclipse.equinox.launcher.Main" );
@@ -45,7 +46,7 @@ public class EclipseProjectLauncher
         }
     };
     
-    public static final TypedValueInitializer<EclipseProjectLauncher> arenaDefaults = new TypedValueInitializer<EclipseProjectLauncher>() {
+    public static final ValueInitializer<EclipseProjectLauncher> arenaDefaults = new ValueInitializer<EclipseProjectLauncher>() {
         @Override
         public EclipseProjectLauncher initialize( EclipseProjectLauncher proto ) throws Exception {
             defaults.initialize( proto );

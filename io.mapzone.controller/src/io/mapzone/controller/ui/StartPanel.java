@@ -15,7 +15,6 @@
 package io.mapzone.controller.ui;
 
 import io.mapzone.controller.um.repository.LoginCookie;
-import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
 
 import static org.apache.commons.lang3.StringUtils.substringBefore;
@@ -68,8 +67,6 @@ public class StartPanel
     @Scope("io.mapzone.controller")
     protected Context<UserPrincipal>        userPrincipal;
     
-    private ProjectRepository               cookieRepo = ProjectRepository.newInstance();
-
     private Composite                       parent;
     
     
@@ -86,7 +83,7 @@ public class StartPanel
         getSite().setTitle( "Welcome to mapzone" );
         
         // login cookie -> dashboard
-        Optional<LoginCookie> loginCookie = LoginCookie.findAndUpdate( cookieRepo );
+        Optional<LoginCookie> loginCookie = LoginCookie.access().findAndUpdate();
         if (loginCookie.isPresent()) {
             User user = loginCookie.get().user.get();            
             userPrincipal.set( SecurityContext.instance().loginTrusted( user.name.get() ) );

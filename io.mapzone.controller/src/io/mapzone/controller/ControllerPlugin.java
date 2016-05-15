@@ -35,6 +35,10 @@ public class ControllerPlugin extends AbstractUIPlugin {
     
     public static final String              TOOLBAR_ICON_CONFIG = SvgImageRegistryHelper.NORMAL24;
 
+    public static final String              ACTION_ICON_CONFIG = SvgImageRegistryHelper.ACTION24;
+
+    public static final String              OK_ICON_CONFIG = SvgImageRegistryHelper.OK24;
+
     private static ControllerPlugin         instance;
 	
 
