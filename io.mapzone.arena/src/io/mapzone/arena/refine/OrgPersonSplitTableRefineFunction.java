@@ -193,7 +193,7 @@ public class OrgPersonSplitTableRefineFunction
             int max = fs.getFeatures().size();
             monitor.beginTask( "Split Table", max );
             int i = 0;
-            while (iterator.hasNext() && i < 10) {
+            while (iterator.hasNext()) {
                 i++;
                 SimpleFeature baseFeature = (SimpleFeature)iterator.next();
                 String organisationKey = (String)baseFeature.getAttribute( "Organisation" );
@@ -220,15 +220,15 @@ public class OrgPersonSplitTableRefineFunction
                 }
                 monitor.worked( i );
                 if (i % 300 == 0) {
-                    tk.createSnackbar( Appearance.FadeIn, i + " of " + max );
+                    tk.createSnackbar( Appearance.FadeIn, i + " von " + max + " migrated and geocoded");
                 }
             }
             addLayerAndStore( organisations );
             addLayerAndStore( persons );
             store( associations );
 
-            tk.createSnackbar( Appearance.FadeIn, organisations.size() + " Organisationen, " + persons.size()
-                    + " Personen, " + associations.size() + " Beziehungen angelegt" );
+            tk.createSnackbar( Appearance.FadeIn, organisations.size() + " Organisations, " + persons.size()
+                    + " Persons and " + associations.size() + " PersonOrganisationRelations added" );
 
         }
         catch (Exception e) {
@@ -321,7 +321,7 @@ public class OrgPersonSplitTableRefineFunction
         builder.add( strasse );
         builder.add( hausNr );
         builder.add( baseFeature.getAttribute( "Orga_Kategorie" ) );
-        return builder.buildFeature( null);
+        return builder.buildFeature( null );
     }
 
 
@@ -383,6 +383,7 @@ public class OrgPersonSplitTableRefineFunction
 
         builder.add( "Name", String.class );
         builder.add( "Vorname", String.class );
+        builder.add( "Name komplett", String.class );
         builder.add( "Titel", String.class );
         builder.add( "Position_1", String.class );
         builder.add( "Position_2", String.class );
@@ -400,9 +401,18 @@ public class OrgPersonSplitTableRefineFunction
 
     private SimpleFeature createPerson( SimpleFeatureBuilder builder, SimpleFeature baseFeature ) {
         builder.add( null ); // theGeom
-        builder.add( ((String)baseFeature.getAttribute( "Name" )).trim() );
-        builder.add( ((String)baseFeature.getAttribute( "Vorname" )).trim() );
-        builder.add( baseFeature.getAttribute( "Titel" ) );
+        String name = ((String)baseFeature.getAttribute( "Name" )).trim();
+        String vorname = ((String)baseFeature.getAttribute( "Vorname" )).trim();
+        String titel = (String)baseFeature.getAttribute( "Titel" );
+        builder.add( name );
+        builder.add( vorname );
+        StringBuffer komplett = new StringBuffer();
+        if (!StringUtils.isBlank( titel )) {
+            komplett.append( titel ).append( " " );
+        }
+        komplett.append( vorname ).append( " " ).append( name );
+        builder.add( komplett.toString() );
+        builder.add( titel );
         builder.add( baseFeature.getAttribute( "Position_1" ) );
         builder.add( baseFeature.getAttribute( "Position_2" ) );
         builder.add( baseFeature.getAttribute( "Pers_Adresse_Str_HN" ) );

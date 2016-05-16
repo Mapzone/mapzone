@@ -32,8 +32,6 @@ import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.ui.FormDataFactory;
 import org.polymap.core.ui.StatusDispatcher;
-import org.polymap.rap.openlayers.base.OlMap;
-import org.polymap.rap.openlayers.source.VectorSource;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -82,8 +80,7 @@ public class CompareColumnEdgeFunction
 
 
     @Override
-    public void createContents( final MdToolkit tk, final Composite parent, final FeatureSource sourceFeatureSource,
-            final VectorSource source, final OlMap olMap ) {
+    public void createContents( final MdToolkit tk, final Composite parent, final FeatureSource sourceFeatureSource ) {
 
         try {
 

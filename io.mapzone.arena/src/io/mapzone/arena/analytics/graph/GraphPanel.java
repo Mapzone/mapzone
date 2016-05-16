@@ -62,6 +62,8 @@ import com.google.common.collect.Sets;
 
 import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.Messages;
+import io.mapzone.arena.analytics.graph.algo.GephiGraph;
+import io.mapzone.arena.analytics.graph.ui.OlFeatureGraphUI;
 
 /**
  * Proof-of-concept for generated geometries and graph displayed in an OL map.
@@ -106,13 +108,15 @@ public class GraphPanel
 
     private Composite mapContainer;
 
-    private VectorSource source;
+//    private VectorSource source;
 
     private FeatureSource fs;
 
     private OlEventListener selectFeatureListener;
 
-    private PanelPath path;
+//    private PanelPath path;
+
+    private Graph graph;
 
 
     @Override
@@ -133,7 +137,8 @@ public class GraphPanel
     }
 
     // XXX replace with extension point
-    public static final Class<GraphFunction>[] availableFunctions = new Class[] { HiddenOrganisationPersonGraphFunction.class, OrganisationPersonGraphFunction.class,
+    public static final Class<GraphFunction>[] availableFunctions = new Class[] {
+            /*HiddenOrganisationPersonGraphFunction.class,*/ OrganisationPersonGraphFunction.class,
             SingleSourceNodeGraphFunction.class };
 
 
@@ -163,19 +168,23 @@ public class GraphPanel
             combo.addSelectionChangedListener( ev -> {
                 String selected = SelectionAdapter.on( ev.getSelection() ).first( String.class ).get();
                 GraphFunction function = functions.get( selected );
-                
-                FormDataFactory.on( functionContainer ).top( combo.getCombo(), 5 ).height( function.preferredHeight() ).left( 0 ).right( 100 );
-                
+
+                FormDataFactory.on( functionContainer ).top( combo.getCombo(), 5 ).height( function.preferredHeight() )
+                        .left( 0 ).right( 100 );
+
                 UIUtils.disposeChildren( functionContainer );
                 // create panel
                 IPanelSection section = tk().createPanelSection( functionContainer, function.description(),
                         SWT.BORDER );
                 section.setExpanded( true );
                 section.getBody().setLayout( FormLayoutFactory.defaults().create() );
-                function.createContents( tk(), section.getBody(), source, mapViewer.getMap() );
+
+                //
+                graph.clear();
+                function.createContents( tk(), section.getBody(), graph );
                 FormDataFactory.on( section.getBody() ).fill();
 
-//                functionContainer.layout();
+                // functionContainer.layout();
                 parent.layout();
             } );
 
@@ -191,7 +200,7 @@ public class GraphPanel
             // layout
             final Label selectLabel = tk().createLabel( parent, i18n.get( "selectFunction" ), SWT.NONE );
             FormDataFactory.on( selectLabel ).top( 1 ).left( 1 );
-            FormDataFactory.on( combo.getCombo() ).top( selectLabel, 2 ).left(1);
+            FormDataFactory.on( combo.getCombo() ).top( selectLabel, 2 ).left( 1 );
             FormDataFactory.on( functionContainer ).top( combo.getCombo(), 5 ).height( 0 ).left( 0 ).right( 100 );
             FormDataFactory.on( mapContainer ).fill().top( functionContainer, 5 );
         }
@@ -203,7 +212,7 @@ public class GraphPanel
 
     protected void createMapViewer() {
         mapViewer = new MapViewer<VectorLayer>( mapContainer );
-        source = new VectorSource().format.put( new GeoJSONFormat() );
+        final VectorSource source = new VectorSource().format.put( new GeoJSONFormat() );
         GraphLayerProvider graphLayerProvider = new GraphLayerProvider( source );
         mapViewer.layerProvider.set( graphLayerProvider );
         mapViewer.contentProvider.set( new ArrayContentProvider() );
@@ -221,15 +230,13 @@ public class GraphPanel
                     if (id.startsWith( "p:" ) || id.startsWith( "o:" )) {
                         id = id.substring( 2 );
                     }
-                    EventManager.instance().publish( new FeatureClickEvent(
-                            featureSelection.get(), Optional.ofNullable( fs
-                                    .getFeatures( ff.id( Sets.newHashSet( ff.featureId( id ) ) ) ).features().next() ),
-                            Optional.empty() ) );
+                    EventManager.instance().publish( new FeatureClickEvent( featureSelection.get(),
+                            Optional.ofNullable( graph.getNode( id ) != null ? graph.getNode( id ).feature() : null ), Optional.empty() ) );
                 }
                 catch (Exception e) {
-                    e.printStackTrace();
+                    StatusDispatcher.handleError( "", e );
                 }
-                path = site().path();
+//                path = site().path();
                 getContext().openPanel( site().path(), FeaturePanel.ID );
             }
         };
@@ -238,5 +245,8 @@ public class GraphPanel
 
         mapViewer.setInput( new ILayer[] { null } );
         mapContainer.layout();
+        
+        final OlFeatureGraphUI ui = new OlFeatureGraphUI( source, mapViewer.getMap() );
+        graph = new GephiGraph( ui );
     }
 }

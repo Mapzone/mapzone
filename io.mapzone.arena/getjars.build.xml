@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!--
+ This Ant build script downloads dependency jars needed by thus bundle
+ from several maven repositories on the net. See copy.properties for
+ general settings. 
+ -->
+<project name="io.mapzone.arena" default="build" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+
+    <description>Download open source jars from the internet.</description>
+
+    <property name="lib" value="${basedir}${file.separator}lib" />
+    <property name="libs_src_dir" value="${lib}${file.separator}sources" />
+    <property environment="env" />
+    <dirname file="${ant.file.refresh_libs}" property="refresh_libs_basedir" />
+    <property file="${refresh_libs_basedir}${file.separator}copy.properties" />
+    <available property="already_downloaded" type="dir" file="${lib}" />
+
+    <!--
+      Target: clean
+      -->
+    <target name="clean" description="deletes external libraries folder">
+        <delete dir="${lib}" />
+    </target>
+
+    <target name="bootstrap" unless="bootstrapped">
+        <mkdir dir="${basedir}${file.separator}lib-static" />
+        <get src="http://central.maven.org/maven2/org/apache/maven/maven-ant-tasks/2.0.10/maven-ant-tasks-2.0.10.jar" dest="${basedir}${file.separator}lib-static/" />
+    </target>
+
+    <target name="init" depends="bootstrap">
+        <taskdef uri="antlib:org.apache.maven.artifact.ant" resource="org/apache/maven/artifact/ant/antlib.xml">
+            <classpath>
+                <fileset dir="${basedir}${file.separator}lib-static">
+                    <include name="*.jar" />
+                </fileset>
+            </classpath>
+        </taskdef>
+    </target>
+
+    <target name="initNexus" description="use Nexus public repository that mirrors the real repos" if="nexusURL">
+        <artifact:remoteRepository id="central.repository" url="${nexusURL}" />
+    </target>
+
+    <target name="initRemoteMavenRepos" description="use real Maven repositories directly" unless="nexusURL">
+        <!-- remote repositories as defined in copy.properties -->
+        <artifact:remoteRepository id="central.repository" url="http://repo1.maven.org/maven2" />
+    </target>
+
+    <target name="initMavenRepos" description="init Maven repositories to use when downloading artifacts" depends="initNexus, initRemoteMavenRepos" />
+
+    <!--
+      Target: load_m2_deps
+      -->
+    <target name="load_m2_deps" depends="create, initMavenRepos">
+        <artifact:localRepository id="local.repository" path="${user.home}/.m2/repository" />
+
+        <artifact:dependencies filesetId="dependency.fileset" sourcesFilesetId="sources.dependency.fileset" versionsId="dependency.versions" useScope="runtime">
+            <localrepository refid="local.repository" />
+            <remoteRepository refid="central.repository" />
+
+            <!--dependency groupId="org.json" artifactId="json" version="20141113" />
+            <dependency groupId="org.mockito" artifactId="mockito-core" version="1.10.19" /-->
+            <!--dependency groupId="org.graphstream" artifactId="gs-algo" version="1.3" /-->
+            <dependency groupId="org.gephi" artifactId="gephi-toolkit" version="0.9.1" />
+        </artifact:dependencies>
+    </target>
+
+    <!--
+      Target:
+      -->
+    <target name="build" depends="load_m2_deps" unless="already_downloaded">
+        <description>Download the jars - used by a manual "clean"</description>
+
+        <!-- (flat) copy all downloaded JARs (classes) to plugin directory ${lib} -->
+        <copy todir="${lib}" verbose="true" flatten="true">
+            <fileset refid="dependency.fileset" />
+        </copy>
+
+        <!-- (flat) copy downloaded source JARs (sources) to plugin directory ${libs_src_dir} -->
+        <copy todir="${libs_src_dir}" flatten="true" verbose="true">
+            <fileset refid="sources.dependency.fileset" />
+            <chainedmapper>
+                <mapper type="flatten" />
+                <globmapper from="*-sources.jar" to="*-sources.zip" />
+            </chainedmapper>
+        </copy>
+        <!--eclipse.refreshLocal resource="${basedir}" depth="infinite"/-->
+    </target>
+
+    <target name="create" depends="init">
+        <description>creates the lib directory if needed</description>
+        <mkdir dir="${lib}" />
+        <mkdir dir="${libs_src_dir}" />
+    </target>
+
+    <!-- Used by headless build please make sure this does everthing from clean to download and fix etc.. -->
+    <target name="full-build" depends="clean, build" description="clean and build">
+    </target>
+
+</project>

@@ -14,48 +14,58 @@
  */
 package io.mapzone.arena.analytics.graph;
 
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opengis.feature.Feature;
 
 /**
- * a single edge.
+ * a single node
  * 
  *
  * @author Steffen Stundzig
  */
-public class Edge {
+public class Node {
 
-    private static Log log = LogFactory.getLog( Edge.class );
-    
-    private Feature featureA;
-    private Feature featureB;
+    private static Log log = LogFactory.getLog( Node.class );
 
-    // private Map<String, String> properties;
-    private String key;
-    
-    
-    public Edge( final String key, final Feature featureA, final Feature featureB ) {
+    private final Feature feature;
+
+    private final String key;
+
+    private int weight;
+
+    private final String name;
+
+
+    public Node( final String key, final Feature feature, final String name, final int weight ) {
         this.key = key;
-        this.featureA = featureA;
-        this.featureB = featureB;
+        this.feature = feature;
+        this.name = name;
+        this.weight = weight;
     }
 
-    public Feature featureA() {
-        return featureA;
+
+    public Feature feature() {
+        return feature;
     }
-    
-    public Feature featureB() {
-        return featureB;
-    }
-//    
-//    public Map<String,String> properties() {
-//        return properties;
-//    }
-    
+
+
     public String key() {
         return key;
     }
-} 
+
+
+    public String name() {
+        return name;
+    }
+
+
+    public void increaseWeight() {
+        weight++;
+    }
+
+
+    public int weight() {
+        return weight;
+    }
+}

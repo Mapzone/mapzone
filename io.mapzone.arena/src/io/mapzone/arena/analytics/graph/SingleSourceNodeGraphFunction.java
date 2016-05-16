@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -72,6 +73,8 @@ import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 import com.google.common.collect.Maps;
 
 import io.mapzone.arena.Messages;
+import io.mapzone.arena.analytics.graph.algo.GephiGraph;
+import io.mapzone.arena.analytics.graph.ui.OlFeatureGraphUI;
 
 public class SingleSourceNodeGraphFunction
         implements GraphFunction {
@@ -92,8 +95,6 @@ public class SingleSourceNodeGraphFunction
 
     private final static int COLUMN_2 = 5;
 
-    private final Style edgeStyle = new Style().stroke
-            .put( new StrokeStyle().color.put( new Color( "black" ) ).width.put( 1f ) ).zIndex.put( 0f );
 
 
     @Override
@@ -119,8 +120,7 @@ public class SingleSourceNodeGraphFunction
 
 
     @Override
-    public void createContents( final MdToolkit tk, final Composite parent, final VectorSource source,
-            final OlMap olMap ) {
+    public void createContents( final MdToolkit tk, final Composite parent, final Graph graph ) {
         try {
             final FeaturePropertySelectorUI sourcePropertiesUI = new FeaturePropertySelectorUI( tk, parent, prop -> {
                 this.selectedSourcePropertyDescriptor = prop;
@@ -164,7 +164,7 @@ public class SingleSourceNodeGraphFunction
 
                 UIUtils.disposeChildren( edgeFunctionContainer );
                 // create panel
-                function.createContents( tk, edgeFunctionContainer, selectedSourceFeatureSource, source, olMap );
+                function.createContents( tk, edgeFunctionContainer, selectedSourceFeatureSource );
                 // FormDataFactory.on( edgeFunctionContainer ).fill();
 
                 // resize also the top container
@@ -190,24 +190,29 @@ public class SingleSourceNodeGraphFunction
                         public IStatus doExecute( final IProgressMonitor monitor, final IAdaptable info )
                                 throws Exception {
                             try {
-                                UIThreadExecutor.async( () -> pushSession.start(),
-                                        error -> StatusDispatcher.handleError( "", error ) );
-                                generate( tk, monitor, source, olMap );
+                                // UIThreadExecutor.async( () -> pushSession.start(),
+                                // error -> StatusDispatcher.handleError( "", error )
+                                // );
+                                generate( tk, monitor, graph );
+//                                generate( tk, new NullProgressMonitor(), graph );
                                 return Status.OK_STATUS;
                             }
-                            catch (Exception e) {
-                                StatusDispatcher.handleError( "", e );
+                            catch (Exception ex) {
+                                log.error( ex );
+                                ex.printStackTrace();
+                                StatusDispatcher.handleError( "", ex );
                                 return Status.CANCEL_STATUS;
                             }
                             finally {
-//                                UIThreadExecutor.async( () -> pushSession.stop(),
-//                                        error -> StatusDispatcher.handleError( "", error ) );
+                                // UIThreadExecutor.async( () -> pushSession.stop(),
+                                // error -> StatusDispatcher.handleError( "", error )
+                                // );
                             }
                         }
 
                     };
                     // execute
-                    OperationSupport.instance().execute2( op, true, false );
+                    OperationSupport.instance().execute( op, true, false );
                     fab.setVisible( false );
                 }
             } );
@@ -264,25 +269,23 @@ public class SingleSourceNodeGraphFunction
     }
 
 
-    private void generate( MdToolkit tk, IProgressMonitor monitor, final VectorSource source, final OlMap olMap )
+    private void generate( MdToolkit tk, IProgressMonitor monitor, final Graph graph )
             throws Exception {
         tk.createSnackbar( Appearance.FadeIn, "Generation started - stay tuned" );
-
-        final OlFeatureGephiGraph graph = new OlFeatureGephiGraph( source, olMap );
 
         // selectedSourceFeatureSource.
         // disctinct on propertyColumn
         final Map<Object,Feature> distinctSourceFeatures = Maps.newHashMap();
         // for faster access
         final Map<String,Feature> featureCache = Maps.newHashMap();
-        final Map<String,OlFeature> olFeatures = Maps.newHashMap();
+        final Map<String,Node> nodes = Maps.newHashMap();
 
         // iterate on features
         // XXX replace with a Distinct on property Filter
         FeatureCollection allFeatures = selectedSourceFeatureSource.getFeatures();
         FeatureIterator iterator = allFeatures.features();
         int featureCount = 0;
-        while (iterator.hasNext() && featureCount < 10) {
+        while (iterator.hasNext()) {
             featureCount++;
             SimpleFeature feature = (SimpleFeature)iterator.next();
             Object key = feature.getAttribute( selectedSourcePropertyDescriptor.getName() );
@@ -292,10 +295,9 @@ public class SingleSourceNodeGraphFunction
             if (!distinctSourceFeatures.containsKey( key )) {
                 distinctSourceFeatures.put( key, feature );
                 featureCache.put( feature.getID(), feature );
-                OlFeature olFeature = new OlFeature( "graph_" + feature.getID() ).name.put( key.toString() ).style
-                        .put( featureStyle( 1 ) );
-                olFeatures.put( feature.getID(), olFeature );
-                graph.addOrUpdateNode( olFeature, 1 );
+                Node node = new Node( "graph_" + feature.getID(), feature, key.toString(), 1);
+                nodes.put( feature.getID(), node );
+                graph.addOrUpdateNode( node );
             }
         }
         tk.createSnackbar( Appearance.FadeIn, featureCount + " Nodes read" );
@@ -303,47 +305,12 @@ public class SingleSourceNodeGraphFunction
         Collection<Edge> edges = selectedEdgeFunction.generateEdges( tk, monitor, featureCache );
 
         for (Edge edge : edges) {
-            OlFeature edgeFeature = new OlFeature(
-                    edge.featureA().getIdentifier().getID() + "_" + edge.featureB().getIdentifier().getID() ).name
-                            .put( edge.key() ).style.put( edgeStyle );
-            graph.addOrUpdateEdge( edgeFeature, olFeatures.get( edge.featureA().getIdentifier().getID() ),
-                    olFeatures.get( edge.featureB().getIdentifier().getID() ), 1 );
+            graph.addOrUpdateEdge( nodes.get( edge.featureA().getIdentifier().getID() ),
+                    nodes.get( edge.featureB().getIdentifier().getID() ) );
         }
         tk.createSnackbar( Appearance.FadeIn, featureCount + " Nodes with " + edges.size() + " Edges generated" );
-        graph.reload();
+        graph.layout();
 
         UIThreadExecutor.async( () -> pushSession.stop(), error -> StatusDispatcher.handleError( "", error ) );
-    }
-
-
-    private Base featureStyle( int weight ) {
-        return new StyleFunction( circle( weight, "red" ) );
-    }
-
-
-    private String circle( int radius, String color ) {
-        StringBuffer sb = new StringBuffer();
-        // sb.append(
-        // "console.log('singlefeature');console.log(feature);console.log(this);"
-        // );
-        sb.append( "return [new ol.style.Style({" );
-        sb.append( "  zIndex: 1," );
-        sb.append( "  image: new ol.style.Circle({" );
-        sb.append( "      radius: " ).append( radius ).append( "," );
-        sb.append( "    stroke: new ol.style.Stroke({" );
-        sb.append( "      color: '" ).append( color ).append( "'" );
-        sb.append( "    })," );
-        sb.append( "    fill: new ol.style.Fill({" );
-        sb.append( "      color: '" ).append( color ).append( "'" );
-        sb.append( "    })" );
-        sb.append( "  })," );
-        sb.append( "  text: new ol.style.Text({" );
-        sb.append( "    text: this.get('name')," );
-        sb.append( "    fill: new ol.style.Fill({" );
-        sb.append( "      color: '" ).append( color ).append( "'" );
-        sb.append( "    })" );
-        sb.append( "  })" );
-        sb.append( "})];" );
-        return sb.toString();
     }
 }

@@ -39,16 +39,9 @@ import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.ui.FormDataFactory;
 import org.polymap.core.ui.StatusDispatcher;
-import org.polymap.core.ui.UIUtils;
 import org.polymap.p4.P4Plugin;
-import org.polymap.rap.openlayers.base.OlFeature;
-import org.polymap.rap.openlayers.base.OlMap;
-import org.polymap.rap.openlayers.graph.OlFeatureGephiGraph;
-import org.polymap.rap.openlayers.source.VectorSource;
-import org.polymap.rap.openlayers.style.Base;
 import org.polymap.rap.openlayers.style.StrokeStyle;
 import org.polymap.rap.openlayers.style.Style;
-import org.polymap.rap.openlayers.style.StyleFunction;
 import org.polymap.rap.openlayers.types.Color;
 import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
@@ -81,8 +74,7 @@ public class OrganisationPersonGraphFunction
 
 
     @Override
-    public void createContents( final MdToolkit tk, final Composite parent, final VectorSource source,
-            final OlMap olMap ) {
+    public void createContents( final MdToolkit tk, final Composite parent, final Graph graph ) {
 
         final Button fab = tk.createFab();
         fab.setEnabled( true );
@@ -101,7 +93,7 @@ public class OrganisationPersonGraphFunction
                             if (fs != null) {
                                 UIThreadExecutor.async( () -> pushSession.start(),
                                         error -> StatusDispatcher.handleError( "", error ) );
-                                analyse( tk, fs.getFeatures(), source, olMap, monitor );
+                                analyse( tk, fs.getFeatures(), graph );
                                 return Status.OK_STATUS;
                             }
                             else {
@@ -126,20 +118,18 @@ public class OrganisationPersonGraphFunction
     }
 
 
-    public void analyse( final MdToolkit tk, final FeatureCollection featureCollection, final VectorSource source,
-            final OlMap olMap, final IProgressMonitor monitor ) throws Exception {
-
-        final OlFeatureGephiGraph graph = new OlFeatureGephiGraph( source, olMap );
+    public void analyse( final MdToolkit tk, final FeatureCollection featureCollection, final Graph graph )
+            throws Exception {
 
         tk.createSnackbar( Appearance.FadeIn, "Analysis started - stay tuned" );
 
-        final Map<String,OlFeature> organisations = Maps.newHashMap();
-        final Map<String,OlFeature> persons = Maps.newHashMap();
-        final Multimap<OlFeature,OlFeature> organisation2Persons = ArrayListMultimap.create();
-        final Multimap<OlFeature,OlFeature> person2Organisations = ArrayListMultimap.create();
+        final Map<String,Node> organisations = Maps.newHashMap();
+        final Map<String,Node> persons = Maps.newHashMap();
+        final Multimap<Node,Node> organisation2Persons = ArrayListMultimap.create();
+        final Multimap<Node,Node> person2Organisations = ArrayListMultimap.create();
 
         // iterate on features
-        // create OlFeature for each organisation
+        // create Node for each organisation
         // increase weight for each entry per organisation
         FeatureIterator iterator = featureCollection.features();
         int i = 0;
@@ -147,10 +137,9 @@ public class OrganisationPersonGraphFunction
             i++;
             SimpleFeature feature = (SimpleFeature)iterator.next();
             String organisationKey = (String)feature.getAttribute( "Organisation" );
-            OlFeature organisationFeature = organisations.get( organisationKey );
+            Node organisationFeature = organisations.get( organisationKey );
             if (organisationFeature == null) {
-                organisationFeature = new OlFeature( "o:" + feature.getID() ).name.put( organisationKey ).style
-                        .put( organisationStyle( 1 ) );
+                organisationFeature = new Node( "o:" + feature.getID(), feature, organisationKey, 1 );
                 organisations.put( organisationKey, organisationFeature );
                 graph.addOrUpdateNode( organisationFeature );
             }
@@ -158,89 +147,85 @@ public class OrganisationPersonGraphFunction
                 // add weight
                 int size = organisation2Persons.get( organisationFeature ).size() + 1;
                 if (size <= 15) {
-                    organisationFeature.style.set( organisationStyle( size ) );
+                    organisationFeature.increaseWeight();
                 }
-                graph.addOrUpdateNode( organisationFeature, 1 );
+                graph.addOrUpdateNode( organisationFeature );
             }
             String personKey = (String)feature.getAttribute( "Name" ) + " " + (String)feature.getAttribute( "Vorname" );
-            OlFeature personFeature = persons.get( personKey );
+            Node personFeature = persons.get( personKey );
             if (personFeature == null) {
-                personFeature = new OlFeature( "p:" + feature.getID() ).name.put( personKey ).style
-                        .put( personStyle( 1 ) );
+                personFeature = new Node( "p:" + feature.getID(), feature, personKey, 1 );
                 persons.put( personKey, personFeature );
-                graph.addOrUpdateNode( personFeature, 1 );
+                graph.addOrUpdateNode( personFeature );
             }
             else {
                 int size = person2Organisations.get( personFeature ).size() + 1;
                 if (size <= 15) {
-                    personFeature.style.set( personStyle( size ) );
+                    personFeature.increaseWeight();
                 }
-                graph.addOrUpdateNode( personFeature, 1 );
+                graph.addOrUpdateNode( personFeature );
             }
             // add also the person to the organisation
             organisation2Persons.put( organisationFeature, personFeature );
             person2Organisations.put( personFeature, organisationFeature );
 
-            OlFeature edgeFeature = new OlFeature( organisationFeature.id.get() + "_" + personFeature.id.get() ).name
-                    .put( (String)feature.getAttribute( "Orga_Position_1" ) ).style.put( edgeStyle() );
-            graph.addOrUpdateEdge( edgeFeature, organisationFeature, personFeature, 1 );
+            graph.addOrUpdateEdge( organisationFeature, personFeature );
 
             if (i % 100 == 0) {
                 log.info( "added " + i );
             }
         }
-        tk.createSnackbar( Appearance.FadeIn, organisations.size() + " organisations, " + persons.size() + " persons and " + organisation2Persons.size()
-                + " relations analysed" );
+        tk.createSnackbar( Appearance.FadeIn, organisations.size() + " organisations, " + persons.size()
+                + " persons and " + organisation2Persons.size() + " relations analysed" );
         organisations.clear();
         persons.clear();
         organisation2Persons.clear();
         person2Organisations.clear();
-        graph.reload();
-        
-        UIThreadExecutor.async( () -> pushSession.stop(),
-                error -> StatusDispatcher.handleError( "", error ) );
+        graph.layout();
+
+        UIThreadExecutor.async( () -> pushSession.stop(), error -> StatusDispatcher.handleError( "", error ) );
     }
-
-
-    private Base edgeStyle() {
-        return edgeStyle;
-    }
-
-
-    private Base organisationStyle( int weight ) {
-        return new StyleFunction( circle( weight, "blue" ) );
-    }
-
-
-    private Base personStyle( int weight ) {
-        return new StyleFunction( circle( weight, "red" ) );
-    }
-
-
-    private String circle( int radius, String color ) {
-        StringBuffer sb = new StringBuffer();
-        // sb.append(
-        // "console.log('singlefeature');console.log(feature);console.log(this);"
-        // );
-        sb.append( "return [new ol.style.Style({" );
-        sb.append( "  zIndex: 1," );
-        sb.append( "  image: new ol.style.Circle({" );
-        sb.append( "      radius: " ).append( radius ).append( "," );
-        sb.append( "    stroke: new ol.style.Stroke({" );
-        sb.append( "      color: '" ).append( color ).append( "'" );
-        sb.append( "    })," );
-        sb.append( "    fill: new ol.style.Fill({" );
-        sb.append( "      color: '" ).append( color ).append( "'" );
-        sb.append( "    })" );
-        sb.append( "  })," );
-        sb.append( "  text: new ol.style.Text({" );
-        sb.append( "    text: this.get('name')," );
-        sb.append( "    fill: new ol.style.Fill({" );
-        sb.append( "      color: '" ).append( color ).append( "'" );
-        sb.append( "    })" );
-        sb.append( "  })" );
-        sb.append( "})];" );
-        return sb.toString();
-    }
+    //
+    //
+    // private Base edgeStyle() {
+    // return edgeStyle;
+    // }
+    //
+    //
+    // private Base organisationStyle( int weight ) {
+    // return new StyleFunction( circle( weight, "blue" ) );
+    // }
+    //
+    //
+    // private Base personStyle( int weight ) {
+    // return new StyleFunction( circle( weight, "red" ) );
+    // }
+    //
+    //
+    // private String circle( int radius, String color ) {
+    // StringBuffer sb = new StringBuffer();
+    // // sb.append(
+    // // "console.log('singlefeature');console.log(feature);console.log(this);"
+    // // );
+    // sb.append( "return [new ol.style.Style({" );
+    // sb.append( " zIndex: 1," );
+    // sb.append( " image: new ol.style.Circle({" );
+    // sb.append( " radius: " ).append( radius ).append( "," );
+    // sb.append( " stroke: new ol.style.Stroke({" );
+    // sb.append( " color: '" ).append( color ).append( "'" );
+    // sb.append( " })," );
+    // sb.append( " fill: new ol.style.Fill({" );
+    // sb.append( " color: '" ).append( color ).append( "'" );
+    // sb.append( " })" );
+    // sb.append( " })," );
+    // sb.append( " text: new ol.style.Text({" );
+    // sb.append( " text: this.get('name')," );
+    // sb.append( " fill: new ol.style.Fill({" );
+    // sb.append( " color: '" ).append( color ).append( "'" );
+    // sb.append( " })" );
+    // sb.append( " })" );
+    // sb.append( "})];" );
+    // return sb.toString();
+    // }
 
 }

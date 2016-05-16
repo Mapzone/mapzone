@@ -23,7 +23,6 @@ import org.opengis.feature.Feature;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 /**
  * Abstract base class for edge functions.

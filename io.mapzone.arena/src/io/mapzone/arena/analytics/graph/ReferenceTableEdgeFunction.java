@@ -33,8 +33,6 @@ import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.ui.FormDataFactory;
 import org.polymap.core.ui.StatusDispatcher;
-import org.polymap.rap.openlayers.base.OlMap;
-import org.polymap.rap.openlayers.source.VectorSource;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -88,8 +86,7 @@ public class ReferenceTableEdgeFunction
 
 
     @Override
-    public void createContents( final MdToolkit tk, final Composite parent, final FeatureSource sourceFeatureSource,
-            final VectorSource source, final OlMap olMap ) {
+    public void createContents( final MdToolkit tk, final Composite parent, final FeatureSource sourceFeatureSource ) {
 
         try {
             final FeaturePropertySelectorUI referencePropertiesUI = new FeaturePropertySelectorUI( tk, parent, prop -> {
@@ -160,14 +157,16 @@ public class ReferenceTableEdgeFunction
             // load the source feature
             Object reference = referenceFeature.getAttribute( selectedReferenceProperty.getName() );
             if (reference != null || !"".equals( reference )) {
-                Feature sourceFeature = sourceFeatures.get( key );
+                Feature sourceFeature = sourceFeatures.get( reference );
                 if (sourceFeature != null) {
-                    edgesByKeyProperty.put( key, referenceFeature );
+                    edgesByKeyProperty.put( key, sourceFeature );
                 }
                 else {
                     // XXX proper error handling
                     // tk.createSnackbar( Appearance.FadeIn, "no source feature with
                     // " + key + " found, ignoring" );
+                    // fid--1da18301_154b9540fce_-70ea
+                    // fid--1da18301_154b9540fce_-70ea
                     log.error( "no source feature with " + key + " found, ignoring" );
                 }
             }
