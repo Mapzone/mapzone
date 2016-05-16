@@ -30,7 +30,7 @@ public interface EdgeFunction {
      * @param olMap
      * @param source
      */
-    void createContents( final MdToolkit tk, final Composite parent, final VectorSource source, final OlMap olMap );
+    void createContents( final MdToolkit tk, final Composite parent, final FeatureSource sourceFeatureSource, final VectorSource source, final OlMap olMap );
 
 
     /**

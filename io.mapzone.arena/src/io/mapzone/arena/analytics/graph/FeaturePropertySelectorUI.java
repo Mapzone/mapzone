@@ -70,8 +70,7 @@ public class FeaturePropertySelectorUI {
 
 
     private void fill() {
-        if (combo != null && featureSource != null) {
-            combo.clearSelection();
+        if (combo != null && !combo.isDisposed() && featureSource != null) {
 
             final Collection<PropertyDescriptor> schemaDescriptors = featureSource.getSchema().getDescriptors();
             final GeometryDescriptor geometryDescriptor = featureSource.getSchema().getGeometryDescriptor();

@@ -15,7 +15,6 @@
 package io.mapzone.arena.analytics.graph;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -30,16 +29,15 @@ import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.PropertyDescriptor;
+import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.ui.FormDataFactory;
 import org.polymap.core.ui.StatusDispatcher;
 import org.polymap.rap.openlayers.base.OlMap;
 import org.polymap.rap.openlayers.source.VectorSource;
-import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Sets;
 
 import io.mapzone.arena.Messages;
 
@@ -50,15 +48,11 @@ import io.mapzone.arena.Messages;
  * @author Steffen Stundzig
  */
 public class ReferenceTableEdgeFunction
-        implements EdgeFunction {
+        extends AbstractEdgeFunction {
 
     private static Log log = LogFactory.getLog( ReferenceTableEdgeFunction.class );
 
     private static final IMessages i18n = Messages.forPrefix( "ReferenceTableEdgeFunction" );
-
-    private FeatureSource selectedSourceFeatureSource;
-
-    private PropertyDescriptor selectedSourcePropertyDescriptor;
 
     private PropertyDescriptor selectedReferenceProperty;
 
@@ -94,7 +88,8 @@ public class ReferenceTableEdgeFunction
 
 
     @Override
-    public void createContents( MdToolkit tk, Composite parent, VectorSource source, OlMap olMap ) {
+    public void createContents( final MdToolkit tk, final Composite parent, final FeatureSource sourceFeatureSource,
+            final VectorSource source, final OlMap olMap ) {
 
         try {
             final FeaturePropertySelectorUI referencePropertiesUI = new FeaturePropertySelectorUI( tk, parent, prop -> {
@@ -134,7 +129,7 @@ public class ReferenceTableEdgeFunction
 
     private void checkIfConfigurationComplete() {
         if (isConfigurationComplete()) {
-            graphFunction.edgeFunctionConfigurationDone();
+            EventManager.instance().publish( new EdgeFunctionConfigurationDoneEvent( this, Boolean.TRUE ) );
         }
     }
 
@@ -171,29 +166,12 @@ public class ReferenceTableEdgeFunction
                 }
                 else {
                     // XXX proper error handling
-//                    tk.createSnackbar( Appearance.FadeIn, "no source feature with " + key + " found, ignoring" );
+                    // tk.createSnackbar( Appearance.FadeIn, "no source feature with
+                    // " + key + " found, ignoring" );
                     log.error( "no source feature with " + key + " found, ignoring" );
                 }
             }
         }
-        Collection<Edge> allEdges = Sets.newHashSet();
-
-        // now iterate on all edgesByKeyProperty and select all with more than one
-        // value
-        for (Object key : edgesByKeyProperty.keySet()) {
-            List<Feature> bundledFeatures = edgesByKeyProperty.get( key );
-            if (bundledFeatures != null && bundledFeatures.size() > 1) {
-                // step into the features and create an edge for each pair
-                int allFeaturesCount = bundledFeatures.size();
-                for (int aFeatureCount = 0; aFeatureCount < allFeaturesCount; aFeatureCount++) {
-                    Feature featureA = bundledFeatures.get( aFeatureCount );
-                    for (int bFeatureCount = aFeatureCount + 1; bFeatureCount < allFeaturesCount; bFeatureCount++) {
-                        Feature featureB = bundledFeatures.get( bFeatureCount );
-                        allEdges.add( new Edge( key.toString(), featureA, featureB ) );
-                    }
-                }
-            }
-        }
-        return allEdges;
+        return transform( edgesByKeyProperty );
     }
 }

@@ -14,6 +14,8 @@
  */
 package io.mapzone.arena.analytics.graph;
 
+import static org.polymap.core.runtime.event.TypeEventFilter.ifType;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
@@ -34,7 +36,9 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.geotools.data.FeatureEvent;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.FeatureEvent.Type;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.IdBuilder;
@@ -45,6 +49,8 @@ import org.opengis.filter.identity.FeatureId;
 import org.polymap.core.operation.DefaultOperation;
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.UIThreadExecutor;
+import org.polymap.core.runtime.event.EventHandler;
+import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.ui.FormDataFactory;
 import org.polymap.core.ui.FormLayoutFactory;
@@ -108,7 +114,8 @@ public class SingleSourceNodeGraphFunction
     }
 
     // XXX replace with extension point
-    public static final Class<EdgeFunction>[] availableFunctions = new Class[] { ReferenceTableEdgeFunction.class };
+    public static final Class<EdgeFunction>[] availableFunctions = new Class[] { CompareColumnEdgeFunction.class,
+            ReferenceTableEdgeFunction.class };
 
 
     @Override
@@ -117,12 +124,14 @@ public class SingleSourceNodeGraphFunction
         try {
             final FeaturePropertySelectorUI sourcePropertiesUI = new FeaturePropertySelectorUI( tk, parent, prop -> {
                 this.selectedSourcePropertyDescriptor = prop;
-                checkIfConfigurationComplete();
+                EventManager.instance().publish( new GraphFunctionConfigurationChangedEvent( (GraphFunction)this,
+                        "sourcePropertyDescriptor", prop ) );
             } );
             final FeatureSourceSelectorUI sourceFeaturesUI = new FeatureSourceSelectorUI( tk, parent, fs -> {
                 this.selectedSourceFeatureSource = fs;
+                EventManager.instance().publish(
+                        new GraphFunctionConfigurationChangedEvent( (GraphFunction)this, "sourceFeatureSource", fs ) );
                 sourcePropertiesUI.setFeatureSource( fs );
-                checkIfConfigurationComplete();
             } );
 
             final TreeMap<String,EdgeFunction> edgeFunctions = Maps.newTreeMap();
@@ -155,7 +164,7 @@ public class SingleSourceNodeGraphFunction
 
                 UIUtils.disposeChildren( edgeFunctionContainer );
                 // create panel
-                function.createContents( tk, edgeFunctionContainer, source, olMap );
+                function.createContents( tk, edgeFunctionContainer, selectedSourceFeatureSource, source, olMap );
                 // FormDataFactory.on( edgeFunctionContainer ).fill();
 
                 // resize also the top container
@@ -165,7 +174,6 @@ public class SingleSourceNodeGraphFunction
                 parent.getParent().getParent().getParent().layout();
 
                 this.selectedEdgeFunction = function;
-                checkIfConfigurationComplete();
             } );
 
             fab = tk.createFab();
@@ -187,9 +195,13 @@ public class SingleSourceNodeGraphFunction
                                 generate( tk, monitor, source, olMap );
                                 return Status.OK_STATUS;
                             }
+                            catch (Exception e) {
+                                StatusDispatcher.handleError( "", e );
+                                return Status.CANCEL_STATUS;
+                            }
                             finally {
-                                UIThreadExecutor.async( () -> pushSession.stop(),
-                                        error -> StatusDispatcher.handleError( "", error ) );
+//                                UIThreadExecutor.async( () -> pushSession.stop(),
+//                                        error -> StatusDispatcher.handleError( "", error ) );
                             }
                         }
 
@@ -212,6 +224,13 @@ public class SingleSourceNodeGraphFunction
             FormDataFactory.on( selectEdgeFunctionLabel ).top( sourcePropertiesUI.control(), 6 ).left( 1 );
             FormDataFactory.on( edgeFunctionsUI.getCombo() ).top( selectEdgeFunctionLabel, 2 ).left( 1 );
             FormDataFactory.on( edgeFunctionContainer ).fill().top( edgeFunctionsUI.getCombo(), 4 ).left( COLUMN_2 );
+
+            // event listener
+            EventManager.instance().subscribe( this, ifType( EdgeFunctionConfigurationDoneEvent.class,
+                    ev -> ev.status.get() == Boolean.TRUE && ev.getSource().equals( selectedEdgeFunction ) ) );
+
+            EventManager.instance().subscribe( this,
+                    ifType( GraphFunctionConfigurationChangedEvent.class, ev -> ev.getSource().equals( this ) ) );
         }
         catch (Exception e) {
             StatusDispatcher.handleError( "", e );
@@ -219,14 +238,14 @@ public class SingleSourceNodeGraphFunction
     }
 
 
-    // XXX replace by eventhandler
-    @Override
-    public void edgeFunctionConfigurationDone() {
-        checkIfConfigurationComplete();
+    @EventHandler(display = true)
+    protected void onEdgeFunctionConfigurationDone( EdgeFunctionConfigurationDoneEvent ev ) {
+        onGraphFunctionConfigurationChanged( null );
     }
 
 
-    private void checkIfConfigurationComplete() {
+    @EventHandler(display = true)
+    protected void onGraphFunctionConfigurationChanged( GraphFunctionConfigurationChangedEvent ev ) {
         if (isConfigurationDone()) {
             // show the fab
             fab.setVisible( true );
@@ -263,7 +282,7 @@ public class SingleSourceNodeGraphFunction
         FeatureCollection allFeatures = selectedSourceFeatureSource.getFeatures();
         FeatureIterator iterator = allFeatures.features();
         int featureCount = 0;
-        while (iterator.hasNext()) {
+        while (iterator.hasNext() && featureCount < 10) {
             featureCount++;
             SimpleFeature feature = (SimpleFeature)iterator.next();
             Object key = feature.getAttribute( selectedSourcePropertyDescriptor.getName() );
@@ -280,18 +299,19 @@ public class SingleSourceNodeGraphFunction
             }
         }
         tk.createSnackbar( Appearance.FadeIn, featureCount + " Nodes read" );
-        
+
         Collection<Edge> edges = selectedEdgeFunction.generateEdges( tk, monitor, featureCache );
 
         for (Edge edge : edges) {
             OlFeature edgeFeature = new OlFeature(
-                    edge.featureA().getIdentifier().getID() + "_" + edge.featureA().getIdentifier().getID() ).name
+                    edge.featureA().getIdentifier().getID() + "_" + edge.featureB().getIdentifier().getID() ).name
                             .put( edge.key() ).style.put( edgeStyle );
             graph.addOrUpdateEdge( edgeFeature, olFeatures.get( edge.featureA().getIdentifier().getID() ),
                     olFeatures.get( edge.featureB().getIdentifier().getID() ), 1 );
         }
         tk.createSnackbar( Appearance.FadeIn, featureCount + " Nodes with " + edges.size() + " Edges generated" );
-        
+        graph.reload();
+
         UIThreadExecutor.async( () -> pushSession.stop(), error -> StatusDispatcher.handleError( "", error ) );
     }
 

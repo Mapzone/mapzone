@@ -28,13 +28,4 @@ public interface GraphFunction {
     default int preferredHeight() {
         return 100;
     }
-
-
-    /**
-     * method call signals that edge function is completely configured
-     * XXX remove bei EventHandler
-     */
-    default void edgeFunctionConfigurationDone() {
-    }
-
 }
