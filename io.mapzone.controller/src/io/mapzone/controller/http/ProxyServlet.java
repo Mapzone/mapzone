@@ -75,7 +75,7 @@ public class ProxyServlet
             // assuming that we are in /dashboard servlet
             return Joiner.on( "/" ).join( "..",
                     substringAfter( SERVLET_ALIAS, "/" ),
-                    URLEncoder.encode( project.organizationOrUser().name.get(), "UTF8" ),
+                    URLEncoder.encode( project.organization.get().name.get(), "UTF8" ),
                     URLEncoder.encode( project.name.get(), "UTF8" ),
                     substringAfter( project.servletAlias.get(), "/" ) );
         }

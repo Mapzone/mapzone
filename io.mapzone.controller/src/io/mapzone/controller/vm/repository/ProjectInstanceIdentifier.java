@@ -57,7 +57,7 @@ public class ProjectInstanceIdentifier {
     
     public ProjectInstanceIdentifier( Project project ) {
         this.project = project.name.get();
-        this.organization = project.organizationOrUser().name.get();
+        this.organization = project.organization.get().name.get();
     }
     
     public String organization() {

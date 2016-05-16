@@ -52,7 +52,8 @@ public class ProjectRepository
                         Project.class, 
                         JvmProjectLauncher.class,
                         EclipseProjectLauncher.class,
-                        Organization.class })
+                        Organization.class, 
+                        UserRole.class })
                 .store.set( 
                         // make sure to never loose updates or something
                         new OptimisticLocking(
@@ -68,19 +69,20 @@ public class ProjectRepository
             UnitOfWork _uow = repo.newUnitOfWork()
         ){
             if (_uow.query( Organization.class ).execute().size() == 0) {
-                // Project
-                Project project = _uow.createEntity( Project.class, null, (Project proto) -> {
-                    proto.name.set( "first" );
-                    proto.description.set( "The first registered project at mapzone.io" );
-                    proto.launcher.createValue( EclipseProjectLauncher.arenaDefaults );
-                    return proto;
-                });
                 // Organization
                 Organization organization = _uow.createEntity( Organization.class, null, (Organization proto) -> {
                     proto.name.set( "First" );
                     proto.description.set( "The first organization hosted at mapzone.io :)" );
                     proto.website.set( "www.mapzone.io" );
-                    proto.projects.add( project );
+                    return proto;
+                });
+                // Project
+                Project project = _uow.createEntity( Project.class, null, (Project proto) -> {
+                    Project.defaults.initialize( proto );
+                    proto.organization.set( organization );
+                    proto.name.set( "first" );
+                    proto.description.set( "The first registered project at mapzone.io" );
+                    proto.launcher.createValue( EclipseProjectLauncher.arenaDefaults );
                     return proto;
                 });
                 assert project.organization.get() == organization : "Check bidi association.";
@@ -88,6 +90,7 @@ public class ProjectRepository
             }
         }
     }
+    
     
     private static EntityRepository     repo;
     
@@ -130,22 +133,14 @@ public class ProjectRepository
     }
 
     
-    public Optional<Project> findProject( String organizationOrUser, String project ) {
-        ProjectHolder projects = uow.query( User.class ).where( eq( User.TYPE.name, organizationOrUser ) ).execute().stream().findAny().get();
-        if (projects == null) {
-            projects = uow.query( Organization.class ).where( eq( Organization.TYPE.name, organizationOrUser ) ).execute().stream().findAny().get();
-        }
-        return projects.projects.stream().filter( p -> p.name.get().equals( project ) ).findAny();
+    public Optional<Project> findProject( String organization, String project ) {
+        Organization org = uow.query( Organization.class )
+                .where( eq( Organization.TYPE.name, organization ) )
+                .execute().stream().findAny().get();
         
-//        ResultSet<Project> rs = uow.query( Project.class )
-//                .where( and( 
-//                        Expressions.or(
-//                                the( Project.TYPE.user, eq( User.TYPE.name, organizationOrUser ) ),
-//                                the( Project.TYPE.organization, eq( Organization.TYPE.name, organizationOrUser ) ) ),
-//                        eq( Project.TYPE.name, project ) ) )
-//                .execute();
-//        assert rs.size() <= 1;
-//        return rs.stream().findAny();
+        return org.projects.stream()
+                .filter( p -> p.name.get().equals( project ) )
+                .findAny();
     }
 
     

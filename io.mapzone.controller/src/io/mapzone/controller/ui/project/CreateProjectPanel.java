@@ -1,5 +1,6 @@
 package io.mapzone.controller.ui.project;
 
+import static java.util.stream.Collectors.toMap;
 import static org.polymap.core.runtime.UIThreadExecutor.asyncFast;
 import static org.polymap.rhei.batik.toolkit.md.dp.dp;
 import io.mapzone.controller.ControllerPlugin;
@@ -7,15 +8,13 @@ import io.mapzone.controller.ops.CreateProjectOperation;
 import io.mapzone.controller.ui.DashboardPanel;
 import io.mapzone.controller.ui.util.PropertyAdapter;
 import io.mapzone.controller.um.launcher.EclipseProjectLauncher;
+import io.mapzone.controller.um.repository.Organization;
 import io.mapzone.controller.um.repository.Project;
-import io.mapzone.controller.um.repository.ProjectHolder;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -83,7 +82,7 @@ public class CreateProjectPanel
 
     private Button                  fab;
 
-    private Optional<ProjectHolder> organizationOrUser = Optional.empty();
+    private Optional<Organization>  organization = Optional.empty();
 
 
     
@@ -150,14 +149,11 @@ public class CreateProjectPanel
                     return;
                 }
                 
-                // associate to organization or user
-                organizationOrUser.get().projects.add( project );
-                
                 // prepare operation
                 CreateProjectOperation op = new CreateProjectOperation();
                 op.repo.set( nested );
                 op.project.set( project );
-                op.organizationOrUser.set( organizationOrUser.get() );
+                op.organization.set( organization.get() );
                 
                 // XXX execute sync as long as there is no progress indicator
                 OperationSupport.instance().execute2( op, false, false, ev2 -> asyncFast( () -> {
@@ -196,8 +192,9 @@ public class CreateProjectPanel
                     .margins( getSite().getLayoutPreference().getSpacing() / 2 ).create() );
             
             // organization
-            Map<String,ProjectHolder> orgs = user.organizations.stream().collect( Collectors.toMap( o -> o.name.get(), o -> o ) );
-            orgs.put( user.name.get(), user );
+            Map<String,Organization> orgs = user.organizations.stream()
+                    .map( role -> role.organization.get() )
+                    .collect( toMap( org -> org.name.get(), org -> org ) );
             site.newFormField( new PlainValuePropertyAdapter( "organizationOrUser", null ) )
                     .label.put( "Organization or User" )
                     .field.put( new PicklistFormField( orgs ) )
@@ -211,8 +208,8 @@ public class CreateProjectPanel
                         public String validate( String fieldValue ) {
                             String result = super.validate( fieldValue );
                             if (result == null) {
-                                if (organizationOrUser.isPresent()) {
-                                    if (nested.findProject( organizationOrUser.get().name.get(), (String)fieldValue ).isPresent()) { 
+                                if (organization.isPresent()) {
+                                    if (nested.findProject( organization.get().name.get(), (String)fieldValue ).isPresent()) { 
                                         result = "Project name is already taken";
                                     }
                                 }
@@ -241,7 +238,7 @@ public class CreateProjectPanel
         public void fieldChange( FormFieldEvent ev ) {
             if (ev.getEventCode() == VALUE_CHANGE) {
                 if (ev.getFieldName().equals( "organizationOrUser" )) {
-                    organizationOrUser = ev.getNewModelValue();
+                    organization = ev.getNewModelValue();
                 }
                 updateEnabled();
             }

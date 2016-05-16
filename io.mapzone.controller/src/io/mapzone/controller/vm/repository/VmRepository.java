@@ -102,7 +102,7 @@ public class VmRepository {
     
     
     /**
-     *
+     * Make sure to {@link VmRepository#commit()} or {@link VmRepository#rollback()}!
      */
     public static VmRepository newInstance() {
         return new VmRepository();

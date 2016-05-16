@@ -65,7 +65,7 @@ public abstract class ArchiveLauncher
 
         // basename
         String basename = Joiner.on( "/" ).skipNulls().join( 
-                URLEncoder.encode( project().organizationOrUser().name.get(), "UTF8" ), 
+                URLEncoder.encode( project().organization.get().name.get(), "UTF8" ), 
                 URLEncoder.encode( project().name.get(), "UTF8" )
                 /*, instance.version.get()*/ );
 

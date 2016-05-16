@@ -26,6 +26,7 @@ import org.polymap.model2.Queryable;
 import org.polymap.model2.runtime.locking.OneReaderPessimisticLocking;
 
 import io.mapzone.controller.um.launcher.ProjectLauncher;
+import io.mapzone.controller.um.repository.Organization;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
 
@@ -40,13 +41,13 @@ public class ProjectInstanceRecord
 
     public static ProjectInstanceRecord     TYPE;
     
-    /** Organization or user name. */
+    /** Name of the {@link Organization}. */
     @Queryable
     @Immutable
     @Concerns( OneReaderPessimisticLocking.class )
     public Property<String>                 organisation;
     
-    /** The name of the project. */
+    /** Name of the {@link Project}. */
     @Queryable
     @Immutable
     @Concerns( OneReaderPessimisticLocking.class )

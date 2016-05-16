@@ -4,8 +4,8 @@ import static org.polymap.core.runtime.UIThreadExecutor.asyncFast;
 import io.mapzone.controller.ops.DeleteProjectOperation;
 import io.mapzone.controller.ui.util.PropertyAdapter;
 import io.mapzone.controller.um.repository.EntityChangedEvent;
+import io.mapzone.controller.um.repository.Organization;
 import io.mapzone.controller.um.repository.Project;
-import io.mapzone.controller.um.repository.ProjectHolder;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
 
@@ -80,7 +80,7 @@ public class EditProjectPanel
 
     private Button                      fab;
 
-    private Optional<ProjectHolder>     organizationOrUser = Optional.empty();
+    private Optional<Organization>      organization = Optional.empty();
 
     
     @Override
@@ -205,7 +205,7 @@ public class EditProjectPanel
                     .margins( getSite().getLayoutPreference().getSpacing() / 2 ).create() );
             
             // organization
-            site.newFormField( new PlainValuePropertyAdapter( "organizationOrUser", nestedProject.organizationOrUser().name.get() ) )
+            site.newFormField( new PlainValuePropertyAdapter( "organizationOrUser", nestedProject.organization.get().name.get() ) )
                     .label.put( "Organization" )
                     .tooltip.put( "Changing organization is not yet supported." )
                     .fieldEnabled.put( false )
@@ -234,7 +234,7 @@ public class EditProjectPanel
         public void fieldChange( FormFieldEvent ev ) {
             if (ev.getEventCode() == VALUE_CHANGE) {
                 if (ev.getFieldName().equals( "organizationOrUser" )) {
-                    organizationOrUser = ev.getNewModelValue();
+                    organization = ev.getNewModelValue();
                 }
                 updateEnabled();
             }

@@ -15,19 +15,12 @@
 package io.mapzone.controller.ui.project;
 
 import static io.mapzone.controller.ControllerPlugin.OK_ICON_CONFIG;
+import static org.polymap.core.runtime.event.TypeEventFilter.ifType;
 import static org.polymap.core.ui.ColumnDataFactory.Alignment.CENTER;
 import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL24;
-import io.mapzone.controller.ControllerPlugin;
-import io.mapzone.controller.http.ProxyServlet;
-import io.mapzone.controller.ui.project.ProjectLabelProvider.Type;
-import io.mapzone.controller.um.repository.EntityChangedEvent;
-import io.mapzone.controller.um.repository.Project;
-import io.mapzone.controller.um.repository.ProjectRepository;
-import io.mapzone.controller.um.repository.User;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -68,6 +61,15 @@ import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
 import org.polymap.cms.ContentProvider;
 
+import io.mapzone.controller.ControllerPlugin;
+import io.mapzone.controller.http.ProxyServlet;
+import io.mapzone.controller.ui.project.ProjectLabelProvider.Type;
+import io.mapzone.controller.um.repository.EntityChangedEvent;
+import io.mapzone.controller.um.repository.Project;
+import io.mapzone.controller.um.repository.ProjectRepository;
+import io.mapzone.controller.um.repository.User;
+import io.mapzone.controller.um.repository.UserRole;
+
 /**
  * 
  *
@@ -105,8 +107,8 @@ public class ProjectsDashlet
         user = repo.findUser( userPrincipal.get().getName() )
                 .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) );
         
-        EventManager.instance().subscribe( this, ev -> ev instanceof EntityChangedEvent && 
-                ((EntityChangedEvent)ev).getEntity() instanceof Project );
+        EventManager.instance().subscribe( this, ifType( EntityChangedEvent.class, ev -> 
+                ev.getEntity() instanceof Project ) );
     }
 
 
@@ -121,23 +123,29 @@ public class ProjectsDashlet
         if (parent.isDisposed() || viewer != null && viewer.getControl().isDisposed()) {
             return;
         }
+        
+        List<Project> projects = projects();
+        
         // first project created
-        if (viewer == null && !user.projects.isEmpty()) {
+        if (viewer == null && !projects.isEmpty()) {
             UIUtils.disposeChildren( parent );
             createListContents();
+            parent.layout( true );
         }
         // last project removed
-        else if (viewer != null && user.projects.isEmpty()) {
+        else if (viewer != null && projects.isEmpty()) {
             UIUtils.disposeChildren( parent );
+            viewer = null;
             createWelcomeContents();
+            parent.layout( true );
         }
         // both empty!?
-        else if (viewer == null && user.projects.isEmpty()) {
+        else if (viewer == null && projects.isEmpty()) {
             // just keep the welcome message
         }
         else {
             // just update list
-            viewer.setInput( user.projects.stream().collect( Collectors.toList() ) );
+            viewer.setInput( projects );
         }
     }
 
@@ -145,7 +153,7 @@ public class ProjectsDashlet
     @Override
     public void createContents( @SuppressWarnings("hiding") Composite parent ) {
         this.parent = parent;
-        if (user.projects.isEmpty()) {
+        if (projects().isEmpty()) {
             createWelcomeContents();
         }
         else {
@@ -211,10 +219,18 @@ public class ProjectsDashlet
                 });
             }
         } );
-        List<Project> projects = user.projects.stream().collect( Collectors.toList() );
-        viewer.setInput( projects );
+        viewer.setInput( projects() );
         
         viewer.getControl().setLayoutData( FormDataFactory.filled()/*.height( dp(72)*2  )*/.create() );
+    }
+    
+    
+    protected List<Project> projects() {
+        List<Project> result = new ArrayList();
+        for (UserRole role : user.organizations) {
+            result.addAll( role.organization.get().projects );
+        }
+        return result;
     }
     
 }

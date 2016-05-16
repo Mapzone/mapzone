@@ -97,8 +97,6 @@ public class DeleteProjectOperation
             assert host.instances.stream().allMatch( i -> !i.id().equals( instanceId ) );
             
             // remove project
-            project.get().organization.set( null );
-            project.get().user.set( null );
             repo.get().removeEntity( project.get() );
 
             // commit
@@ -112,6 +110,9 @@ public class DeleteProjectOperation
             log.warn( "", e );
             vmRepo.rollback();
             throw new ExecutionException( i18n.get( "errorMsg", e.getLocalizedMessage() ), e );
+        }
+        finally {
+            vmRepo.close();
         }
     }
 

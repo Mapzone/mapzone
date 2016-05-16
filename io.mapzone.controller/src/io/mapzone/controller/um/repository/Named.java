@@ -1,7 +1,6 @@
 package io.mapzone.controller.um.repository;
 
 import org.polymap.model2.Defaults;
-import org.polymap.model2.Entity;
 import org.polymap.model2.Property;
 import org.polymap.model2.Queryable;
 
@@ -11,7 +10,7 @@ import org.polymap.model2.Queryable;
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public abstract class Named
-        extends Entity {
+        extends ProjectEntity {
 
     @Defaults
     @Queryable

@@ -4,9 +4,7 @@ import io.mapzone.controller.Messages;
 import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.Organization;
 import io.mapzone.controller.um.repository.Project;
-import io.mapzone.controller.um.repository.ProjectHolder;
 import io.mapzone.controller.um.repository.ProjectRepository;
-import io.mapzone.controller.um.repository.User;
 import io.mapzone.controller.vm.repository.HostRecord;
 import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
 import io.mapzone.controller.vm.repository.VmRepository;
@@ -50,7 +48,7 @@ public class CreateProjectOperation
     public Config<Project>              project;
     
     @Mandatory
-    public Config<ProjectHolder>        organizationOrUser;
+    public Config<Organization>         organization;
     
     
     public CreateProjectOperation() {
@@ -77,16 +75,11 @@ public class CreateProjectOperation
             monitor.worked( 1 );
 
             // set user/org on project
-            if (organizationOrUser.get() instanceof User) {
-                project.get().user.set( (User)organizationOrUser.get() );
-            }
-            else {
-                project.get().organization.set( (Organization)organizationOrUser.get() );
-            }
+            project.get().organization.set( organization.get() );
             
             // create new instance
             ProjectInstanceRecord instance = vmRepo.createEntity( ProjectInstanceRecord.class, null, (ProjectInstanceRecord proto) -> {
-                proto.organisation.set( organizationOrUser.get().name.get() );
+                proto.organisation.set( organization.get().name.get() );
                 proto.project.set( project.get().name.get() );
                 proto.host.set( host );
                 return proto;
@@ -109,6 +102,9 @@ public class CreateProjectOperation
             vmRepo.rollback();
             repo.get().rollback();
             throw new ExecutionException( i18n.get( "errorMsg", e.getLocalizedMessage() ), e );
+        }
+        finally {
+            vmRepo.close();
         }
     }
 
