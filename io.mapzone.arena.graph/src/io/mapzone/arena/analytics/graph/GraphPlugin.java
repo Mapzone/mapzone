@@ -28,7 +28,7 @@ import org.osgi.framework.BundleContext;
 public class GraphPlugin 
         extends AbstractUIPlugin {
 
-	public static final String ID = "io.mapzone.arena.analytics.graph"; //$NON-NLS-1$
+	public static final String ID = "io.mapzone.arena.graph"; //$NON-NLS-1$
 
 	private static GraphPlugin instance;
 	
