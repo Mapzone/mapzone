@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.gephi.graph.GraphControllerImpl;
 import org.gephi.graph.api.Edge;
@@ -37,6 +38,7 @@ import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.ProjectControllerImpl;
+import org.polymap.core.runtime.UIJob;
 import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.ui.StatusDispatcher;
 import org.polymap.rap.openlayers.types.Coordinate;
@@ -206,10 +208,15 @@ public class GephiGraph
     public void layout() {
         try {
             importController.process( container, processor, workspace );
-            UIThreadExecutor.async( () -> {
-                final Display display = Display.getCurrent();
-                readCoordinates( graphModel, layout, display, 2000 );
-            }, error -> StatusDispatcher.handleError( "", error ) );
+            UIJob job = new UIJob( "Layout graph" ) {
+
+                @Override
+                protected void runWithException( IProgressMonitor monitor ) throws Exception {
+                    // final Display display = Display.getCurrent();
+                    updateCoordinates( graphModel, layout, /* display, */ 2000 );
+                }
+            };
+            job.scheduleWithUIUpdate();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -217,18 +224,19 @@ public class GephiGraph
     }
 
 
-    private void readCoordinates( final GraphModel graphModel, final ForceAtlas2 layout, final Display display,
-            final int maxTime ) {
+    private void updateCoordinates( final GraphModel graphModel, final ForceAtlas2 layout, final int maxTime ) {
         try {
             log.info( "run algo" );
             final AutoLayout autolayout = new AutoLayout( maxTime, TimeUnit.MILLISECONDS );
             autolayout.addLayout( layout, 1.0f );
             autolayout.setGraphModel( graphModel );
             // Polymap.executorService().submit( () -> {
-            // log.info( "vor display async" );
-            display.asyncExec( () -> {
-                autolayout.execute();
-                log.info( "sending coordinates" );
+            log.info( "autolayout.execute " + System.currentTimeMillis() );
+
+            autolayout.execute();
+            log.info( "autolayout.execute done " + System.currentTimeMillis() );
+            UIThreadExecutor.async( () -> {
+                log.info( "sending coordinates " + System.currentTimeMillis() );
                 final Graph graph = graphModel.getUndirectedGraph();
                 double minX = 10000;
                 double minY = 10000;
@@ -254,7 +262,8 @@ public class GephiGraph
                 graphUi.updateEnvelope( envelope );
                 log.info( "setting extent to " + envelope.toJson() );
                 log.info( "sending coordinates done." );
-            } );
+            }, error -> StatusDispatcher.handleError( "", error ) );
+
             // } ).get();
             // Thread.sleep( REFRESH_INTERVAL );
             // }

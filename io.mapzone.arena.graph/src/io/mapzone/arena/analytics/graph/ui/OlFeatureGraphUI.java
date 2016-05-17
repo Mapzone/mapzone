@@ -18,6 +18,10 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
+import org.polymap.rhei.batik.toolkit.md.MdToolkit;
+
 import org.polymap.rap.openlayers.base.OlFeature;
 import org.polymap.rap.openlayers.base.OlMap;
 import org.polymap.rap.openlayers.geom.LineStringGeometry;
@@ -54,11 +58,17 @@ public class OlFeatureGraphUI
     private final Map<String,OlFeature> nodes = Maps.newHashMap();
 
     private final Map<String,OlFeature> edges = Maps.newHashMap();
+    
+    private static final int                  MAXNODES           = 20000;
 
     private final OlMap map;
 
     private final Style edgeStyle = new Style().stroke
             .put( new StrokeStyle().color.put( new Color( "black" ) ).width.put( 1f ) ).zIndex.put( 0f );
+
+    private final MdToolkit tk;
+
+    private boolean toManyNodesMessageSent;
 
 
     /**
@@ -68,7 +78,8 @@ public class OlFeatureGraphUI
      * @param vector
      * @param map
      */
-    public OlFeatureGraphUI( final VectorSource vector, final OlMap map ) {
+    public OlFeatureGraphUI( final MdToolkit tk, final VectorSource vector, final OlMap map ) {
+        this.tk = tk;
         this.vector = vector;
         this.map = map;
     }
@@ -106,20 +117,35 @@ public class OlFeatureGraphUI
 
     @Override
     public void addEdge( Edge edge ) {
-        OlFeature line = new OlFeature( edge.key() ).geometry
-                .put( new LineStringGeometry( new Coordinate( 0.0, 0.0 ), new Coordinate( 0.0, 0.0 ) ) ).style
-                        .put( edgeStyle );
-        edges.put( edge.key(), line );
-        vector.addFeature( line );
+        if (checkSizes()) {
+            OlFeature line = new OlFeature( edge.key() ).geometry.put( new LineStringGeometry( new Coordinate( 0.0, 0.0 ), new Coordinate( 0.0, 0.0 ) ) ).style.put( edgeStyle );
+            edges.put( edge.key(), line );
+            vector.addFeature( line );
+        }
+    }
+
+
+    private boolean checkSizes() {
+        int size = edges.size() + nodes.size();
+        if (size > MAXNODES) {
+            if (!toManyNodesMessageSent) {
+                toManyNodesMessageSent = true;
+                tk.createSnackbar( Appearance.FadeIn, "Currently only " + MAXNODES + " nodes and edges supported, skipping the rest" );
+                log.info( "Currently only " + MAXNODES + " nodes and edges supported, skipping the rest" );
+            }
+            return false;
+        }
+        return true;
     }
 
 
     @Override
     public void addNode( Node node ) {
-        OlFeature olFeature = new OlFeature( node.key() ).name.put( node.name() ).geometry
-                .put( new PointGeometry( new Coordinate( 0.0, 0.0 ) ) ).style.put( featureStyle( 1 ) );
-        nodes.put( node.key(), olFeature );
-        vector.addFeature( olFeature );
+        if (checkSizes()) {
+            OlFeature olFeature = new OlFeature( node.key() ).name.put( node.name() ).geometry.put( new PointGeometry( new Coordinate( 0.0, 0.0 ) ) ).style.put( featureStyle( 1 ) );
+            nodes.put( node.key(), olFeature );
+            vector.addFeature( olFeature );
+        }
     }
 
 
@@ -160,5 +186,6 @@ public class OlFeatureGraphUI
         vector.clear();
         nodes.clear();
         edges.clear();
+        toManyNodesMessageSent = false;
     }
 }

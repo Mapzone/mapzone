@@ -18,10 +18,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.geotools.feature.simple.SimpleFeatureImpl;
-import org.geotools.filter.identity.FeatureIdImpl;
 import org.junit.Test;
-import org.opengis.feature.Feature;
 
 import com.google.common.collect.ArrayListMultimap;
 

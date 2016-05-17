@@ -14,10 +14,7 @@
  */
 package io.mapzone.arena.analytics.graph.ui;
 
-import static org.polymap.p4.layer.FeatureSelection.ff;
-
 import java.io.IOException;
-import java.util.Optional;
 import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
@@ -29,7 +26,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.geotools.data.FeatureSource;
-import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.json.JSONArray;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -42,7 +38,6 @@ import org.polymap.core.project.ILayer;
 import org.polymap.core.project.IMap;
 import org.polymap.core.runtime.Lazy;
 import org.polymap.core.runtime.PlainLazyInit;
-import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.ui.FormDataFactory;
 import org.polymap.core.ui.FormLayoutFactory;
@@ -51,7 +46,6 @@ import org.polymap.core.ui.StatusDispatcher;
 import org.polymap.core.ui.UIUtils;
 import org.polymap.p4.P4Panel;
 import org.polymap.p4.P4Plugin;
-import org.polymap.p4.layer.FeatureClickEvent;
 import org.polymap.p4.layer.FeaturePanel;
 import org.polymap.p4.layer.FeatureSelection;
 import org.polymap.rap.openlayers.base.OlEventListener;
@@ -62,13 +56,10 @@ import org.polymap.rap.openlayers.layer.VectorLayer;
 import org.polymap.rap.openlayers.source.VectorSource;
 import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.PanelIdentifier;
-import org.polymap.rhei.batik.PanelPath;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
 import io.mapzone.arena.analytics.graph.Graph;
 import io.mapzone.arena.analytics.graph.GraphFunction;
 import io.mapzone.arena.analytics.graph.GraphLayerProvider;
@@ -277,7 +268,7 @@ public class GraphPanel
         mapViewer.setInput( new ILayer[] { null } );
         mapContainer.layout();
         
-        final OlFeatureGraphUI ui = new OlFeatureGraphUI( source, mapViewer.getMap() );
+        final OlFeatureGraphUI ui = new OlFeatureGraphUI( tk(), source, mapViewer.getMap() );
         graph = new GephiGraph( ui );
     }
     
