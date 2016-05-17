@@ -4,7 +4,7 @@
  from several maven repositories on the net. See copy.properties for
  general settings. 
  -->
-<project name="io.mapzone.arena" default="build" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+<project name="io.mapzone.arena.graph" default="build" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
     <description>Download open source jars from the internet.</description>
 
