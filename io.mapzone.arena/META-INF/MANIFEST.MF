@@ -6,6 +6,11 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: io.mapzone.arena.ArenaPlugin
 Bundle-Vendor: mapzone.io
 Require-Bundle: org.polymap.p4,
- org.polymap.core.data
+ org.polymap.core.data,
+ org.polymap.core.style,
+ org.polymap.core.data.rs,
+ org.junit;bundle-version="4.11.0";resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
+Export-Package: io.mapzone.arena
+
