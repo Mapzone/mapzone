@@ -36,8 +36,6 @@ import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
 import com.google.common.collect.ArrayListMultimap;
 
-import io.mapzone.arena.Messages;
-
 /**
  * Edge function based on a distinct column in the source table.
  *

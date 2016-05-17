@@ -37,8 +37,6 @@ import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
 import com.google.common.collect.ArrayListMultimap;
 
-import io.mapzone.arena.Messages;
-
 /**
  * Edge function based on a table which contains a reference/assoziation/column with
  * FeatureId of another feature collection.

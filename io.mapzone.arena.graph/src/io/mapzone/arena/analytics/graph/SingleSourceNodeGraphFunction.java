@@ -72,7 +72,6 @@ import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
 import com.google.common.collect.Maps;
 
-import io.mapzone.arena.Messages;
 import io.mapzone.arena.analytics.graph.algo.GephiGraph;
 import io.mapzone.arena.analytics.graph.ui.OlFeatureGraphUI;
 

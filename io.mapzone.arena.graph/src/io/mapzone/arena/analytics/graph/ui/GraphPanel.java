@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-package io.mapzone.arena.analytics.graph;
+package io.mapzone.arena.analytics.graph.ui;
 
 import static org.polymap.p4.layer.FeatureSelection.ff;
 
@@ -69,10 +69,15 @@ import org.polymap.rhei.batik.toolkit.IPanelSection;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import io.mapzone.arena.ArenaPlugin;
-import io.mapzone.arena.Messages;
+import io.mapzone.arena.analytics.graph.Graph;
+import io.mapzone.arena.analytics.graph.GraphFunction;
+import io.mapzone.arena.analytics.graph.GraphLayerProvider;
+import io.mapzone.arena.analytics.graph.GraphPlugin;
+import io.mapzone.arena.analytics.graph.Messages;
+import io.mapzone.arena.analytics.graph.Node;
+import io.mapzone.arena.analytics.graph.OrganisationPersonGraphFunction;
+import io.mapzone.arena.analytics.graph.SingleSourceNodeGraphFunction;
 import io.mapzone.arena.analytics.graph.algo.GephiGraph;
-import io.mapzone.arena.analytics.graph.ui.OlFeatureGraphUI;
 
 /**
  * Proof-of-concept for generated geometries and graph displayed in an OL map.
@@ -134,7 +139,7 @@ public class GraphPanel
     @Override
     public boolean wantsToBeShown() {
         if (site().path().size() == 2) {
-            site().icon.set( ArenaPlugin.images().svgImage( "graph.svg", P4Plugin.HEADER_ICON_CONFIG ) );
+            site().icon.set( GraphPlugin.images().svgImage( "graph.svg", P4Plugin.HEADER_ICON_CONFIG ) );
             site().tooltip.set( i18n.get( "tooltip" ) );
             site().title.set( "" );
             return true;

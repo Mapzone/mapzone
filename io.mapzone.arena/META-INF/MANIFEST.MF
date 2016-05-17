@@ -12,21 +12,5 @@ Require-Bundle: org.polymap.p4,
  org.junit;bundle-version="4.11.0";resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .,
- lib/io-importer-api-0.9.1.jar,
- lib/io-processor-plugin-0.9.1.jar,
- lib/joda-time-2.8.2.jar,
- lib/layout-api-0.9.1.jar,
- lib/layout-plugin-0.9.1.jar,
- lib/org-openide-util-lookup-RELEASE81.jar,
- lib/org-openide-util-RELEASE81.jar,
- lib/project-api-0.9.1.jar,
- lib/graphstore-0.5.3.jar,
- lib/fastutil-6.6.4.jar,
- lib/utils-longtask-0.9.1.jar,
- lib/io-exporter-api-0.9.1.jar,
- lib/io-exporter-plugin-0.9.1.jar,
- lib/stax-utils-snapshot-20100402.jar,
- lib/graph-api-0.9.1.jar
 Export-Package: io.mapzone.arena
 
