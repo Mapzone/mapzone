@@ -59,13 +59,13 @@ public class OrganisationPersonGraphFunction
 
     @Override
     public String title() {
-        return "Q - raw mapzone recherche";
+        return "Q - mapzone recherche 6";
     }
 
 
     @Override
     public String description() {
-        return "Q - raw mapzone recherche as persons and organizations based on 'Mapzone-Recherche-6'";
+        return "Q - persons and organizations based on 'Mapzone-Recherche-6'";
     }
 
 
