@@ -8,14 +8,14 @@ def repoProjectsStr = '''[
    { "name": "io.mapzone.arena.graph",
       "repository" : "mapzone",
       "branch": "master",
-      "ant": "false",
+      "ant": "true",
+      "junit": "true",
       "successor": "io.mapzone.arena"
    },
    { "name": "io.mapzone.arena",
       "repository" : "mapzone",
       "branch": "master",
-      "ant": "true",
-      "junit": "true",
+      "ant": "false",
       "successor": "io.mapzone.arena.product"
    },
    { "name": "io.mapzone.parent",
