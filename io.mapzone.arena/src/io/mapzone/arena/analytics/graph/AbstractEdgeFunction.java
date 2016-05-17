@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.opengis.feature.Feature;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
@@ -35,22 +34,22 @@ public abstract class AbstractEdgeFunction
     private static Log log = LogFactory.getLog( EdgeFunctionTest.class );
 
 
-    protected Collection<Edge> transform( final ArrayListMultimap<Object,Feature> edgesByKeyProperty ) {
+    protected Collection<Edge> transform( final ArrayListMultimap<Object,Node> edgesByKeyProperty ) {
 
         Collection<Edge> allEdges = Lists.newArrayList();
 
         // now iterate on all edgesByKeyProperty and select all with more than one
         // value
         for (Object key : edgesByKeyProperty.keySet()) {
-            List<Feature> bundledFeatures = edgesByKeyProperty.get( key );
+            List<Node> bundledFeatures = edgesByKeyProperty.get( key );
             if (bundledFeatures != null && bundledFeatures.size() > 1) {
                 // step into the features and create an edge for each pair
                 int allFeaturesCount = bundledFeatures.size();
                 for (int aFeatureCount = 0; aFeatureCount < allFeaturesCount; aFeatureCount++) {
-                    Feature featureA = bundledFeatures.get( aFeatureCount );
+                    Node featureA = bundledFeatures.get( aFeatureCount );
                     for (int bFeatureCount = aFeatureCount + 1; bFeatureCount < allFeaturesCount; bFeatureCount++) {
-                        Feature featureB = bundledFeatures.get( bFeatureCount );
-                        allEdges.add( new Edge( key.toString(), featureA, featureB ) );
+                        Node featureB = bundledFeatures.get( bFeatureCount );
+                        allEdges.add( new Edge( key.toString() + "_" + featureA.key() + "_" + featureB.key(), featureA, featureB ) );
                     }
                 }
             }

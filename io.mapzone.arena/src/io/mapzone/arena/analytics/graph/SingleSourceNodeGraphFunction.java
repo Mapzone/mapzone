@@ -96,7 +96,6 @@ public class SingleSourceNodeGraphFunction
     private final static int COLUMN_2 = 5;
 
 
-
     @Override
     public String title() {
         return i18n.get( "title" );
@@ -194,7 +193,7 @@ public class SingleSourceNodeGraphFunction
                                 // error -> StatusDispatcher.handleError( "", error )
                                 // );
                                 generate( tk, monitor, graph );
-//                                generate( tk, new NullProgressMonitor(), graph );
+                                // generate( tk, new NullProgressMonitor(), graph );
                                 return Status.OK_STATUS;
                             }
                             catch (Exception ex) {
@@ -269,15 +268,12 @@ public class SingleSourceNodeGraphFunction
     }
 
 
-    private void generate( MdToolkit tk, IProgressMonitor monitor, final Graph graph )
-            throws Exception {
+    private void generate( MdToolkit tk, IProgressMonitor monitor, final Graph graph ) throws Exception {
         tk.createSnackbar( Appearance.FadeIn, "Generation started - stay tuned" );
 
         // selectedSourceFeatureSource.
         // disctinct on propertyColumn
         final Map<Object,Feature> distinctSourceFeatures = Maps.newHashMap();
-        // for faster access
-        final Map<String,Feature> featureCache = Maps.newHashMap();
         final Map<String,Node> nodes = Maps.newHashMap();
 
         // iterate on features
@@ -294,19 +290,18 @@ public class SingleSourceNodeGraphFunction
             }
             if (!distinctSourceFeatures.containsKey( key )) {
                 distinctSourceFeatures.put( key, feature );
-                featureCache.put( feature.getID(), feature );
-                Node node = new Node( "graph_" + feature.getID(), feature, key.toString(), 1);
+                Node node = new Node( "graph_" + feature.getID(), selectedSourceFeatureSource, feature, key.toString(),
+                        1 );
                 nodes.put( feature.getID(), node );
                 graph.addOrUpdateNode( node );
             }
         }
         tk.createSnackbar( Appearance.FadeIn, featureCount + " Nodes read" );
 
-        Collection<Edge> edges = selectedEdgeFunction.generateEdges( tk, monitor, featureCache );
+        Collection<Edge> edges = selectedEdgeFunction.generateEdges( tk, monitor, nodes );
 
         for (Edge edge : edges) {
-            graph.addOrUpdateEdge( nodes.get( edge.featureA().getIdentifier().getID() ),
-                    nodes.get( edge.featureB().getIdentifier().getID() ) );
+            graph.addOrUpdateEdge( edge.nodeA(), edge.nodeB() );
         }
         tk.createSnackbar( Appearance.FadeIn, featureCount + " Nodes with " + edges.size() + " Edges generated" );
         graph.layout();

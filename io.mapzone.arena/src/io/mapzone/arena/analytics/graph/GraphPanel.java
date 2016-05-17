@@ -16,6 +16,7 @@ package io.mapzone.arena.analytics.graph;
 
 import static org.polymap.p4.layer.FeatureSelection.ff;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.TreeMap;
 
@@ -28,12 +29,17 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.geotools.data.FeatureSource;
+import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.json.JSONArray;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.polymap.core.catalog.resolve.IResolvableInfo;
+import org.polymap.core.catalog.resolve.IResourceInfo;
+import org.polymap.core.data.rs.catalog.RServiceInfo;
 import org.polymap.core.data.util.Geometries;
 import org.polymap.core.mapeditor.MapViewer;
 import org.polymap.core.project.ILayer;
+import org.polymap.core.project.IMap;
 import org.polymap.core.runtime.Lazy;
 import org.polymap.core.runtime.PlainLazyInit;
 import org.polymap.core.runtime.event.EventManager;
@@ -47,14 +53,17 @@ import org.polymap.p4.P4Panel;
 import org.polymap.p4.P4Plugin;
 import org.polymap.p4.layer.FeatureClickEvent;
 import org.polymap.p4.layer.FeaturePanel;
+import org.polymap.p4.layer.FeatureSelection;
 import org.polymap.rap.openlayers.base.OlEventListener;
 import org.polymap.rap.openlayers.control.ScaleLineControl;
 import org.polymap.rap.openlayers.format.GeoJSONFormat;
 import org.polymap.rap.openlayers.interaction.SelectInteraction;
 import org.polymap.rap.openlayers.layer.VectorLayer;
 import org.polymap.rap.openlayers.source.VectorSource;
+import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PanelPath;
+import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 
 import com.google.common.collect.Maps;
@@ -89,7 +98,10 @@ public class GraphPanel
     } );
 
     // instance *******************************************
-
+    
+    // the map to show selected items in the graph 
+    @Scope(P4Plugin.Scope)
+    protected Context<IMap>             mainMap;
     // private ILayer layer;
 
     // /** {@link EncodedImageProducer} pipeline of {@link #layer}. */
@@ -227,16 +239,30 @@ public class GraphPanel
 
                 try {
                     String id = ids.getString( 0 );
-                    if (id.startsWith( "p:" ) || id.startsWith( "o:" )) {
-                        id = id.substring( 2 );
+                    // xxx add a filter for all features with a distance of 1 to the current feature
+                    Node selectedNode = graph.getNode( id );
+                    if (selectedNode != null) {
+                        FeatureSource selectedFS = selectedNode.featureSource();
+                        String selectedFSIdentifier = resourceIdentifier( selectedFS );
+                        if (featureSelection.get().layer().resourceIdentifier.get().equals( selectedFSIdentifier )) {
+                            // correct layer selected
+                            featureSelection.get().setClicked( selectedNode.feature() );
+                        } else {
+                            // load all known layers and try to find the right one
+                            // set them as new featureSelection 
+                            for (ILayer layer : mainMap.get().layers) {
+                                if (layer.resourceIdentifier.get().equals( selectedFSIdentifier )) {
+                                    featureSelection.set( FeatureSelection.forLayer( layer ));
+                                    featureSelection.get().setClicked( selectedNode.feature() );
+                                    break;
+                                }
+                            }
+                        }
                     }
-                    EventManager.instance().publish( new FeatureClickEvent( featureSelection.get(),
-                            Optional.ofNullable( graph.getNode( id ) != null ? graph.getNode( id ).feature() : null ), Optional.empty() ) );
                 }
                 catch (Exception e) {
                     StatusDispatcher.handleError( "", e );
                 }
-//                path = site().path();
                 getContext().openPanel( site().path(), FeaturePanel.ID );
             }
         };
@@ -248,5 +274,11 @@ public class GraphPanel
         
         final OlFeatureGraphUI ui = new OlFeatureGraphUI( source, mapViewer.getMap() );
         graph = new GephiGraph( ui );
+    }
+    
+    public String resourceIdentifier( final FeatureSource fs ) throws IOException {
+        IResolvableInfo info = P4Plugin.localCatalog().localFeaturesStoreInfo();
+        IResourceInfo res = ((RServiceInfo)info.getServiceInfo()).resource(fs );
+        return P4Plugin.localResolver().resourceIdentifier( res );
     }
 }

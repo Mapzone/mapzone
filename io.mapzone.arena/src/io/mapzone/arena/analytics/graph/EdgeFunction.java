@@ -25,7 +25,7 @@ public interface EdgeFunction {
     /**
      * creates the configuration part of this graph function
      */
-    void createContents( final MdToolkit tk, final Composite parent, final FeatureSource sourceFeatureSource );
+    void createContents( final MdToolkit tk, final Composite parent, final FeatureSource sourceFeatureSource  );
 
 
     /**
@@ -58,6 +58,6 @@ public interface EdgeFunction {
      * @throws Exception
      */
     Collection<Edge> generateEdges( final MdToolkit tk, final IProgressMonitor monitor,
-            final Map<String,Feature> sourceFeatures ) throws Exception;
+            final Map<String,Node> sourceFeatures ) throws Exception;
 
 }

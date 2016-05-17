@@ -126,11 +126,11 @@ public class GephiGraph
             line = edges.get( edgeIdTS );
             if (line == null) {
                 // add original
-                line = new io.mapzone.arena.analytics.graph.Edge( edgeIdST, src.feature(), target.feature() );
+                line = new io.mapzone.arena.analytics.graph.Edge( edgeIdST, src, target );
                 addOrUpdateEdge( line, src, target );
             }
             else {
-                line = new io.mapzone.arena.analytics.graph.Edge( edgeIdTS, target.feature(), src.feature() );
+                line = new io.mapzone.arena.analytics.graph.Edge( edgeIdTS, target, src );
                 addOrUpdateEdge( line, target, src );
             }
         }

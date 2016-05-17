@@ -16,6 +16,7 @@ package io.mapzone.arena.analytics.graph;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geotools.data.FeatureSource;
 import org.opengis.feature.Feature;
 
 /**
@@ -28,6 +29,8 @@ public class Node {
 
     private static Log log = LogFactory.getLog( Node.class );
 
+    private final FeatureSource featureSource;
+
     private final Feature feature;
 
     private final String key;
@@ -37,11 +40,18 @@ public class Node {
     private final String name;
 
 
-    public Node( final String key, final Feature feature, final String name, final int weight ) {
+    public Node( final String key, final FeatureSource featureSource, final Feature feature, final String name,
+            final int weight ) {
         this.key = key;
+        this.featureSource = featureSource;
         this.feature = feature;
         this.name = name;
         this.weight = weight;
+    }
+
+
+    public FeatureSource featureSource() {
+        return featureSource;
     }
 
 

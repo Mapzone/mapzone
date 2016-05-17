@@ -132,19 +132,20 @@ public class CompareColumnEdgeFunction
 
     @Override
     public Collection<Edge> generateEdges( final MdToolkit tk, final IProgressMonitor monitor,
-            final Map<String,Feature> sourceFeatures ) throws Exception {
+            final Map<String,Node> sourceFeatures ) throws Exception {
 
-        final ArrayListMultimap<Object,Feature> edgesByKeyProperty = ArrayListMultimap.create();
+        final ArrayListMultimap<Object,Node> edgesByKeyProperty = ArrayListMultimap.create();
 
         // iterate on features
         int featureCount = 0;
-        for (Feature sourceFeature : sourceFeatures.values()) {
+        for (Node sourceNode : sourceFeatures.values()) {
+            Feature sourceFeature = sourceNode.feature();
             featureCount++;
             Object key = ((SimpleFeature)sourceFeature).getAttribute( selectedCompareProperty.getName() );
-            if (key == null || "".equals( key.toString().trim() )) {
-                key = "";
+            // compare only if a value is set
+            if (key != null && !"".equals( key.toString().trim() )) {
+                edgesByKeyProperty.put( key, sourceNode );
             }
-            edgesByKeyProperty.put( key, sourceFeature );
         }
         return transform( edgesByKeyProperty );
     }

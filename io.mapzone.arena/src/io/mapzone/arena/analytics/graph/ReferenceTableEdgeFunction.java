@@ -139,9 +139,9 @@ public class ReferenceTableEdgeFunction
 
     @Override
     public Collection<Edge> generateEdges( final MdToolkit tk, final IProgressMonitor monitor,
-            final Map<String,Feature> sourceFeatures ) throws Exception {
+            final Map<String,Node> sourceNodes ) throws Exception {
 
-        final ArrayListMultimap<Object,Feature> edgesByKeyProperty = ArrayListMultimap.create();
+        final ArrayListMultimap<Object,Node> edgesByKeyProperty = ArrayListMultimap.create();
 
         // iterate on features
         FeatureCollection allFeatures = selectReferenceSource.getFeatures();
@@ -157,9 +157,9 @@ public class ReferenceTableEdgeFunction
             // load the source feature
             Object reference = referenceFeature.getAttribute( selectedReferenceProperty.getName() );
             if (reference != null || !"".equals( reference )) {
-                Feature sourceFeature = sourceFeatures.get( reference );
-                if (sourceFeature != null) {
-                    edgesByKeyProperty.put( key, sourceFeature );
+                Node sourceNode = sourceNodes.get( reference );
+                if (sourceNode != null) {
+                    edgesByKeyProperty.put( key, sourceNode );
                 }
                 else {
                     // XXX proper error handling

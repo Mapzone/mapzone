@@ -14,11 +14,8 @@
  */
 package io.mapzone.arena.analytics.graph;
 
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.opengis.feature.Feature;
 
 /**
  * a single edge.
@@ -28,34 +25,36 @@ import org.opengis.feature.Feature;
  */
 public class Edge {
 
-    private static Log log = LogFactory.getLog( Edge.class );
-    
-    private Feature featureA;
-    private Feature featureB;
+    private final Node nodeA;
+
+    private final Node nodeB;
 
     // private Map<String, String> properties;
-    private String key;
-    
-    
-    public Edge( final String key, final Feature featureA, final Feature featureB ) {
+    private final String key;
+
+
+    public Edge( final String key, final Node nodeA, final Node nodeB ) {
         this.key = key;
-        this.featureA = featureA;
-        this.featureB = featureB;
+        this.nodeA = nodeA;
+        this.nodeB = nodeB;
     }
 
-    public Feature featureA() {
-        return featureA;
+
+    public Node nodeA() {
+        return nodeA;
     }
-    
-    public Feature featureB() {
-        return featureB;
+
+
+    public Node nodeB() {
+        return nodeB;
     }
-//    
-//    public Map<String,String> properties() {
-//        return properties;
-//    }
-    
+    //
+    // public Map<String,String> properties() {
+    // return properties;
+    // }
+
+
     public String key() {
         return key;
     }
-} 
+}

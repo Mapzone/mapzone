@@ -33,24 +33,24 @@ public class EdgeFunctionTest {
     @Test
     public void testTransform() {
         
-        final ArrayListMultimap<Object,Feature> edgesByKeyProperty = ArrayListMultimap.create();
-        edgesByKeyProperty.put( "k1", new SimpleFeatureImpl( null, null, new FeatureIdImpl( "k1_1" ), false, null ) );
-        edgesByKeyProperty.put( "k1", new SimpleFeatureImpl( null, null, new FeatureIdImpl( "k1_2" ), false, null ) );
-        edgesByKeyProperty.put( "k1", new SimpleFeatureImpl( null, null, new FeatureIdImpl( "k1_3" ), false, null ) );
-        edgesByKeyProperty.put( "k1", new SimpleFeatureImpl( null, null, new FeatureIdImpl( "k1_4" ), false, null ) );
-        edgesByKeyProperty.put( "k2", new SimpleFeatureImpl( null, null, new FeatureIdImpl( "k2_1" ), false, null ) );
-        edgesByKeyProperty.put( "k2", new SimpleFeatureImpl( null, null, new FeatureIdImpl( "k2_2" ), false, null ) );
-        edgesByKeyProperty.put( "k3", new SimpleFeatureImpl( null, null, new FeatureIdImpl( "k3_1" ), false, null ) );
-        edgesByKeyProperty.put( "k4", new SimpleFeatureImpl( null, null, new FeatureIdImpl( "k4_1" ), false, null ) );
-        edgesByKeyProperty.put( "k4", new SimpleFeatureImpl( null, null, new FeatureIdImpl( "k4_2" ), false, null ) );
+        final ArrayListMultimap<Object,Node> edgesByKeyProperty = ArrayListMultimap.create();
+        edgesByKeyProperty.put( "k1", new Node("k1_1" , null, null, null, 1));
+        edgesByKeyProperty.put( "k1", new Node("k1_2" , null, null, null, 1));
+        edgesByKeyProperty.put( "k1", new Node("k1_3" , null, null, null, 1));
+        edgesByKeyProperty.put( "k1", new Node("k1_4" , null, null, null, 1));
+        edgesByKeyProperty.put( "k2", new Node("k2_1" , null, null, null, 1));
+        edgesByKeyProperty.put( "k2", new Node("k2_2" , null, null, null, 1));
+        edgesByKeyProperty.put( "k3", new Node("k3_1" , null, null, null, 1));
+        edgesByKeyProperty.put( "k4", new Node("k4_1" , null, null, null, 1));
+        edgesByKeyProperty.put( "k4", new Node( "k4_2", null, null, null, 1 ) );
         
         List<Edge> edges = (List<Edge>)new CompareColumnEdgeFunction().transform( edgesByKeyProperty );
         assertEquals( 8, edges.size() );
-        assertEquals( "k1_1", edges.get( 0 ).featureA().getIdentifier().getID() );
-        assertEquals( "k1_2", edges.get( 0 ).featureB().getIdentifier().getID() );
-        assertEquals( "k1_1", edges.get( 2 ).featureA().getIdentifier().getID() );
-        assertEquals( "k1_4", edges.get( 2 ).featureB().getIdentifier().getID() );
-        assertEquals( "k4_1", edges.get( 7 ).featureA().getIdentifier().getID() );
-        assertEquals( "k4_2", edges.get( 7 ).featureB().getIdentifier().getID() );
+        assertEquals( "k1_1", edges.get( 0 ).nodeA().key() );
+        assertEquals( "k1_2", edges.get( 0 ).nodeB().key() );
+        assertEquals( "k1_1", edges.get( 2 ).nodeA().key() );
+        assertEquals( "k1_4", edges.get( 2 ).nodeB().key() );
+        assertEquals( "k4_1", edges.get( 7 ).nodeA().key() );
+        assertEquals( "k4_2", edges.get( 7 ).nodeB().key() );
     }
 }

@@ -57,10 +57,6 @@ public class OrganisationPersonGraphFunction
 
     private static Log log = LogFactory.getLog( OrganisationPersonGraphFunction.class );
 
-    private final Style edgeStyle = new Style().stroke
-            .put( new StrokeStyle().color.put( new Color( "black" ) ).width.put( 1f ) ).zIndex.put( 0f );
-
-
     @Override
     public String title() {
         return "Q - raw mapzone recherche";
@@ -93,7 +89,7 @@ public class OrganisationPersonGraphFunction
                             if (fs != null) {
                                 UIThreadExecutor.async( () -> pushSession.start(),
                                         error -> StatusDispatcher.handleError( "", error ) );
-                                analyse( tk, fs.getFeatures(), graph );
+                                analyse( tk, fs, graph );
                                 return Status.OK_STATUS;
                             }
                             else {
@@ -113,12 +109,12 @@ public class OrganisationPersonGraphFunction
             }
         } );
 
-        final Label selectLabel = tk.createLabel( parent, "using mapzone-recherche-06", SWT.BORDER );
-        FormDataFactory.on( selectLabel ).fill().top( 15 ).left( 1 ).noBottom();
+//        final Label selectLabel = tk.createLabel( parent, "using mapzone-recherche-06", SWT.BORDER );
+//        FormDataFactory.on( selectLabel ).fill().top( 15 ).left( 1 ).noBottom();
     }
 
 
-    public void analyse( final MdToolkit tk, final FeatureCollection featureCollection, final Graph graph )
+    public void analyse( final MdToolkit tk, final FeatureSource featureSource, final Graph graph )
             throws Exception {
 
         tk.createSnackbar( Appearance.FadeIn, "Analysis started - stay tuned" );
@@ -131,7 +127,7 @@ public class OrganisationPersonGraphFunction
         // iterate on features
         // create Node for each organisation
         // increase weight for each entry per organisation
-        FeatureIterator iterator = featureCollection.features();
+        FeatureIterator iterator = featureSource.getFeatures().features();
         int i = 0;
         while (iterator.hasNext() && i < 5000) {
             i++;
@@ -139,7 +135,7 @@ public class OrganisationPersonGraphFunction
             String organisationKey = (String)feature.getAttribute( "Organisation" );
             Node organisationFeature = organisations.get( organisationKey );
             if (organisationFeature == null) {
-                organisationFeature = new Node( "o:" + feature.getID(), feature, organisationKey, 1 );
+                organisationFeature = new Node( "o:" + feature.getID(), featureSource, feature, organisationKey, 1 );
                 organisations.put( organisationKey, organisationFeature );
                 graph.addOrUpdateNode( organisationFeature );
             }
@@ -154,7 +150,7 @@ public class OrganisationPersonGraphFunction
             String personKey = (String)feature.getAttribute( "Name" ) + " " + (String)feature.getAttribute( "Vorname" );
             Node personFeature = persons.get( personKey );
             if (personFeature == null) {
-                personFeature = new Node( "p:" + feature.getID(), feature, personKey, 1 );
+                personFeature = new Node( "p:" + feature.getID(), featureSource, feature, personKey, 1 );
                 persons.put( personKey, personFeature );
                 graph.addOrUpdateNode( personFeature );
             }
