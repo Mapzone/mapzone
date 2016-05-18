@@ -243,16 +243,16 @@ public class GephiGraph
                     log.info( "sending coordinate " + graphNode.getId() + ": " + newCoordinate.x() + ";"
                             + newCoordinate.y() );
                     final io.mapzone.arena.analytics.graph.Node featureNode = nodes.get( graphNode.getId() );
-                    if (featureNode == null) {
-                        log.error( "no featureNode with id " + graphNode.getId() );
-                    }
-                    else {
+//                    if (featureNode == null) {
+//                        log.error( "no featureNode with id " + graphNode.getId() );
+//                    }
+//                    else {
                         graphUi.updateGeometry( featureNode, newCoordinate );
                         for (Edge graphEdge : graph.getEdges( graphNode )) {
                             io.mapzone.arena.analytics.graph.Edge line = edges.get( graphEdge.getId().toString() );
                             graphUi.updateGeometry( line, featureNode, newCoordinate );
                         }
-                    }
+//                    }
                 }
                 Extent envelope = new Extent( minX, minY, maxX, maxY );
                 graphUi.updateEnvelope( envelope );
