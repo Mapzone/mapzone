@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-package io.mapzone.arena.analytics.graph;
+package io.mapzone.arena.analytics.graph.edgefunctions;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,6 +22,10 @@ import org.apache.commons.logging.LogFactory;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
+
+import io.mapzone.arena.analytics.graph.Edge;
+import io.mapzone.arena.analytics.graph.EdgeFunction;
+import io.mapzone.arena.analytics.graph.Node;
 
 /**
  * Abstract base class for edge functions.
@@ -49,7 +53,7 @@ public abstract class AbstractEdgeFunction
                     Node featureA = bundledFeatures.get( aFeatureCount );
                     for (int bFeatureCount = aFeatureCount + 1; bFeatureCount < allFeaturesCount; bFeatureCount++) {
                         Node featureB = bundledFeatures.get( bFeatureCount );
-                        allEdges.add( new Edge( key.toString() + "_" + featureA.key() + "_" + featureB.key(), featureA, featureB ) );
+                        allEdges.add( new Edge( key.toString() + "_" + featureA.key() + "_" + featureB.key(), key.toString(), featureA, featureB ) );
                     }
                 }
             }

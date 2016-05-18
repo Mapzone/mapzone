@@ -12,48 +12,49 @@
  */
 package io.mapzone.arena.analytics.graph.ui;
 
-import java.io.IOException;
 import java.util.TreeMap;
+
+import java.io.IOException;
+
+import org.geotools.data.FeatureSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ComboViewer;
+
+import com.google.common.collect.Maps;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.geotools.data.FeatureSource;
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+
 import org.polymap.core.catalog.resolve.IResolvableInfo;
 import org.polymap.core.catalog.resolve.IResourceInfo;
 import org.polymap.core.data.rs.catalog.RServiceInfo;
-import org.polymap.core.data.util.Geometries;
 import org.polymap.core.mapeditor.MapViewer;
 import org.polymap.core.project.ILayer;
 import org.polymap.core.project.IMap;
-import org.polymap.core.runtime.Lazy;
-import org.polymap.core.runtime.PlainLazyInit;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.ui.FormDataFactory;
 import org.polymap.core.ui.FormLayoutFactory;
 import org.polymap.core.ui.SelectionAdapter;
 import org.polymap.core.ui.StatusDispatcher;
 import org.polymap.core.ui.UIUtils;
+
+import org.polymap.rhei.batik.Context;
+import org.polymap.rhei.batik.PanelIdentifier;
+import org.polymap.rhei.batik.Scope;
+import org.polymap.rhei.batik.toolkit.IPanelSection;
+
 import org.polymap.p4.P4Panel;
 import org.polymap.p4.P4Plugin;
 import org.polymap.p4.layer.FeaturePanel;
 import org.polymap.p4.layer.FeatureSelection;
 import org.polymap.rap.openlayers.base.OlEventListener;
 import org.polymap.rap.openlayers.control.ScaleLineControl;
-import org.polymap.rap.openlayers.layer.VectorLayer;
-import org.polymap.rhei.batik.Context;
-import org.polymap.rhei.batik.PanelIdentifier;
-import org.polymap.rhei.batik.Scope;
-import org.polymap.rhei.batik.toolkit.IPanelSection;
-
-import com.google.common.collect.Maps;
 import io.mapzone.arena.analytics.graph.Graph;
 import io.mapzone.arena.analytics.graph.GraphFunction;
 import io.mapzone.arena.analytics.graph.GraphPlugin;
@@ -71,32 +72,23 @@ import io.mapzone.arena.analytics.graph.algo.GephiGraph;
 public class GraphPanel
         extends P4Panel {
 
-    private static Log                                  log  = LogFactory.getLog( GraphPanel.class );
+    private static Log                  log  = LogFactory.getLog( GraphPanel.class );
 
-    private static final IMessages                      i18n = Messages.forPrefix( "GraphPanel" );
+    private static final IMessages      i18n = Messages.forPrefix( "GraphPanel" );
 
-    public static final PanelIdentifier                 ID   = PanelIdentifier.parse( "graph" );
-
-    public static final Lazy<CoordinateReferenceSystem> CRS  = new PlainLazyInit( () -> {
-                                                                 try {
-                                                                     return Geometries.crs( "EPSG:3857" );
-                                                                 }
-                                                                 catch (Exception e) {
-                                                                     throw new RuntimeException( e );
-                                                                 }
-                                                             } );
+    public static final PanelIdentifier ID   = PanelIdentifier.parse( "graph" );
 
     // instance *******************************************
 
     // the map to show selected items in the graph
     @Scope( P4Plugin.Scope )
-    protected Context<IMap>                             mainMap;
+    protected Context<IMap>             mainMap;
     // private ILayer layer;
 
     // /** {@link EncodedImageProducer} pipeline of {@link #layer}. */
     // private Pipeline pipeline;
 
-    private MapViewer<VectorLayer>                      mapViewer;
+    private MapViewer<?>                mapViewer;
 
     // private String servletAlias;
 
@@ -107,19 +99,19 @@ public class GraphPanel
     //
     // private List<MappingFunction> mappingFunctions = new ArrayList();
 
-    private Composite                                   mapContainer;
+    private Composite                   mapContainer;
 
     // private VectorSource source;
 
-    private FeatureSource                               fs;
+    private FeatureSource               fs;
 
-    private OlEventListener                             selectFeatureListener;
+    private OlEventListener             selectFeatureListener;
 
     // private PanelPath path;
 
-    private Graph                                       graph;
+    private Graph                       graph;
 
-    private VectorLayerProvider graphLayerProvider;
+    private GraphLayerProvider          graphLayerProvider;
 
 
     @Override
@@ -137,6 +129,15 @@ public class GraphPanel
     @Override
     public void init() {
         site().title.set( i18n.get( "title" ) );
+    }
+
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (graphLayerProvider != null) {
+            graphLayerProvider.dispose();
+        }
     }
 
     // XXX replace with extension point
@@ -213,15 +214,16 @@ public class GraphPanel
 
     protected void createMapViewer() {
         mapViewer = new MapViewer( mapContainer );
-        
+
         // must be global, because its used as eventlistener
-        graphLayerProvider = new VectorLayerProvider( mapViewer, id -> {
+        // ImageLayerProvider and VectorLayerProvider are supported
+        graphLayerProvider = new VectorLayerProvider( tk(), mapViewer, featureSelection.get().layer(), id -> {
             try {
                 // xxx add a filter for all features with a distance of 1 to the
                 // current feature
                 Node selectedNode = graph.getNode( id );
                 if (selectedNode != null) {
-                    
+
                     FeatureSource selectedFS = selectedNode.featureSource();
                     String selectedFSIdentifier = resourceIdentifier( selectedFS );
                     if (featureSelection.get().layer().resourceIdentifier.get().equals( selectedFSIdentifier )) {
@@ -248,20 +250,20 @@ public class GraphPanel
         } );
         mapViewer.layerProvider.set( graphLayerProvider );
         mapViewer.contentProvider.set( new ArrayContentProvider() );
-        mapViewer.maxExtent.set( new ReferencedEnvelope( -10000, -10000, 10000, 10000, CRS.get() ) );
+        mapViewer.maxExtent.set( graphLayerProvider.referenceEnvelope() );
         // mapViewer.addMapControl( new MousePositionControl() );
         mapViewer.addMapControl( new ScaleLineControl() );
 
-        mapViewer.setInput( new ILayer[] { null } );
+        mapViewer.setInput( graphLayerProvider.layers() );
         mapContainer.layout();
-        
-        graph = new GephiGraph( graphLayerProvider.createGraphUi(tk()) );
+
+        graph = new GephiGraph( graphLayerProvider.graphUi() );
     }
 
 
-    public String resourceIdentifier( final FeatureSource fs ) throws IOException {
+    private String resourceIdentifier( final FeatureSource selectedFeatureSource ) throws IOException {
         IResolvableInfo info = P4Plugin.localCatalog().localFeaturesStoreInfo();
-        IResourceInfo res = ((RServiceInfo)info.getServiceInfo()).resource( fs );
+        IResourceInfo res = ((RServiceInfo)info.getServiceInfo()).resource( selectedFeatureSource );
         return P4Plugin.localResolver().resourceIdentifier( res );
     }
 }

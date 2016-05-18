@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-package io.mapzone.arena.analytics.graph;
+package io.mapzone.arena.analytics.graph.ui;
 
 import java.io.IOException;
 import java.util.List;

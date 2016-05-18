@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.widgets.Display;
 import org.gephi.graph.GraphControllerImpl;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
@@ -38,14 +37,19 @@ import org.gephi.layout.plugin.forceAtlas2.ForceAtlas2;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.ProjectControllerImpl;
+
 import org.polymap.core.runtime.UIJob;
 import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.ui.StatusDispatcher;
+
+import org.polymap.rhei.batik.toolkit.md.MdToolkit;
+
 import org.polymap.rap.openlayers.types.Coordinate;
 import org.polymap.rap.openlayers.types.Extent;
 
 import com.google.common.collect.Maps;
 
+import io.mapzone.arena.analytics.graph.GraphFunction;
 import io.mapzone.arena.analytics.graph.GraphUI;
 
 /**
@@ -56,29 +60,29 @@ import io.mapzone.arena.analytics.graph.GraphUI;
 public class GephiGraph
         implements io.mapzone.arena.analytics.graph.Graph {
 
-    private final static Log log = LogFactory.getLog( GephiGraph.class );
+    private final static Log                                        log              = LogFactory.getLog( GephiGraph.class );
 
-    private static final double GRAPHUNIT2COORD = 100;
+    private static final double                                     GRAPHUNIT2COORD  = 100;
 
-    private static final long REFRESH_INTERVAL = 500;
+    private static final long                                       REFRESH_INTERVAL = 500;
 
-    private final Map<String,io.mapzone.arena.analytics.graph.Node> nodes = Maps.newHashMap();
+    private final Map<String,io.mapzone.arena.analytics.graph.Node> nodes            = Maps.newHashMap();
 
-    private final Map<String,io.mapzone.arena.analytics.graph.Edge> edges = Maps.newHashMap();
+    private final Map<String,io.mapzone.arena.analytics.graph.Edge> edges            = Maps.newHashMap();
 
-    private final ProjectController pc;
+    private ProjectController                                 pc;
 
-    private final Workspace workspace;
+    private Workspace                                         workspace;
 
-    private Container container;
+    private Container                                               container;
 
-    private ImportControllerImpl importController;
+    private ImportControllerImpl                                    importController;
 
-    private GraphModel graphModel;
+    private GraphModel                                              graphModel;
 
-    private ForceAtlas2 layout;
+    private ForceAtlas2                                             layout;
 
-    private final GraphUI graphUi;
+    private final GraphUI                                           graphUi;
 
 
     /**
@@ -92,10 +96,6 @@ public class GephiGraph
         // this.vector = vector;
         // this.map = map;
         this.graphUi = graphUi;
-        pc = new ProjectControllerImpl();// .getDefault().lookup(
-                                         // ProjectController.class );
-        pc.newProject();
-        workspace = pc.getCurrentWorkspace();
     }
 
 
@@ -121,24 +121,8 @@ public class GephiGraph
     public void addOrUpdateEdge( final io.mapzone.arena.analytics.graph.Node src,
             final io.mapzone.arena.analytics.graph.Node target ) {
         String edgeIdST = src.key() + "_" + target.key();
-        io.mapzone.arena.analytics.graph.Edge line = edges.get( edgeIdST );
-        if (line == null) {
-            // check other direction
-            String edgeIdTS = target.key() + "_" + src.key();
-            line = edges.get( edgeIdTS );
-            if (line == null) {
-                // add original
-                line = new io.mapzone.arena.analytics.graph.Edge( edgeIdST, src, target );
-                addOrUpdateEdge( line, src, target );
-            }
-            else {
-                line = new io.mapzone.arena.analytics.graph.Edge( edgeIdTS, target, src );
-                addOrUpdateEdge( line, target, src );
-            }
-        }
-        else {
-            addOrUpdateEdge( line, src, target );
-        }
+        io.mapzone.arena.analytics.graph.Edge line = new io.mapzone.arena.analytics.graph.Edge( edgeIdST, edgeIdST, src, target );
+        addOrUpdateEdge( line );
     }
 
 
@@ -151,19 +135,21 @@ public class GephiGraph
      * <strong>The ID of the edge must be build with src.id + '_' +
      * target.id.</strong>
      */
-    public void addOrUpdateEdge( final io.mapzone.arena.analytics.graph.Edge edge,
-            final io.mapzone.arena.analytics.graph.Node src, final io.mapzone.arena.analytics.graph.Node target ) {
-        final String edgeId = edge.key();
-        if (!edges.containsKey( edgeId )) {
-            edges.put( edgeId, edge );
-            addEdge( edgeId, src.key(), target.key() );
-            graphUi.addEdge( edge );
-            // getEdge( edgeId ).addAttribute( "layout.weight", weight );
-        }
-        else {
-            // weight += getEdge( edgeId ).getAttribute( "layout.weight",
-            // Integer.class );
-            // getEdge( edgeId ).setAttribute( "layout.weight", weight );
+    public void addOrUpdateEdge( final io.mapzone.arena.analytics.graph.Edge edge ) {
+        // check for duplicates, because we are undirected
+        // add only if not present before
+        String edgeIdST = edge.nodeA().key() + "_" + edge.nodeB().key();
+        io.mapzone.arena.analytics.graph.Edge line = edges.get( edgeIdST );
+        if (line == null) {
+            // check other direction
+            String edgeIdTS = edge.nodeB().key() + "_" + edge.nodeA().key();
+            line = edges.get( edgeIdTS );
+            if (line == null) {
+                // add original
+                edges.put( edgeIdST, edge );
+                addEdge( edgeIdST, edge.nodeA().key(), edge.nodeB().key() );
+                graphUi.addEdge( edge );
+            }
         }
     }
 
@@ -186,9 +172,14 @@ public class GephiGraph
 
     private Container getContainer() {
         if (container == null) {
+            pc = new ProjectControllerImpl();// .getDefault().lookup(
+            // ProjectController.class );
+            pc.newProject();
+            workspace = pc.getCurrentWorkspace();
             container = new ImportContainerFactoryImpl().newContainer();
             importController = new ImportControllerImpl();
             graphModel = new GraphControllerImpl().getGraphModel( workspace );
+            processor = new AppendProcessor();
             layout = new ForceAtlas2( null );
             layout.setGraphModel( graphModel );
             layout.resetPropertiesValues();
@@ -201,7 +192,7 @@ public class GephiGraph
         return container;
     }
 
-    private Processor processor = new AppendProcessor();
+    private Processor processor;
 
 
     @Override
@@ -216,7 +207,7 @@ public class GephiGraph
                     updateCoordinates( graphModel, layout, /* display, */ 2000 );
                 }
             };
-            job.scheduleWithUIUpdate();
+            job.schedule();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -243,8 +234,8 @@ public class GephiGraph
                 double maxX = -10000;
                 double maxY = -10000;
                 for (Node graphNode : graph.getNodes()) {
-                    Coordinate newCoordinate = new Coordinate( graphNode.x() * GRAPHUNIT2COORD,
-                            graphNode.y() * GRAPHUNIT2COORD );
+                    Coordinate newCoordinate = new Coordinate( graphNode.x() * GRAPHUNIT2COORD, graphNode.y()
+                            * GRAPHUNIT2COORD );
                     minX = Math.min( minX, newCoordinate.x() );
                     maxX = Math.max( maxX, newCoordinate.x() );
                     minY = Math.min( minY, newCoordinate.y() );
@@ -252,16 +243,24 @@ public class GephiGraph
                     log.info( "sending coordinate " + graphNode.getId() + ": " + newCoordinate.x() + ";"
                             + newCoordinate.y() );
                     final io.mapzone.arena.analytics.graph.Node featureNode = nodes.get( graphNode.getId() );
-                    graphUi.updateGeometry( featureNode, newCoordinate );
-                    for (Edge graphEdge : graph.getEdges( graphNode )) {
-                        io.mapzone.arena.analytics.graph.Edge line = edges.get( graphEdge.getId().toString() );
-                        graphUi.updateGeometry( line, featureNode, newCoordinate );
+                    if (featureNode == null) {
+                        log.error( "no featureNode with id " + graphNode.getId() );
+                    }
+                    else {
+                        graphUi.updateGeometry( featureNode, newCoordinate );
+                        for (Edge graphEdge : graph.getEdges( graphNode )) {
+                            io.mapzone.arena.analytics.graph.Edge line = edges.get( graphEdge.getId().toString() );
+                            graphUi.updateGeometry( line, featureNode, newCoordinate );
+                        }
                     }
                 }
                 Extent envelope = new Extent( minX, minY, maxX, maxY );
                 graphUi.updateEnvelope( envelope );
                 log.info( "setting extent to " + envelope.toJson() );
                 log.info( "sending coordinates done." );
+                // clear all maps
+
+                clear();
             }, error -> StatusDispatcher.handleError( "", error ) );
 
             // } ).get();
@@ -277,7 +276,7 @@ public class GephiGraph
 
     @Override
     public void clear() {
-        graphUi.clear();
+        // graphUi.clear();
         nodes.clear();
         edges.clear();
         container = null;
@@ -287,6 +286,13 @@ public class GephiGraph
     @Override
     public io.mapzone.arena.analytics.graph.Node getNode( String key ) {
         return nodes.get( key );
+    }
+
+
+    @Override
+    public void startGeneration( final GraphFunction function, final MdToolkit tk, final IProgressMonitor monitor )
+            throws Exception {
+        graphUi.startGeneration( function, tk, monitor, this );
     }
 
 }

@@ -1,6 +1,9 @@
 package io.mapzone.arena.analytics.graph;
 
 import org.eclipse.swt.widgets.Composite;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
 public interface GraphFunction {
@@ -26,4 +29,7 @@ public interface GraphFunction {
     default int preferredHeight() {
         return 100;
     }
+
+
+    void generate( final MdToolkit tk, final IProgressMonitor monitor, final Graph graph ) throws Exception;
 }

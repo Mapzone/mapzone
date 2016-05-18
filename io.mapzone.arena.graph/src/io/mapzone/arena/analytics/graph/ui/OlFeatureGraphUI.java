@@ -19,11 +19,18 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
+import com.google.common.collect.Maps;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.rap.rwt.service.ServerPushSession;
+
+import org.polymap.core.mapeditor.MapViewer;
+import org.polymap.core.runtime.UIThreadExecutor;
+import org.polymap.core.ui.StatusDispatcher;
+
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
 import org.polymap.rap.openlayers.base.OlFeature;
-import org.polymap.rap.openlayers.base.OlMap;
 import org.polymap.rap.openlayers.geom.LineStringGeometry;
 import org.polymap.rap.openlayers.geom.PointGeometry;
 import org.polymap.rap.openlayers.source.VectorSource;
@@ -35,9 +42,9 @@ import org.polymap.rap.openlayers.types.Color;
 import org.polymap.rap.openlayers.types.Coordinate;
 import org.polymap.rap.openlayers.types.Extent;
 
-import com.google.common.collect.Maps;
-
 import io.mapzone.arena.analytics.graph.Edge;
+import io.mapzone.arena.analytics.graph.Graph;
+import io.mapzone.arena.analytics.graph.GraphFunction;
 import io.mapzone.arena.analytics.graph.GraphUI;
 import io.mapzone.arena.analytics.graph.Node;
 
@@ -51,24 +58,25 @@ import io.mapzone.arena.analytics.graph.Node;
 public class OlFeatureGraphUI
         implements GraphUI {
 
-    private final static Log log = LogFactory.getLog( OlFeatureGraphUI.class );
+    private final static Log            log         = LogFactory.getLog( OlFeatureGraphUI.class );
 
-    private final VectorSource vector;
+    private final ServerPushSession     pushSession = new ServerPushSession();
 
-    private final Map<String,OlFeature> nodes = Maps.newHashMap();
+    private final VectorSource          vector;
 
-    private final Map<String,OlFeature> edges = Maps.newHashMap();
-    
-    private static final int                  MAXNODES           = 20000;
+    private final Map<String,OlFeature> nodes       = Maps.newHashMap();
 
-    private final OlMap map;
+    private final Map<String,OlFeature> edges       = Maps.newHashMap();
 
-    private final Style edgeStyle = new Style().stroke
-            .put( new StrokeStyle().color.put( new Color( "black" ) ).width.put( 1f ) ).zIndex.put( 0f );
+//    private static final int            MAXNODES    = 200000;
 
-    private final MdToolkit tk;
+    private final MapViewer             map;
 
-    private boolean toManyNodesMessageSent;
+    private final Style                 edgeStyle   = new Style().stroke.put( new StrokeStyle().color.put( new Color( "black" ) ).width.put( 1f ) ).zIndex.put( 0f );
+
+    private final MdToolkit             tk;
+
+    private boolean                     toManyNodesMessageSent;
 
 
     /**
@@ -78,7 +86,7 @@ public class OlFeatureGraphUI
      * @param vector
      * @param map
      */
-    public OlFeatureGraphUI( final MdToolkit tk, final VectorSource vector, final OlMap map ) {
+    public OlFeatureGraphUI( final MdToolkit tk, final VectorSource vector, final MapViewer map ) {
         this.tk = tk;
         this.vector = vector;
         this.map = map;
@@ -87,8 +95,8 @@ public class OlFeatureGraphUI
 
     @Override
     public void updateEnvelope( Extent envelope ) {
-        map.view.get().fit( envelope, null );
-        map.view.get().resolution.set( 600f );
+        map.getMap().view.get().fit( envelope, null );
+        map.getMap().view.get().resolution.set( 600f );
         // map.view.get().resolution.set( new Double((Math.abs( maxX ) +
         // Math.abs( minX )) / GRAPHUNIT2COORD).floatValue() );
         log.info( "setting extent to " + envelope.toJson() );
@@ -100,52 +108,57 @@ public class OlFeatureGraphUI
     @Override
     public void updateGeometry( Edge edge, Node node, Coordinate newCoordinate ) {
         OlFeature line = edges.get( edge.key() );
-        LineStringGeometry geometry = ((LineStringGeometry)line.geometry.get());
-        List<Coordinate> coordinates = geometry.coordinates.get();
-        coordinates.set( (edge.key().startsWith( node.key() )) ? 0 : 1, newCoordinate );
-        geometry.coordinates.set( coordinates );
+        if (line != null) {
+            LineStringGeometry geometry = ((LineStringGeometry)line.geometry.get());
+            List<Coordinate> coordinates = geometry.coordinates.get();
+            coordinates.set( (edge.key().startsWith( node.key() )) ? 0 : 1, newCoordinate );
+            geometry.coordinates.set( coordinates );
+        }
     }
 
 
     @Override
     public void updateGeometry( Node node, Coordinate newCoordinate ) {
         final OlFeature olFeature = nodes.get( node.key() );
-        olFeature.style.set( featureStyle( node.weight() ) );
-        ((PointGeometry)olFeature.geometry.get()).coordinate.set( newCoordinate );
+        if (olFeature != null) {
+            olFeature.style.set( featureStyle( node.weight() ) );
+            ((PointGeometry)olFeature.geometry.get()).coordinate.set( newCoordinate );
+        }
     }
 
 
     @Override
     public void addEdge( Edge edge ) {
-        if (checkSizes()) {
+//        if (checkSizes()) {
             OlFeature line = new OlFeature( edge.key() ).geometry.put( new LineStringGeometry( new Coordinate( 0.0, 0.0 ), new Coordinate( 0.0, 0.0 ) ) ).style.put( edgeStyle );
             edges.put( edge.key(), line );
             vector.addFeature( line );
-        }
+//        }
     }
-
-
-    private boolean checkSizes() {
-        int size = edges.size() + nodes.size();
-        if (size > MAXNODES) {
-            if (!toManyNodesMessageSent) {
-                toManyNodesMessageSent = true;
-                tk.createSnackbar( Appearance.FadeIn, "Currently only " + MAXNODES + " nodes and edges supported, skipping the rest" );
-                log.info( "Currently only " + MAXNODES + " nodes and edges supported, skipping the rest" );
-            }
-            return false;
-        }
-        return true;
-    }
+//
+//
+//    private boolean checkSizes() {
+//        int size = edges.size() + nodes.size();
+//        if (size > MAXNODES) {
+//            if (!toManyNodesMessageSent) {
+//                toManyNodesMessageSent = true;
+//                tk.createSnackbar( Appearance.FadeIn, "Currently only " + MAXNODES
+//                        + " nodes and edges supported, skipping the rest" );
+//                log.info( "Currently only " + MAXNODES + " nodes and edges supported, skipping the rest" );
+//            }
+//            return false;
+//        }
+//        return true;
+//    }
 
 
     @Override
     public void addNode( Node node ) {
-        if (checkSizes()) {
+//        if (checkSizes()) {
             OlFeature olFeature = new OlFeature( node.key() ).name.put( node.name() ).geometry.put( new PointGeometry( new Coordinate( 0.0, 0.0 ) ) ).style.put( featureStyle( 1 ) );
             nodes.put( node.key(), olFeature );
             vector.addFeature( olFeature );
-        }
+//        }
     }
 
 
@@ -187,5 +200,25 @@ public class OlFeatureGraphUI
         nodes.clear();
         edges.clear();
         toManyNodesMessageSent = false;
+    }
+
+
+    @Override
+    public void startGeneration( final GraphFunction function, final MdToolkit tk, final IProgressMonitor monitor,
+            final Graph graph ) {
+        UIThreadExecutor.async( () -> {
+            pushSession.start();
+            try {
+                function.generate( tk, monitor, graph );
+            }
+            catch (Exception ex) {
+                log.error( ex );
+                ex.printStackTrace();
+                StatusDispatcher.handleError( "", ex );
+            }
+            finally {
+                pushSession.stop();
+            }
+        }, error -> StatusDispatcher.handleError( "", error ) );
     }
 }

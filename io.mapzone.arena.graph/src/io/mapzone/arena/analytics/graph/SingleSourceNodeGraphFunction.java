@@ -14,23 +14,16 @@ package io.mapzone.arena.analytics.graph;
 
 import static org.polymap.core.runtime.event.TypeEventFilter.ifType;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.geotools.data.FeatureSource;
@@ -39,9 +32,6 @@ import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.PropertyDescriptor;
-import org.polymap.core.operation.DefaultOperation;
-import org.polymap.core.operation.OperationSupport;
-import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.runtime.event.EventHandler;
 import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.runtime.i18n.IMessages;
@@ -53,12 +43,17 @@ import org.polymap.core.ui.UIUtils;
 import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
+import io.mapzone.arena.analytics.graph.edgefunctions.CompareColumnsWithDirectEdgeFunction;
+import io.mapzone.arena.analytics.graph.edgefunctions.CompareColumnsWithEdgeNodesFunction;
+import io.mapzone.arena.analytics.graph.edgefunctions.ReferenceTableWithDirectEdgeFunction;
+import io.mapzone.arena.analytics.graph.edgefunctions.ReferenceTableWithEdgeNodesFunction;
+import io.mapzone.arena.analytics.graph.ui.FeaturePropertySelectorUI;
+import io.mapzone.arena.analytics.graph.ui.FeatureSourceSelectorUI;
+
 import com.google.common.collect.Maps;
 
 public class SingleSourceNodeGraphFunction
-        implements GraphFunction {
-
-    private final ServerPushSession pushSession = new ServerPushSession();
+        extends AbstractGraphFunction {
 
     private static Log              log         = LogFactory.getLog( SingleSourceNodeGraphFunction.class );
 
@@ -67,8 +62,6 @@ public class SingleSourceNodeGraphFunction
     private FeatureSource           selectedSourceFeatureSource;
 
     private PropertyDescriptor      selectedSourcePropertyDescriptor;
-
-    private Button                  fab;
 
     private EdgeFunction            selectedEdgeFunction;
 
@@ -93,12 +86,15 @@ public class SingleSourceNodeGraphFunction
     }
 
     // XXX replace with extension point
-    public static final Class<EdgeFunction>[] availableFunctions = new Class[] { CompareColumnEdgeFunction.class,
-            ReferenceTableEdgeFunction.class };
+    public static final Class<EdgeFunction>[] availableFunctions = new Class[] {
+            CompareColumnsWithDirectEdgeFunction.class, CompareColumnsWithEdgeNodesFunction.class,
+            ReferenceTableWithEdgeNodesFunction.class, ReferenceTableWithDirectEdgeFunction.class };
+
 
     @Override
     public void createContents( final MdToolkit tk, final Composite parent, final Graph graph ) {
         try {
+            super.createContents( tk, parent, graph );
             final FeaturePropertySelectorUI sourcePropertiesUI = new FeaturePropertySelectorUI( tk, parent, prop -> {
                 this.selectedSourcePropertyDescriptor = prop;
                 EventManager.instance().publish( new GraphFunctionConfigurationChangedEvent( (GraphFunction)this, "sourcePropertyDescriptor", prop ) );
@@ -113,7 +109,6 @@ public class SingleSourceNodeGraphFunction
             for (Class<EdgeFunction> cl : availableFunctions) {
                 try {
                     EdgeFunction function = cl.newInstance();
-                    function.init( this );
                     edgeFunctions.put( function.title(), function );
                 }
                 catch (Exception e) {
@@ -149,43 +144,6 @@ public class SingleSourceNodeGraphFunction
                 parent.getParent().getParent().getParent().layout();
 
                 this.selectedEdgeFunction = function;
-            } );
-
-            fab = tk.createFab();
-            fab.setVisible( false );
-            fab.setEnabled( false );
-            fab.setToolTipText( i18n.get( "fabTooltip" ) );
-            fab.addSelectionListener( new org.eclipse.swt.events.SelectionAdapter() {
-
-                @Override
-                public void widgetSelected( SelectionEvent e ) {
-                    DefaultOperation op = new DefaultOperation( i18n.get( "title" ) ) {
-
-                        @Override
-                        public IStatus doExecute( final IProgressMonitor monitor, final IAdaptable info )
-                                throws Exception {
-                            try {
-                                UIThreadExecutor.async( () -> pushSession.start(), error -> StatusDispatcher.handleError( "", error ) );
-                                generate( tk, monitor, graph );
-                                // generate( tk, new NullProgressMonitor(), graph );
-                                return Status.OK_STATUS;
-                            }
-                            catch (Exception ex) {
-                                log.error( ex );
-                                ex.printStackTrace();
-                                StatusDispatcher.handleError( "", ex );
-                                return Status.CANCEL_STATUS;
-                            }
-                            finally {
-                                UIThreadExecutor.async( () -> pushSession.stop(), error -> StatusDispatcher.handleError( "", error ) );
-                            }
-                        }
-
-                    };
-                    // execute
-                    OperationSupport.instance().execute( op, true, false );
-                    fab.setVisible( false );
-                }
             } );
 
             final Label selectSourceTableLabel = tk.createLabel( parent, i18n.get( "selectSourceTable" ), SWT.NONE );
@@ -238,7 +196,8 @@ public class SingleSourceNodeGraphFunction
     }
 
 
-    private void generate( MdToolkit tk, IProgressMonitor monitor, final Graph graph ) throws Exception {
+    @Override
+    public void generate( MdToolkit tk, IProgressMonitor monitor, final Graph graph ) throws Exception {
         tk.createSnackbar( Appearance.FadeIn, "Generation started - stay tuned" );
 
         // selectedSourceFeatureSource.
@@ -260,7 +219,7 @@ public class SingleSourceNodeGraphFunction
             }
             if (!distinctSourceFeatures.containsKey( key )) {
                 distinctSourceFeatures.put( key, feature );
-                Node node = new Node( "graph_"
+                Node node = new Node( Node.Type.node, "graph_"
                         + feature.getID(), selectedSourceFeatureSource, feature, key.toString(), 1 );
                 nodes.put( feature.getID(), node );
                 graph.addOrUpdateNode( node );
@@ -268,16 +227,10 @@ public class SingleSourceNodeGraphFunction
         }
         tk.createSnackbar( Appearance.FadeIn, featureCount + " Nodes read" );
 
-        Collection<Edge> edges = selectedEdgeFunction.generateEdges( tk, monitor, nodes );
-//
-//        tk.createSnackbar( Appearance.FadeIn, edges.size() + " Edges found" );
+        int edges = selectedEdgeFunction.generateEdges( tk, monitor, nodes, graph );
 
-        for (Edge edge : edges) {
-            graph.addOrUpdateEdge( edge.nodeA(), edge.nodeB() );
-        }
-        tk.createSnackbar( Appearance.FadeIn, featureCount + " Nodes with " +  edges.size() + " Edges analysed, starting layout process" );
+        tk.createSnackbar( Appearance.FadeIn, featureCount + " Nodes with " + edges
+                + " Edges analysed, starting layout process" );
         graph.layout();
-
-        UIThreadExecutor.async( () -> pushSession.stop(), error -> StatusDispatcher.handleError( "", error ) );
     }
 }

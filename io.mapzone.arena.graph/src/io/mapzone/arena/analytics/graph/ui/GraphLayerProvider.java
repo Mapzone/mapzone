@@ -12,9 +12,12 @@
  */
 package io.mapzone.arena.analytics.graph.ui;
 
-import org.polymap.core.mapeditor.ILayerProvider;
+import java.util.List;
 
-import org.polymap.rhei.batik.toolkit.md.MdToolkit;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+
+import org.polymap.core.mapeditor.ILayerProvider;
+import org.polymap.core.project.ILayer;
 
 import io.mapzone.arena.analytics.graph.GraphUI;
 
@@ -26,6 +29,11 @@ import io.mapzone.arena.analytics.graph.GraphUI;
 public interface GraphLayerProvider<CL>
         extends ILayerProvider<CL> {
 
-    GraphUI createGraphUi( final MdToolkit tk );
+    GraphUI graphUi();
 
+    ReferencedEnvelope referenceEnvelope();
+
+    List<ILayer> layers();
+    
+    void dispose();
 }

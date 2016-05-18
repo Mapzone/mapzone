@@ -12,14 +12,24 @@
  */
 package io.mapzone.arena.analytics.graph.ui;
 
+import java.util.List;
 import java.util.function.Consumer;
 
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.json.JSONArray;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.google.common.collect.Lists;
+
+import org.polymap.core.data.util.Geometries;
 import org.polymap.core.mapeditor.MapViewer;
+import org.polymap.core.project.ILayer;
+import org.polymap.core.runtime.Lazy;
+import org.polymap.core.runtime.PlainLazyInit;
+
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
 import org.polymap.rap.openlayers.base.OlEvent;
@@ -37,52 +47,64 @@ import org.polymap.rap.openlayers.types.Color;
 import io.mapzone.arena.analytics.graph.GraphUI;
 
 public class VectorLayerProvider
-        implements GraphLayerProvider<VectorLayer>, OlEventListener {
+        implements GraphLayerProvider<ILayer>, OlEventListener {
 
-    private static Log             log = LogFactory.getLog( VectorLayerProvider.class );
+    private static Log                                  log = LogFactory.getLog( VectorLayerProvider.class );
 
-    private final VectorSource     source;
+    public static final Lazy<CoordinateReferenceSystem> CRS = new PlainLazyInit( () -> {
+                                                                try {
+                                                                    return Geometries.crs( "EPSG:3857" );
+                                                                }
+                                                                catch (Exception e) {
+                                                                    throw new RuntimeException( e );
+                                                                }
+                                                            } );
 
-    private VectorLayer            vector;
+    private final VectorSource                          source;
 
-    private final MapViewer        mapViewer;
+    private VectorLayer                                 vector;
 
-    private final Consumer<String> nodeSelectionHandler;
+    private final MapViewer                             mapViewer;
+
+    private final Consumer<String>                      nodeSelectionHandler;
+
+    private final ILayer                                baseLayer;
+
+    private final MdToolkit                             tk;
 
 
-    public VectorLayerProvider( final MapViewer mapViewer, final Consumer<String> nodeSelectionHandler ) {
+    public VectorLayerProvider( final MdToolkit tk, final MapViewer mapViewer,
+            final ILayer baseLayer, final Consumer<String> nodeSelectionHandler ) {
+        this.tk = tk;
         this.mapViewer = mapViewer;
+        this.baseLayer = baseLayer;
         this.nodeSelectionHandler = nodeSelectionHandler;
         this.source = new VectorSource().format.put( new GeoJSONFormat() );
     }
 
 
-    private void init() {
-        SelectInteraction selectInteraction = new SelectInteraction( (VectorLayer)getLayer( null ) );
-
-        selectInteraction.addEventListener( SelectInteraction.Event.select, this );
-        mapViewer.addMapInteraction( selectInteraction );
-    }
-
-
     @Override
-    public Layer getLayer( VectorLayer elm ) {
+    public Layer getLayer( ILayer elm ) {
         if (vector == null) {
             vector = new VectorLayer().style.put( new Style().fill.put( new FillStyle().color.put( new Color( 0, 0, 255, 0.1f ) ) ).stroke.put( new StrokeStyle().color.put( new Color( "red" ) ).width.put( 1f ) ) ).source.put( source );
+            
+            SelectInteraction selectInteraction = new SelectInteraction( vector );
+            selectInteraction.addEventListener( SelectInteraction.Event.select, this );
+            mapViewer.addMapInteraction( selectInteraction );
         }
         return vector;
     }
 
 
     @Override
-    public int getPriority( VectorLayer elm ) {
+    public int getPriority( ILayer elm ) {
         return 0;
     }
 
 
     @Override
-    public GraphUI createGraphUi( final MdToolkit tk ) {
-        return new OlFeatureGraphUI( tk, source, mapViewer.getMap() );
+    public GraphUI graphUi() {
+        return new OlFeatureGraphUI( tk, source, mapViewer );
     }
 
 
@@ -94,5 +116,22 @@ public class VectorLayerProvider
             String id = ids.getString( 0 );
             nodeSelectionHandler.accept( id );
         }
+    }
+
+
+    @Override
+    public ReferencedEnvelope referenceEnvelope() {
+        return new ReferencedEnvelope( -10000, -10000, 10000, 10000, CRS.get() );
+    }
+
+
+    @Override
+    public List<ILayer> layers() {
+        return Lists.newArrayList( baseLayer );
+    }
+
+
+    @Override
+    public void dispose() {
     }
 }

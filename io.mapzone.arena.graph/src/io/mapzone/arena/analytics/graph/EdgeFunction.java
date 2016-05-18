@@ -1,12 +1,13 @@
 package io.mapzone.arena.analytics.graph;
 
-import java.util.Collection;
 import java.util.Map;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.widgets.Composite;
 import org.geotools.data.FeatureSource;
-import org.opengis.feature.Feature;
+
+import org.eclipse.swt.widgets.Composite;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
 /**
@@ -25,7 +26,7 @@ public interface EdgeFunction {
     /**
      * creates the configuration part of this graph function
      */
-    void createContents( final MdToolkit tk, final Composite parent, final FeatureSource sourceFeatureSource  );
+    void createContents( final MdToolkit tk, final Composite parent, final FeatureSource sourceFeatureSource );
 
 
     /**
@@ -36,17 +37,11 @@ public interface EdgeFunction {
     }
 
 
-    /**
-     * only necessary to use GraphFunction.edgeFunctionConfigurationDone XXX remove
-     * by eventhandler
-     *
-     * @param graphFunction
-     */
+    boolean isConfigurationComplete();
+
+
     default void init( final GraphFunction graphFunction ) {
     }
-
-
-    boolean isConfigurationComplete();
 
 
     /**
@@ -54,10 +49,10 @@ public interface EdgeFunction {
      * @param monitor
      * @param sourceFeatures a map with the feature id as key and the feature as
      *        value, for faster access
-     * @return
+     * @return the number of generated edges
      * @throws Exception
      */
-    Collection<Edge> generateEdges( final MdToolkit tk, final IProgressMonitor monitor,
-            final Map<String,Node> sourceFeatures ) throws Exception;
+    int generateEdges( final MdToolkit tk, final IProgressMonitor monitor,
+            final Map<String,Node> sourceFeatures, final Graph graph ) throws Exception;
 
 }

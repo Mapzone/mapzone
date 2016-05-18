@@ -27,6 +27,11 @@ import org.opengis.feature.Feature;
  */
 public class Node {
 
+    // node could be a real node or a *synthetic* node which represents an edge
+    public enum Type {
+        node, edge;
+    }
+    
     private static Log log = LogFactory.getLog( Node.class );
 
     private final FeatureSource featureSource;
@@ -34,14 +39,17 @@ public class Node {
     private final Feature feature;
 
     private final String key;
+    
+    private final Type type;
 
     private int weight;
 
     private final String name;
 
 
-    public Node( final String key, final FeatureSource featureSource, final Feature feature, final String name,
+    public Node( final Type type, final String key, final FeatureSource featureSource, final Feature feature, final String name,
             final int weight ) {
+        this.type = type;
         this.key = key;
         this.featureSource = featureSource;
         this.feature = feature;
