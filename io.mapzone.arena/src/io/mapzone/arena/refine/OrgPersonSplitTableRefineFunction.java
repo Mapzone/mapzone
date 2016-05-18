@@ -431,6 +431,8 @@ public class OrgPersonSplitTableRefineFunction
 
         builder.add( "Position_1", String.class );
         builder.add( "Position_2", String.class );
+        builder.add( "PersonId", String.class );
+        builder.add( "OrganisationId", String.class );
         builder.add( "Person", String.class );
         builder.add( "Organisation", String.class );
         return builder.buildFeatureType();
@@ -444,6 +446,8 @@ public class OrgPersonSplitTableRefineFunction
         builder.add( baseFeature.getAttribute( "Orga_Position_2" ) );
         builder.add( person.getID() );
         builder.add( organisation.getID() );
+        builder.add( person.getAttribute( "Name komplett" ) );
+        builder.add( organisation.getAttribute( "Name" ) );
         return builder.buildFeature( null );
     }
 

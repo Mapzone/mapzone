@@ -12,24 +12,39 @@
  */
 package io.mapzone.arena.analytics.graph.ui;
 
+import static org.polymap.p4.layer.FeatureSelection.ff;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.json.JSONArray;
+import org.opengis.feature.Feature;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.filter.Filter;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+
 import org.polymap.core.data.feature.FeatureRenderProcessor2;
 import org.polymap.core.data.image.EncodedImageProducer;
 import org.polymap.core.data.pipeline.DataSourceDescription;
 import org.polymap.core.data.pipeline.Pipeline;
 import org.polymap.core.data.pipeline.PipelineProcessorSite;
 import org.polymap.core.data.pipeline.ProcessorDescription;
+import org.polymap.core.data.util.Geometries;
 import org.polymap.core.mapeditor.MapViewer;
 import org.polymap.core.mapeditor.services.SimpleWmsServer;
 import org.polymap.core.project.ILayer;
@@ -40,6 +55,9 @@ import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 import org.polymap.p4.P4Plugin;
 import org.polymap.p4.catalog.LocalResolver;
 import org.polymap.p4.data.P4PipelineIncubator;
+import org.polymap.rap.openlayers.base.OlEvent;
+import org.polymap.rap.openlayers.base.OlEventListener;
+import org.polymap.rap.openlayers.base.OlMap.Event;
 import org.polymap.rap.openlayers.layer.ImageLayer;
 import org.polymap.rap.openlayers.layer.Layer;
 import org.polymap.rap.openlayers.source.ImageWMSSource;
@@ -52,18 +70,18 @@ public class ImageLayerProvider
 
     private final static Log           log            = LogFactory.getLog( ImageLayerProvider.class );
 
-    private final MapViewer                             mapViewer;
+    private final MapViewer            mapViewer;
 
-    private final Consumer<String>                      nodeSelectionHandler;
+    private final Consumer<String>     nodeSelectionHandler;
 
-    private Set<String>                                 servletAliases = Sets.newHashSet();
+    private Set<String>                servletAliases = Sets.newHashSet();
 
-    private final MdToolkit                             tk;
+    private final MdToolkit            tk;
 
-    private final SimpleFeatureGraphUI                  graphUi;
+    private final SimpleFeatureGraphUI graphUi;
 
     // only used for constructing the pipelines
-    private final ILayer                                baseLayer;
+    private final ILayer               baseLayer;
 
 
     public ImageLayerProvider( final MdToolkit tk, final MapViewer mapViewer,
@@ -82,7 +100,9 @@ public class ImageLayerProvider
 
     // should be called twice
 
-    private boolean isNodesLayer = true;
+    private boolean         isNodesLayer = true;
+
+    private OlEventListener clickListener;
 
 
     @Override
@@ -127,6 +147,25 @@ public class ImageLayerProvider
             }, null, null );
             servletAliases.add( servletAlias );
 
+            if (isNodesLayer) {
+                clickListener = new OlEventListener() {
+
+                    @Override
+                    public void handleEvent( OlEvent ev ) {
+                        try {
+                            log.info( "event: " + ev.properties() );
+                            JSONArray coord = ev.properties().getJSONObject( "feature" ).getJSONArray( "coordinate" );
+                            double x = coord.getDouble( 0 );
+                            double y = coord.getDouble( 1 );
+                            handleClick( graphUi, new Coordinate( x, y ) );
+                        }
+                        catch (Exception e) {
+                            StatusDispatcher.handleError( "Unable to create graph layer.", e );
+                        }
+                    }
+                };
+                mapViewer.getMap().addEventListener( Event.click, clickListener );
+            }
             isNodesLayer = false;
 
             return new ImageLayer().source.put( new ImageWMSSource().url.put( "."
@@ -149,7 +188,6 @@ public class ImageLayerProvider
     public GraphUI graphUi() {
         return graphUi;
     }
-
 
 
     @Override
@@ -175,5 +213,41 @@ public class ImageLayerProvider
             log.warn( "", e );
         }
 
+    }
+
+
+    private void handleClick( final SimpleFeatureGraphUI graphUi, final Coordinate coordinate ) throws Exception {
+        GeometryFactory gf = new GeometryFactory();
+
+        Point point = gf.createPoint( coordinate );
+
+        // buffer: 500m
+        double buffer = 500;
+        Point norm = Geometries.transform( point, mapViewer.getMapCRS(), Geometries.crs( "EPSG:3857" ) );
+        ReferencedEnvelope buffered = new ReferencedEnvelope( norm.getX() - buffer, norm.getX() + buffer, norm.getY()
+                - buffer, norm.getY() + buffer, Geometries.crs( "EPSG:3857" ) );
+
+        // transform -> dataCrs
+        CoordinateReferenceSystem dataCrs = graphUi.crs();
+        buffered = buffered.transform( dataCrs, true );
+
+        // get feature
+        Filter filter = ff.intersects( ff.property( "" ), ff.literal( JTS.toGeometry( (Envelope)buffered ) ) );
+        List<SimpleFeature> selected = Lists.newArrayList();
+        for (Feature feature : graphUi.nodes()) {
+            if (filter.evaluate( feature )) {
+                selected.add( (SimpleFeature)feature );
+            }
+        }
+        if (selected.isEmpty()) {
+            return; // nothing found
+        }
+        if (selected.size() > 1) {
+            log.info( "Multiple features found: " + selected.size() );
+        }
+        // Feature any = (Feature)Features.stream( selected ).findAny().get();
+        // featureSelection.get().setClicked( any );
+        log.info( "clicked: " + selected.get( 0 ) + " with key " + (String)selected.get( 0 ).getAttribute( "key" ) );
+        nodeSelectionHandler.accept( (String)selected.get( 0 ).getAttribute( "key" ) );
     }
 }

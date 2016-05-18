@@ -70,9 +70,9 @@ public class GephiGraph
 
     private final Map<String,io.mapzone.arena.analytics.graph.Edge> edges            = Maps.newHashMap();
 
-    private ProjectController                                 pc;
+    private ProjectController                                       pc;
 
-    private Workspace                                         workspace;
+    private Workspace                                               workspace;
 
     private Container                                               container;
 
@@ -198,8 +198,8 @@ public class GephiGraph
     @Override
     public void layout() {
         try {
-            importController.process( container, processor, workspace );
-            UIJob job = new UIJob( "Layout graph" ) {
+            importController.process( getContainer(), processor, workspace );
+            UIJob job = new UIJob( "Layout graph") {
 
                 @Override
                 protected void runWithException( IProgressMonitor monitor ) throws Exception {
@@ -243,16 +243,16 @@ public class GephiGraph
                     log.info( "sending coordinate " + graphNode.getId() + ": " + newCoordinate.x() + ";"
                             + newCoordinate.y() );
                     final io.mapzone.arena.analytics.graph.Node featureNode = nodes.get( graphNode.getId() );
-//                    if (featureNode == null) {
-//                        log.error( "no featureNode with id " + graphNode.getId() );
-//                    }
-//                    else {
-                        graphUi.updateGeometry( featureNode, newCoordinate );
-                        for (Edge graphEdge : graph.getEdges( graphNode )) {
-                            io.mapzone.arena.analytics.graph.Edge line = edges.get( graphEdge.getId().toString() );
-                            graphUi.updateGeometry( line, featureNode, newCoordinate );
-                        }
-//                    }
+                    // if (featureNode == null) {
+                    // log.error( "no featureNode with id " + graphNode.getId() );
+                    // }
+                    // else {
+                    graphUi.updateGeometry( featureNode, newCoordinate );
+                    for (Edge graphEdge : graph.getEdges( graphNode )) {
+                        io.mapzone.arena.analytics.graph.Edge line = edges.get( graphEdge.getId().toString() );
+                        graphUi.updateGeometry( line, featureNode, newCoordinate );
+                    }
+                    // }
                 }
                 Extent envelope = new Extent( minX, minY, maxX, maxY );
                 graphUi.updateEnvelope( envelope );
@@ -260,8 +260,8 @@ public class GephiGraph
                 log.info( "sending coordinates done." );
                 // clear all maps
 
-                clear();
-            }, error -> StatusDispatcher.handleError( "", error ) );
+//                clear();
+            } , error -> StatusDispatcher.handleError( "", error ) );
 
             // } ).get();
             // Thread.sleep( REFRESH_INTERVAL );
@@ -292,6 +292,7 @@ public class GephiGraph
     @Override
     public void startGeneration( final GraphFunction function, final MdToolkit tk, final IProgressMonitor monitor )
             throws Exception {
+        clear();
         graphUi.startGeneration( function, tk, monitor, this );
     }
 

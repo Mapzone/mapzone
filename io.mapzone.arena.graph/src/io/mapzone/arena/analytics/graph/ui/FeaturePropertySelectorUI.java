@@ -53,7 +53,7 @@ public class FeaturePropertySelectorUI {
 
 
     public FeaturePropertySelectorUI( MdToolkit tk, Composite parent, final Consumer<PropertyDescriptor> onSelect ) {
-        this.combo = new Combo( parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN );
+        this.combo = new Combo( parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY );
         this.onSelect = onSelect;
     }
 

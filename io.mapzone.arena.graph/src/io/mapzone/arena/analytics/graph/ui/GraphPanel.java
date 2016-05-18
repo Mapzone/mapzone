@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import java.io.IOException;
 
 import org.geotools.data.FeatureSource;
+import org.geotools.data.FeatureStore;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,7 +36,6 @@ import org.polymap.core.catalog.resolve.IResolvableInfo;
 import org.polymap.core.catalog.resolve.IResourceInfo;
 import org.polymap.core.data.rs.catalog.RServiceInfo;
 import org.polymap.core.mapeditor.MapViewer;
-import org.polymap.core.project.ILayer;
 import org.polymap.core.project.IMap;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.ui.FormDataFactory;
@@ -51,10 +51,9 @@ import org.polymap.rhei.batik.toolkit.IPanelSection;
 
 import org.polymap.p4.P4Panel;
 import org.polymap.p4.P4Plugin;
-import org.polymap.p4.layer.FeaturePanel;
-import org.polymap.p4.layer.FeatureSelection;
 import org.polymap.rap.openlayers.base.OlEventListener;
-import org.polymap.rap.openlayers.control.ScaleLineControl;
+import org.polymap.rap.openlayers.control.MousePositionControl;
+
 import io.mapzone.arena.analytics.graph.Graph;
 import io.mapzone.arena.analytics.graph.GraphFunction;
 import io.mapzone.arena.analytics.graph.GraphPlugin;
@@ -63,6 +62,7 @@ import io.mapzone.arena.analytics.graph.Node;
 import io.mapzone.arena.analytics.graph.OrganisationPersonGraphFunction;
 import io.mapzone.arena.analytics.graph.SingleSourceNodeGraphFunction;
 import io.mapzone.arena.analytics.graph.algo.GephiGraph;
+import io.mapzone.arena.analytics.graph.ui.SelectedFeaturesPanel.FeatureSelectionWithRelations;
 
 /**
  * Proof-of-concept for generated geometries and graph displayed in an OL map.
@@ -83,6 +83,11 @@ public class GraphPanel
     // the map to show selected items in the graph
     @Scope( P4Plugin.Scope )
     protected Context<IMap>             mainMap;
+    
+
+    @Scope( P4Plugin.Scope )
+    protected Context<FeatureSelectionWithRelations> selectedFeatures;
+    
     // private ILayer layer;
 
     // /** {@link EncodedImageProducer} pipeline of {@link #layer}. */
@@ -149,7 +154,10 @@ public class GraphPanel
     @Override
     public void createContents( final Composite parent ) {
         try {
-
+            if (!featureSelection.isPresent()) {
+                tk().createFlowText( parent, "Select a faeture table to by **active** first." );
+                return;
+            }
             // this.parent = parent;
             parent.setLayout( FormLayoutFactory.defaults().create() );
 
@@ -166,7 +174,7 @@ public class GraphPanel
 
             final Composite functionContainer = tk().createComposite( parent, SWT.NONE );
 
-            final ComboViewer combo = new ComboViewer( parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN );
+            final ComboViewer combo = new ComboViewer( parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY);
             combo.setContentProvider( new ArrayContentProvider() );
             combo.setInput( functions.keySet() );
             combo.addSelectionChangedListener( ev -> {
@@ -177,7 +185,7 @@ public class GraphPanel
 
                 UIUtils.disposeChildren( functionContainer );
                 // create panel
-                IPanelSection section = tk().createPanelSection( functionContainer, function.description(), SWT.BORDER );
+                IPanelSection section = tk().createPanelSection( functionContainer, function.description(), SWT.Expand, IPanelSection.EXPANDABLE, SWT.BORDER );
                 section.setExpanded( true );
                 section.getBody().setLayout( FormLayoutFactory.defaults().create() );
 
@@ -217,42 +225,44 @@ public class GraphPanel
 
         // must be global, because its used as eventlistener
         // ImageLayerProvider and VectorLayerProvider are supported
-        graphLayerProvider = new VectorLayerProvider( tk(), mapViewer, featureSelection.get().layer(), id -> {
+        graphLayerProvider = new ImageLayerProvider( tk(), mapViewer, featureSelection.get().layer() , id -> {
             try {
                 // xxx add a filter for all features with a distance of 1 to the
                 // current feature
                 Node selectedNode = graph.getNode( id );
                 if (selectedNode != null) {
 
-                    FeatureSource selectedFS = selectedNode.featureSource();
-                    String selectedFSIdentifier = resourceIdentifier( selectedFS );
-                    if (featureSelection.get().layer().resourceIdentifier.get().equals( selectedFSIdentifier )) {
-                        // correct layer selected
-                        featureSelection.get().setClicked( selectedNode.feature() );
-                    }
-                    else {
-                        // load all known layers and try to find the right one
-                        // set them as new featureSelection
-                        for (ILayer layer : mainMap.get().layers) {
-                            if (layer.resourceIdentifier.get().equals( selectedFSIdentifier )) {
-                                featureSelection.set( FeatureSelection.forLayer( layer ) );
-                                featureSelection.get().setClicked( selectedNode.feature() );
-                                break;
-                            }
-                        }
-                    }
+                    selectedFeatures.set( new FeatureSelectionWithRelations( (FeatureStore)selectedNode.featureSource(), selectedNode.feature(), null, null ) );
+                    getContext().openPanel( site().path(), SelectedFeaturesPanel.ID );
+
+//                    FeatureSource selectedFS = selectedNode.featureSource();
+//                    String selectedFSIdentifier = resourceIdentifier( selectedFS );
+//                    if (featureSelection.get().layer().resourceIdentifier.get().equals( selectedFSIdentifier )) {
+//                        // correct layer selected
+//                        featureSelection.get().setClicked( selectedNode.feature() );
+//                    }
+//                    else {
+//                        // load all known layers and try to find the right one
+//                        // set them as new featureSelection
+//                        for (ILayer layer : mainMap.get().layers) {
+//                            if (layer.resourceIdentifier.get().equals( selectedFSIdentifier )) {
+//                                featureSelection.set( FeatureSelection.forLayer( layer ) );
+//                                featureSelection.get().setClicked( selectedNode.feature() );
+//                                break;
+//                            }
+//                        }
+//                    }
                 }
             }
             catch (Exception e) {
                 StatusDispatcher.handleError( "", e );
             }
-            getContext().openPanel( site().path(), FeaturePanel.ID );
         } );
         mapViewer.layerProvider.set( graphLayerProvider );
         mapViewer.contentProvider.set( new ArrayContentProvider() );
         mapViewer.maxExtent.set( graphLayerProvider.referenceEnvelope() );
-        // mapViewer.addMapControl( new MousePositionControl() );
-        mapViewer.addMapControl( new ScaleLineControl() );
+        mapViewer.addMapControl( new MousePositionControl() );
+        //mapViewer.addMapControl( new ScaleLineControl() );
 
         mapViewer.setInput( graphLayerProvider.layers() );
         mapContainer.layout();

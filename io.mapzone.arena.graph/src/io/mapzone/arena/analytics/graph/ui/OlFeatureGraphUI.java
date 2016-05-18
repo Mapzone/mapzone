@@ -68,15 +68,11 @@ public class OlFeatureGraphUI
 
     private final Map<String,OlFeature> edges       = Maps.newHashMap();
 
-//    private static final int            MAXNODES    = 200000;
-
     private final MapViewer             map;
 
     private final Style                 edgeStyle   = new Style().stroke.put( new StrokeStyle().color.put( new Color( "black" ) ).width.put( 1f ) ).zIndex.put( 0f );
 
     private final MdToolkit             tk;
-
-    private boolean                     toManyNodesMessageSent;
 
 
     /**
@@ -129,36 +125,17 @@ public class OlFeatureGraphUI
 
     @Override
     public void addEdge( Edge edge ) {
-//        if (checkSizes()) {
             OlFeature line = new OlFeature( edge.key() ).geometry.put( new LineStringGeometry( new Coordinate( 0.0, 0.0 ), new Coordinate( 0.0, 0.0 ) ) ).style.put( edgeStyle );
             edges.put( edge.key(), line );
             vector.addFeature( line );
-//        }
     }
-//
-//
-//    private boolean checkSizes() {
-//        int size = edges.size() + nodes.size();
-//        if (size > MAXNODES) {
-//            if (!toManyNodesMessageSent) {
-//                toManyNodesMessageSent = true;
-//                tk.createSnackbar( Appearance.FadeIn, "Currently only " + MAXNODES
-//                        + " nodes and edges supported, skipping the rest" );
-//                log.info( "Currently only " + MAXNODES + " nodes and edges supported, skipping the rest" );
-//            }
-//            return false;
-//        }
-//        return true;
-//    }
 
 
     @Override
     public void addNode( Node node ) {
-//        if (checkSizes()) {
             OlFeature olFeature = new OlFeature( node.key() ).name.put( node.name() ).geometry.put( new PointGeometry( new Coordinate( 0.0, 0.0 ) ) ).style.put( featureStyle( 1 ) );
             nodes.put( node.key(), olFeature );
             vector.addFeature( olFeature );
-//        }
     }
 
 
@@ -199,7 +176,6 @@ public class OlFeatureGraphUI
         vector.clear();
         nodes.clear();
         edges.clear();
-        toManyNodesMessageSent = false;
     }
 
 
@@ -208,6 +184,7 @@ public class OlFeatureGraphUI
             final Graph graph ) {
         UIThreadExecutor.async( () -> {
             pushSession.start();
+            clear();
             try {
                 function.generate( tk, monitor, graph );
             }

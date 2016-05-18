@@ -119,7 +119,7 @@ public class SingleSourceNodeGraphFunction
             final Composite edgeFunctionContainer = tk.createComposite( parent, SWT.NONE );
             edgeFunctionContainer.setLayout( FormLayoutFactory.defaults().create() );
 
-            final ComboViewer edgeFunctionsUI = new ComboViewer( parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN );
+            final ComboViewer edgeFunctionsUI = new ComboViewer( parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY );
             edgeFunctionsUI.setContentProvider( new ArrayContentProvider() );
             edgeFunctionsUI.setInput( edgeFunctions.keySet() );
             edgeFunctionsUI.addSelectionChangedListener( ev -> {

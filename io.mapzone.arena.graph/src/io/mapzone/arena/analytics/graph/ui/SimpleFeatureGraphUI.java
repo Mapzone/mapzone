@@ -122,6 +122,7 @@ public class SimpleFeatureGraphUI
         SimpleFeatureBuilder builder = new SimpleFeatureBuilder( nodeSchema() );
         builder.set( "geom", GEOMETRYFACTORY.createPoint( new com.vividsolutions.jts.geom.Coordinate( 0, 0 ) ) );
         builder.set( "name", node.name() );
+        builder.set( "key", node.key() );
         builder.set( "weight", node.weight() );
         nodes.put( node.key(), builder.buildFeature( node.key() ) );
     }
@@ -142,6 +143,7 @@ public class SimpleFeatureGraphUI
                 new com.vividsolutions.jts.geom.Coordinate( 0, 0 ),
                 new com.vividsolutions.jts.geom.Coordinate( 0, 0 ) } ) );
         builder.set( "name", edge.name() );
+        builder.set( "key", edge.key() );
         // builder.set( "weight", edge.weight() );
         edges.put( edge.key(), builder.buildFeature( edge.key() ) );
     }
@@ -173,6 +175,7 @@ public class SimpleFeatureGraphUI
             builder.add( "geom", Point.class, CRS.get() );
             builder.setDefaultGeometry( "geom" );
             builder.add( "name", String.class );
+            builder.add( "key", String.class );
             builder.add( "weight", Integer.class );
             return builder.buildFeatureType();
         } );
@@ -186,6 +189,7 @@ public class SimpleFeatureGraphUI
             builder.add( "geom", LineString.class, CRS.get() );
             builder.setDefaultGeometry( "geom" );
             builder.add( "name", String.class );
+            builder.add( "key", String.class );
             // builder.add( "weight", Integer.class );
             return builder.buildFeatureType();
         } );
@@ -214,6 +218,7 @@ public class SimpleFeatureGraphUI
 
             @Override
             protected void runWithException( IProgressMonitor monitor ) throws Exception {
+                clear();
                 function.generate( tk, monitor, graph );
             }
         }.schedule();

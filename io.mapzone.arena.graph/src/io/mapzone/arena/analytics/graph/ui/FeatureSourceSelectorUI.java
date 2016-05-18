@@ -46,7 +46,7 @@ public class FeatureSourceSelectorUI {
 
     public FeatureSourceSelectorUI( final MdToolkit tk, final Composite parent, final Consumer<FeatureSource> onSelect )
             throws IOException {
-        this.combo = new Combo( parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN );
+        this.combo = new Combo( parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY );
 
         final List<Name> featureSourceNames = P4Plugin.localCatalog().localFeaturesStore().getNames();
         // final List<String> featureSources = featureSourceNames.stream().map(
