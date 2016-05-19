@@ -65,7 +65,7 @@ public class CompareColumnsWithEdgeNodesFunction
             if (key != null && !"".equals( key.toString().trim() )) {
                 Node edgeNode = edgeNodes.get( key );
                 if (edgeNode == null) {
-                    edgeNode = new Node( Node.Type.edge, key.toString(), sourceNode.featureSource(), null, key.toString(), 1 );
+                    edgeNode = new Node( Node.Type.virtual, key.toString(), sourceNode.featureSource(), null, key.toString(), 1 );
                     edgeNodes.put( key.toString(), edgeNode );
                     graph.addOrUpdateNode( edgeNode );
                 }

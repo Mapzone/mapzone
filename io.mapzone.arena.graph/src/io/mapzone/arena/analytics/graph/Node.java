@@ -31,7 +31,7 @@ public class Node {
 
     // node could be a real node or a *synthetic* node which represents an edge
     public enum Type {
-        node, edge;
+        real, virtual;
     }
 
     private static Log          log        = LogFactory.getLog( Node.class );

@@ -186,7 +186,9 @@ public class OrgPersonSplitTableRefineFunction implements RefineFunction {
             // iterate on features
             // create OlFeature for each organisation
             // increase weight for each entry per organisation
-            tk.createSnackbar(Appearance.FadeIn, "Splitting started - stay tuned...");
+            if (!tk.isClosed()) {
+                tk.createSnackbar(Appearance.FadeIn, "Splitting started - stay tuned...");
+            }
             FeatureIterator iterator = fs.getFeatures().features();
             int max = fs.getFeatures().size();
             monitor.beginTask("Split Table", max);
@@ -218,16 +220,18 @@ public class OrgPersonSplitTableRefineFunction implements RefineFunction {
                 }
                 monitor.worked(i);
                 if (i % 100 == 0) {
-                    tk.createSnackbar(Appearance.FadeIn, i + " von " + max + " migrated and geocoded");
+                    if (!tk.isClosed()) {
+                        tk.createSnackbar(Appearance.FadeIn, i + " von " + max + " migrated and geocoded");
+                    }
                 }
             }
             addLayerAndStore(organisations);
             addLayerAndStore(persons);
             store(associations);
-
-            tk.createSnackbar(Appearance.FadeIn, organisations.size() + " Organisations, " + persons.size()
-                    + " Persons and " + associations.size() + " PersonOrganisationRelations added");
-
+            if (!tk.isClosed()) {
+                tk.createSnackbar( Appearance.FadeIn, organisations.size() + " Organisations, " + persons.size()
+                        + " Persons and " + associations.size() + " PersonOrganisationRelations added" );
+            }
         } catch (Exception e) {
             StatusDispatcher.handleError("", e);
         }

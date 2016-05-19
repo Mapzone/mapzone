@@ -84,8 +84,10 @@ public class OrganisationPersonGraphFunction
 
     @Override
     public void generate( MdToolkit tk, IProgressMonitor monitor, Graph graph ) throws Exception {
-        tk.createSnackbar( Appearance.FadeIn, "Analysis started - stay tuned..." );
-
+        if (!tk.isClosed()) {
+            tk.createSnackbar( Appearance.FadeIn, "Analysis started - stay tuned..." );
+        }
+        
         final Map<String,Node> organisations = Maps.newHashMap();
         final Map<String,Node> persons = Maps.newHashMap();
         final Multimap<Node,Node> organisation2Persons = ArrayListMultimap.create();
@@ -102,7 +104,7 @@ public class OrganisationPersonGraphFunction
             String organisationKey = (String)feature.getAttribute( "Organisation" );
             Node organisationFeature = organisations.get( organisationKey );
             if (organisationFeature == null) {
-                organisationFeature = new Node( Node.Type.edge, "o:"
+                organisationFeature = new Node( Node.Type.virtual, "o:"
                         + feature.getID(), featureSource, feature, organisationKey, 1 );
                 organisations.put( organisationKey, organisationFeature );
                 graph.addOrUpdateNode( organisationFeature );
@@ -118,7 +120,7 @@ public class OrganisationPersonGraphFunction
             String personKey = (String)feature.getAttribute( "Name" ) + " " + (String)feature.getAttribute( "Vorname" );
             Node personFeature = persons.get( personKey );
             if (personFeature == null) {
-                personFeature = new Node( Node.Type.node, "p:"
+                personFeature = new Node( Node.Type.real, "p:"
                         + feature.getID(), featureSource, feature, personKey, 1 );
                 persons.put( personKey, personFeature );
                 graph.addOrUpdateNode( personFeature );
@@ -140,8 +142,10 @@ public class OrganisationPersonGraphFunction
                 log.info( "added " + i );
             }
         }
-        tk.createSnackbar( Appearance.FadeIn, organisations.size() + " organisations, " + persons.size()
-                + " persons and " + organisation2Persons.size() + " relations analysed" );
+        if (!tk.isClosed()) {
+            tk.createSnackbar( Appearance.FadeIn, organisations.size() + " organisations, " + persons.size()
+                    + " persons and " + organisation2Persons.size() + " relations analysed" );
+        }
         organisations.clear();
         persons.clear();
         organisation2Persons.clear();

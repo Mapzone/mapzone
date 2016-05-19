@@ -14,11 +14,13 @@ package io.mapzone.arena.analytics.graph.edgefunctions;
 
 import static org.polymap.core.runtime.event.TypeEventFilter.ifType;
 
+import org.geotools.data.FeatureSource;
+import org.opengis.feature.type.PropertyDescriptor;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.geotools.data.FeatureSource;
-import org.opengis.feature.type.PropertyDescriptor;
+
 import org.polymap.core.runtime.event.EventHandler;
 import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.runtime.i18n.IMessages;
@@ -56,8 +58,9 @@ public abstract class AbstractCompareColumnsEdgeFunction
     }
 
 
+    @SuppressWarnings( "hiding" )
     @Override
-    public void init( GraphFunction graphFunction ) {
+    public void init( final GraphFunction graphFunction ) {
         this.graphFunction = graphFunction;
     }
 

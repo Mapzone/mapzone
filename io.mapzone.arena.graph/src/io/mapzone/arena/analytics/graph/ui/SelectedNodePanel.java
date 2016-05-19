@@ -69,42 +69,6 @@ public class SelectedNodePanel
         extends P4Panel
         implements IFormFieldListener {
 
-    // public static class FeatureSelectionWithRelations {
-    //
-    // private final FeatureStore sourceFS;
-    //
-    // private final Feature sourceFeature;
-    //
-    // private final List<Feature> relatedFeatures;
-    //
-    // private final FeatureStore relatedFS;
-    //
-    //
-    // public FeatureSelectionWithRelations( final FeatureStore sourceFS, final
-    // Feature sourceFeature,
-    // final FeatureStore relatedFS, final List<Feature> relatedFeatures ) {
-    // this.sourceFS = sourceFS;
-    // this.sourceFeature = sourceFeature;
-    // this.relatedFS = relatedFS;
-    // this.relatedFeatures = relatedFeatures;
-    // }
-    //
-    //
-    // public FeatureStore relatedFS() {
-    // return relatedFS;
-    // }
-    //
-    //
-    // public FeatureStore sourceFS() {
-    // return sourceFS;
-    // }
-    //
-    //
-    // public Feature sourceFeature() {
-    // return sourceFeature;
-    // }
-    // }
-
     private static Log                  log             = LogFactory.getLog( SelectedNodePanel.class );
 
     public static final PanelIdentifier ID              = PanelIdentifier.parse( "selectedNode" );
@@ -121,9 +85,6 @@ public class SelectedNodePanel
 
     private boolean                     previouslyValid = true;
 
-    //
-    // @Scope( P4Plugin.Scope )
-    // protected Context<FeatureSelectionWithRelations> selectedFeatures;
     @Scope( P4Plugin.Scope )
     protected Context<Node>             nodeSelection;
 
@@ -159,7 +120,7 @@ public class SelectedNodePanel
             // found all feature types and create a table for each
             ArrayListMultimap<FeatureSource,Feature> relatedFeatures = ArrayListMultimap.create();
             for (Node neighbour : nodeSelection.get().neighbours()) {
-                if (neighbour.type().equals( Node.Type.edge )) {
+                if (neighbour.type().equals( Node.Type.virtual )) {
                     // load the neighbours of the synthetic edge
                     for (Node nextNeighbour : neighbour.neighbours()) {
                         // remove if is itself the selected node

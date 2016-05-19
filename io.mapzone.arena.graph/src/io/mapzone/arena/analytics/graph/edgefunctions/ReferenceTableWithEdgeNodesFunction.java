@@ -77,7 +77,7 @@ public class ReferenceTableWithEdgeNodesFunction
                     if (sourceNode != null) {
                         Node edgeNode = edgeNodes.get( key );
                         if (edgeNode == null) {
-                            edgeNode = new Node( Node.Type.edge, key.toString(), selectedReferenceSource, null, key.toString(), 1 );
+                            edgeNode = new Node( Node.Type.virtual, key.toString(), selectedReferenceSource, null, key.toString(), 1 );
                             edgeNodes.put( key.toString(), edgeNode );
                             graph.addOrUpdateNode( edgeNode );
                         }

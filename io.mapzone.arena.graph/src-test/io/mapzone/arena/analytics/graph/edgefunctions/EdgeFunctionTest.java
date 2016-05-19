@@ -32,15 +32,15 @@ public class EdgeFunctionTest {
     public void testTransform() {
 
         final ArrayListMultimap<Object,Node> edgesByKeyProperty = ArrayListMultimap.create();
-        edgesByKeyProperty.put( "k1", new Node( Node.Type.node, "k1_1", null, null, null, 1 ) );
-        edgesByKeyProperty.put( "k1", new Node( Node.Type.node, "k1_2", null, null, null, 1 ) );
-        edgesByKeyProperty.put( "k1", new Node( Node.Type.node, "k1_3", null, null, null, 1 ) );
-        edgesByKeyProperty.put( "k1", new Node( Node.Type.node, "k1_4", null, null, null, 1 ) );
-        edgesByKeyProperty.put( "k2", new Node( Node.Type.node, "k2_1", null, null, null, 1 ) );
-        edgesByKeyProperty.put( "k2", new Node( Node.Type.node, "k2_2", null, null, null, 1 ) );
-        edgesByKeyProperty.put( "k3", new Node( Node.Type.node, "k3_1", null, null, null, 1 ) );
-        edgesByKeyProperty.put( "k4", new Node( Node.Type.node, "k4_1", null, null, null, 1 ) );
-        edgesByKeyProperty.put( "k4", new Node( Node.Type.node, "k4_2", null, null, null, 1 ) );
+        edgesByKeyProperty.put( "k1", new Node( Node.Type.real, "k1_1", null, null, null, 1 ) );
+        edgesByKeyProperty.put( "k1", new Node( Node.Type.real, "k1_2", null, null, null, 1 ) );
+        edgesByKeyProperty.put( "k1", new Node( Node.Type.real, "k1_3", null, null, null, 1 ) );
+        edgesByKeyProperty.put( "k1", new Node( Node.Type.real, "k1_4", null, null, null, 1 ) );
+        edgesByKeyProperty.put( "k2", new Node( Node.Type.real, "k2_1", null, null, null, 1 ) );
+        edgesByKeyProperty.put( "k2", new Node( Node.Type.real, "k2_2", null, null, null, 1 ) );
+        edgesByKeyProperty.put( "k3", new Node( Node.Type.real, "k3_1", null, null, null, 1 ) );
+        edgesByKeyProperty.put( "k4", new Node( Node.Type.real, "k4_1", null, null, null, 1 ) );
+        edgesByKeyProperty.put( "k4", new Node( Node.Type.real, "k4_2", null, null, null, 1 ) );
 
         List<Edge> edges = (List<Edge>)new CompareColumnsWithEdgeNodesFunction().transform( edgesByKeyProperty );
         assertEquals( 8, edges.size() );

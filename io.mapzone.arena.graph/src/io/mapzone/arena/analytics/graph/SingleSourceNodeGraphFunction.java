@@ -198,7 +198,9 @@ public class SingleSourceNodeGraphFunction
 
     @Override
     public void generate( MdToolkit tk, IProgressMonitor monitor, final Graph graph ) throws Exception {
-        tk.createSnackbar( Appearance.FadeIn, "Generation started - stay tuned..." );
+        if (!tk.isClosed()) {
+            tk.createSnackbar( Appearance.FadeIn, "Generation started - stay tuned..." );
+        }
 
         // selectedSourceFeatureSource.
         // disctinct on propertyColumn
@@ -219,18 +221,22 @@ public class SingleSourceNodeGraphFunction
             }
 //            if (!distinctSourceFeatures.containsKey( key )) {
                 distinctSourceFeatures.put( key, feature );
-                Node node = new Node( Node.Type.node, "graph_"
+                Node node = new Node( Node.Type.real, "graph_"
                         + feature.getID(), selectedSourceFeatureSource, feature, key.toString(), 1 );
                 nodes.put( feature.getID(), node );
                 graph.addOrUpdateNode( node );
 //            }
         }
-        tk.createSnackbar( Appearance.FadeIn, featureCount + " Nodes read" );
+        if (!tk.isClosed()) {
+            tk.createSnackbar( Appearance.FadeIn, featureCount + " Nodes read" );
+        }
 
         int edges = selectedEdgeFunction.generateEdges( tk, monitor, nodes, graph );
 
-        tk.createSnackbar( Appearance.FadeIn, featureCount + " Nodes with " + edges
-                + " Edges analysed, starting layout process" );
+        if (!tk.isClosed()) {
+            tk.createSnackbar( Appearance.FadeIn, featureCount + " Nodes with " + edges
+                    + " Edges analysed, starting layout process" );
+        }
         graph.layout();
     }
 }
