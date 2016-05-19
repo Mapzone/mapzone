@@ -123,6 +123,7 @@ public class SimpleFeatureGraphUI
         builder.set( "geom", GEOMETRYFACTORY.createPoint( new com.vividsolutions.jts.geom.Coordinate( 0, 0 ) ) );
         builder.set( "name", node.name() );
         builder.set( "key", node.key() );
+        builder.set( "type", node.type().name() );
         builder.set( "weight", node.weight() );
         nodes.put( node.key(), builder.buildFeature( node.key() ) );
     }
@@ -176,6 +177,7 @@ public class SimpleFeatureGraphUI
             builder.setDefaultGeometry( "geom" );
             builder.add( "name", String.class );
             builder.add( "key", String.class );
+            builder.add( "type", String.class );
             builder.add( "weight", Integer.class );
             return builder.buildFeatureType();
         } );

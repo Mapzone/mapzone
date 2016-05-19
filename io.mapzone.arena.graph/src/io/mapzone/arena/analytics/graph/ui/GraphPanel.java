@@ -15,7 +15,9 @@ package io.mapzone.arena.analytics.graph.ui;
 import static org.polymap.core.ui.FormDataFactory.on;
 
 import java.util.TreeMap;
+
 import java.io.IOException;
+
 import org.geotools.data.FeatureSource;
 
 import org.apache.commons.logging.Log;
@@ -39,15 +41,12 @@ import org.polymap.core.project.IMap;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.style.DefaultStyle;
 import org.polymap.core.style.model.FeatureStyle;
-import org.polymap.core.style.ui.StyleEditorInput;
 import org.polymap.core.ui.FormDataFactory;
 import org.polymap.core.ui.FormLayoutFactory;
 import org.polymap.core.ui.SelectionAdapter;
 import org.polymap.core.ui.StatusDispatcher;
 import org.polymap.core.ui.UIUtils;
-import org.polymap.p4.P4Panel;
-import org.polymap.p4.P4Plugin;
-import org.polymap.rap.openlayers.base.OlEventListener;
+
 import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.Mandatory;
 import org.polymap.rhei.batik.PanelIdentifier;
@@ -57,7 +56,11 @@ import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.ItemContainer;
 import org.polymap.rhei.batik.toolkit.md.MdToolbar2;
 
+import org.polymap.p4.P4Panel;
+import org.polymap.p4.P4Plugin;
 import org.polymap.p4.style.LayerStylePanel;
+import org.polymap.p4.style.StyleEditorInput;
+import org.polymap.rap.openlayers.base.OlEventListener;
 import org.polymap.rap.openlayers.control.MousePositionControl;
 
 import io.mapzone.arena.analytics.graph.Graph;

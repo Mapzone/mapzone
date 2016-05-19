@@ -112,18 +112,20 @@ public class ImageLayerProvider
     public Layer getLayer( ILayer layer ) {
         if (firstRun) {
             firstRun = false;
-            return getLayer0(layer, nodeStyleId, true, "nodes");
-        } else {
-            return getLayer0(layer, edgeStyleId, false, "edges");
+            return getLayer0( nodeStyleId, true, "nodes" );
+        }
+        else {
+            return getLayer0( edgeStyleId, false, "edges" );
         }
     }
-    
-    
-    private Layer getLayer0( final ILayer layer, final String styleId, final boolean isNodesLayer, final String servletPath) {
+
+
+    private Layer getLayer0( final String styleId, final boolean isNodesLayer,
+            final String servletPath ) {
         try {
             // XXX don't connect again (use some cache on layer)
-            DataSourceDescription dsd = LocalResolver.instance().connectLayer( layer, null ).orElseThrow( () -> new RuntimeException( "No data source for layer: "
-                    + layer ) );
+            DataSourceDescription dsd = LocalResolver.instance().connectLayer( baseLayer, null ).orElseThrow( () -> new RuntimeException( "No data source for layer: "
+                    + baseLayer ) );
 
             // create pipeline for it
             // XXX do not use layer specific things like caching; build extra
@@ -132,7 +134,7 @@ public class ImageLayerProvider
                 return P4Plugin.styleRepo().serializedFeatureStyle( styleId, Style.class ).get();
             };
 
-            final Pipeline pipeline = P4PipelineIncubator.forLayer( layer ).addProperty( FeatureRenderProcessor2.STYLE_SUPPLIER,  styleSupplier ).newPipeline( EncodedImageProducer.class, dsd, null );
+            final Pipeline pipeline = P4PipelineIncubator.forLayer( baseLayer ).addProperty( FeatureRenderProcessor2.STYLE_SUPPLIER, styleSupplier ).newPipeline( EncodedImageProducer.class, dsd, null );
             assert pipeline != null && pipeline.length() > 0 : "Unable to build pipeline for: " + dsd;
 
             // inject ChartGeometryProcessor
@@ -153,7 +155,7 @@ public class ImageLayerProvider
 
                 @Override
                 protected String[] layerNames() {
-                    throw new RuntimeException( "not yet implemented." );
+                    return new String[] { servletPath };
                 }
 
 
@@ -185,7 +187,7 @@ public class ImageLayerProvider
             }
 
             return new ImageLayer().source.put( new ImageWMSSource().url.put( "."
-                    + servletAlias ).params.put( new WMSRequestParams().version.put( "1.1.1" ).layers.put( (String)layer.id() ).format.put( "image/png" ) ) );
+                    + servletAlias ).params.put( new WMSRequestParams().version.put( "1.1.1" ).layers.put( servletPath ).format.put( "image/png" ) ) );
         }
         catch (Exception e) {
             StatusDispatcher.handleError( "Unable to create graph layer.", e );
@@ -213,8 +215,8 @@ public class ImageLayerProvider
 
 
     @Override
-    public List<ILayer> layers() {
-        return Lists.newArrayList( baseLayer, baseLayer );
+    public Set<ILayer> layers() {
+        return Sets.newHashSet( new ILayer(), new ILayer() );
     }
 
 

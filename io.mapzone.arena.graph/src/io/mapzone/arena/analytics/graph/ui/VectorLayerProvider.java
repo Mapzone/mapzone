@@ -12,7 +12,7 @@
  */
 package io.mapzone.arena.analytics.graph.ui;
 
-import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -22,7 +22,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import org.polymap.core.data.util.Geometries;
 import org.polymap.core.mapeditor.MapViewer;
@@ -87,7 +87,7 @@ public class VectorLayerProvider
     public Layer getLayer( ILayer elm ) {
         if (vector == null) {
             vector = new VectorLayer().style.put( new Style().fill.put( new FillStyle().color.put( new Color( 0, 0, 255, 0.1f ) ) ).stroke.put( new StrokeStyle().color.put( new Color( "red" ) ).width.put( 1f ) ) ).source.put( source );
-            
+
             SelectInteraction selectInteraction = new SelectInteraction( vector );
             selectInteraction.addEventListener( SelectInteraction.Event.select, this );
             mapViewer.addMapInteraction( selectInteraction );
@@ -126,8 +126,8 @@ public class VectorLayerProvider
 
 
     @Override
-    public List<ILayer> layers() {
-        return Lists.newArrayList( baseLayer );
+    public Set<ILayer> layers() {
+        return Sets.newHashSet( baseLayer );
     }
 
 

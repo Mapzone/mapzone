@@ -83,6 +83,11 @@ public class Node {
     }
 
 
+    public Type type() {
+        return type;
+    }
+
+
     public void increaseWeight() {
         weight++;
     }

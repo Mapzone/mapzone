@@ -12,7 +12,7 @@
  */
 package io.mapzone.arena.analytics.graph.ui;
 
-import java.util.List;
+import java.util.Set;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
 
@@ -33,7 +33,7 @@ public interface GraphLayerProvider<CL>
 
     ReferencedEnvelope referenceEnvelope();
 
-    List<ILayer> layers();
+    Set<ILayer> layers();
     
     void dispose();
 }

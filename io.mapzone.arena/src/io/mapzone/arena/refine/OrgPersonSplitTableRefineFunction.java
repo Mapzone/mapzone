@@ -14,7 +14,6 @@
  */
 package io.mapzone.arena.refine;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -24,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -94,9 +94,7 @@ public class OrgPersonSplitTableRefineFunction implements RefineFunction {
 
     private Context<IMap> map;
 
-    private FileWriter writer;
-
-    private HashSet locations;
+    private Properties locations;
 
     @Override
     public String title() {
@@ -111,6 +109,12 @@ public class OrgPersonSplitTableRefineFunction implements RefineFunction {
     @Override
     public void init(Context<IMap> map) {
         this.map = map;
+        this.locations = new Properties();
+        try {
+            this.locations.load(this.getClass().getResourceAsStream("locations.properties"));
+        } catch (IOException e) {
+            StatusDispatcher.handleError("", e);
+        }
     }
 
     @Override
@@ -182,10 +186,7 @@ public class OrgPersonSplitTableRefineFunction implements RefineFunction {
             // iterate on features
             // create OlFeature for each organisation
             // increase weight for each entry per organisation
-            tk.createSnackbar(Appearance.FadeIn, "Process started - stay tuned");
-            File codes = new File("/Users/stundzig/codes.properties");
-            writer = new FileWriter(codes);
-            locations = new HashSet();
+            tk.createSnackbar(Appearance.FadeIn, "Splitting started - stay tuned...");
             FeatureIterator iterator = fs.getFeatures().features();
             int max = fs.getFeatures().size();
             monitor.beginTask("Split Table", max);
@@ -224,10 +225,8 @@ public class OrgPersonSplitTableRefineFunction implements RefineFunction {
             addLayerAndStore(persons);
             store(associations);
 
-            
             tk.createSnackbar(Appearance.FadeIn, organisations.size() + " Organisations, " + persons.size()
                     + " Persons and " + associations.size() + " PersonOrganisationRelations added");
-            writer.close();
 
         } catch (Exception e) {
             StatusDispatcher.handleError("", e);
@@ -325,46 +324,46 @@ public class OrgPersonSplitTableRefineFunction implements RefineFunction {
         final String search3 = "}";
         final String key = "AAdiimU0EwFAoY3G7M7hFx694EdRTuSa";
         final String location = URLEncoder.encode(Joiner.on(", ").join(plz, strasseHausNr), "UTF-8");
-        final String url = String.format("http://www.mapquestapi.com/geocoding/v1/address?key=%1$2s&location=%2$2s",
-                key, location);
-        final HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
-        con.setRequestMethod("GET");
-        con.addRequestProperty("Accept", "application/json");
-        con.setDoInput(true);
-        con.setDoOutput(true);
-        try {
-            if (con.getResponseCode() != 200) {
-                System.err.println("Keine Koordinate für " + organisation + ": " + con.getResponseMessage());
-            } else {
-                final String out = IOUtils.toString(con.getInputStream());
-                int index1 = out.indexOf(search1);
-                if (index1 > 0) {
-                    String out2 = out.substring(index1 + search1.length());
-                    int index3 = out2.indexOf(search3);
-                    if (index3 > 0) {
-                        out2 = out2.substring(0, index3);
-                        int index2 = out2.indexOf(search2);
-                        if (index2 > 0) {
-                            final String latitude = out2.substring(0, index2);
-                            final String longitude = out2.substring(index2 + search2.length());
-                            Point point = (latitude != null && longitude != null)
-                                    ? GEOMETRYFACTORY.createPoint(
-                                            new Coordinate(Double.parseDouble(longitude), Double.parseDouble(latitude)))
-                                    : null;
-                            if (!locations.contains(location)) {
-                                writer.write(
-                                        "codes.put(\"" + location + "\", \"" + longitude + "|" + latitude + "\");\n");
 
-                                writer.flush();
-                                locations.add(location);
+        if (locations.containsKey(location)) {
+            String coord = locations.getProperty(location);
+            String[] coords = coord.split("\\|");
+            return GEOMETRYFACTORY.createPoint(
+                    new Coordinate(Double.parseDouble(coords[0]), Double.parseDouble(coords[1])));
+        } else {
+            final String url = String.format("http://www.mapquestapi.com/geocoding/v1/address?key=%1$2s&location=%2$2s",
+                    key, location);
+            final HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+            con.setRequestMethod("GET");
+            con.addRequestProperty("Accept", "application/json");
+            con.setDoInput(true);
+            con.setDoOutput(true);
+            try {
+                if (con.getResponseCode() != 200) {
+                    System.err.println("Keine Koordinate für " + organisation + ": " + con.getResponseMessage());
+                } else {
+                    final String out = IOUtils.toString(con.getInputStream());
+                    int index1 = out.indexOf(search1);
+                    if (index1 > 0) {
+                        String out2 = out.substring(index1 + search1.length());
+                        int index3 = out2.indexOf(search3);
+                        if (index3 > 0) {
+                            out2 = out2.substring(0, index3);
+                            int index2 = out2.indexOf(search2);
+                            if (index2 > 0) {
+                                final String latitude = out2.substring(0, index2);
+                                final String longitude = out2.substring(index2 + search2.length());
+                                Point point = (latitude != null && longitude != null) ? GEOMETRYFACTORY.createPoint(
+                                        new Coordinate(Double.parseDouble(longitude), Double.parseDouble(latitude)))
+                                        : null;
+                                return point;
                             }
-                            return point;
                         }
                     }
                 }
+            } finally {
+                con.disconnect();
             }
-        } finally {
-            con.disconnect();
         }
         return null;
     }
