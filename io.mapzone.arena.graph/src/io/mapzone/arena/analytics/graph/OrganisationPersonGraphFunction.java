@@ -84,7 +84,7 @@ public class OrganisationPersonGraphFunction
 
     @Override
     public void generate( MdToolkit tk, IProgressMonitor monitor, Graph graph ) throws Exception {
-        tk.createSnackbar( Appearance.FadeIn, "Analysis started - stay tuned" );
+        tk.createSnackbar( Appearance.FadeIn, "Analysis started - stay tuned..." );
 
         final Map<String,Node> organisations = Maps.newHashMap();
         final Map<String,Node> persons = Maps.newHashMap();

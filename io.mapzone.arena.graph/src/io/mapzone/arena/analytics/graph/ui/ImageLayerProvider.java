@@ -19,9 +19,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.styling.Style;
 import org.json.JSONArray;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
@@ -83,30 +85,41 @@ public class ImageLayerProvider
     // only used for constructing the pipelines
     private final ILayer               baseLayer;
 
+    private final String               nodeStyleId;
+
+    private final String               edgeStyleId;
+
 
     public ImageLayerProvider( final MdToolkit tk, final MapViewer mapViewer,
-            final ILayer baseLayer, final Consumer<String> nodeSelectionHandler ) {
+            final ILayer baseLayer, final Consumer<String> nodeSelectionHandler, final String nodeStyleId,
+            final String edgeStyleId ) {
         this.tk = tk;
         this.mapViewer = mapViewer;
         this.baseLayer = baseLayer;
         this.nodeSelectionHandler = nodeSelectionHandler;
+        this.edgeStyleId = edgeStyleId;
+        this.nodeStyleId = nodeStyleId;
         this.graphUi = new SimpleFeatureGraphUI( tk, mapViewer );
-        // SelectInteraction selectInteraction = new SelectInteraction(
-        // (VectorLayer)getLayer( null ) );
-        // selectInteraction.addEventListener( SelectInteraction.Event.select, this
-        // );
-        // mapViewer.addMapInteraction( selectInteraction );
     }
 
-    // should be called twice
-
-    private boolean         isNodesLayer = true;
+    private boolean         firstRun = true;
 
     private OlEventListener clickListener;
 
 
+    // should be called twice
     @Override
     public Layer getLayer( ILayer layer ) {
+        if (firstRun) {
+            firstRun = false;
+            return getLayer0(layer, nodeStyleId, true, "nodes");
+        } else {
+            return getLayer0(layer, edgeStyleId, false, "edges");
+        }
+    }
+    
+    
+    private Layer getLayer0( final ILayer layer, final String styleId, final boolean isNodesLayer, final String servletPath) {
         try {
             // XXX don't connect again (use some cache on layer)
             DataSourceDescription dsd = LocalResolver.instance().connectLayer( layer, null ).orElseThrow( () -> new RuntimeException( "No data source for layer: "
@@ -115,7 +128,11 @@ public class ImageLayerProvider
             // create pipeline for it
             // XXX do not use layer specific things like caching; build extra
             // pipeline
-            final Pipeline pipeline = P4PipelineIncubator.forLayer( layer ).newPipeline( EncodedImageProducer.class, dsd, null );
+            Supplier<Style> styleSupplier = () -> {
+                return P4Plugin.styleRepo().serializedFeatureStyle( styleId, Style.class ).get();
+            };
+
+            final Pipeline pipeline = P4PipelineIncubator.forLayer( layer ).addProperty( FeatureRenderProcessor2.STYLE_SUPPLIER,  styleSupplier ).newPipeline( EncodedImageProducer.class, dsd, null );
             assert pipeline != null && pipeline.length() > 0 : "Unable to build pipeline for: " + dsd;
 
             // inject ChartGeometryProcessor
@@ -131,7 +148,7 @@ public class ImageLayerProvider
             log.info( "FeatureRender pipeline: " + featureRenderProc.pipeline() );
 
             // register WMS servlet
-            String servletAlias = "/" + (isNodesLayer ? "nodes" : "edges") + hashCode();
+            String servletAlias = "/" + servletPath + hashCode();
             P4Plugin.instance().httpService().registerServlet( servletAlias, new SimpleWmsServer() {
 
                 @Override
@@ -166,7 +183,6 @@ public class ImageLayerProvider
                 };
                 mapViewer.getMap().addEventListener( Event.click, clickListener );
             }
-            isNodesLayer = false;
 
             return new ImageLayer().source.put( new ImageWMSSource().url.put( "."
                     + servletAlias ).params.put( new WMSRequestParams().version.put( "1.1.1" ).layers.put( (String)layer.id() ).format.put( "image/png" ) ) );
@@ -222,7 +238,7 @@ public class ImageLayerProvider
         Point point = gf.createPoint( coordinate );
 
         // buffer: 500m
-        double buffer = 500;
+        double buffer = 50000;
         Point norm = Geometries.transform( point, mapViewer.getMapCRS(), Geometries.crs( "EPSG:3857" ) );
         ReferencedEnvelope buffered = new ReferencedEnvelope( norm.getX() - buffer, norm.getX() + buffer, norm.getY()
                 - buffer, norm.getY() + buffer, Geometries.crs( "EPSG:3857" ) );

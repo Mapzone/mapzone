@@ -16,6 +16,8 @@ package io.mapzone.arena.analytics.graph.ui;
 import java.util.List;
 import java.util.Map;
 
+import org.opengis.feature.type.FeatureType;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -197,5 +199,19 @@ public class OlFeatureGraphUI
                 pushSession.stop();
             }
         }, error -> StatusDispatcher.handleError( "", error ) );
+    }
+
+
+    @Override
+    public FeatureType nodeSchema() {
+        // XXX Auto-generated method stub
+        throw new RuntimeException( "not yet implemented." );
+    }
+
+
+    @Override
+    public FeatureType edgeSchema() {
+        // XXX Auto-generated method stub
+        throw new RuntimeException( "not yet implemented." );
     }
 }

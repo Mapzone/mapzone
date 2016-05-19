@@ -198,7 +198,7 @@ public class SingleSourceNodeGraphFunction
 
     @Override
     public void generate( MdToolkit tk, IProgressMonitor monitor, final Graph graph ) throws Exception {
-        tk.createSnackbar( Appearance.FadeIn, "Generation started - stay tuned" );
+        tk.createSnackbar( Appearance.FadeIn, "Generation started - stay tuned..." );
 
         // selectedSourceFeatureSource.
         // disctinct on propertyColumn

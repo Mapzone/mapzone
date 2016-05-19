@@ -12,6 +12,8 @@
  */
 package io.mapzone.arena.analytics.graph;
 
+import org.opengis.feature.type.FeatureType;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
@@ -46,4 +48,10 @@ public interface GraphUI {
 
     void startGeneration( final GraphFunction function, final MdToolkit tk, final IProgressMonitor monitor,
             final Graph graph ) throws Exception;
+
+
+    FeatureType nodeSchema();
+
+
+    FeatureType edgeSchema();
 }

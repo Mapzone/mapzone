@@ -15,8 +15,6 @@ package io.mapzone.arena.analytics.graph.ui;
 import static org.apache.commons.lang3.StringUtils.abbreviate;
 import static org.polymap.core.runtime.UIThreadExecutor.async;
 
-import java.util.List;
-
 import org.geotools.data.FeatureStore;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
@@ -49,69 +47,75 @@ import org.polymap.rhei.form.batik.BatikFormContainer;
 import org.polymap.p4.P4Panel;
 import org.polymap.p4.P4Plugin;
 
+import io.mapzone.arena.analytics.graph.Node;
+
 /**
  * Displays a {@link StandardFeatureForm} for the selected feature
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  * @author Steffen Stundzig
  */
-public class SelectedFeaturesPanel
+public class SelectedNodePanel
         extends P4Panel
         implements IFormFieldListener {
 
-    public static class FeatureSelectionWithRelations {
+    // public static class FeatureSelectionWithRelations {
+    //
+    // private final FeatureStore sourceFS;
+    //
+    // private final Feature sourceFeature;
+    //
+    // private final List<Feature> relatedFeatures;
+    //
+    // private final FeatureStore relatedFS;
+    //
+    //
+    // public FeatureSelectionWithRelations( final FeatureStore sourceFS, final
+    // Feature sourceFeature,
+    // final FeatureStore relatedFS, final List<Feature> relatedFeatures ) {
+    // this.sourceFS = sourceFS;
+    // this.sourceFeature = sourceFeature;
+    // this.relatedFS = relatedFS;
+    // this.relatedFeatures = relatedFeatures;
+    // }
+    //
+    //
+    // public FeatureStore relatedFS() {
+    // return relatedFS;
+    // }
+    //
+    //
+    // public FeatureStore sourceFS() {
+    // return sourceFS;
+    // }
+    //
+    //
+    // public Feature sourceFeature() {
+    // return sourceFeature;
+    // }
+    // }
 
-        private final FeatureStore  sourceFS;
+    private static Log                  log             = LogFactory.getLog( SelectedNodePanel.class );
 
-        private final Feature       sourceFeature;
+    public static final PanelIdentifier ID              = PanelIdentifier.parse( "selectedNode" );
 
-        private final List<Feature> relatedFeatures;
+    private FeatureStore                fs;
 
-        private final FeatureStore  relatedFS;
+    private Feature                     feature;
 
+    private UnitOfWork                  uow;
 
-        public FeatureSelectionWithRelations( final FeatureStore sourceFS, final Feature sourceFeature,
-                final FeatureStore relatedFS, final List<Feature> relatedFeatures ) {
-            this.sourceFS = sourceFS;
-            this.sourceFeature = sourceFeature;
-            this.relatedFS = relatedFS;
-            this.relatedFeatures = relatedFeatures;
-        }
+    private Button                      fab;
 
+    private BatikFormContainer          form;
 
-        public FeatureStore relatedFS() {
-            return relatedFS;
-        }
+    private boolean                     previouslyValid = true;
 
-
-        public FeatureStore sourceFS() {
-            return sourceFS;
-        }
-
-
-        public Feature sourceFeature() {
-            return sourceFeature;
-        }
-    }
-
-    private static Log                               log             = LogFactory.getLog( SelectedFeaturesPanel.class );
-
-    public static final PanelIdentifier              ID              = PanelIdentifier.parse( "selectedFeatures" );
-
-    private FeatureStore                             fs;
-
-    private Feature                                  feature;
-
-    private UnitOfWork                               uow;
-
-    private Button                                   fab;
-
-    private BatikFormContainer                       form;
-
-    private boolean                                  previouslyValid = true;
-
+    //
+    // @Scope( P4Plugin.Scope )
+    // protected Context<FeatureSelectionWithRelations> selectedFeatures;
     @Scope( P4Plugin.Scope )
-    protected Context<FeatureSelectionWithRelations> selectedFeatures;
+    protected Context<Node>             nodeSelection;
 
 
     @Override
@@ -122,9 +126,10 @@ public class SelectedFeaturesPanel
     @Override
     public void createContents( Composite parent ) {
         try {
-            fs = selectedFeatures.get().sourceFS();
-            feature = selectedFeatures.get().sourceFeature();
+            fs = (FeatureStore)nodeSelection.get().featureSource();
+            feature = nodeSelection.get().feature();
 
+            tk().createFlowText( parent, nodeSelection.get().neighbours().size() + " neighbours found" );
             uow = new UnitOfWork( fs );
             uow.track( feature );
             form = new BatikFormContainer( new StandardFeatureForm() );
@@ -193,7 +198,7 @@ public class SelectedFeaturesPanel
             super.createFormContents( site );
             site.getPageBody().setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( 3 ).create() );
 
-            for (Property prop : SelectedFeaturesPanel.this.feature.getProperties()) {
+            for (Property prop : SelectedNodePanel.this.feature.getProperties()) {
                 if (Geometry.class.isAssignableFrom( prop.getType().getBinding() )) {
                     // skip Geometry
                 }

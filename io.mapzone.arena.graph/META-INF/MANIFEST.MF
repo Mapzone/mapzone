@@ -28,5 +28,8 @@ Bundle-ClassPath: .,
  lib/io-exporter-plugin-0.9.1.jar,
  lib/stax-utils-snapshot-20100402.jar,
  lib/graph-api-0.9.1.jar
-Export-Package: io.mapzone.arena.analytics.graph
+Export-Package: io.mapzone.arena.analytics.graph,
+ io.mapzone.arena.analytics.graph.algo,
+ io.mapzone.arena.analytics.graph.edgefunctions,
+ io.mapzone.arena.analytics.graph.ui
 

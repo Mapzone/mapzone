@@ -35,6 +35,8 @@ public class Edge {
         this.name = name;
         this.nodeA = nodeA;
         this.nodeB = nodeB;
+        nodeA.addNeighbour(nodeB);
+        nodeB.addNeighbour(nodeA);
     }
 
 

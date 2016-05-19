@@ -12,10 +12,11 @@
  */
 package io.mapzone.arena.analytics.graph.ui;
 
+import static org.polymap.core.ui.FormDataFactory.on;
+
 import java.util.TreeMap;
 import java.io.IOException;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.FeatureStore;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,6 +37,9 @@ import org.polymap.core.data.rs.catalog.RServiceInfo;
 import org.polymap.core.mapeditor.MapViewer;
 import org.polymap.core.project.IMap;
 import org.polymap.core.runtime.i18n.IMessages;
+import org.polymap.core.style.DefaultStyle;
+import org.polymap.core.style.model.FeatureStyle;
+import org.polymap.core.style.ui.StyleEditorInput;
 import org.polymap.core.ui.FormDataFactory;
 import org.polymap.core.ui.FormLayoutFactory;
 import org.polymap.core.ui.SelectionAdapter;
@@ -45,10 +49,15 @@ import org.polymap.p4.P4Panel;
 import org.polymap.p4.P4Plugin;
 import org.polymap.rap.openlayers.base.OlEventListener;
 import org.polymap.rhei.batik.Context;
+import org.polymap.rhei.batik.Mandatory;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.Scope;
+import org.polymap.rhei.batik.toolkit.ActionItem;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
+import org.polymap.rhei.batik.toolkit.ItemContainer;
+import org.polymap.rhei.batik.toolkit.md.MdToolbar2;
 
+import org.polymap.p4.style.LayerStylePanel;
 import org.polymap.rap.openlayers.control.MousePositionControl;
 
 import io.mapzone.arena.analytics.graph.Graph;
@@ -59,7 +68,6 @@ import io.mapzone.arena.analytics.graph.Node;
 import io.mapzone.arena.analytics.graph.OrganisationPersonGraphFunction;
 import io.mapzone.arena.analytics.graph.SingleSourceNodeGraphFunction;
 import io.mapzone.arena.analytics.graph.algo.GephiGraph;
-import io.mapzone.arena.analytics.graph.ui.SelectedFeaturesPanel.FeatureSelectionWithRelations;
 
 /**
  * Proof-of-concept for generated geometries and graph displayed in an OL map.
@@ -69,51 +77,39 @@ import io.mapzone.arena.analytics.graph.ui.SelectedFeaturesPanel.FeatureSelectio
 public class GraphPanel
         extends P4Panel {
 
-    private static Log                  log  = LogFactory.getLog( GraphPanel.class );
+    private static final String         NODE_STYLE_IDENTIFIER = "nodeStyleIdentifier";
 
-    private static final IMessages      i18n = Messages.forPrefix( "GraphPanel" );
+    private static final String         EDGE_STYLE_IDENTIFIER = "edgeStyleIdentifier";
 
-    public static final PanelIdentifier ID   = PanelIdentifier.parse( "graph" );
+    private static Log                  log                   = LogFactory.getLog( GraphPanel.class );
+
+    private static final IMessages      i18n                  = Messages.forPrefix( "GraphPanel" );
+
+    public static final PanelIdentifier ID                    = PanelIdentifier.parse( "graph" );
 
     // instance *******************************************
 
-    // the map to show selected items in the graph
     @Scope( P4Plugin.Scope )
     protected Context<IMap>             mainMap;
-    
 
     @Scope( P4Plugin.Scope )
-    protected Context<FeatureSelectionWithRelations> selectedFeatures;
-    
-    // private ILayer layer;
-
-    // /** {@link EncodedImageProducer} pipeline of {@link #layer}. */
-    // private Pipeline pipeline;
+    protected Context<Node>             nodeSelection;
 
     private MapViewer<?>                mapViewer;
 
-    // private String servletAlias;
-
-    // private Composite parent;
-
-    // /** Names of the attributes that we support for chart. */
-    // private List<String> availableAttributes;
-    //
-    // private List<MappingFunction> mappingFunctions = new ArrayList();
-
     private Composite                   mapContainer;
-
-    // private VectorSource source;
 
     private FeatureSource               fs;
 
     private OlEventListener             selectFeatureListener;
 
-    // private PanelPath path;
-
     private Graph                       graph;
 
     private GraphLayerProvider          graphLayerProvider;
+
+    @Mandatory
+    @Scope( P4Plugin.StyleScope )
+    protected Context<StyleEditorInput> styleEditorInput;
 
 
     @Override
@@ -131,6 +127,20 @@ public class GraphPanel
     @Override
     public void init() {
         site().title.set( i18n.get( "title" ) );
+
+        if (!site().memento().optString( NODE_STYLE_IDENTIFIER ).isPresent()) {
+            FeatureStyle featureStyle = P4Plugin.styleRepo().newFeatureStyle();
+            DefaultStyle.fillPointStyle( featureStyle );
+            DefaultStyle.fillTextStyle( featureStyle );
+            featureStyle.store();
+            site().memento().putString( NODE_STYLE_IDENTIFIER, featureStyle.id() );
+        }
+        if (!site().memento().optString( EDGE_STYLE_IDENTIFIER ).isPresent()) {
+            FeatureStyle featureStyle = P4Plugin.styleRepo().newFeatureStyle();
+            DefaultStyle.fillLineStyle( featureStyle );
+            featureStyle.store();
+            site().memento().putString( EDGE_STYLE_IDENTIFIER, featureStyle.id() );
+        }
     }
 
 
@@ -152,11 +162,15 @@ public class GraphPanel
     public void createContents( final Composite parent ) {
         try {
             if (!featureSelection.isPresent()) {
-                tk().createFlowText( parent, "Select a faeture table to by **active** first." );
+                tk().createFlowText( parent, "Select a feature table to by **active** first." );
                 return;
             }
             // this.parent = parent;
             parent.setLayout( FormLayoutFactory.defaults().create() );
+
+            MdToolbar2 toolbar = tk().createToolbar( parent, SWT.TOP );
+            new NodeStylerItem( toolbar );
+            new EdgeStylerItem( toolbar );
 
             final TreeMap<String,GraphFunction> functions = Maps.newTreeMap();
             for (Class<GraphFunction> cl : availableFunctions) {
@@ -171,7 +185,8 @@ public class GraphPanel
 
             final Composite functionContainer = tk().createComposite( parent, SWT.NONE );
 
-            final ComboViewer combo = new ComboViewer( parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY);
+            final ComboViewer combo = new ComboViewer( parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN
+                    | SWT.READ_ONLY );
             combo.setContentProvider( new ArrayContentProvider() );
             combo.setInput( functions.keySet() );
             combo.addSelectionChangedListener( ev -> {
@@ -195,6 +210,7 @@ public class GraphPanel
                 parent.layout();
             } );
 
+
             //
             // mapContainer
             mapContainer = tk().createComposite( parent, SWT.BORDER );
@@ -205,11 +221,13 @@ public class GraphPanel
             createMapViewer();
 
             // layout
+            on( toolbar.getControl() ).left( 0, 3 ).right( 100, -3 ).top( 0 );
+            
             final Label selectLabel = tk().createLabel( parent, i18n.get( "selectFunction" ), SWT.NONE );
-            FormDataFactory.on( selectLabel ).top( 1 ).left( 1 );
-            FormDataFactory.on( combo.getCombo() ).top( selectLabel, 2 ).left( 1 );
-            FormDataFactory.on( functionContainer ).top( combo.getCombo(), 5 ).height( 0 ).left( 0 ).right( 100 );
-            FormDataFactory.on( mapContainer ).fill().top( functionContainer, 5 );
+            on( selectLabel ).top( toolbar.getControl(), 8 ).left( 1 );
+            on( combo.getCombo() ).top( selectLabel, 2 ).left( 1 );
+            on( functionContainer ).top( combo.getCombo(), 5 ).height( 0 ).left( 0 ).right( 100 );
+            on( mapContainer ).fill().top( functionContainer, 5 );
         }
         catch (Exception e) {
             StatusDispatcher.handleError( "", e );
@@ -222,49 +240,63 @@ public class GraphPanel
 
         // must be global, because its used as eventlistener
         // ImageLayerProvider and VectorLayerProvider are supported
-        graphLayerProvider = new ImageLayerProvider( tk(), mapViewer, featureSelection.get().layer() , id -> {
+
+        graphLayerProvider = new ImageLayerProvider( tk(), mapViewer, featureSelection.get().layer(), id -> {
             try {
                 // xxx add a filter for all features with a distance of 1 to the
                 // current feature
                 Node selectedNode = graph.getNode( id );
                 if (selectedNode != null) {
 
-                    selectedFeatures.set( new FeatureSelectionWithRelations( (FeatureStore)selectedNode.featureSource(), selectedNode.feature(), null, null ) );
-                    getContext().openPanel( site().path(), SelectedFeaturesPanel.ID );
-
-//                    FeatureSource selectedFS = selectedNode.featureSource();
-//                    String selectedFSIdentifier = resourceIdentifier( selectedFS );
-//                    if (featureSelection.get().layer().resourceIdentifier.get().equals( selectedFSIdentifier )) {
-//                        // correct layer selected
-//                        featureSelection.get().setClicked( selectedNode.feature() );
-//                    }
-//                    else {
-//                        // load all known layers and try to find the right one
-//                        // set them as new featureSelection
-//                        for (ILayer layer : mainMap.get().layers) {
-//                            if (layer.resourceIdentifier.get().equals( selectedFSIdentifier )) {
-//                                featureSelection.set( FeatureSelection.forLayer( layer ) );
-//                                featureSelection.get().setClicked( selectedNode.feature() );
-//                                break;
-//                            }
-//                        }
-//                    }
+                    nodeSelection.set( selectedNode );
+                    getContext().openPanel( site().path(), SelectedNodePanel.ID );
                 }
             }
             catch (Exception e) {
                 StatusDispatcher.handleError( "", e );
             }
-        } );
+        } , site().memento().getString( NODE_STYLE_IDENTIFIER ), site().memento().getString( EDGE_STYLE_IDENTIFIER ) );
         mapViewer.layerProvider.set( graphLayerProvider );
         mapViewer.contentProvider.set( new ArrayContentProvider() );
         mapViewer.maxExtent.set( graphLayerProvider.referenceEnvelope() );
         mapViewer.addMapControl( new MousePositionControl() );
-        //mapViewer.addMapControl( new ScaleLineControl() );
+        // mapViewer.addMapControl( new ScaleLineControl() );
 
         mapViewer.setInput( graphLayerProvider.layers() );
         mapContainer.layout();
 
         graph = new GephiGraph( graphLayerProvider.graphUi() );
+    }
+
+
+    class NodeStylerItem
+            extends ActionItem {
+
+        public NodeStylerItem( ItemContainer container ) {
+            super( container );
+            // XXX we need a text icon here
+            icon.set( P4Plugin.images().svgImage( "brush.svg", P4Plugin.TOOLBAR_ICON_CONFIG ) );
+            tooltip.set(  i18n.get( "nodeStylerTooltip" ) );
+            action.set( ev -> {
+                styleEditorInput.set( new StyleEditorInput( site().memento().getString( NODE_STYLE_IDENTIFIER ), graphLayerProvider.graphUi().nodeSchema() ) );
+                getContext().openPanel( site().path(), LayerStylePanel.ID );
+            } );
+        }
+    }
+
+    class EdgeStylerItem
+            extends ActionItem {
+
+        public EdgeStylerItem( ItemContainer container ) {
+            super( container );
+            // XXX we need a text icon here
+            icon.set( P4Plugin.images().svgImage( "brush.svg", P4Plugin.TOOLBAR_ICON_CONFIG ) );
+            tooltip.set(  i18n.get( "edgeStylerTooltip" ) );
+            action.set( ev -> {
+                styleEditorInput.set( new StyleEditorInput( site().memento().getString( EDGE_STYLE_IDENTIFIER ), graphLayerProvider.graphUi().nodeSchema() ) );
+                getContext().openPanel( site().path(), LayerStylePanel.ID );
+            } );
+        }
     }
 
 

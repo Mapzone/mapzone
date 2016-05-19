@@ -8,8 +8,8 @@
             id="io.mapzone.arena.analytics.graph.ui.GraphPanel">
       </panel>
       <panel
-            class="io.mapzone.arena.analytics.graph.ui.SelectedFeaturesPanel"
-            id="io.mapzone.arena.analytics.graph.ui.SelectedFeaturesPanel">
+            class="io.mapzone.arena.analytics.graph.ui.SelectedNodePanel"
+            id="io.mapzone.arena.analytics.graph.ui.SelectedNodePanel">
       </panel>
    </extension>
 </plugin>
