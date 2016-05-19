@@ -106,7 +106,7 @@ public class LoginProvision
                 throw new RuntimeException( e );
             }
         });
-        response.get().sendRedirect( "/login?id=" + handlerId );
+        response.get().sendRedirect( "../../../login?id=" + handlerId );
         throw new StopProvisionExecutionException();
     }
 
