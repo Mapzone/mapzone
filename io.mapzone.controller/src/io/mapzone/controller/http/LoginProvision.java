@@ -27,6 +27,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.google.common.base.Joiner;
+
 import org.eclipse.rap.rwt.RWT;
 
 import org.polymap.core.ui.UIUtils;
@@ -95,7 +97,10 @@ public class LoginProvision
         }
         
         // no cookie -> /login
-        String requestUrl = request.get().getRequestURL().toString();
+        String requestUrl = Joiner.on( "" ).skipNulls().join(
+                request.get().getServletPath(),
+                request.get().getPathInfo(),
+                "?", request.get().getQueryString() );
         String handlerId = LoginAppDesign.registerHandler( user -> {
             try {
                 log.info( "Logged in: " + user );
@@ -107,7 +112,7 @@ public class LoginProvision
             }
         });
         // http://stackoverflow.com/questions/30844807/can-a-redirect-to-relative-path-be-sent-from-java-servlet-api
-        // response.get().sendRedirect( "../../../login?id=" + handlerId );
+        response.get().sendRedirect( "../../../login?id=" + handlerId );
         response.get().setStatus( HttpServletResponse.SC_MOVED_TEMPORARILY );
         response.get().setHeader( "Location", "../../../login?id=" + handlerId );
         throw new StopProvisionExecutionException();
