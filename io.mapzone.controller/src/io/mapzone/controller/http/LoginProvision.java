@@ -106,7 +106,10 @@ public class LoginProvision
                 throw new RuntimeException( e );
             }
         });
-        response.get().sendRedirect( "../../../login?id=" + handlerId );
+        // http://stackoverflow.com/questions/30844807/can-a-redirect-to-relative-path-be-sent-from-java-servlet-api
+        // response.get().sendRedirect( "../../../login?id=" + handlerId );
+        response.get().setStatus( HttpServletResponse.SC_MOVED_TEMPORARILY );
+        response.get().setHeader( "Location", "../../../login?id=" + handlerId );
         throw new StopProvisionExecutionException();
     }
 
