@@ -27,7 +27,7 @@ public interface GraphFunction {
      * @return the preferred configuration panel height
      */
     default int preferredHeight() {
-        return 100;
+        return 80;
     }
 
 

@@ -82,7 +82,7 @@ public class SingleSourceNodeGraphFunction
 
     @Override
     public int preferredHeight() {
-        return 250;
+        return 200;
     }
 
     // XXX replace with extension point
@@ -97,11 +97,11 @@ public class SingleSourceNodeGraphFunction
             super.createContents( tk, parent, graph );
             final FeaturePropertySelectorUI sourcePropertiesUI = new FeaturePropertySelectorUI( tk, parent, prop -> {
                 this.selectedSourcePropertyDescriptor = prop;
-                EventManager.instance().publish( new GraphFunctionConfigurationChangedEvent( (GraphFunction)this, "sourcePropertyDescriptor", prop ) );
+                EventManager.instance().publish( new GraphFunctionConfigurationChangedEvent( SingleSourceNodeGraphFunction.this, "sourcePropertyDescriptor", prop ) );
             } );
             final FeatureSourceSelectorUI sourceFeaturesUI = new FeatureSourceSelectorUI( tk, parent, fs -> {
                 this.selectedSourceFeatureSource = fs;
-                EventManager.instance().publish( new GraphFunctionConfigurationChangedEvent( (GraphFunction)this, "sourceFeatureSource", fs ) );
+                EventManager.instance().publish( new GraphFunctionConfigurationChangedEvent( SingleSourceNodeGraphFunction.this, "sourceFeatureSource", fs ) );
                 sourcePropertiesUI.setFeatureSource( fs );
             } );
 
@@ -109,6 +109,7 @@ public class SingleSourceNodeGraphFunction
             for (Class<EdgeFunction> cl : availableFunctions) {
                 try {
                     EdgeFunction function = cl.newInstance();
+                    function.init( this );
                     edgeFunctions.put( function.title(), function );
                 }
                 catch (Exception e) {
@@ -162,7 +163,7 @@ public class SingleSourceNodeGraphFunction
             EventManager.instance().subscribe( this, ifType( EdgeFunctionConfigurationDoneEvent.class, ev -> ev.status.get() == Boolean.TRUE
                     && ev.getSource().equals( selectedEdgeFunction ) ) );
 
-            EventManager.instance().subscribe( this, ifType( GraphFunctionConfigurationChangedEvent.class, ev -> ev.getSource().equals( this ) ) );
+            EventManager.instance().subscribe( this, ifType( GraphFunctionConfigurationChangedEvent.class, ev -> ev.getSource().equals( SingleSourceNodeGraphFunction.this ) ) );
         }
         catch (Exception e) {
             StatusDispatcher.handleError( "", e );

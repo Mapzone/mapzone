@@ -207,13 +207,23 @@ public class GraphPanel
 
                 UIUtils.disposeChildren( functionContainer );
                 // create panel
-                IPanelSection section = tk().createPanelSection( functionContainer, function.description(), SWT.Expand, IPanelSection.EXPANDABLE, SWT.BORDER );
+//                Section section = tk().createSection( functionContainer, function.description(), ExpandableComposite.TREE_NODE, Section.SHORT_TITLE_BAR, Section.FOCUS_TITLE, SWT.BORDER );
+//                section.setBackground( UIUtils.getColor( 235,  235, 235) );
+//                ((Composite)section.getClient()).setLayout( FormLayoutFactory.defaults().create() );
+                
+                IPanelSection section = tk().createPanelSection( functionContainer, function.description(), SWT.Expand, IPanelSection.EXPANDABLE );
+                section.getControl().setBackground( UIUtils.getColor( 235,  235, 235) );
+                section.getBody().setBackground( UIUtils.getColor( 235,  235, 235) );
                 section.setExpanded( true );
                 section.getBody().setLayout( FormLayoutFactory.defaults().create() );
 
                 //
                 graph.clear();
                 function.createContents( tk(), section.getBody(), graph );
+                if (!section.isExpanded()) {
+                    section.setExpanded( true );
+                }
+                
                 FormDataFactory.on( section.getBody() ).fill();
 
                 // functionContainer.layout();
