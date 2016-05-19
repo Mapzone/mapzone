@@ -1,9 +1,10 @@
 package io.mapzone.arena.analytics.graph.ui;
 
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
-import org.geotools.data.Query;
-import org.opengis.filter.Filter;
+import org.opengis.feature.Feature;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,6 +25,7 @@ import org.polymap.core.data.pipeline.Consumes;
 import org.polymap.core.data.pipeline.EndOfProcessing;
 import org.polymap.core.data.pipeline.PipelineExecutor.ProcessorContext;
 import org.polymap.core.data.pipeline.PipelineProcessorSite;
+import org.polymap.core.data.pipeline.ProcessorResponse;
 import org.polymap.core.data.pipeline.Produces;
 
 /**
@@ -52,22 +54,24 @@ public class GraphGeometryProcessor
 
     @Override
     public void getFeatureTypeRequest( GetFeatureTypeRequest request, ProcessorContext context ) throws Exception {
-        context.sendRequest( request );
+        context.sendResponse( new GetFeatureTypeResponse( isNodesLayer.booleanValue()
+                ? graphUi.nodeSchema() : graphUi.edgeSchema() ) );
     }
 
 
     @Produces( GetFeatureTypeResponse.class )
     @Consumes( GetFeatureTypeResponse.class )
     public void handleFeatureType( GetFeatureTypeResponse response, ProcessorContext context ) throws Exception {
-        context.sendResponse( new GetFeatureTypeResponse( isNodesLayer.booleanValue()
-                ? graphUi.nodeSchema() : graphUi.edgeSchema() ) );
+        throw new IllegalStateException( "must not be called" );
     }
 
 
     @Override
     public void getFeatureRequest( GetFeaturesRequest request, ProcessorContext context ) throws Exception {
-        log.info( "getFeatureRequest(): " + request.getQuery().getFilter() );
-        context.sendRequest( new GetFeaturesRequest( new Query( "", Filter.INCLUDE ) ) );
+        List<Feature> results = isNodesLayer.booleanValue() ? graphUi.nodes()
+                : graphUi.edges();
+        context.sendResponse( new GetFeaturesResponse( results.stream().filter( f -> request.getQuery().getFilter().evaluate( f ) ).collect( Collectors.toList() ) ) );
+        context.sendResponse( ProcessorResponse.EOP );
     }
 
     private Random rand = new Random();
@@ -76,21 +80,19 @@ public class GraphGeometryProcessor
     @Produces( GetFeaturesResponse.class )
     @Consumes( GetFeaturesResponse.class )
     public void handleFeatures( GetFeaturesResponse response, ProcessorContext context ) throws Exception {
-        context.sendResponse( new GetFeaturesResponse( isNodesLayer.booleanValue() ? graphUi.nodes()
-                : graphUi.edges() ) );
+        throw new IllegalStateException( "must not be called" );
     }
 
 
     @Produces( EndOfProcessing.class )
     @Consumes( EndOfProcessing.class )
     public void handleEndOfProcessing( EndOfProcessing response, ProcessorContext context ) throws Exception {
-        context.sendResponse( response );
+        throw new IllegalStateException( "must not be called" );
     }
 
 
     @Override
     public void getFeatureSizeRequest( GetFeaturesSizeRequest request, ProcessorContext context ) throws Exception {
-        // XXX Auto-generated method stub
         throw new RuntimeException( "not yet implemented." );
     }
 
