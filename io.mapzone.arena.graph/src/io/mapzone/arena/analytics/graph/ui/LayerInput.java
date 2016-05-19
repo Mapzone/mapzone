@@ -12,26 +12,31 @@
  */
 package io.mapzone.arena.analytics.graph.ui;
 
-import java.util.Set;
-
-import org.geotools.geometry.jts.ReferencedEnvelope;
-
-import org.polymap.core.mapeditor.ILayerProvider;
-import io.mapzone.arena.analytics.graph.GraphUI;
-
 /**
- * Base interface for layer provider to show the graph ui.
- * 
+ * Placeholder for real layers to support ordering.
+ *
  * @author Steffen Stundzig
  */
-public interface GraphLayerProvider<CL>
-        extends ILayerProvider<CL> {
+public class LayerInput {
 
-    GraphUI graphUi();
+    private String id;
 
-    ReferencedEnvelope referenceEnvelope();
+    private int    priority;
 
-    Set<CL> layers();
-    
-    void dispose();
+
+    public LayerInput( final String id, final int priority ) {
+        this.id = id;
+        this.priority = priority;
+
+    }
+
+
+    public String id() {
+        return id;
+    }
+
+
+    public int priority() {
+        return priority;
+    }
 }

@@ -80,6 +80,13 @@ import io.mapzone.arena.analytics.graph.algo.GephiGraph;
 public class GraphPanel
         extends P4Panel {
 
+//    
+//    public class LayerInput {
+//
+//        private static Log log = LogFactory.getLog( LayerInput.class );
+//    }
+
+
     private static final String         NODE_STYLE_IDENTIFIER = "nodeStyleIdentifier";
 
     private static final String         EDGE_STYLE_IDENTIFIER = "edgeStyleIdentifier";
@@ -98,7 +105,7 @@ public class GraphPanel
     @Scope( P4Plugin.Scope )
     protected Context<Node>             nodeSelection;
 
-    private MapViewer<?>                mapViewer;
+    private MapViewer<LayerInput>       mapViewer;
 
     private Composite                   mapContainer;
 
@@ -130,7 +137,7 @@ public class GraphPanel
     @Override
     public void init() {
         site().title.set( i18n.get( "title" ) );
-
+        site().preferredWidth.set( 650 );
         if (!site().memento().optString( NODE_STYLE_IDENTIFIER ).isPresent()) {
             FeatureStyle featureStyle = P4Plugin.styleRepo().newFeatureStyle();
             DefaultStyle.fillPointStyle( featureStyle );
@@ -239,7 +246,7 @@ public class GraphPanel
 
 
     protected void createMapViewer() {
-        mapViewer = new MapViewer( mapContainer );
+        mapViewer = new MapViewer<LayerInput>( mapContainer );
 
         // must be global, because its used as eventlistener
         // ImageLayerProvider and VectorLayerProvider are supported

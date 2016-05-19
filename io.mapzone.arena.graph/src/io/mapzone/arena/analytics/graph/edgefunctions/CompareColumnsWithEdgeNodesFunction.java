@@ -23,8 +23,6 @@ import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 import io.mapzone.arena.analytics.graph.Graph;
 import io.mapzone.arena.analytics.graph.Messages;
 import io.mapzone.arena.analytics.graph.Node;
-import io.mapzone.arena.analytics.graph.Node.Type;
-
 import com.google.common.collect.Maps;
 
 /**

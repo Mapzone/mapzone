@@ -68,7 +68,7 @@ import org.polymap.rap.openlayers.source.WMSRequestParams;
 import io.mapzone.arena.analytics.graph.GraphUI;
 
 public class ImageLayerProvider
-        implements GraphLayerProvider<ILayer> {
+        implements GraphLayerProvider<LayerInput> {
 
     private final static Log           log            = LogFactory.getLog( ImageLayerProvider.class );
 
@@ -102,20 +102,17 @@ public class ImageLayerProvider
         this.graphUi = new SimpleFeatureGraphUI( tk, mapViewer );
     }
 
-    private boolean         firstRun = true;
-
     private OlEventListener clickListener;
 
 
     // should be called twice
     @Override
-    public Layer getLayer( ILayer layer ) {
-        if (firstRun) {
-            firstRun = false;
-            return getLayer0( nodeStyleId, true, "nodes" );
+    public Layer getLayer( LayerInput layer ) {
+        if (layer.id().equals( "edges" )) {
+            return getLayer0( edgeStyleId, false, "edges" );
         }
         else {
-            return getLayer0( edgeStyleId, false, "edges" );
+            return getLayer0( nodeStyleId, true, "nodes" );
         }
     }
 
@@ -197,8 +194,8 @@ public class ImageLayerProvider
 
 
     @Override
-    public int getPriority( ILayer elm ) {
-        return 0;
+    public int getPriority( LayerInput elm ) {
+        return elm.priority();
     }
 
 
@@ -215,8 +212,8 @@ public class ImageLayerProvider
 
 
     @Override
-    public Set<ILayer> layers() {
-        return Sets.newHashSet( new ILayer(), new ILayer() );
+    public Set<LayerInput> layers() {
+        return Sets.newHashSet( new LayerInput("nodes", 3), new LayerInput("edges", 2) );
     }
 
 
@@ -240,7 +237,7 @@ public class ImageLayerProvider
         Point point = gf.createPoint( coordinate );
 
         // buffer: 500m
-        double buffer = 50000;
+        double buffer = 50;
         Point norm = Geometries.transform( point, mapViewer.getMapCRS(), Geometries.crs( "EPSG:3857" ) );
         ReferencedEnvelope buffered = new ReferencedEnvelope( norm.getX() - buffer, norm.getX() + buffer, norm.getY()
                 - buffer, norm.getY() + buffer, Geometries.crs( "EPSG:3857" ) );

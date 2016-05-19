@@ -98,7 +98,7 @@ public class Node {
     }
 
 
-    public void addNeighbour( Node neighbour ) {
+    void addNeighbour( Node neighbour ) {
         neighbours.add( neighbour );
     }
 

@@ -12,25 +12,32 @@
  */
 package io.mapzone.arena.analytics.graph.ui;
 
+import static org.polymap.core.ui.FormDataFactory.on;
 import static org.apache.commons.lang3.StringUtils.abbreviate;
 import static org.polymap.core.runtime.UIThreadExecutor.async;
 
+import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
+import org.opengis.feature.type.PropertyDescriptor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.vividsolutions.jts.geom.Geometry;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 import org.polymap.core.data.unitofwork.CommitOperation;
 import org.polymap.core.data.unitofwork.UnitOfWork;
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.ui.ColumnLayoutFactory;
+import org.polymap.core.ui.FormLayoutFactory;
 import org.polymap.core.ui.SelectionListenerAdapter;
 import org.polymap.core.ui.StatusDispatcher;
 
@@ -43,6 +50,9 @@ import org.polymap.rhei.field.IFormFieldListener;
 import org.polymap.rhei.form.DefaultFormPage;
 import org.polymap.rhei.form.IFormPageSite;
 import org.polymap.rhei.form.batik.BatikFormContainer;
+import org.polymap.rhei.table.CollectionContentProvider;
+import org.polymap.rhei.table.DefaultFeatureTableColumn;
+import org.polymap.rhei.table.FeatureTableViewer;
 
 import org.polymap.p4.P4Panel;
 import org.polymap.p4.P4Plugin;
@@ -120,22 +130,79 @@ public class SelectedNodePanel
 
     @Override
     public void init() {
+        site().title.set( "Selected nodes" );
+        site().preferredWidth.set( 400 );
+
     }
 
 
     @Override
     public void createContents( Composite parent ) {
         try {
-            fs = (FeatureStore)nodeSelection.get().featureSource();
+            parent.setLayout( FormLayoutFactory.defaults().create() );
+            final Node selectedNode = nodeSelection.get();
             feature = nodeSelection.get().feature();
+            Composite top = null;
 
-            tk().createFlowText( parent, nodeSelection.get().neighbours().size() + " neighbours found" );
-            uow = new UnitOfWork( fs );
-            uow.track( feature );
-            form = new BatikFormContainer( new StandardFeatureForm() );
-            form.createContents( parent );
+            if (feature != null) {
+                fs = (FeatureStore)nodeSelection.get().featureSource();
+                uow = new UnitOfWork( fs );
+                uow.track( feature );
+                form = new BatikFormContainer( new StandardFeatureForm() );
+                form.createContents( parent );
+                form.addFieldListener( this );
 
-            form.addFieldListener( this );
+                on( form.getContents() ).top( 2 ).left( 0 ).right( 100 ).noBottom();
+                top = form.getContents();
+            }
+
+            // found all feature types and create a table for each
+            ArrayListMultimap<FeatureSource,Feature> relatedFeatures = ArrayListMultimap.create();
+            for (Node neighbour : nodeSelection.get().neighbours()) {
+                if (neighbour.type().equals( Node.Type.edge )) {
+                    // load the neighbours of the synthetic edge
+                    for (Node nextNeighbour : neighbour.neighbours()) {
+                        // remove if is itself the selected node
+                        if (nextNeighbour.feature() != null && (selectedNode.feature() == null
+                                || !selectedNode.feature().equals( nextNeighbour.feature() ))) {
+                            relatedFeatures.put( nextNeighbour.featureSource(), nextNeighbour.feature() );
+                        }
+                    }
+                }
+                else {
+                    if (neighbour.feature() != null && (selectedNode.feature() == null
+                            || !selectedNode.feature().equals( neighbour.feature() ))) {
+                        relatedFeatures.put( neighbour.featureSource(), neighbour.feature() );
+                    }
+                }
+            }
+            for (FeatureSource relatedSource : relatedFeatures.keySet()) {
+
+                Label label = tk().createLabel( parent, relatedFeatures.get( relatedSource ).size() + " neighbours" );
+                if (top != null) {
+                    on( label ).top( top, 10 );
+                }
+                else {
+                    on( label ).top( 2 );
+                }
+
+                FeatureTableViewer table = new FeatureTableViewer( parent, SWT.H_SCROLL | SWT.V_SCROLL
+                        | SWT.FULL_SELECTION );
+                DefaultFeatureTableColumn first = null;
+                for (PropertyDescriptor prop : relatedSource.getSchema().getDescriptors()) {
+                    if (!Geometry.class.isAssignableFrom( prop.getType().getBinding() )) {
+                        DefaultFeatureTableColumn column = new DefaultFeatureTableColumn( prop );
+                        table.addColumn( column );
+                        first = first != null ? first : column;
+                    }
+                }
+                first.sort( SWT.DOWN );
+                table.setContent( new CollectionContentProvider( relatedFeatures.get( relatedSource ) ) );
+                table.setInput( relatedFeatures.get( relatedSource ) );
+                on( table.getControl() ).fill().top( label, 5 ).height( 300 );
+                top = (Composite)table.getControl();
+            }
+            on( top ).bottom( 100 );
 
             fab = tk().createFab();
             fab.setToolTipText( "Save changes" );

@@ -217,13 +217,13 @@ public class SingleSourceNodeGraphFunction
             if (key == null || "".equals( key.toString() )) {
                 continue;
             }
-            if (!distinctSourceFeatures.containsKey( key )) {
+//            if (!distinctSourceFeatures.containsKey( key )) {
                 distinctSourceFeatures.put( key, feature );
                 Node node = new Node( Node.Type.node, "graph_"
                         + feature.getID(), selectedSourceFeatureSource, feature, key.toString(), 1 );
                 nodes.put( feature.getID(), node );
                 graph.addOrUpdateNode( node );
-            }
+//            }
         }
         tk.createSnackbar( Appearance.FadeIn, featureCount + " Nodes read" );
 
