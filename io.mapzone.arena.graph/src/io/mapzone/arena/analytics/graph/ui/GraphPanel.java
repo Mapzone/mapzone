@@ -13,9 +13,7 @@
 package io.mapzone.arena.analytics.graph.ui;
 
 import java.util.TreeMap;
-
 import java.io.IOException;
-
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 
@@ -43,15 +41,14 @@ import org.polymap.core.ui.FormLayoutFactory;
 import org.polymap.core.ui.SelectionAdapter;
 import org.polymap.core.ui.StatusDispatcher;
 import org.polymap.core.ui.UIUtils;
-
+import org.polymap.p4.P4Panel;
+import org.polymap.p4.P4Plugin;
+import org.polymap.rap.openlayers.base.OlEventListener;
 import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 
-import org.polymap.p4.P4Panel;
-import org.polymap.p4.P4Plugin;
-import org.polymap.rap.openlayers.base.OlEventListener;
 import org.polymap.rap.openlayers.control.MousePositionControl;
 
 import io.mapzone.arena.analytics.graph.Graph;
@@ -122,7 +119,7 @@ public class GraphPanel
     @Override
     public boolean wantsToBeShown() {
         if (site().path().size() == 2) {
-            site().icon.set( GraphPlugin.images().svgImage( "graph.svg", P4Plugin.HEADER_ICON_CONFIG ) );
+            site().icon.set( GraphPlugin.images().svgImage( "chart-bubble.svg", P4Plugin.HEADER_ICON_CONFIG ) );
             site().tooltip.set( i18n.get( "tooltip" ) );
             site().title.set( "" );
             return true;
