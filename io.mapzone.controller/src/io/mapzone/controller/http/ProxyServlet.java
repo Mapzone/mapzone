@@ -19,11 +19,12 @@ import static org.apache.commons.lang3.StringUtils.substringAfter;
 import io.mapzone.controller.provision.Provision.Status;
 import io.mapzone.controller.provision.ProvisionExecutor;
 import io.mapzone.controller.provision.ProvisionExecutor2;
-import io.mapzone.controller.provision.StopProvisionExecutionException;
+import io.mapzone.controller.provision.ProvisionRuntimeException;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.vm.provisions.MaxProcesses;
 import io.mapzone.controller.vm.provisions.ProcessRunning;
 import io.mapzone.controller.vm.provisions.ProcessStarted;
+
 import java.util.regex.Pattern;
 
 import java.io.IOException;
@@ -110,7 +111,11 @@ public class ProxyServlet
                     forwardRequest.vmRepo.get().commit();
                 }
             }
-            catch (StopProvisionExecutionException e) {
+            catch (HttpProvisionRuntimeException e) {
+                ProvisionErrorResponse.send( resp, e.statusCode, e.message );
+                return;
+            }
+            catch (ProvisionRuntimeException e) {
                 // login redirect
                 return;
             }
