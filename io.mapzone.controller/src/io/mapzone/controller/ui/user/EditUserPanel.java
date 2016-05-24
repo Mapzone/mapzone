@@ -1,6 +1,7 @@
 package io.mapzone.controller.ui.user;
 
 import io.mapzone.controller.ControllerPlugin;
+import io.mapzone.controller.ui.CtrlPanel;
 import io.mapzone.controller.ui.DashboardPanel;
 import io.mapzone.controller.ui.util.PropertyAdapter;
 import io.mapzone.controller.um.repository.EntityChangedEvent;
@@ -37,14 +38,12 @@ import org.polymap.core.ui.ColumnLayoutFactory;
 import org.polymap.core.ui.StatusDispatcher;
 
 import org.polymap.rhei.batik.Context;
-import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PanelPath;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.toolkit.ConstraintData;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
-import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 import org.polymap.rhei.field.EMailAddressValidator;
 import org.polymap.rhei.field.FormFieldEvent;
 import org.polymap.rhei.field.IFormFieldListener;
@@ -64,7 +63,7 @@ import org.polymap.rhei.form.batik.BatikFormContainer;
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class EditUserPanel
-        extends DefaultPanel {
+        extends CtrlPanel {
 
     private static Log log = LogFactory.getLog( EditUserPanel.class );
 
@@ -89,8 +88,9 @@ public class EditUserPanel
     @Override
     public boolean wantsToBeShown() {
         if (parentPanel().get() instanceof DashboardPanel) {
-            getSite().setTitle( "" ).setTooltip( "Edit account and profile settings" );
-            getSite().setIcon( ControllerPlugin.images().svgImage( "account.svg", ControllerPlugin.HEADER_ICON_CONFIG ) );
+            site().title.set( "" );
+            site().tooltip.set( "Edit account and profile settings" );
+            site().icon.set( ControllerPlugin.images().svgImage( "account.svg", ControllerPlugin.HEADER_ICON_CONFIG ) );
             return true;
         }
         return false;
@@ -99,6 +99,7 @@ public class EditUserPanel
 
     @Override
     public void init() {
+        super.init();
         nested = ProjectRepository.instance().newNested();
         user = nested.findUser( userPrincipal.get().getName() )
                 .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) );
@@ -108,23 +109,20 @@ public class EditUserPanel
 
     @Override
     public void createContents( Composite parent ) {
-        getSite().setPreferredWidth( 350 );
-        MdToolkit tk = (MdToolkit)getSite().toolkit();
-        
         // profile form
-        IPanelSection profileSection = tk.createPanelSection( parent, "Profile" );
+        IPanelSection profileSection = tk().createPanelSection( parent, "Profile" );
         profileSection.getControl().setLayoutData( new ConstraintData( new MinWidthConstraint( 350, 1 ) ) );
         profileForm = new BatikFormContainer( new UserForm() );
         profileForm.createContents( profileSection.getBody() );
 
         // account form
-        IPanelSection accountSection = tk.createPanelSection( parent, "Account" );
+        IPanelSection accountSection = tk().createPanelSection( parent, "Account" );
         accountForm = new BatikFormContainer( new AccountForm() );
         accountForm.createContents( accountSection.getBody() );
 
         // sign out
-        IPanelSection signOutSection = tk.createPanelSection( parent, "Sign out" );
-        tk.createButton( signOutSection.getBody(), "Sign out", SWT.PUSH )
+        IPanelSection signOutSection = tk().createPanelSection( parent, "Sign out" );
+        tk().createButton( signOutSection.getBody(), "Sign out", SWT.PUSH )
                 .addSelectionListener( new SelectionAdapter() {
                     @Override
                     public void widgetSelected( SelectionEvent e ) {
@@ -135,7 +133,7 @@ public class EditUserPanel
                 });
 
         // FAB
-        fab = tk.createFab();
+        fab = tk().createFab();
         fab.setToolTipText( "Submit changes" );
         fab.addSelectionListener( new SelectionAdapter() {
             @Override

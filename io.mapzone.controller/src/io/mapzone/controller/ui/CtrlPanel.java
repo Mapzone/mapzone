@@ -30,7 +30,19 @@ public abstract class CtrlPanel
 
     private static Log log = LogFactory.getLog( CtrlPanel.class );
 
+    public static final int         SIDE_PANEL_WIDTH = 420;
     
+    /**
+     * Sets size to: 
+     * <pre>
+     * SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH, Integer.MAX_VALUE
+     * </pre>
+     */
+    @Override
+    public void init() {
+        site().setSize( SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH, Integer.MAX_VALUE );
+    }
+
     public MdToolkit tk() {
         return (MdToolkit)site().toolkit();
     }

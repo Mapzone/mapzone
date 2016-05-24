@@ -5,6 +5,7 @@ import static org.polymap.core.runtime.UIThreadExecutor.asyncFast;
 import static org.polymap.rhei.batik.toolkit.md.dp.dp;
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.ops.CreateProjectOperation;
+import io.mapzone.controller.ui.CtrlPanel;
 import io.mapzone.controller.ui.DashboardPanel;
 import io.mapzone.controller.ui.util.PropertyAdapter;
 import io.mapzone.controller.um.launcher.EclipseProjectLauncher;
@@ -31,7 +32,6 @@ import org.polymap.core.ui.ColumnLayoutFactory;
 import org.polymap.core.ui.StatusDispatcher;
 
 import org.polymap.rhei.batik.Context;
-import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PanelPath;
 import org.polymap.rhei.batik.Scope;
@@ -56,7 +56,7 @@ import org.polymap.rhei.form.batik.BatikFormContainer;
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class CreateProjectPanel
-        extends DefaultPanel {
+        extends CtrlPanel {
 
     private static Log log = LogFactory.getLog( CreateProjectPanel.class );
 
@@ -99,7 +99,8 @@ public class CreateProjectPanel
 
     @Override
     public void init() {
-        getSite().setTitle( "New project" );
+        super.init();
+        site().title.set( "New project" );
         nested = ProjectRepository.instance().newNested();
         user = nested.findUser( userPrincipal.get().getName() )
                 .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) );
@@ -110,7 +111,6 @@ public class CreateProjectPanel
 
     @Override
     public void createContents( Composite parent ) {
-        getSite().setPreferredWidth( 350 );
         MdToolkit tk = (MdToolkit)getSite().toolkit();
         
 //        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( 10 ).create() );

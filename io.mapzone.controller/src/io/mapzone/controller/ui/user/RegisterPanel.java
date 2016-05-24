@@ -4,6 +4,7 @@ import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL24;
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.Messages;
 import io.mapzone.controller.ops.CreateUserOperation;
+import io.mapzone.controller.ui.CtrlPanel;
 import io.mapzone.controller.ui.DashboardPanel;
 import io.mapzone.controller.ui.StartPanel;
 import io.mapzone.controller.ui.util.PropertyAdapter;
@@ -33,7 +34,6 @@ import org.polymap.core.ui.ColumnLayoutFactory;
 
 import org.polymap.rhei.batik.BatikPlugin;
 import org.polymap.rhei.batik.Context;
-import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
@@ -62,7 +62,7 @@ import org.polymap.cms.ContentProvider;
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class RegisterPanel
-        extends DefaultPanel
+        extends CtrlPanel
         implements IFormFieldListener {
 
     private static Log log = LogFactory.getLog( RegisterPanel.class );
@@ -103,7 +103,7 @@ public class RegisterPanel
 
     @Override
     public void init() {
-        getSite().setPreferredWidth( 450 );
+        super.init();
         repo = ProjectRepository.instance().newNested();
     }
 
