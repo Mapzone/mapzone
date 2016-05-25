@@ -15,11 +15,12 @@
 package io.mapzone.controller.provision;
 
 /**
- * 
+ * Thrown by a {@link Provision} when it finds an illegal state or any other
+ * exception. This exception stops execution of the provisioning.
  *
  * @author Falko Bräutigam
  */
-public class StopProvisionExecutionException
+public class ProvisionRuntimeException
         extends RuntimeException {
 
 }

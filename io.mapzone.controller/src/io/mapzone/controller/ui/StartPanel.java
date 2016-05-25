@@ -79,8 +79,10 @@ public class StartPanel
     @Override
     public void createContents( @SuppressWarnings("hiding") Composite parent ) {
         this.parent = parent;
-        getSite().setPreferredWidth( 750 );
-        getSite().setTitle( "Welcome to mapzone" );
+        site().maxWidth.set( Integer.MAX_VALUE );
+        site().preferredWidth.set( Integer.MAX_VALUE );
+        site().minWidth.set( Integer.MAX_VALUE );
+        site().title.set( "Welcome to mapzone" );
         
         // login cookie -> dashboard
         Optional<LoginCookie> loginCookie = LoginCookie.access().findAndUpdate();

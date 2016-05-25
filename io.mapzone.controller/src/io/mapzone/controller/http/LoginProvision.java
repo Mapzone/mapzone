@@ -36,7 +36,7 @@ import org.polymap.core.ui.UIUtils;
 import io.mapzone.controller.LoginAppDesign;
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
-import io.mapzone.controller.provision.StopProvisionExecutionException;
+import io.mapzone.controller.provision.ProvisionRuntimeException;
 import io.mapzone.controller.um.repository.LoginCookie;
 import io.mapzone.controller.um.repository.User;
 
@@ -115,7 +115,7 @@ public class LoginProvision
         // response.get().sendRedirect( "../../../login?id=" + handlerId );
         response.get().setStatus( HttpServletResponse.SC_MOVED_TEMPORARILY );
         response.get().setHeader( "Location", "../../../login?id=" + handlerId );
-        throw new StopProvisionExecutionException();
+        throw new ProvisionRuntimeException();
     }
 
     

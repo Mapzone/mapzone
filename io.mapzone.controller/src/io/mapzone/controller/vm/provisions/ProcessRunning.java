@@ -8,6 +8,7 @@ import org.apache.http.client.utils.URIBuilder;
 
 import io.mapzone.controller.http.ForwardRequest;
 import io.mapzone.controller.http.HttpProxyProvision;
+import io.mapzone.controller.http.HttpProvisionRuntimeException;
 import io.mapzone.controller.ops.StartProcessOperation;
 import io.mapzone.controller.ops.StopProcessOperation;
 import io.mapzone.controller.provision.Context;
@@ -56,7 +57,7 @@ public class ProcessRunning
         // find instance -> process
         ProjectInstanceIdentifier pid = new ProjectInstanceIdentifier( request.get() );
         instance.set( vmRepo().findInstance( pid )
-                .orElseThrow( () -> new IllegalStateException( "No project instance found for: " + pid ) ) );
+                .orElseThrow( () -> new HttpProvisionRuntimeException( 404, "No such project: " + pid ) ) );
 
         instance.get().homePath.get();  // force (pessimistic) lock on instance
         process.set( instance.get().process.get() );

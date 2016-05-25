@@ -45,8 +45,8 @@ public class DashboardPanel
     
     @Override
     public void createContents( Composite parent ) {
-        getSite().setPreferredWidth( 650 );
-        getSite().setTitle( "Dashboard" );
+        site().preferredWidth.set( 650 );
+        site().title.set( "Dashboard" );
         
         dashboard = new Dashboard( getSite(), DASHBOARD_ID );
         dashboard.addDashlet( new ProjectsDashlet().addConstraint( new PriorityConstraint( 5 ) ) );

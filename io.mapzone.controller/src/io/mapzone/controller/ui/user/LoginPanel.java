@@ -33,7 +33,6 @@ import org.polymap.core.ui.ColumnLayoutFactory;
 
 import org.polymap.rhei.batik.BatikApplication;
 import org.polymap.rhei.batik.Context;
-import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PanelSite;
 import org.polymap.rhei.batik.Scope;
@@ -52,6 +51,7 @@ import org.polymap.rhei.form.batik.BatikFormContainer;
 
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.Messages;
+import io.mapzone.controller.ui.CtrlPanel;
 import io.mapzone.controller.ui.StartPanel;
 import io.mapzone.controller.um.repository.LoginCookie;
 
@@ -61,7 +61,7 @@ import io.mapzone.controller.um.repository.LoginCookie;
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class LoginPanel
-        extends DefaultPanel {
+        extends CtrlPanel {
 
     public static final PanelIdentifier ID = new PanelIdentifier( "login" );
     
@@ -89,8 +89,8 @@ public class LoginPanel
 
     @Override
     public void init() {
-        getSite().setTitle( "Sign in" );
-        getSite().setPreferredWidth( 450 );
+        super.init();
+        site().title.set( "Sign in" );
     }
     
     

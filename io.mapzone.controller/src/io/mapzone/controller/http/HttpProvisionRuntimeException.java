@@ -12,39 +12,32 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-package io.mapzone.controller.ui;
+package io.mapzone.controller.http;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.polymap.rhei.batik.DefaultPanel;
-import org.polymap.rhei.batik.toolkit.md.MdToolkit;
+import io.mapzone.controller.provision.ProvisionRuntimeException;
 
 /**
- * 
+ * {@link ProvisionRuntimeException} for {@link HttpProxyProvision}s. The given
+ * {@link #message} is displayed to the user via {@link ProvisionErrorResponse}.
  *
  * @author Falko Bräutigam
  */
-public abstract class CtrlPanel
-        extends DefaultPanel {
+public class HttpProvisionRuntimeException
+        extends ProvisionRuntimeException {
 
-    private static Log log = LogFactory.getLog( CtrlPanel.class );
-
-    public static final int         SIDE_PANEL_WIDTH = 420;
+    private static Log log = LogFactory.getLog( HttpProvisionRuntimeException.class );
     
-    /**
-     * Sets size to: 
-     * <pre>
-     * SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH, Integer.MAX_VALUE
-     * </pre>
-     */
-    @Override
-    public void init() {
-        site().setSize( SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH, Integer.MAX_VALUE );
-    }
+    public int          statusCode;
+    
+    public String       message;
 
-    public MdToolkit tk() {
-        return (MdToolkit)site().toolkit();
+    
+    public HttpProvisionRuntimeException( int statusCode, String message ) {
+        this.statusCode = statusCode;
+        this.message = message;
     }
-
+    
 }

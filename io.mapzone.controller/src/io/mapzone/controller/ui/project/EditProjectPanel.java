@@ -2,6 +2,7 @@ package io.mapzone.controller.ui.project;
 
 import static org.polymap.core.runtime.UIThreadExecutor.asyncFast;
 import io.mapzone.controller.ops.DeleteProjectOperation;
+import io.mapzone.controller.ui.CtrlPanel;
 import io.mapzone.controller.ui.util.PropertyAdapter;
 import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.Organization;
@@ -34,14 +35,12 @@ import org.polymap.core.ui.ColumnLayoutFactory;
 import org.polymap.core.ui.StatusDispatcher;
 
 import org.polymap.rhei.batik.Context;
-import org.polymap.rhei.batik.DefaultPanel;
 import org.polymap.rhei.batik.Mandatory;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PanelPath;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
-import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 import org.polymap.rhei.field.FormFieldEvent;
 import org.polymap.rhei.field.IFormFieldListener;
 import org.polymap.rhei.field.PlainValuePropertyAdapter;
@@ -55,7 +54,7 @@ import org.polymap.rhei.form.batik.BatikFormContainer;
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class EditProjectPanel
-        extends DefaultPanel {
+        extends CtrlPanel {
 
     private static Log log = LogFactory.getLog( EditProjectPanel.class );
 
@@ -85,7 +84,8 @@ public class EditProjectPanel
     
     @Override
     public void init() {
-        getSite().setTitle( "Project" );
+        super.init();
+        site().title.set( "Project" );
         nested = ProjectRepository.instance().newNested();
         user = nested.findUser( userPrincipal.get().getName() )
                 .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) );
@@ -95,9 +95,6 @@ public class EditProjectPanel
 
     @Override
     public void createContents( Composite parent ) {
-        getSite().setPreferredWidth( 350 );
-        MdToolkit tk = (MdToolkit)getSite().toolkit();
-        
 //        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( 10 ).create() );
         
 //        // welcome
@@ -113,13 +110,13 @@ public class EditProjectPanel
 //                .tooltipText.put( "Remove this project altogether" ) );
         
         // form
-        IPanelSection formSection = tk.createPanelSection( parent, "Basic settings" );
+        IPanelSection formSection = tk().createPanelSection( parent, "Basic settings" );
         formSection.addConstraint( new MinWidthConstraint( 350, 1 ) );
         form = new BatikFormContainer( new ProjectForm() );
         form.createContents( formSection.getBody() );
 
         // FAB
-        fab = tk.createFab();
+        fab = tk().createFab();
         fab.setToolTipText( "Update project" );
         fab.setVisible( false );
         fab.addSelectionListener( new SelectionAdapter() {
@@ -156,8 +153,8 @@ public class EditProjectPanel
         });
         
         // delete project
-        IPanelSection deleteSection = tk.createPanelSection( parent, "Danger zone" );
-        Button deleteBtn = tk.createButton( deleteSection.getBody(), "Destroy this project", SWT.PUSH );
+        IPanelSection deleteSection = tk().createPanelSection( parent, "Danger zone" );
+        Button deleteBtn = tk().createButton( deleteSection.getBody(), "Destroy this project", SWT.PUSH );
         deleteBtn.setToolTipText( "Delete everything!<br/><b>There is no way to get the data back!</b>" );
         deleteBtn.addSelectionListener( new SelectionAdapter() {
             @Override
