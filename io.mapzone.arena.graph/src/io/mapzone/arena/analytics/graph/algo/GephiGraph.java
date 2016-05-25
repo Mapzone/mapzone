@@ -121,7 +121,7 @@ public class GephiGraph
     public void addOrUpdateEdge( final io.mapzone.arena.analytics.graph.Node src,
             final io.mapzone.arena.analytics.graph.Node target ) {
         String edgeIdST = src.key() + "_" + target.key();
-        io.mapzone.arena.analytics.graph.Edge line = new io.mapzone.arena.analytics.graph.Edge( edgeIdST, edgeIdST, src, target );
+        io.mapzone.arena.analytics.graph.Edge line = new io.mapzone.arena.analytics.graph.Edge( edgeIdST, src, target );
         addOrUpdateEdge( line );
     }
 
@@ -138,16 +138,15 @@ public class GephiGraph
     public void addOrUpdateEdge( final io.mapzone.arena.analytics.graph.Edge edge ) {
         // check for duplicates, because we are undirected
         // add only if not present before
-        String edgeIdST = edge.nodeA().key() + "_" + edge.nodeB().key();
-        io.mapzone.arena.analytics.graph.Edge line = edges.get( edgeIdST );
+        io.mapzone.arena.analytics.graph.Edge line = edges.get( edge.key() );
         if (line == null) {
             // check other direction
             String edgeIdTS = edge.nodeB().key() + "_" + edge.nodeA().key();
             line = edges.get( edgeIdTS );
             if (line == null) {
                 // add original
-                edges.put( edgeIdST, edge );
-                addEdge( edgeIdST, edge.nodeA().key(), edge.nodeB().key() );
+                edges.put( edge.key(), edge );
+                addEdge( edge.key(), edge.nodeA().key(), edge.nodeB().key() );
                 graphUi.addEdge( edge );
             }
         }
@@ -165,7 +164,10 @@ public class GephiGraph
         EdgeDraft edge = loader.factory().newEdgeDraft( id );
         edge.setSource( loader.getNode( srcId ) );
         edge.setTarget( loader.getNode( targetId ) );
-        edge.setDirection( EdgeDirection.UNDIRECTED );
+        edge.setDirection( EdgeDirection.DIRECTED );
+        if (edge.getSource() == null || edge.getTarget() == null) {
+            throw new RuntimeException("empty edge endpoint not supported");
+        }
         loader.addEdge( edge );
     }
 
@@ -228,7 +230,7 @@ public class GephiGraph
             log.info( "autolayout.execute done " + System.currentTimeMillis() );
             UIThreadExecutor.async( () -> {
                 log.info( "sending coordinates " + System.currentTimeMillis() );
-                final Graph graph = graphModel.getUndirectedGraph();
+                final Graph graph = graphModel.getDirectedGraph();
                 double minX = 10000;
                 double minY = 10000;
                 double maxX = -10000;
@@ -248,11 +250,22 @@ public class GephiGraph
                     // }
                     // else {
                     graphUi.updateGeometry( featureNode, newCoordinate );
-                    for (Edge graphEdge : graph.getEdges( graphNode )) {
-                        io.mapzone.arena.analytics.graph.Edge line = edges.get( graphEdge.getId().toString() );
-                        graphUi.updateGeometry( line, featureNode, newCoordinate );
-                    }
+//                    for (Edge graphEdge : graph.getEdges( graphNode )) {
+//                        io.mapzone.arena.analytics.graph.Edge line = edges.get( graphEdge.getId() );
+//                        int index = line.key().indexOf( featureNode.key() );
+//                        log.info( "edge with index " + index );
+//                        if (index == -1) {
+//                            log.info( "unknown edge" );
+//                        }
+//                        graphUi.updateGeometry( line, featureNode, newCoordinate );
+//                    }
                     // }
+                }
+                for (Edge graphEdge : graph.getEdges()) {
+                    io.mapzone.arena.analytics.graph.Edge line = edges.get( graphEdge.getId() );
+                    graphUi.updateGeometry( line, new Coordinate( graphEdge.getSource().x() * GRAPHUNIT2COORD, graphEdge.getSource().y()
+                            * GRAPHUNIT2COORD ), new Coordinate( graphEdge.getTarget().x() * GRAPHUNIT2COORD, graphEdge.getTarget().y()
+                                    * GRAPHUNIT2COORD ) );
                 }
                 Extent envelope = new Extent( minX, minY, maxX, maxY );
                 graphUi.updateEnvelope( envelope );

@@ -34,6 +34,9 @@ public interface GraphUI {
     void updateGeometry( Edge line, Node node, Coordinate newCoordinate );
 
 
+    void updateGeometry( Edge line, Coordinate srcCoordinate, Coordinate targetCoordinate );
+
+
     void updateGeometry( Node featureNode, Coordinate newCoordinate );
 
 
@@ -54,4 +57,5 @@ public interface GraphUI {
 
 
     FeatureType edgeSchema();
+
 }

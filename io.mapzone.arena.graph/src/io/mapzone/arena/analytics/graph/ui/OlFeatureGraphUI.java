@@ -214,4 +214,11 @@ public class OlFeatureGraphUI
         // XXX Auto-generated method stub
         throw new RuntimeException( "not yet implemented." );
     }
+
+
+    @Override
+    public void updateGeometry( Edge line, Coordinate srcCoordinate, Coordinate targetCoordinate ) {
+        // XXX Auto-generated method stub
+        throw new RuntimeException( "not yet implemented." );
+    }
 }

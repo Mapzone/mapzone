@@ -55,17 +55,17 @@ import com.google.common.collect.Maps;
 public class SingleSourceNodeGraphFunction
         extends AbstractGraphFunction {
 
-    private static Log              log         = LogFactory.getLog( SingleSourceNodeGraphFunction.class );
+    private static Log             log      = LogFactory.getLog( SingleSourceNodeGraphFunction.class );
 
-    private static final IMessages  i18n        = Messages.forPrefix( "SingleSourceNodeGraphFunction" );
+    private static final IMessages i18n     = Messages.forPrefix( "SingleSourceNodeGraphFunction" );
 
-    private FeatureSource           selectedSourceFeatureSource;
+    private FeatureSource          selectedSourceFeatureSource;
 
-    private PropertyDescriptor      selectedSourcePropertyDescriptor;
+    private PropertyDescriptor     selectedSourcePropertyDescriptor;
 
-    private EdgeFunction            selectedEdgeFunction;
+    private EdgeFunction           selectedEdgeFunction;
 
-    private final static int        COLUMN_2    = 5;
+    private final static int       COLUMN_2 = 5;
 
 
     @Override
@@ -120,7 +120,8 @@ public class SingleSourceNodeGraphFunction
             final Composite edgeFunctionContainer = tk.createComposite( parent, SWT.NONE );
             edgeFunctionContainer.setLayout( FormLayoutFactory.defaults().create() );
 
-            final ComboViewer edgeFunctionsUI = new ComboViewer( parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY );
+            final ComboViewer edgeFunctionsUI = new ComboViewer( parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN
+                    | SWT.READ_ONLY );
             edgeFunctionsUI.setContentProvider( new ArrayContentProvider() );
             edgeFunctionsUI.setInput( edgeFunctions.keySet() );
             edgeFunctionsUI.addSelectionChangedListener( ev -> {
@@ -220,13 +221,12 @@ public class SingleSourceNodeGraphFunction
             if (key == null || "".equals( key.toString() )) {
                 continue;
             }
-//            if (!distinctSourceFeatures.containsKey( key )) {
-                distinctSourceFeatures.put( key, feature );
-                Node node = new Node( Node.Type.real, "graph_"
-                        + feature.getID(), selectedSourceFeatureSource, feature, key.toString(), 1 );
-                nodes.put( feature.getID(), node );
-                graph.addOrUpdateNode( node );
-//            }
+            // if (!distinctSourceFeatures.containsKey( key )) {
+            distinctSourceFeatures.put( key, feature );
+            Node node = new Node( Node.Type.real, feature.getID(), selectedSourceFeatureSource, feature, key.toString(), 1 );
+            nodes.put( feature.getID(), node );
+            graph.addOrUpdateNode( node );
+            // }
         }
         if (!tk.isClosed()) {
             tk.createSnackbar( Appearance.FadeIn, featureCount + " Nodes read" );

@@ -30,8 +30,8 @@ public class Edge {
     private final String name;
 
 
-    public Edge( final String key, final String name, final Node nodeA, final Node nodeB ) {
-        this.key = key;
+    public Edge( final String name, final Node nodeA, final Node nodeB ) {
+        this.key = nodeA.key() + "_" + nodeB.key();
         this.name = name;
         this.nodeA = nodeA;
         this.nodeB = nodeB;

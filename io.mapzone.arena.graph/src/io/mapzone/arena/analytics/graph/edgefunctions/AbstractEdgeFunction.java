@@ -53,7 +53,7 @@ public abstract class AbstractEdgeFunction
                     Node featureA = bundledFeatures.get( aFeatureCount );
                     for (int bFeatureCount = aFeatureCount + 1; bFeatureCount < allFeaturesCount; bFeatureCount++) {
                         Node featureB = bundledFeatures.get( bFeatureCount );
-                        allEdges.add( new Edge( key.toString() + "_" + featureA.key() + "_" + featureB.key(), key.toString(), featureA, featureB ) );
+                        allEdges.add( new Edge( key.toString(), featureA, featureB ) );
                     }
                 }
             }

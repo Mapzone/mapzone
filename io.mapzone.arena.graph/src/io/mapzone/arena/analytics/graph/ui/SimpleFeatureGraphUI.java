@@ -163,6 +163,16 @@ public class SimpleFeatureGraphUI
 
 
     @Override
+    public void updateGeometry( Edge edge, Coordinate srcCoordinate, Coordinate targetCoordinate ) {
+        final SimpleFeature line = edges.get( edge.key() );
+        com.vividsolutions.jts.geom.Coordinate[] coordinates = new com.vividsolutions.jts.geom.Coordinate[] {
+                new com.vividsolutions.jts.geom.Coordinate( srcCoordinate.x(), srcCoordinate.y() ),
+                new com.vividsolutions.jts.geom.Coordinate( targetCoordinate.x(), targetCoordinate.y() ) };
+        line.setDefaultGeometry( GEOMETRYFACTORY.createLineString( coordinates ) );
+    }
+
+
+    @Override
     public void clear() {
         nodes.clear();
         edges.clear();
