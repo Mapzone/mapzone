@@ -109,9 +109,9 @@ public class SimpleFeatureGraphUI
         map.getMap().view.get().resolution.set( 600f );
         // map.view.get().resolution.set( new Double((Math.abs( maxX ) +
         // Math.abs( minX )) / GRAPHUNIT2COORD).floatValue() );
-        log.info( "setting extent to " + envelope.toJson() );
+//        log.info( "setting extent to " + envelope.toJson() );
         // }
-        log.info( "sending coordinates done." );
+//        log.info( "sending coordinates done." );
         //
         // map.render();
     }

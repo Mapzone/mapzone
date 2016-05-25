@@ -70,7 +70,7 @@ import io.mapzone.arena.analytics.graph.Messages;
 import io.mapzone.arena.analytics.graph.Node;
 import io.mapzone.arena.analytics.graph.OrganisationPersonGraphFunction;
 import io.mapzone.arena.analytics.graph.SingleSourceNodeGraphFunction;
-import io.mapzone.arena.analytics.graph.algo.GephiGraph;
+import io.mapzone.arena.analytics.graph.algo.GraphStreamGraph;
 
 /**
  * Proof-of-concept for generated geometries and graph displayed in an OL map.
@@ -285,7 +285,8 @@ public class GraphPanel
         mapViewer.setInput( graphLayerProvider.layers() );
         mapContainer.layout();
 
-        graph = new GephiGraph( graphLayerProvider.graphUi() );
+//        graph = new GephiGraph( graphLayerProvider.graphUi() );
+        graph = new GraphStreamGraph( graphLayerProvider.graphUi() );
     }
 
 
