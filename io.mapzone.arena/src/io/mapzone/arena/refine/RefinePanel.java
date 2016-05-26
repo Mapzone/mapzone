@@ -116,6 +116,7 @@ public class RefinePanel
         }
 
         Combo combo = new Combo( parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN );
+        @SuppressWarnings( "hiding" )
         final Composite functionContainer = tk().createComposite( parent, SWT.NONE );
 
         final List<String> content = Lists.newArrayList( functions.keySet() );

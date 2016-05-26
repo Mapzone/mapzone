@@ -14,14 +14,12 @@
  */
 package io.mapzone.arena.refine;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 
@@ -107,7 +105,7 @@ public class OrgPersonSplitTableRefineFunction implements RefineFunction {
     }
 
     @Override
-    public void init(Context<IMap> map) {
+    public void init(@SuppressWarnings( "hiding" ) Context<IMap> map) {
         this.map = map;
         this.locations = new Properties();
         try {
