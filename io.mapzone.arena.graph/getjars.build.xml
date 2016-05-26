@@ -22,15 +22,19 @@
         <delete dir="${lib}" />
     </target>
 
+    <property name="maven_download_dir" value="${user.home}/.m2/repository/org/apache/maven/maven-ant-tasks/2.0.10/" />
+    <available property="bootstrapped" type="dir" file="${maven_download_dir}" />
+
     <target name="bootstrap" unless="bootstrapped">
-        <mkdir dir="${basedir}${file.separator}lib-static" />
-        <get src="http://central.maven.org/maven2/org/apache/maven/maven-ant-tasks/2.0.10/maven-ant-tasks-2.0.10.jar" dest="${basedir}${file.separator}lib-static/" />
+        <mkdir dir="${maven_download_dir}" />
+        <get src="http://central.maven.org/maven2/org/apache/maven/maven-ant-tasks/2.0.10/maven-ant-tasks-2.0.10.jar" 
+             dest="${maven_download_dir}" />
     </target>
 
     <target name="init" depends="bootstrap">
         <taskdef uri="antlib:org.apache.maven.artifact.ant" resource="org/apache/maven/artifact/ant/antlib.xml">
             <classpath>
-                <fileset dir="${basedir}${file.separator}lib-static">
+                <fileset dir="${maven_download_dir}">
                     <include name="*.jar" />
                 </fileset>
             </classpath>
@@ -51,7 +55,7 @@
     <!--
       Target: load_m2_deps
       -->
-    <target name="load_m2_deps" depends="create, initMavenRepos">
+    <target name="load_m2_deps" depends="create, initMavenRepos" unless="already_downloaded">
         <artifact:localRepository id="local.repository" path="${user.home}/.m2/repository" />
 
         <artifact:dependencies filesetId="dependency.fileset" sourcesFilesetId="sources.dependency.fileset" versionsId="dependency.versions" useScope="runtime">
