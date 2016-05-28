@@ -8,7 +8,7 @@ import io.mapzone.controller.ops.CreateProjectOperation;
 import io.mapzone.controller.ui.CtrlPanel;
 import io.mapzone.controller.ui.DashboardPanel;
 import io.mapzone.controller.ui.util.PropertyAdapter;
-import io.mapzone.controller.um.launcher.EclipseProjectLauncher;
+import io.mapzone.controller.um.launcher.ArenaLauncher;
 import io.mapzone.controller.um.repository.Organization;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
@@ -105,7 +105,7 @@ public class CreateProjectPanel
         user = nested.findUser( userPrincipal.get().getName() )
                 .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) );
         project = nested.createEntity( Project.class, null, Project.defaults );        
-        project.launcher.createValue( EclipseProjectLauncher.arenaDefaults );
+        project.launcher.createValue( ArenaLauncher.defaults );
     }
 
 

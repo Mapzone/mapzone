@@ -3,6 +3,7 @@ package io.mapzone.controller.um.repository;
 import static org.polymap.model2.query.Expressions.eq;
 import static org.polymap.model2.query.Expressions.or;
 
+import io.mapzone.controller.um.launcher.ArenaLauncher;
 import io.mapzone.controller.um.launcher.EclipseProjectLauncher;
 import io.mapzone.controller.um.launcher.JvmProjectLauncher;
 import io.mapzone.controller.um.repository.LifecycleEvent.Type;
@@ -52,6 +53,7 @@ public class ProjectRepository
                         Project.class, 
                         JvmProjectLauncher.class,
                         EclipseProjectLauncher.class,
+                        ArenaLauncher.class,
                         Organization.class, 
                         UserRole.class })
                 .store.set( 
@@ -82,7 +84,7 @@ public class ProjectRepository
                     proto.organization.set( organization );
                     proto.name.set( "first" );
                     proto.description.set( "The first registered project at mapzone.io" );
-                    proto.launcher.createValue( EclipseProjectLauncher.arenaDefaults );
+                    proto.launcher.createValue( ArenaLauncher.defaults );
                     return proto;
                 });
                 assert project.organization.get() == organization : "Check bidi association.";

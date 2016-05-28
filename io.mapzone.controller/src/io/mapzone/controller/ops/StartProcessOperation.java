@@ -67,11 +67,13 @@ public class StartProcessOperation
         // find host and free port
         HostRecord host = instance.get().host.get();
         int port = host.runtime.get().findFreePort();
+        int jmxPort = host.runtime.get().findFreePort();
         
         // create process record
         process.set( instance.get().uow().createEntity( ProcessRecord.class, null, (ProcessRecord proto) -> {
             proto.instance.set( instance.get() );
             proto.port.set( port );
+            proto.jmxPort.set( jmxPort );
             proto.started.set( new Date() );
             return proto;
         }));

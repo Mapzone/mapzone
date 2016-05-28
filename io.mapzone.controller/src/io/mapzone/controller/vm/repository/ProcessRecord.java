@@ -35,6 +35,10 @@ public class ProcessRecord
     @Concerns( OneReaderPessimisticLocking.class )
     public Property<Integer>            port;
     
+    @Immutable
+    @Concerns( OneReaderPessimisticLocking.class )
+    public Property<Integer>            jmxPort;
+    
     @Defaults
     @Concerns( OneReaderPessimisticLocking.class )
     public Property<Date>               started;

@@ -138,7 +138,7 @@ public class JvmProjectLauncher
         String pidFile = pidFile( instance );
         
         // commandLine
-        StringBuilder commandLine = new StringBuilder( 256 );
+        StringBuilder commandLine = new StringBuilder( 512 );
         commandLine/*.append( "nohup setsid" )*/.append( javaCommand.get() );
 
         addJvmParams( commandLine, instance );
@@ -147,7 +147,7 @@ public class JvmProjectLauncher
         addAppParams( commandLine, instance );
         
         // redirect output
-        commandLine.append( " >" ).append( logFile ).append( " 2>" ).append( logFile ).append( " &" );
+        commandLine.append( " &>" ).append( logFile ).append( " &" );
 
         HostRecord host = instance.host.get();
         host.runtime.get().nohupExecute( new Script()
@@ -173,12 +173,12 @@ public class JvmProjectLauncher
             @SuppressWarnings("deprecation")
             CloseableHttpClient httpClient = new SystemDefaultHttpClient();
         ){
-            // XXX /p4
-            BasicHttpRequest request = new BasicHttpRequest( "GET", "/p4" );
+            // XXX /arena
+            BasicHttpRequest request = new BasicHttpRequest( "GET", "/arena" );
             HttpHost host = new HttpHost( instance.host.get().inetAddress.get(), instance.process.get().port.get() );
             
             // max 40x250ms => 10s
-            for (int i=0; i<40; i++) {
+            for (int i=0; i<80; i++) {
                 try (
                     CloseableHttpResponse response = httpClient.execute( host, request );
                 ){

@@ -1,14 +1,6 @@
 package io.mapzone.controller.ui.project;
 
 import static org.polymap.core.runtime.UIThreadExecutor.asyncFast;
-import io.mapzone.controller.ops.DeleteProjectOperation;
-import io.mapzone.controller.ui.CtrlPanel;
-import io.mapzone.controller.ui.util.PropertyAdapter;
-import io.mapzone.controller.um.repository.EntityChangedEvent;
-import io.mapzone.controller.um.repository.Organization;
-import io.mapzone.controller.um.repository.Project;
-import io.mapzone.controller.um.repository.ProjectRepository;
-import io.mapzone.controller.um.repository.User;
 
 import java.util.Optional;
 
@@ -47,6 +39,15 @@ import org.polymap.rhei.field.PlainValuePropertyAdapter;
 import org.polymap.rhei.form.DefaultFormPage;
 import org.polymap.rhei.form.IFormPageSite;
 import org.polymap.rhei.form.batik.BatikFormContainer;
+
+import io.mapzone.controller.ops.DeleteProjectOperation;
+import io.mapzone.controller.ui.CtrlPanel;
+import io.mapzone.controller.ui.util.PropertyAdapter;
+import io.mapzone.controller.um.repository.EntityChangedEvent;
+import io.mapzone.controller.um.repository.Organization;
+import io.mapzone.controller.um.repository.Project;
+import io.mapzone.controller.um.repository.ProjectRepository;
+import io.mapzone.controller.um.repository.User;
 
 /**
  * 
@@ -90,6 +91,21 @@ public class EditProjectPanel
         user = nested.findUser( userPrincipal.get().getName() )
                 .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) );
         nestedProject = nested.entity( selected.get() );
+        
+//        VmRepository vmrepo = null;
+//        try {
+//            vmrepo = VmRepository.newInstance();
+//            ProjectInstanceIdentifier pid = new ProjectInstanceIdentifier( nestedProject );
+//            ProjectInstanceRecord instance = vmrepo.findInstance( pid ).get();
+//
+//            ArenaLauncher.configureInstance( instance );
+//        }
+//        catch (MalformedURLException e) {
+//            throw new RuntimeException( e );
+//        }
+//        finally {
+//            vmrepo.close();
+//        }
     }
 
 

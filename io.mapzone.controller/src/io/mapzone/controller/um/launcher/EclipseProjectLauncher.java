@@ -46,16 +46,6 @@ public class EclipseProjectLauncher
         }
     };
     
-    public static final ValueInitializer<EclipseProjectLauncher> arenaDefaults = new ValueInitializer<EclipseProjectLauncher>() {
-        @Override
-        public EclipseProjectLauncher initialize( EclipseProjectLauncher proto ) throws Exception {
-            defaults.initialize( proto );
-            String uri = System.getProperty( "io.mapzone.controller.installArchiveUri", "file:///home/falko/servers/arena.tgz" );
-            proto.installArchiveUri.set( uri );
-            return proto;
-        }
-    };
-    
     
     @AppParam( "registryMultiLanguage" )
     @DefaultValue( "true" )
@@ -85,7 +75,19 @@ public class EclipseProjectLauncher
     @DefaultValue( "./data" )
     public Property<String>         data;
 
+    @JvmParam( "Dcom.sun.management.jmxremote" )
+    @DefaultValue( "true" )
+    public Property<String>         jmxRemote;
 
+    @JvmParam( "Dcom.sun.management.jmxremote.authenticate" )
+    @DefaultValue( "false" )
+    public Property<String>         jmxAuth;
+
+    @JvmParam( "Dcom.sun.management.jmxremote.ssl" )
+    @DefaultValue( "false" )
+    public Property<String>         jmxSsl;
+
+    
     @Override
     public void install( ProjectInstanceRecord instance, IProgressMonitor monitor ) throws Exception {
         super.install( instance, monitor );
@@ -99,6 +101,7 @@ public class EclipseProjectLauncher
     protected void addJvmParams( StringBuilder commandLine, ProjectInstanceRecord instance ) {
         super.addJvmParams( commandLine, instance );
         commandLine.append( " -Dorg.osgi.service.http.port=" ).append( instance.process.get().port.get() );
+        commandLine.append( " -Dcom.sun.management.jmxremote.port=" ).append( instance.process.get().jmxPort.get() );
     }
     
 }
