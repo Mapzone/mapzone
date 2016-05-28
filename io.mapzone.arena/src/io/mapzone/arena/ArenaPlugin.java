@@ -27,16 +27,12 @@ import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
 import org.osgi.framework.BundleContext;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
-
-import org.polymap.service.geoserver.jmx.GeoServerConfig;
-import org.polymap.service.geoserver.jmx.GeoServerConfigMBean;
 
 import io.mapzone.arena.jmx.ArenaConfig;
 import io.mapzone.arena.jmx.ArenaConfigMBean;
@@ -67,52 +63,71 @@ public class ArenaPlugin
         return instance().images;
     }
 
-    /**
-     * Start JMX as soon as possible.
-     */
-    static {
-        try {
-            MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
-            mbeanServer.registerMBean( new GeoServerConfig(), GeoServerConfigMBean.NAME.get() );
-            mbeanServer.registerMBean( new ArenaConfig(), ArenaConfigMBean.NAME.get() );
-        }
-        catch (Exception e) {
-            throw new RuntimeException( e );
-        }
-    }
     
 	// instance *******************************************
 	
     public SvgImageRegistryHelper   images = new SvgImageRegistryHelper( this );
 
+    private GeoServerStarter        geoServerStarter;
+
+    
+    public ArenaPlugin() {
+        // The ArenaPlugin must be started automatically at level 5 in order to
+        // make this availeable right after startup
+        try {
+            MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+            mbeanServer.registerMBean( new ArenaConfig(), ArenaConfigMBean.NAME.get() );
+            log.info( "MBeans registered." );
+        }
+        catch (Exception e) {
+            throw new RuntimeException( e );
+        }        
+    }
+    
     
     public void start( BundleContext context ) throws Exception {
         super.start( context );
         instance = this;
         
-        // test connection
-        String url = "service:jmx:rmi:///jndi/rmi://localhost:1617/jmxrmi";
-        JMXServiceURL serviceUrl = new JMXServiceURL( url );
-        try (
-            JMXConnector jmxConnector = JMXConnectorFactory.connect( serviceUrl, null );        
-        ){
-            MBeanServerConnection conn = jmxConnector.getMBeanServerConnection();
-            Set<ObjectName> beanSet = conn.queryNames( null, null );
-            beanSet.forEach( n -> log.info( "    MBean: " + n ) );
-            
-            GeoServerConfigMBean mbean = JMX.newMBeanProxy( conn, GeoServerConfigMBean.NAME.get(), GeoServerConfigMBean.class );
-            log.info( "Services: proxyUrl=" + mbean.getProxyUrl() );
-            
-            ArenaConfigMBean arenaConfig = JMX.newMBeanProxy( conn, 
-                    ArenaConfigMBean.NAME.get(), ArenaConfigMBean.class );
-            arenaConfig.setAppTitle( "Arena" );
-        } 
+        testMBeanConnection();
+
+        // register GeoServer
+        geoServerStarter = new GeoServerStarter( context );
+        geoServerStarter.open();
     }
 
 
     public void stop( BundleContext context ) throws Exception {
+        geoServerStarter.close();
         instance = null;
         super.stop( context );
+    }
+
+    
+    protected void testMBeanConnection() throws Exception {
+        // test connection
+        String port = System.getProperty( "com.sun.management.jmxremote.port" );
+        if (port != null) {
+            String url = "service:jmx:rmi:///jndi/rmi://localhost:" + port + "/jmxrmi";
+            JMXServiceURL serviceUrl = new JMXServiceURL( url );
+            try (
+                JMXConnector jmxConnector = JMXConnectorFactory.connect( serviceUrl, null );        
+            ){
+                MBeanServerConnection conn = jmxConnector.getMBeanServerConnection();
+                Set<ObjectName> beanSet = conn.queryNames( null, null );
+                beanSet.forEach( n -> log.debug( "    MBean: " + n ) );
+
+                beanSet = conn.queryNames( ArenaConfigMBean.NAME.get(), null );
+                beanSet.forEach( n -> log.debug( "    MBean: " + n ) );
+
+                ArenaConfigMBean arenaConfig = JMX.newMBeanProxy( conn, 
+                        ArenaConfigMBean.NAME.get(), ArenaConfigMBean.class );
+                arenaConfig.setAppTitle( "Arena" );
+            }
+        }
+        else {
+            log.info( "No jmxremote.port specified." );
+        }
     }
     
 }

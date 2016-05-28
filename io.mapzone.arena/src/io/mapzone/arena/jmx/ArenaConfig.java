@@ -48,6 +48,7 @@ public class ArenaConfig
 
     @Override
     public String getProxyUrl() {
+        //return "commented out";
         return GeoServerPlugin.instance().baseUrl.get();
     }
     

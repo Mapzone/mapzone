@@ -80,6 +80,7 @@
       <plugin id="org.polymap.core.mapeditor"/>
       <plugin id="org.polymap.core.project"/>
       <plugin id="org.polymap.core.recordstore"/>
+      <plugin id="org.polymap.core.style"/>
       <plugin id="org.polymap.model2"/>
       <plugin id="org.polymap.model2.store.recordstore"/>
       <plugin id="org.polymap.p4"/>
@@ -91,9 +92,11 @@
       <plugin id="org.polymap.rhei.form.batik"/>
       <plugin id="org.polymap.rhei.fulltext"/>
       <plugin id="org.polymap.rhei.um"/>
+      <plugin id="org.polymap.service.geoserver"/>
    </plugins>
 
    <configurations>
+      <plugin id="io.mapzone.arena" autoStart="true" startLevel="5" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="5" />
       <plugin id="org.eclipse.equinox.http.jetty" autoStart="true" startLevel="4" />
@@ -102,7 +105,6 @@
       <property name="eclipse.ignoreApp" value="true" />
       <property name="org.eclipse.equinox.http.jetty.context.sessioninactiveinterval" value="7200" />
       <property name="org.eclipse.rap.workbenchAutostart" value="true" />
-      <property name="osgi.classloader.singleThreadLoads" value="false" />
       <property name="osgi.noShutdown" value="true" />
    </configurations>
 
