@@ -16,6 +16,7 @@ package io.mapzone.arena;
 
 import java.util.function.Supplier;
 
+import org.geotools.styling.Style;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
@@ -26,6 +27,8 @@ import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 
+import org.polymap.core.data.feature.DefaultStyles;
+import org.polymap.core.data.feature.FeatureRenderProcessor2;
 import org.polymap.core.data.pipeline.DataSourceDescription;
 import org.polymap.core.data.pipeline.Pipeline;
 import org.polymap.core.data.pipeline.PipelineProcessor;
@@ -35,6 +38,7 @@ import org.polymap.core.project.IMap;
 import org.polymap.service.geoserver.GeoServerServlet;
 import org.polymap.service.geoserver.OnDemandServlet;
 
+import org.polymap.p4.P4Plugin;
 import org.polymap.p4.catalog.LocalResolver;
 import org.polymap.p4.data.P4PipelineIncubator;
 import org.polymap.p4.project.ProjectRepository;
@@ -49,6 +53,7 @@ public class GeoServerStarter
 
     private static Log log = LogFactory.getLog( GeoServerStarter.class );
     
+    public static final String          ALIAS = "/ows";
     
     public GeoServerStarter( BundleContext context ) {
         super( context, HttpService.class.getName(), null );
@@ -65,10 +70,9 @@ public class GeoServerStarter
 
     protected void registerGeoServer( HttpService service ) {
         IMap map = ProjectRepository.newUnitOfWork().entity( IMap.class, "root" );
-        String alias = "/services";
         Supplier<GeoServerServlet> supplier = () -> {
             try {
-                return createGeoServer( alias, map );             
+                return createGeoServer( ALIAS, map );             
             }
             catch (NoClassDefFoundError e) {
                 log.warn( "No GeoServer plugin found!", e );
@@ -79,7 +83,7 @@ public class GeoServerStarter
             }
         };
         try {
-            service.registerServlet( alias, new OnDemandServlet( supplier ), null, null );
+            service.registerServlet( ALIAS, new OnDemandServlet( supplier ), null, null );
            // service.registerServlet( alias, supplier.get(), null, null );
         }
         catch (Exception e) {
@@ -94,14 +98,30 @@ public class GeoServerStarter
             protected Pipeline createPipeline( ILayer layer,
                     Class<? extends PipelineProcessor> usecase ) throws Exception {
                 // resolve service
-                NullProgressMonitor monitor = new NullProgressMonitor();
                 DataSourceDescription dsd = LocalResolver
                         .instance()
-                        .connectLayer( layer, monitor )
+                        .connectLayer( layer, new NullProgressMonitor() )
                         .orElseThrow( () -> new RuntimeException( "No data source for layer: " + layer ) );
 
+                // get style
+                Supplier<Style> styleSupplier = () -> {
+                    String styleId = layer.styleIdentifier.get();
+                    return styleId != null
+                            ? P4Plugin.styleRepo().serializedFeatureStyle( styleId, Style.class ).get()
+                            : new DefaultStyles().createAllStyle();
+                };
+
                 // create pipeline for it
-                return P4PipelineIncubator.forLayer( layer ).newPipeline( usecase, dsd, null );
+                return P4PipelineIncubator.forLayer( layer )
+                        .addProperty( FeatureRenderProcessor2.STYLE_SUPPLIER, styleSupplier )
+                        .newPipeline( usecase, dsd, null );
+            }
+            @Override
+            public String createSLD( ILayer layer ) {
+                String styleId = layer.styleIdentifier.get();
+                return styleId != null
+                        ? P4Plugin.styleRepo().serializedFeatureStyle( styleId, String.class ).get()
+                        : null; //new DefaultStyles().createAllStyle();
             }
         };
     }
