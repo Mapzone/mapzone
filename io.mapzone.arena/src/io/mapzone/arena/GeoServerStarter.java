@@ -14,6 +14,8 @@
  */
 package io.mapzone.arena;
 
+import java.util.EventObject;
+import java.util.List;
 import java.util.function.Supplier;
 
 import org.geotools.styling.Style;
@@ -34,6 +36,11 @@ import org.polymap.core.data.pipeline.Pipeline;
 import org.polymap.core.data.pipeline.PipelineProcessor;
 import org.polymap.core.project.ILayer;
 import org.polymap.core.project.IMap;
+import org.polymap.core.project.ProjectNode.ProjectNodeCommittedEvent;
+import org.polymap.core.runtime.event.Event.Scope;
+import org.polymap.core.runtime.event.EventHandler;
+import org.polymap.core.runtime.event.EventManager;
+import org.polymap.core.style.model.FeatureStyleCommitedEvent;
 
 import org.polymap.service.geoserver.GeoServerServlet;
 import org.polymap.service.geoserver.OnDemandServlet;
@@ -44,7 +51,8 @@ import org.polymap.p4.data.P4PipelineIncubator;
 import org.polymap.p4.project.ProjectRepository;
 
 /**
- * 
+ * Track {@link HttpService} instances and register {@link OnDemandServlet} with
+ * {@link GeoServerServlet} when found.
  *
  * @author Falko Bräutigam
  */
@@ -54,6 +62,9 @@ public class GeoServerStarter
     private static Log log = LogFactory.getLog( GeoServerStarter.class );
     
     public static final String          ALIAS = "/ows";
+
+    private OnDemandServlet             onDemandServlet;
+    
     
     public GeoServerStarter( BundleContext context ) {
         super( context, HttpService.class.getName(), null );
@@ -69,9 +80,9 @@ public class GeoServerStarter
 
 
     protected void registerGeoServer( HttpService service ) {
-        IMap map = ProjectRepository.newUnitOfWork().entity( IMap.class, "root" );
         Supplier<GeoServerServlet> supplier = () -> {
             try {
+                IMap map = ProjectRepository.newUnitOfWork().entity( IMap.class, "root" );
                 return createGeoServer( ALIAS, map );             
             }
             catch (NoClassDefFoundError e) {
@@ -83,11 +94,33 @@ public class GeoServerStarter
             }
         };
         try {
-            service.registerServlet( ALIAS, new OnDemandServlet( supplier ), null, null );
+            assert onDemandServlet == null;
+            onDemandServlet = new OnDemandServlet( supplier );
+            service.registerServlet( ALIAS, onDemandServlet, null, null );
            // service.registerServlet( alias, supplier.get(), null, null );
+            
+            EventManager.instance().subscribe( GeoServerStarter.this, ev ->
+                    ev instanceof ProjectNodeCommittedEvent ||
+                    ev instanceof FeatureStyleCommitedEvent );
         }
         catch (Exception e) {
             throw new RuntimeException( e );
+        }
+    }
+    
+    
+    @Override
+    public void close() {
+        EventManager.instance().unsubscribe( this );
+        super.close();
+    }
+
+
+    @EventHandler( delay=100, scope=Scope.JVM )
+    protected void projectChanged( List<EventObject> evs ) {
+        if (onDemandServlet != null) {
+            onDemandServlet.destroyDelegate();
+            log.info( "Delegate destroyed." );
         }
     }
     
