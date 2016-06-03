@@ -120,7 +120,6 @@ public class GeoServerStarter
     protected void projectChanged( List<EventObject> evs ) {
         if (onDemandServlet != null) {
             onDemandServlet.destroyDelegate();
-            log.info( "Delegate destroyed." );
         }
     }
     

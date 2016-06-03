@@ -78,6 +78,7 @@ import com.vividsolutions.jts.geom.Point;
  * 
  * @author Steffen Stundzig
  */
+@SuppressWarnings( "hiding" )
 public class OrgPersonSplitTableRefineFunction implements RefineFunction {
 
     private static Log log = LogFactory.getLog(OrgPersonSplitTableRefineFunction.class);
@@ -105,7 +106,7 @@ public class OrgPersonSplitTableRefineFunction implements RefineFunction {
     }
 
     @Override
-    public void init(@SuppressWarnings( "hiding" ) Context<IMap> map) {
+    public void init( Context<IMap> map) {
         this.map = map;
         this.locations = new Properties();
         try {
