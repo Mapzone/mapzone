@@ -198,7 +198,7 @@ public class GraphStreamGraph
                     currentStep++;
                     layout.compute();
                 }
-                log.info( "step:quality:stabilization" + layout.getSteps() + ":" + layout.getQuality() + ":"
+                log.info( "step:quality:stabilization " + layout.getSteps() + ":" + layout.getQuality() + ":"
                         + layout.getStabilization() );
                 UIThreadExecutor.syncFast( () -> {
 //                    viewer.disableAutoLayout();

@@ -16,9 +16,6 @@ package io.mapzone.arena.analytics.graph.algo;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.gephi.graph.GraphControllerImpl;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
@@ -28,6 +25,7 @@ import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDirection;
 import org.gephi.io.importer.api.EdgeDraft;
+import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.impl.ImportContainerFactoryImpl;
 import org.gephi.io.importer.impl.ImportControllerImpl;
 import org.gephi.io.processor.plugin.AppendProcessor;
@@ -38,6 +36,13 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.impl.ProjectControllerImpl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.google.common.collect.Maps;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import org.polymap.core.runtime.UIJob;
 import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.ui.StatusDispatcher;
@@ -46,8 +51,6 @@ import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
 import org.polymap.rap.openlayers.types.Coordinate;
 import org.polymap.rap.openlayers.types.Extent;
-
-import com.google.common.collect.Maps;
 
 import io.mapzone.arena.analytics.graph.GraphFunction;
 import io.mapzone.arena.analytics.graph.GraphUI;
@@ -107,7 +110,7 @@ public class GephiGraph
     public void addOrUpdateNode( final io.mapzone.arena.analytics.graph.Node node ) {
         if (!nodes.containsKey( node.key() )) {
             nodes.put( node.key(), node );
-            addNode( node.key() );
+            addNode( node.key(), node.name() );
             graphUi.addNode( node );
         }
     }
@@ -146,20 +149,22 @@ public class GephiGraph
             if (line == null) {
                 // add original
                 edges.put( edge.key(), edge );
-                addEdge( edge.key(), edge.nodeA().key(), edge.nodeB().key() );
+                addEdge( edge.key(), edge.nodeA().key(), edge.nodeB().key(), edge.name() );
                 graphUi.addEdge( edge );
             }
         }
     }
 
 
-    private void addNode( String id ) {
+    private void addNode( String id, String name ) {
         ContainerLoader loader = getContainer().getLoader();
-        loader.addNode( loader.factory().newNodeDraft( id ) );
+        NodeDraft node = loader.factory().newNodeDraft( id );
+        node.setLabel( name );
+        loader.addNode( node );
     }
 
 
-    private void addEdge( String id, String srcId, String targetId ) {
+    private void addEdge( String id, String srcId, String targetId, String name ) {
         ContainerLoader loader = getContainer().getLoader();
         EdgeDraft edge = loader.factory().newEdgeDraft( id );
         edge.setSource( loader.getNode( srcId ) );
@@ -168,6 +173,7 @@ public class GephiGraph
         if (edge.getSource() == null || edge.getTarget() == null) {
             throw new RuntimeException("empty edge endpoint not supported");
         }
+        edge.setLabel( name );
         loader.addEdge( edge );
     }
 
@@ -185,7 +191,9 @@ public class GephiGraph
             layout = new ForceAtlas2( null );
             layout.setGraphModel( graphModel );
             layout.resetPropertiesValues();
-            layout.setOutboundAttractionDistribution( true );
+            layout.setStrongGravityMode( true );
+            layout.setOutboundAttractionDistribution( false );
+            layout.setThreadsCount( 3 );
             layout.setEdgeWeightInfluence( 1.0d );
             layout.setGravity( 1.0 );
             layout.setJitterTolerance( 1.0 );
@@ -201,6 +209,9 @@ public class GephiGraph
     public void layout() {
         try {
             importController.process( getContainer(), processor, workspace );
+            // new ExportControllerImpl().exportFile( new File(
+            // "/Users/stundzig/gephi_" + System.currentTimeMillis()
+            // + ".gexf" ), workspace );
             UIJob job = new UIJob( "Layout graph") {
 
                 @Override
