@@ -196,7 +196,8 @@ public class ProjectInfoPanel
         authToken.ifPresent( t -> text.setText( t.toString() ) );
         //text.setBackground( text.getParent().getBackground() );
         
-        Button createBtn = tk().createButton( section.getBody(), "Create new token" );
+        Button createBtn = tk().createButton( section.getBody(), "New token" );
+        createBtn.setToolTipText( "Creates a new token and <b>discards</b> the old one.<br/>Update/save project afterwards to <b>activate</b> the new token." );
         createBtn.addSelectionListener( new SelectionAdapter() {
             @Override
             public void widgetSelected( SelectionEvent ev ) {
@@ -206,9 +207,9 @@ public class ProjectInfoPanel
             }
         });
 
-        on( msg ).fill().noBottom().control();
-        on( text ).fill().top( msg ).noBottom().control();
-        on( createBtn ).fill().top( text );
+        on( msg ).fill().noBottom();
+        on( createBtn ).top( msg ).right( 100 );
+        on( text ).top( msg, 1 ).left( 0 ).right( createBtn );
     }
 
 
