@@ -38,6 +38,7 @@ import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
 import io.mapzone.controller.provision.ProvisionRuntimeException;
 import io.mapzone.controller.um.repository.LoginCookie;
+import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.User;
 
 /**
@@ -64,9 +65,13 @@ public class LoginProvision
     
     @Override
     public boolean init( Provision failed, Status cause ) {
-        return failed instanceof ForwardRequest
-                && cause == null
-                && !checked.isPresent();
+        // check only UI requests (skip rwt-resources/generated/) in order to
+        // not do UI login for service/API requests (/ows, /webdav)
+        // XXX use Project#servletAlias
+        return request.get().getPathInfo().endsWith( Project.DEFAULT_SERVLET_ALIAS ) &&
+                failed instanceof ForwardRequest &&
+                cause == null &&
+                !checked.isPresent();
     }
 
     

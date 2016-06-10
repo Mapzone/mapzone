@@ -45,6 +45,7 @@ import org.polymap.model2.Property;
 import org.polymap.model2.PropertyConcernAdapter;
 import org.polymap.model2.runtime.PropertyInfo;
 
+import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.vm.repository.HostRecord;
 import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
 import io.mapzone.controller.vm.runtime.Script;
@@ -173,8 +174,8 @@ public class JvmProjectLauncher
             @SuppressWarnings("deprecation")
             CloseableHttpClient httpClient = new SystemDefaultHttpClient();
         ){
-            // XXX /arena
-            BasicHttpRequest request = new BasicHttpRequest( "GET", "/arena" );
+            // XXX use Project#servletAlias
+            BasicHttpRequest request = new BasicHttpRequest( "GET", Project.DEFAULT_SERVLET_ALIAS );
             HttpHost host = new HttpHost( instance.host.get().inetAddress.get(), instance.process.get().port.get() );
             
             // max 40x250ms => 10s

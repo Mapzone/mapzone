@@ -31,9 +31,9 @@ public abstract class HttpProxyProvision
     
     protected Context<HttpResponse>         proxyResponse;
 
-    Context<VmRepository>           vmRepo;
+    Context<VmRepository>                   vmRepo;
     
-    Context<ProjectRepository>      projectRepo;
+    Context<ProjectRepository>              projectRepo;
     
 
     public VmRepository vmRepo() {

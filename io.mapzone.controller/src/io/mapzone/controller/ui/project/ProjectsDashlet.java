@@ -215,7 +215,7 @@ public class ProjectsDashlet
             public void open( OpenEvent ev ) {
                 SelectionAdapter.on( ev.getSelection() ).forEach( elm -> {
                     selected.set( (Project)elm );
-                    BatikApplication.instance().getContext().openPanel( getSite().panelSite().getPath(), EditProjectPanel.ID );                        
+                    BatikApplication.instance().getContext().openPanel( getSite().panelSite().getPath(), ProjectInfoPanel.ID );                        
                 });
             }
         } );

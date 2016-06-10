@@ -58,6 +58,7 @@ public class ProxyServlet
     /** The provisions to be handled before {@link ForwardRequest} to the instance. */
     private static final Class[]    forwardRequestProvisions = {
             LoginProvision.class,
+            ServiceAuthProvision.class,
             ProcessStarted.class, 
             ProcessRunning.class, 
             MaxProcesses.class };

@@ -62,10 +62,10 @@ import org.polymap.rhei.form.batik.BatikFormContainer;
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-public class EditUserPanel
+public class UserInfoPanel
         extends CtrlPanel {
 
-    private static Log log = LogFactory.getLog( EditUserPanel.class );
+    private static Log log = LogFactory.getLog( UserInfoPanel.class );
 
     public static final PanelIdentifier ID = PanelIdentifier.parse( "editUser" );
     

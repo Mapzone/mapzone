@@ -92,11 +92,11 @@
             id="io.mapzone.controller.CreateProjectPanel">
       </panel>
       <panel
-            class="io.mapzone.controller.ui.project.EditProjectPanel"
+            class="io.mapzone.controller.ui.project.ProjectInfoPanel"
             id="io.mapzone.controller.EditProjectPanel">
       </panel>
       <panel
-            class="io.mapzone.controller.ui.user.EditUserPanel"
+            class="io.mapzone.controller.ui.user.UserInfoPanel"
             id="io.mapzone.controller.EditUserPanel">
       </panel>
       <panel

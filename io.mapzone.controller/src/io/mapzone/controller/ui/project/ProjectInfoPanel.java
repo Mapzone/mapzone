@@ -1,7 +1,9 @@
 package io.mapzone.controller.ui.project;
 
 import static org.polymap.core.runtime.UIThreadExecutor.asyncFast;
+import static org.polymap.core.ui.FormDataFactory.on;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.logging.Log;
@@ -12,10 +14,13 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 
 import org.polymap.core.operation.DefaultOperation;
@@ -24,6 +29,7 @@ import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.security.UserPrincipal;
 import org.polymap.core.ui.ColumnLayoutFactory;
+import org.polymap.core.ui.FormLayoutFactory;
 import org.polymap.core.ui.StatusDispatcher;
 
 import org.polymap.rhei.batik.Context;
@@ -33,6 +39,7 @@ import org.polymap.rhei.batik.PanelPath;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
+import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 import org.polymap.rhei.field.FormFieldEvent;
 import org.polymap.rhei.field.IFormFieldListener;
 import org.polymap.rhei.field.PlainValuePropertyAdapter;
@@ -43,6 +50,7 @@ import org.polymap.rhei.form.batik.BatikFormContainer;
 import io.mapzone.controller.ops.DeleteProjectOperation;
 import io.mapzone.controller.ui.CtrlPanel;
 import io.mapzone.controller.ui.util.PropertyAdapter;
+import io.mapzone.controller.um.repository.AuthToken;
 import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.Organization;
 import io.mapzone.controller.um.repository.Project;
@@ -54,10 +62,10 @@ import io.mapzone.controller.um.repository.User;
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-public class EditProjectPanel
+public class ProjectInfoPanel
         extends CtrlPanel {
 
-    private static Log log = LogFactory.getLog( EditProjectPanel.class );
+    private static Log log = LogFactory.getLog( ProjectInfoPanel.class );
 
     public static final PanelIdentifier ID = PanelIdentifier.parse( "editProject" );
     
@@ -125,11 +133,9 @@ public class EditProjectPanel
 //                .showName.put( false )
 //                .tooltipText.put( "Remove this project altogether" ) );
         
-        // form
-        IPanelSection formSection = tk().createPanelSection( parent, "Basic settings" );
-        formSection.addConstraint( new MinWidthConstraint( 350, 1 ) );
-        form = new BatikFormContainer( new ProjectForm() );
-        form.createContents( formSection.getBody() );
+        createFormSection( parent );
+        createAuthSection( parent );
+        createDeleteSection( parent );
 
         // FAB
         fab = tk().createFab();
@@ -167,10 +173,50 @@ public class EditProjectPanel
                 }));
             }
         });
+    }
+
+
+    protected void createFormSection( Composite parent ) {
+        IPanelSection section = tk().createPanelSection( parent, "Basic settings" );
+        section.addConstraint( new PriorityConstraint( 10 ), new MinWidthConstraint( 350, 1 ) );
+        form = new BatikFormContainer( new ProjectForm() );
+        form.createContents( section.getBody() );
+    }
+
+
+    protected void createAuthSection( Composite parent ) {
+        IPanelSection section = tk().createPanelSection( parent, "API token" );
+        section.addConstraint( new PriorityConstraint( 1 ), new MinWidthConstraint( 350, 1 ) );
+        section.getBody().setLayout( FormLayoutFactory.defaults().margins( 3 ).spacing( 5 ).create() );
         
+        Label msg = tk().createLabel( section.getBody(), "This token ..." );
+        
+        Optional<AuthToken> authToken = nestedProject.serviceAuthToken();
+        Text text = tk().createText( section.getBody(), "<No auth token>", SWT.BORDER, SWT.READ_ONLY );
+        authToken.ifPresent( t -> text.setText( t.toString() ) );
+        //text.setBackground( text.getParent().getBackground() );
+        
+        Button createBtn = tk().createButton( section.getBody(), "Create new token" );
+        createBtn.addSelectionListener( new SelectionAdapter() {
+            @Override
+            public void widgetSelected( SelectionEvent ev ) {
+                AuthToken newToken = nestedProject.newServiceAuthToken( new NullProgressMonitor() );
+                text.setText( newToken.toString() );
+                updateEnabled();
+            }
+        });
+
+        on( msg ).fill().noBottom().control();
+        on( text ).fill().top( msg ).noBottom().control();
+        on( createBtn ).fill().top( text );
+    }
+
+
+    protected void createDeleteSection( Composite parent ) {
         // delete project
-        IPanelSection deleteSection = tk().createPanelSection( parent, "Danger zone" );
-        Button deleteBtn = tk().createButton( deleteSection.getBody(), "Destroy this project", SWT.PUSH );
+        IPanelSection section = tk().createPanelSection( parent, "Danger zone" );
+        section.addConstraint( new PriorityConstraint( 0 ), new MinWidthConstraint( 350, 1 ) );
+        Button deleteBtn = tk().createButton( section.getBody(), "Destroy this project", SWT.PUSH );
         deleteBtn.setToolTipText( "Delete everything!<br/><b>There is no way to get the data back!</b>" );
         deleteBtn.addSelectionListener( new SelectionAdapter() {
             @Override
@@ -197,7 +243,9 @@ public class EditProjectPanel
 
     
     protected void updateEnabled() {
-        fab.setVisible( form.isDirty() && form.isValid() );
+        fab.setVisible( 
+                form.isDirty() && form.isValid() ||
+                !Objects.equals( selected.get().serviceAuthToken.get(), nestedProject.serviceAuthToken.get() ) );
     }
     
     
