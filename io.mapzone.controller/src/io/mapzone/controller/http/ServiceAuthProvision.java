@@ -62,8 +62,6 @@ public class ServiceAuthProvision
     
     @Override
     public Status execute() throws Exception {
-        log.info( "Service request: " + request.get().getPathInfo() );
-        
         checked.set( this );
         
         // find request token
@@ -84,7 +82,6 @@ public class ServiceAuthProvision
         if (!valid) {
             throw new HttpProvisionRuntimeException( 401, "Given auth token is not valid for this project." );
         }
-        
         return OK_STATUS;
     }
 
@@ -116,8 +113,7 @@ public class ServiceAuthProvision
                         pid.equals( ((CacheKey)other).pid );
             }
             return false;
-        }
-        
+        }        
     }
     
 }
