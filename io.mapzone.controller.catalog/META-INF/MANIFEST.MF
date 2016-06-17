@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Mapzone Catalog
+Bundle-SymbolicName: io.mapzone.controller.catalog;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: mapzone.io
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.polymap.core;bundle-version="4.0.0",
+ org.polymap.model2;bundle-version="3.0.0",
+ org.eclipse.equinox.http.registry;bundle-version="1.1.300",
+ org.polymap.core.recordstore,
+ org.polymap.model2.store.recordstore
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: io.mapzone.controller.catalog.CatalogPlugin
