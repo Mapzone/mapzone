@@ -14,6 +14,9 @@
  */
 package io.mapzone.controller.catalog.model;
 
+import static io.mapzone.controller.catalog.csw.Namespaces.DC;
+import static io.mapzone.controller.catalog.csw.Namespaces.DCT;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -47,7 +50,7 @@ public class CatalogCoreEntry
     
     public static final ValueInitializer<CatalogCoreEntry> defaults = (CatalogCoreEntry proto) -> {
         proto.identifier.set( UUID.randomUUID().toString() );
-        proto.date.set( new Date() );
+        proto.modified.set( new Date() );
         return proto;
     };
 
@@ -57,6 +60,7 @@ public class CatalogCoreEntry
      * A unique reference to the record within the catalogue.
      */
     @Queryable
+    @XML( namespace=DC )
     @OGCQueryable( "Identifier" )
     public Property<String>         identifier;
     
@@ -64,6 +68,7 @@ public class CatalogCoreEntry
      * A name given to the resource. Also known as “Name”.
      */
     @Queryable
+    @XML( namespace=DC )
     @OGCQueryable( "Title" )
     public Property<String>         title;
 
@@ -78,6 +83,7 @@ public class CatalogCoreEntry
      */
     @MinOccurs( 0 )
     @Queryable
+    @XML( namespace=DC )
     @OGCQueryable( "Subject" )
     public CollectionProperty<String> subject;
     
@@ -87,6 +93,7 @@ public class CatalogCoreEntry
      */
     @Nullable
     @Queryable
+    @XML( namespace=DCT )
     @OGCQueryable( "Abstract" )
     public Property<String>         description;
     
@@ -108,14 +115,16 @@ public class CatalogCoreEntry
      */
     @Nullable
     @Queryable
+    @XML( namespace=DCT )
     @OGCQueryable( "Modified" )
-    public Property<Date>           date;
+    public Property<Date>           modified;
     
     /**
      * The nature or genre of the content of the resource.
      */
     @Nullable
     @Queryable
+    @XML( namespace=DC )
     @OGCQueryable( "Type" )
     @DefaultValue( "Service" )
     public Property<String>         type;

@@ -38,17 +38,33 @@ public class GetRecordsResponse
     
     @Override
     protected void doExecute() throws Exception {
-        try (
-            UnitOfWork uow = CatalogPlugin.instance().repo().newUnitOfWork()
-        ){
-            // query
-            ResultSet<CatalogEntry> rs = uow.query( CatalogEntry.class ).execute();
+        // query
+        UnitOfWork uow = CatalogPlugin.instance().catalog().unitOfWork();
+        ResultSet<CatalogEntry> rs = uow.query( CatalogEntry.class ).execute();
 
-            // output
-            for (CatalogEntry entry : rs) {
-                new SummaryRecordWriter( out() ).process( entry );
-            }
+        // GetRecordsResponse
+        out().writeStartElement( "csw", "GetRecordsResponse", Namespaces.CSW  );
+        out().writeNamespace( "xml", Namespaces.XML );
+        out().writeNamespace( "csw", Namespaces.CSW );
+        out().writeNamespace( "dc", Namespaces.DC );
+        out().writeNamespace( "dct", Namespaces.DCT );
+        
+        // SearchResults
+        out().writeStartElement( "csw", "SearchResults", Namespaces.CSW );
+        String resultSize = Integer.toString( rs.size() );
+        out().writeAttribute( "numberOfRecordsMatched", resultSize );
+        out().writeAttribute( "numberOfRecordsReturned", resultSize );
+        out().writeAttribute( "nextRecord", "0" );
+        out().writeAttribute( "recordSchema", Namespaces.CSW );  // ?
+        out().writeAttribute( "elementSet", "full" );  // ?
+        
+        // records
+        for (CatalogEntry entry : rs) {
+            new SummaryRecordWriter( out() ).process( entry );
         }
+        
+        out().writeEndElement();
+        out().writeEndElement();
     }
 
 }

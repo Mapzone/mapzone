@@ -21,8 +21,6 @@ import org.osgi.framework.BundleContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.polymap.model2.runtime.EntityRepository;
-
 /**
  * 
  *
@@ -44,9 +42,9 @@ public class CatalogPlugin
     
     // instance *******************************************
     
-    private BundleContext           context;
+    private BundleContext               context;
     
-    private EntityRepository        repo;
+    private CatalogRepositoryContext    catalog;
     
 
     @Override
@@ -54,8 +52,8 @@ public class CatalogPlugin
         this.context = context;
         instance = this;
         
-        repo = CatalogRepositoryConfig.initRepo();
-        CatalogRepositoryConfig.createTestData( repo );
+        catalog = new CatalogRepositoryContext();
+        catalog.createTestData();
     }
 
 
@@ -66,9 +64,12 @@ public class CatalogPlugin
     }
 
     
-    public EntityRepository repo() {
-        assert repo != null;
-        return repo;
+    /**
+     * The one and only catalog instance of the plugin.
+     */
+    public CatalogRepositoryContext catalog() {
+        assert catalog != null;
+        return catalog;
     }
 
 

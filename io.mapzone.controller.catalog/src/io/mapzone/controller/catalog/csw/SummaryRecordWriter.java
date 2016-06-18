@@ -14,6 +14,10 @@
  */
 package io.mapzone.controller.catalog.csw;
 
+import static io.mapzone.controller.catalog.csw.Namespaces.CSW;
+import static io.mapzone.controller.catalog.csw.Namespaces.DC;
+import static io.mapzone.controller.catalog.csw.Namespaces.DCT;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -33,14 +37,13 @@ public class SummaryRecordWriter
     private static Log log = LogFactory.getLog( SummaryRecordWriter.class );
 
     public SummaryRecordWriter( XMLStreamWriter out ) {
-        super( out );
+        super( out, DC, DCT );
     }
 
     
     @Override
     public void process( Composite composite ) throws XMLStreamException {
-        out().writeStartElement( "SummaryRecord" );
-        out().writeDefaultNamespace( "http://www.opengis.net/cat/csw/2.0.2" );
+        out().writeStartElement( CSW, "SummaryRecord" );
         super.process( composite );
         out().writeEndElement();
     }

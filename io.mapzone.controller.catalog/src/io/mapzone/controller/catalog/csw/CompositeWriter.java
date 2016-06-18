@@ -15,6 +15,7 @@
 package io.mapzone.controller.catalog.csw;
 
 import java.util.Date;
+import java.util.Set;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,10 +26,12 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.google.common.collect.Sets;
+
 import org.polymap.model2.Property;
 import org.polymap.model2.runtime.CompositeStateVisitor;
 
-import io.mapzone.controller.catalog.model.OGCQueryable;
+import io.mapzone.controller.catalog.model.XML;
 
 /**
  * 
@@ -42,9 +45,13 @@ public abstract class CompositeWriter
 
     private XMLStreamWriter         out;
     
+    /** The XML prefixes (see {@link XML}) to write out. */
+    private Set<String>             namespaces;
     
-    public CompositeWriter( XMLStreamWriter out ) {
+    
+    public CompositeWriter( XMLStreamWriter out, String... namespaces ) {
         this.out = out;
+        this.namespaces = Sets.newHashSet( namespaces );
     }
 
     
@@ -55,9 +62,10 @@ public abstract class CompositeWriter
     
     @Override
     protected void visitProperty( Property prop ) throws XMLStreamException {
-        OGCQueryable ogc = (OGCQueryable)prop.info().getAnnotation( OGCQueryable.class );
-        if (ogc != null) {
-            out().writeStartElement( ogc.value() );
+        XML xml = (XML)prop.info().getAnnotation( XML.class );
+        if (xml != null && namespaces.contains( xml.namespace() )) {
+            String name = xml.value().equals( XML.DEFAULT ) ? prop.info().getName() : xml.value();
+            out().writeStartElement( xml.namespace(), name );
             out().writeCharacters( encodedValue( prop.get() ) );
             out().writeEndElement();
         }
