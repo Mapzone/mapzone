@@ -285,7 +285,7 @@ public class GraphPanel
         public NodeStylerItem( ItemContainer container ) {
             super( container );
             // XXX we need a text icon here
-            icon.set( P4Plugin.images().svgImage( "brush.svg", P4Plugin.TOOLBAR_ICON_CONFIG ) );
+            icon.set( P4Plugin.images().svgImage( "palette.svg", P4Plugin.TOOLBAR_ICON_CONFIG ) );
             tooltip.set( i18n.get( "nodeStylerTooltip" ) );
             action.set( ev -> {
                 if (!site().memento().optString( NODE_STYLE_IDENTIFIER ).isPresent()) {
@@ -309,7 +309,7 @@ public class GraphPanel
         public EdgeStylerItem( ItemContainer container ) {
             super( container );
             // XXX we need a text icon here
-            icon.set( P4Plugin.images().svgImage( "brush.svg", P4Plugin.TOOLBAR_ICON_CONFIG ) );
+            icon.set( P4Plugin.images().svgImage( "palette.svg", P4Plugin.TOOLBAR_ICON_CONFIG ) );
             tooltip.set( i18n.get( "edgeStylerTooltip" ) );
             action.set( ev -> {
                 if (!site().memento().optString( EDGE_STYLE_IDENTIFIER ).isPresent()) {
