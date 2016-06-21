@@ -239,7 +239,7 @@ public class OrgPersonSplitTableRefineFunction implements RefineFunction {
     private void addLayerAndStore(final DefaultFeatureCollection features) throws IOException {
         store(features);
         FeatureStyle featureStyle = P4Plugin.styleRepo().newFeatureStyle();
-        DefaultStyle.createAllStyle(featureStyle);
+        DefaultStyle.createAllStyles(featureStyle);
         // log.info( "FeatureStyle.id: " + featureStyle.id() );
         featureStyle.store();
 

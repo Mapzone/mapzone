@@ -138,19 +138,6 @@ public class GraphPanel
     public void init() {
         site().title.set( i18n.get( "title" ) );
         site().preferredWidth.set( 650 );
-        if (!site().memento().optString( NODE_STYLE_IDENTIFIER ).isPresent()) {
-            FeatureStyle featureStyle = P4Plugin.styleRepo().newFeatureStyle();
-            DefaultStyle.fillPointStyle( featureStyle );
-            DefaultStyle.fillTextStyle( featureStyle );
-            featureStyle.store();
-            site().memento().putString( NODE_STYLE_IDENTIFIER, featureStyle.id() );
-        }
-        if (!site().memento().optString( EDGE_STYLE_IDENTIFIER ).isPresent()) {
-            FeatureStyle featureStyle = P4Plugin.styleRepo().newFeatureStyle();
-            DefaultStyle.fillLineStyle( featureStyle );
-            featureStyle.store();
-            site().memento().putString( EDGE_STYLE_IDENTIFIER, featureStyle.id() );
-        }
     }
 
 
@@ -297,13 +284,22 @@ public class GraphPanel
             super( container );
             // XXX we need a text icon here
             icon.set( P4Plugin.images().svgImage( "brush.svg", P4Plugin.TOOLBAR_ICON_CONFIG ) );
-            tooltip.set(  i18n.get( "nodeStylerTooltip" ) );
+            tooltip.set( i18n.get( "nodeStylerTooltip" ) );
             action.set( ev -> {
+                if (!site().memento().optString( NODE_STYLE_IDENTIFIER ).isPresent()) {
+                    FeatureStyle featureStyle = P4Plugin.styleRepo().newFeatureStyle();
+                    DefaultStyle.fillPointStyle( featureStyle );
+                    TextStyle textStyle = DefaultStyle.fillTextStyle( featureStyle, null );
+                    textStyle.property.createValue( PropertyString.defaults( "name" ) );
+                    featureStyle.store();
+                    site().memento().putString( NODE_STYLE_IDENTIFIER, featureStyle.id() );
+                }
                 styleEditorInput.set( new StyleEditorInput( site().memento().getString( NODE_STYLE_IDENTIFIER ), graphLayerProvider.graphUi().nodeSchema() ) );
                 getContext().openPanel( site().path(), LayerStylePanel.ID );
             } );
         }
     }
+
 
     class EdgeStylerItem
             extends ActionItem {
@@ -312,9 +308,15 @@ public class GraphPanel
             super( container );
             // XXX we need a text icon here
             icon.set( P4Plugin.images().svgImage( "brush.svg", P4Plugin.TOOLBAR_ICON_CONFIG ) );
-            tooltip.set(  i18n.get( "edgeStylerTooltip" ) );
+            tooltip.set( i18n.get( "edgeStylerTooltip" ) );
             action.set( ev -> {
-                styleEditorInput.set( new StyleEditorInput( site().memento().getString( EDGE_STYLE_IDENTIFIER ), graphLayerProvider.graphUi().nodeSchema() ) );
+                if (!site().memento().optString( EDGE_STYLE_IDENTIFIER ).isPresent()) {
+                    FeatureStyle featureStyle = P4Plugin.styleRepo().newFeatureStyle();
+                    DefaultStyle.fillLineStyle( featureStyle );
+                    featureStyle.store();
+                    site().memento().putString( EDGE_STYLE_IDENTIFIER, featureStyle.id() );
+                }
+                styleEditorInput.set( new StyleEditorInput( site().memento().getString( EDGE_STYLE_IDENTIFIER ), graphLayerProvider.graphUi().edgeSchema() ) );
                 getContext().openPanel( site().path(), LayerStylePanel.ID );
             } );
         }
