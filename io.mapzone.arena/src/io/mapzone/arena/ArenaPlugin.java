@@ -69,6 +69,8 @@ public class ArenaPlugin
     public SvgImageRegistryHelper   images = new SvgImageRegistryHelper( this );
 
     private GeoServerStarter        geoServerStarter;
+    
+    private ArenaConfig             config = new ArenaConfig();
 
     
     public ArenaPlugin() {
@@ -76,7 +78,7 @@ public class ArenaPlugin
         // make this availeable right after startup
         try {
             MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
-            mbeanServer.registerMBean( new ArenaConfig(), ArenaConfigMBean.NAME.get() );
+            mbeanServer.registerMBean( config, ArenaConfigMBean.NAME.get() );
             log.info( "MBeans registered." );
         }
         catch (Exception e) {
@@ -84,6 +86,11 @@ public class ArenaPlugin
         }        
     }
     
+    
+    public ArenaConfig config() {
+        return config;
+    }
+
     
     public void start( BundleContext context ) throws Exception {
         super.start( context );
