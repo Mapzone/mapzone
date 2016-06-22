@@ -14,6 +14,9 @@
  */
 package io.mapzone.arena.csw;
 
+import java.util.Iterator;
+import javax.xml.bind.JAXBElement;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -24,7 +27,9 @@ import org.polymap.core.runtime.config.Config2;
 import org.polymap.core.runtime.config.DefaultString;
 import org.polymap.core.runtime.config.Mandatory;
 
+import net.opengis.cat.csw.v_2_0_2.AbstractRecordType;
 import net.opengis.cat.csw.v_2_0_2.GetRecordsResponseType;
+import net.opengis.cat.csw.v_2_0_2.SearchResultsType;
 import net.opengis.cat.csw.v_2_0_2.SummaryRecordType;
 
 /**
@@ -33,9 +38,21 @@ import net.opengis.cat.csw.v_2_0_2.SummaryRecordType;
  * @author Falko Bräutigam
  */
 public class GetRecordsRequest
-        extends CswRequest<ResultSet<SummaryRecordType>> {
+        extends CswRequest<GetRecordsRequest.ResultSet<SummaryRecordType>> {
 
-    private static Log log = LogFactory.getLog( GetRecordsRequest.class );
+    private static final Log log = LogFactory.getLog( GetRecordsRequest.class );
+    
+    /**
+     * 
+     */
+    public static interface ResultSet<T>
+            extends Iterable<T>, AutoCloseable {
+
+        public abstract int size();
+
+        @Override
+        public void close();
+    }
     
     /**
      * Inbound: 
@@ -76,14 +93,6 @@ public class GetRecordsRequest
     @DefaultString( "results" )
     public Config2<GetRecordsRequest,String>    resultType;
             
-//    /**
-//     * Inbound: 
-//     */
-//    @Mandatory
-//    @RequestParam( "queryString" )
-//    public Config2<GetRecordsRequest,String>    queryString;
-
-    
     
     public GetRecordsRequest() {
         super();
@@ -94,10 +103,35 @@ public class GetRecordsRequest
     @Override
     public ResultSet<SummaryRecordType> execute( IProgressMonitor monitor ) throws Exception {
         String url = baseUrl.get() + encodeRequestParams( assembleParams() );
-        log.info( url );
         GetRecordsResponseType response = read( GetRecordsResponseType.class, url );
-        System.out.println( response );
-        return null;
+        
+        return new ResultSet<SummaryRecordType>() {
+            SearchResultsType results = response.getSearchResults();
+            Iterator<JAXBElement<? extends AbstractRecordType>> it = results.getAbstractRecord().iterator();
+
+            @Override
+            public Iterator<SummaryRecordType> iterator() {
+                return new Iterator<SummaryRecordType>() {
+                    @Override
+                    public boolean hasNext() {
+                        return it.hasNext();
+                    }
+                    @Override
+                    public SummaryRecordType next() {
+                        return (SummaryRecordType)it.next().getValue();
+                    }
+                };
+            }
+
+            @Override
+            public int size() {
+                return results.getNumberOfRecordsReturned().intValue();
+            }
+
+            @Override
+            public void close() {
+            }
+        };
     }
 
     
@@ -107,10 +141,18 @@ public class GetRecordsRequest
      */
     public static final void main( String[] args ) throws Exception {
         GetRecordsRequest getRecords = new GetRecordsRequest()
-                .constraint.put( "AnyText Like '%Mittelsachsen%'" )
+                .constraint.put( "AnyText Like '%Landschaftsschutzgebiete%'" )
                 .baseUrl.put( "http://www.geokatalog-mittelsachsen.de/geonetwork2.10/srv/eng/csw" );
-        
-        getRecords.execute( new NullProgressMonitor() );
+
+        ResultSet<SummaryRecordType> rs = getRecords.execute( new NullProgressMonitor() );
+        System.out.println( "Results:" + rs.size() );
+        for (SummaryRecordType record : rs) {
+            System.out.println( "-----------------------------------");
+            System.out.println( record.getIdentifier().get( 0 ).getValue().getContent() );
+            System.out.println( record.getTitle().get( 0 ).getValue().getContent() );
+            System.out.println( record.getSubject().get( 0 ).getContent() );
+            System.out.println( record.getAbstract().get( 0 ).getContent() );
+        }
     }
 
 }

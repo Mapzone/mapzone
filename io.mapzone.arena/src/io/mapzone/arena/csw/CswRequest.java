@@ -26,6 +26,9 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.Config2;
 import org.polymap.core.runtime.config.DefaultString;
@@ -40,6 +43,8 @@ import org.polymap.core.runtime.config.Mandatory;
 public abstract class CswRequest<R>
         extends CatalogRequest<R> {
 
+    private static final Log log = LogFactory.getLog( CswRequest.class );
+    
     public static final String          CSW_JAXB_CONTEXT_PATH = "net.opengis.cat.csw.v_2_0_2";
 
     /**
@@ -74,6 +79,7 @@ public abstract class CswRequest<R>
     
 
     protected <T> T read( Class<T> type, String url ) throws Exception {
+        log.info( url );
         JAXBContext context = JAXBContext.newInstance( CSW_JAXB_CONTEXT_PATH );
         Unmarshaller unmarshaller = context.createUnmarshaller();
         JAXBElement<T> elm = unmarshaller.unmarshal( new StreamSource( url ), type );

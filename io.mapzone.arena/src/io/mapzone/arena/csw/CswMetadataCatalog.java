@@ -14,10 +14,15 @@
  */
 package io.mapzone.arena.csw;
 
+import java.util.Iterator;
 import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.google.common.collect.Iterators;
+
+import org.eclipse.core.runtime.IProgressMonitor;
 
 import org.polymap.core.catalog.IMetadata;
 import org.polymap.core.catalog.IMetadataCatalog;
@@ -25,6 +30,8 @@ import org.polymap.core.catalog.MetadataQuery;
 import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.Configurable;
 import org.polymap.core.runtime.config.Mandatory;
+
+import net.opengis.cat.csw.v_2_0_2.SummaryRecordType;
 
 /**
  * 
@@ -40,32 +47,60 @@ public class CswMetadataCatalog
     @Mandatory
     public Config<String>           baseUrl;
     
+    
     @Override
     public String getTitle() {
-        // XXX Auto-generated method stub
-        throw new RuntimeException( "not yet implemented." );
+        return "Community resources";
     }
 
     @Override
     public String getDescription() {
-        // XXX Auto-generated method stub
-        throw new RuntimeException( "not yet implemented." );
+        return "Global catalog of community resources";
     }
 
     @Override
     public void close() {
-        // XXX Auto-generated method stub
-        throw new RuntimeException( "not yet implemented." );
     }
 
+    
     @Override
-    public Optional<? extends IMetadata> entry( String identifier ) {
-        // XXX Auto-generated method stub
-        throw new RuntimeException( "not yet implemented." );
+    public MetadataQuery query( String query, IProgressMonitor monitor ) throws Exception {
+        return new MetadataQuery() {
+            @Override
+            public ResultSet execute() throws Exception {
+                GetRecordsRequest getRecords = new GetRecordsRequest()
+                        .constraint.put( "AnyText Like '%Landschaftsschutzgebiete%'" )
+                        .baseUrl.put( baseUrl.get() );
+
+                GetRecordsRequest.ResultSet rs = getRecords.execute( monitor );
+
+                // build ResultSet
+                return new ResultSet() {
+                    @Override
+                    public Iterator<IMetadata> iterator() {
+                        Iterator<SummaryRecordType> result = rs.iterator();
+                        return Iterators.transform( result, record -> new CswMetadata( record ) );
+                    }
+                    @Override
+                    public int size() {
+                        return rs.size();
+                    }
+                    @Override
+                    public void close() {
+                        rs.close();
+                    }
+                    @Override
+                    public void finalize() throws Throwable {
+                        close();
+                    }
+                };
+            }            
+        };
     }
 
+    
     @Override
-    public MetadataQuery query( String query ) {
+    public Optional<? extends IMetadata> entry( String identifier, IProgressMonitor monitor ) {
         // XXX Auto-generated method stub
         throw new RuntimeException( "not yet implemented." );
     }

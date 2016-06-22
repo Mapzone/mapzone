@@ -14,13 +14,22 @@
  */
 package io.mapzone.arena.csw;
 
+import org.polymap.core.catalog.CatalogProvider;
+import org.polymap.core.catalog.IMetadataCatalog;
+
 /**
  * 
+ *
  * @author Falko Bräutigam
  */
-public abstract class ResultSet<T>
-        implements Iterable<T> {
-    
-    public abstract int size();
+public class CswCatalogProvider
+        implements CatalogProvider {
+
+    @Override
+    public IMetadataCatalog get() {
+        CswMetadataCatalog result = new CswMetadataCatalog();
+        result.baseUrl.set( "http://www.geokatalog-mittelsachsen.de/geonetwork2.10/srv/eng/csw" );
+        return result;
+    }
     
 }
