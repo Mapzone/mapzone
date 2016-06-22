@@ -30,6 +30,8 @@ public class ArenaConfig
         implements ArenaConfigMBean {
 
     private static Log log = LogFactory.getLog( ArenaConfig.class );
+    
+    private String          authToken;
 
     @Override
     public void setAppTitle( String title ) {
@@ -50,6 +52,15 @@ public class ArenaConfig
     public String getProxyUrl() {
         //return "commented out";
         return GeoServerPlugin.instance().baseUrl.get();
+    }
+
+    @Override
+    public void setServiceAuthToken( String authToken ) {
+        this.authToken = authToken;
+    }
+
+    public String getServiceAuthToken() {
+        return authToken;
     }
     
 }
