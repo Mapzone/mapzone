@@ -130,6 +130,15 @@ public class CatalogCoreEntry
     public Property<String>         type;
     
     /**
+     * Spatial characteristics of the resource.
+     */
+    @MinOccurs( 0 )
+    @Queryable
+    @XML( namespace=DC )
+    @OGCQueryable( "Spatial" )
+    public CollectionProperty<String> spatial;
+    
+    /**
      * The physical or digital manifestation of the resource.
      */
     @Nullable
