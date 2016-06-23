@@ -32,7 +32,7 @@
 <stringAttribute key="org.eclipse.rap.launch.libraryVariant" value="STANDARD"/>
 <stringAttribute key="org.eclipse.rap.launch.logLevel" value="OFF"/>
 <booleanAttribute key="org.eclipse.rap.launch.openBrowser" value="false"/>
-<intAttribute key="org.eclipse.rap.launch.port" value="8080"/>
+<intAttribute key="org.eclipse.rap.launch.port" value="8090"/>
 <stringAttribute key="org.eclipse.rap.launch.servletName" value="batik"/>
 <stringAttribute key="org.eclipse.rap.launch.servletPath" value="/rap"/>
 <intAttribute key="org.eclipse.rap.launch.sessionTimeout" value="3600"/>

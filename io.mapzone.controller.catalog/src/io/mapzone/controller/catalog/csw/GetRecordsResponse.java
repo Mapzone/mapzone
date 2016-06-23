@@ -14,14 +14,18 @@
  */
 package io.mapzone.controller.catalog.csw;
 
+import java.util.Optional;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.polymap.model2.query.Query;
 import org.polymap.model2.query.ResultSet;
 import org.polymap.model2.runtime.UnitOfWork;
 
 import io.mapzone.controller.catalog.CatalogPlugin;
 import io.mapzone.controller.catalog.model.CatalogEntry;
+import net.opengis.cat.csw.v_2_0_2.GetRecordsType;
 
 /**
  * 
@@ -40,8 +44,18 @@ public class GetRecordsResponse
     protected void doExecute() throws Exception {
         // query
         UnitOfWork uow = CatalogPlugin.instance().catalog().unitOfWork();
-        ResultSet<CatalogEntry> rs = uow.query( CatalogEntry.class ).execute();
+        Query<CatalogEntry> query = uow.query( CatalogEntry.class );
 
+        request().<GetRecordsType>parsedBody().ifPresent( body -> {
+            Optional.ofNullable( body.getMaxRecords() ).ifPresent( v -> query.maxResults( v.intValue() ) );
+            Optional.ofNullable( body.getStartPosition() ).ifPresent( v -> query.firstResult( v.intValue() ) );
+//            if (!"application/xml".equalsIgnoreCase( body.getOutputFormat() )) {
+//                throw new UnsupportedOperationException( "OutputFormat: supported format: application/xml" );
+//            }
+        });
+        
+        ResultSet<CatalogEntry> rs = query.execute();
+        
         // GetRecordsResponse
         out().writeStartElement( "csw", "GetRecordsResponse", Namespaces.CSW  );
         out().writeNamespace( "xml", Namespaces.XML );

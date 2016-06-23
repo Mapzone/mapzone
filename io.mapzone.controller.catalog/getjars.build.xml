@@ -48,6 +48,8 @@
 			<localRepository refid="local.repository" />
 			<remoteRepository refid="central.repository" />
 		    
+            <dependency groupId="net.java.dev.stax-utils" artifactId="stax-utils" version="20070216" />
+            <dependency groupId="com.bea.xml" artifactId="jsr173-ri" version="1" scope="provided" />
 		    <dependency groupId="org.jvnet.ogc" artifactId="csw-v_2_0_2-schema" version="1.1.0"/>
 		</artifact:dependencies>
 	</target>

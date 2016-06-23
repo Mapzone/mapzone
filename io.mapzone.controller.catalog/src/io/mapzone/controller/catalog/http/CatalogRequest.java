@@ -19,14 +19,21 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
+
+import org.apache.commons.io.input.TeeInputStream;
 
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
+
+import io.mapzone.controller.catalog.csw.CswResponse;
 
 /**
  * 
@@ -35,47 +42,48 @@ import com.google.common.collect.MultimapBuilder;
  */
 public class CatalogRequest {
 
-    public static CatalogRequest read( HttpServletRequest request, HttpServletResponse response ) throws IOException {
-        return new CatalogRequest( request, response );
-    }
-    
-    
-    // instance *******************************************
-    
     private HttpServletRequest          httpRequest;
     
     private HttpServletResponse         httpResponse;
-    
-    private String                      body;
+
+    private Object                      parsedBody;
     
     /** Lower case param name into param values. */
     private ListMultimap<String,String> params = MultimapBuilder.hashKeys( 16 ).arrayListValues( 4 ).build();
 
     
-    protected CatalogRequest( HttpServletRequest request, HttpServletResponse response ) throws IOException {
+    protected CatalogRequest( HttpServletRequest request, HttpServletResponse response ) {
         this.httpRequest = request;
         this.httpResponse = response;
-        
-        // read body
-        try (
-            BufferedReader in = request.getReader();
-        ){
-            StringBuilder buf = new StringBuilder( 1024 );
-            String line = null;
-            while ((line = in.readLine()) != null) {
-                buf.append( line );
-            }
-            body = buf.toString();
-        }
-        
-        // read parameters (no XML POST or SOAP requests)
-        for (Enumeration<String> it=request.getParameterNames(); it.hasMoreElements(); ) {
+    }
+
+    
+    <T> T parseBody() throws Exception {
+        Unmarshaller unmarshaller = CswResponse.jaxbContext.get().createUnmarshaller();
+        InputStream in = httpRequest.getInputStream();
+        System.out.println( "REQUEST: " );
+        TeeInputStream tee = new TeeInputStream( in, System.out );
+        parsedBody = ((JAXBElement)unmarshaller.unmarshal( new StreamSource( tee ) )).getValue();
+        return (T)parsedBody;
+    }
+
+    
+    void parseParameters() {
+        for (Enumeration<String> it=httpRequest.getParameterNames(); it.hasMoreElements(); ) {
             String name = normalize( it.nextElement() );
-            String[] values = request.getParameterValues( name );
+            String[] values = httpRequest.getParameterValues( name );
             Arrays.stream( values ).forEach( value -> params.put( name, value ) );
         }
     }
-
+    
+    
+    /** 
+     * The parsed request body if this is a POST request. 
+     */
+    public <T> Optional<T> parsedBody() {
+        return Optional.ofNullable( (T)parsedBody );
+    }
+    
     
     public Optional<String> parameter( String name ) {
         assert params.get( normalize( name ) ).size() <= 1;
@@ -85,6 +93,10 @@ public class CatalogRequest {
 
     public List<String> parameters( String name ) {
         return params.get( normalize( name ) );
+    }
+
+    public ListMultimap<String,String> parameters() {
+        return params;
     }
 
     
