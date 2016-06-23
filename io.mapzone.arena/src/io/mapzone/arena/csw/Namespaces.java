@@ -14,22 +14,22 @@
  */
 package io.mapzone.arena.csw;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
- * Denotes the URL param name when encoding a GET request.
+ * 
  *
  * @author Falko Bräutigam
  */
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD } )
-@Documented
-public @interface RequestParam {
+public class Namespaces {
 
-    public String value();
+    public static final String  XML = "http://www.w3.org/XML/1998/namespace";
     
+    public static final String  OGC = "http://www.opengis.net/ogc";
+            
+    public static final String  CSW = "http://www.opengis.net/cat/csw/2.0.2";
+    
+    public static final String  OWS = "http://www.opengis.net/ows";
+    
+    public static final String  DC = "http://purl.org/dc/elements/1.1/";
+    
+    public static final String  DCT = "http://purl.org/dc/terms/";
 }

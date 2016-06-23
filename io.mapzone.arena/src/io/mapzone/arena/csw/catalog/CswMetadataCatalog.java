@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-package io.mapzone.arena.csw;
+package io.mapzone.arena.csw.catalog;
 
 import java.util.Iterator;
 import java.util.Optional;
@@ -31,6 +31,7 @@ import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.Configurable;
 import org.polymap.core.runtime.config.Mandatory;
 
+import io.mapzone.arena.csw.GetRecordsRequest;
 import net.opengis.cat.csw.v_2_0_2.SummaryRecordType;
 
 /**

@@ -14,22 +14,22 @@
  */
 package io.mapzone.arena.csw;
 
-import org.polymap.core.catalog.CatalogProvider;
-import org.polymap.core.catalog.IMetadataCatalog;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * 
+ * Denotes the XML attribute when encoding XML for a POST request.
  *
  * @author Falko Bräutigam
  */
-public class CswCatalogProvider
-        implements CatalogProvider {
+@Retention( RetentionPolicy.RUNTIME )
+@Target( { ElementType.FIELD } )
+@Documented
+public @interface RequestAttr {
 
-    @Override
-    public IMetadataCatalog get() {
-        CswMetadataCatalog result = new CswMetadataCatalog();
-        result.baseUrl.set( "http://www.geokatalog-mittelsachsen.de/geonetwork2.10/srv/eng/csw" );
-        return result;
-    }
+    public String value();
     
 }

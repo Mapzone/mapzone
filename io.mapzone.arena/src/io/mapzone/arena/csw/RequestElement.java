@@ -21,15 +21,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Denotes the URL param name when encoding a GET request.
+ * Denotes the XML element namespace and local name when encoding XML for a POST
+ * request.
  *
  * @author Falko Bräutigam
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD } )
 @Documented
-public @interface RequestParam {
+public @interface RequestElement {
 
+    public String prefix();
+    
     public String value();
     
 }

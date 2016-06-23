@@ -12,24 +12,24 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-package io.mapzone.arena.csw;
+package io.mapzone.arena.csw.catalog;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.polymap.core.catalog.CatalogProvider;
+import org.polymap.core.catalog.IMetadataCatalog;
 
 /**
- * Denotes the URL param name when encoding a GET request.
+ * 
  *
  * @author Falko Bräutigam
  */
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD } )
-@Documented
-public @interface RequestParam {
+public class CswCatalogProvider
+        implements CatalogProvider {
 
-    public String value();
+    @Override
+    public IMetadataCatalog get() {
+        CswMetadataCatalog result = new CswMetadataCatalog();
+        result.baseUrl.set( "http://www.geokatalog-mittelsachsen.de/geonetwork2.10/srv/eng/csw" );
+        return result;
+    }
     
 }
