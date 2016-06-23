@@ -76,7 +76,7 @@ public class GetCapabilitiesRequest
     
     @Override
     protected CapabilitiesType handleResponse( InputStream in, IProgressMonitor monitor ) throws Exception {
-        return read( in, CapabilitiesType.class );
+        return readObject( in, CapabilitiesType.class );
     }
 
 

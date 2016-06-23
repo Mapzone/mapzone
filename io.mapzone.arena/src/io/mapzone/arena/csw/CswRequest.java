@@ -38,6 +38,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.io.input.TeeInputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
@@ -174,7 +175,9 @@ public abstract class CswRequest<R>
         try (
             java.io.InputStream in = response.getEntity().getContent();
         ){
-            return handleResponse( in, monitor );
+            System.out.print( "RESPONSE: " );
+            TeeInputStream tee = new TeeInputStream( in, System.out );
+            return handleResponse( tee, monitor );
         }
         finally {
             writer = null;
@@ -259,7 +262,7 @@ public abstract class CswRequest<R>
 ////            return (T)doc.getFirstChild();
     
     
-    protected <T> T read( InputStream in, Class<T> type ) throws JAXBException {
+    protected <T> T readObject( InputStream in, Class<T> type ) throws JAXBException {
         Unmarshaller unmarshaller = jaxbContext.get().createUnmarshaller();
         JAXBElement<T> elm = unmarshaller.unmarshal( new StreamSource( in ), type );
         return elm.getValue();

@@ -16,6 +16,8 @@ package io.mapzone.arena.csw;
 
 import static io.mapzone.arena.csw.Namespaces.CSW;
 
+import java.util.UUID;
+
 import java.io.InputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,8 +58,7 @@ public class InsertRecordsRequest
         
     @Override
     protected TransactionResponseType handleResponse( InputStream in, IProgressMonitor monitor ) throws Exception {
-        // XXX Auto-generated method stub
-        throw new RuntimeException( "not yet implemented." );
+        return null;
     }
 
     
@@ -67,11 +68,12 @@ public class InsertRecordsRequest
     public static final void main( String[] args ) throws Exception {
         SummaryRecordType record = new SummaryRecordType();
         CswMetadata md = new CswMetadata( record );
-        md.setIdentifier( "test-test-test-test" );
+        md.setIdentifier( UUID.randomUUID().toString() );
         md.setTitle( "Test" );
-        md.setDescription( "..." );
+        md.setDescription( "HashCode: " + md.hashCode() );
         
-        InsertRecordsRequest request = new InsertRecordsRequest( record );
+        InsertRecordsRequest request = new InsertRecordsRequest( record )
+                .baseUrl.put( "http://localhost:8090/csw" );
         request.execute( new NullProgressMonitor() );
     }
 

@@ -28,6 +28,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.v1_1.OGCConfiguration;
 import org.geotools.xml.Configuration;
 import org.opengis.filter.FilterFactory2;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -146,32 +147,9 @@ public class GetRecordsRequest
                     writeElement( OGC, "PropertyIsLike", () -> {
                         out().writeAttribute( "wildcard", "*" );
                         writeElement( OGC, "PropertyName", () -> { out().writeCharacters( "AnyText" ); } );
-                        writeElement( OGC, "Literal", () -> { out().writeCharacters( "*Landschaftsschutzgebiete*" ); } );
+                        writeElement( OGC, "Literal", () -> { out().writeCharacters( constraint.get() ); } );
                     });
                 });
-                
-//                out().writeNamespace( "ogc" , "http://www.opengis.net/ogc" );
-//                        
-//                PropertyIsLike filter = ff.like( ff.property( "AnyText" ), "*Landschaftsschutzgebiete*", "*", "?", "\\" );
-//                
-//                Encoder encoder = new Encoder( CONFIGURATION );
-//                encoder.setIndenting( true );
-//                encoder.setEncoding( ENCODE_CHARSET );
-//                encoder.setNamespaceAware( false );
-//                encoder.setOmitXMLDeclaration( true );
-//
-//                encoder.encode( filter, org.geotools.filter.v1_1.OGC.Filter, System.out );
-//                
-//                try {
-//                    ContentHandler contentHandler = new ContentHandlerToXMLStreamWriter( out() );
-//                    encoder.encode( filter, org.geotools.filter.v1_1.OGC.Filter, contentHandler );
-//                }
-//                catch (Exception e) {
-//                }
-                
-//                writeElement( Namespaces.XML, "CqlText", () -> {
-//                    out().writeCData( constraint.get() );                    
-//                });
             });
         });
     }
@@ -179,9 +157,7 @@ public class GetRecordsRequest
     
     @Override
     protected ResultSet<SummaryRecordType> handleResponse( InputStream in, IProgressMonitor monitor ) throws Exception {
-        //IOUtils.copy( in, System.out );
-        
-        GetRecordsResponseType response = read( in, GetRecordsResponseType.class );
+        GetRecordsResponseType response = readObject( in, GetRecordsResponseType.class );
         
         return new ResultSet<SummaryRecordType>() {
             SearchResultsType results = response.getSearchResults();
@@ -218,9 +194,14 @@ public class GetRecordsRequest
      * Test.
      */
     public static final void main( String[] args ) throws Exception {
+//        GetRecordsRequest getRecords = new GetRecordsRequest()
+//              .constraint.put( "AnyText Like '%Landschaftsschutzgebiete%'" )
+//              .constraint.put( "*Landschaftsschutzgebiete*" )
+//                .baseUrl.put( "http://www.geokatalog-mittelsachsen.de/geonetwork2.10/srv/eng/csw" );
+
         GetRecordsRequest getRecords = new GetRecordsRequest()
-                .constraint.put( "AnyText Like '%Landschaftsschutzgebiete%'" )
-                .baseUrl.put( "http://www.geokatalog-mittelsachsen.de/geonetwork2.10/srv/eng/csw" );
+                .constraint.put( "AnyText Like '%Test%'" )
+                .baseUrl.put( "http://localhost:8090/csw" );
 
         ResultSet<SummaryRecordType> rs = getRecords.execute( new NullProgressMonitor() );
         System.out.println( "Results:" + rs.size() );
@@ -228,8 +209,8 @@ public class GetRecordsRequest
             System.out.println( "-----------------------------------");
             System.out.println( record.getIdentifier().get( 0 ).getValue().getContent() );
             System.out.println( record.getTitle().get( 0 ).getValue().getContent() );
-            System.out.println( record.getSubject().get( 0 ).getContent() );
-            System.out.println( record.getAbstract().get( 0 ).getContent() );
+            //System.out.println( record.getSubject().get( 0 ).getContent() );
+            //System.out.println( record.getAbstract().get( 0 ).getContent() );
         }
     }
 
