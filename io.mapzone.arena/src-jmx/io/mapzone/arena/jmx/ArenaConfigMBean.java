@@ -42,5 +42,7 @@ public interface ArenaConfigMBean {
     public void setProxyUrl( String proxyUrl );
 
     public String getProxyUrl();
+    
+    public void setServiceAuthToken( String authToken );
 
 }
