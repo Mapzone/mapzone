@@ -11,11 +11,7 @@
 			<arguments>
 				<dictionary>
 					<key>LaunchConfigHandle</key>
-<<<<<<< Upstream, based on branch 'master' of git@github.com:Mapzone/mapzone.git
 					<value>&lt;project&gt;/.externalToolBuilders/io.mapzone.controller getjars.build.xml [Builder].launch</value>
-=======
-					<value>&lt;project&gt;/.externalToolBuilders/io.mapzone.controller getjars.build.xml [Builder] (1).launch</value>
->>>>>>> 5ec3d2a #12: Shared metadata catalog (http://github.com/Mapzone/mapzone/issues/issue/12)
 				</dictionary>
 			</arguments>
 		</buildCommand>
