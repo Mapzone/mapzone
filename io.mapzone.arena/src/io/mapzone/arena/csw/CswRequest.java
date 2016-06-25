@@ -27,6 +27,8 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -78,6 +80,8 @@ public abstract class CswRequest<R>
     public static final String              CSW_JAXB_CONTEXT_PATH = "net.opengis.cat.csw.v_2_0_2";
 
     public static final String              DEFAULT_XML_ENCODING = "UTF-8";
+
+    public static final DateFormat          DF = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
     
     public static final Lazy<HttpClient>    httpClient;
     

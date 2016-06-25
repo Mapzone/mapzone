@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.polymap.core.catalog.IMetadata;
 import org.polymap.core.catalog.IUpdateableMetadataCatalog.Updater;
 import org.polymap.core.catalog.MetadataQuery.ResultSet;
+import org.polymap.core.data.wms.catalog.WmsServiceResolver;
 
 import io.mapzone.arena.csw.catalog.CswMetadataCatalog;
 
@@ -72,16 +73,46 @@ public class CswCatalogTest {
                 md.setTitle( "First" );
                 md.setDescription( "Südstr" );
                 md.setKeywords( Sets.newHashSet( "Test", "Ulli" ) );
+                md.setConnectionParams( WmsServiceResolver.createParams( "http://google.de" ) );
             });
             updater.commit();
         }
     }
+
     
     @Test
     public void _20_getEntryById() throws Exception {
-        IMetadata entry = catalog.entry( identifier, monitor ).get();
-        Assert.assertEquals( "First", entry.getTitle() );
+        IMetadata md = catalog.entry( identifier, monitor ).get();
+        Assert.assertEquals( "First", md.getTitle() );
+        Assert.assertEquals( "Südstr", md.getDescription() );
+        Assert.assertTrue( md.getModified() != null );
+        Assert.assertTrue( md.getKeywords().contains( "Test" ) );
+        Assert.assertTrue( md.getKeywords().contains( "Ulli" ) );
+        
+        md.getConnectionParams().entrySet().forEach( p -> log.info( p.getKey() + " = " + p.getValue() ) );
+        
+        Assert.assertTrue( "", new WmsServiceResolver().canResolve( md ) );
     }
+    
+    
+    @Test
+    public void _25_update() throws Exception {
+        try (
+            Updater updater = catalog.prepareUpdate();
+        ){
+            updater.updateEntry( identifier, md -> {
+                md.setTitle( "First" );
+                md.setDescription( "Südstr. 6" );
+                md.setKeywords( Sets.newHashSet( "Test", "Ulli", "Falko" ) );                
+            });
+            updater.commit();
+        }
+        IMetadata entry = catalog.entry( identifier, monitor ).get();
+        Assert.assertEquals( "Südstr. 6", entry.getDescription() );
+        Assert.assertTrue( entry.getKeywords().contains( "Ulli" ) );
+        Assert.assertTrue( entry.getKeywords().contains( "Falko" ) );
+    }
+    
     
     @Test
     public void _30_query() throws Exception {
@@ -90,6 +121,7 @@ public class CswCatalogTest {
         Assert.assertTrue( rs.size() > 0 );
         rs.stream().forEach( entry -> log.info( "entry: " + entry ) );
     }
+    
     
     @Test
     public void _40_remove() throws Exception {

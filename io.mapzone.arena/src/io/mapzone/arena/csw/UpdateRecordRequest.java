@@ -17,21 +17,16 @@ package io.mapzone.arena.csw;
 import static io.mapzone.arena.csw.Namespaces.CSW;
 import static io.mapzone.arena.csw.Namespaces.OGC;
 
-import java.util.UUID;
-
 import java.io.InputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-
 import org.polymap.core.runtime.config.Config2;
 import org.polymap.core.runtime.config.DefaultString;
 import org.polymap.core.runtime.config.Mandatory;
 
-import io.mapzone.arena.csw.catalog.CswMetadata;
 import net.opengis.cat.csw.v_2_0_2.SummaryRecordType;
 import net.opengis.cat.csw.v_2_0_2.TransactionResponseType;
 
@@ -91,22 +86,6 @@ public class UpdateRecordRequest
     protected TransactionResponseType handleResponse( InputStream in, IProgressMonitor monitor ) throws Exception {
         // FIXME
         return null;
-    }
-
-    
-    /**
-     * Test.
-     */
-    public static final void main( String[] args ) throws Exception {
-        SummaryRecordType record = new SummaryRecordType();
-        CswMetadata md = new CswMetadata( record );
-        md.setIdentifier( UUID.randomUUID().toString() );
-        md.setTitle( "Test" );
-        md.setDescription( "HashCode: " + md.hashCode() );
-        
-        UpdateRecordRequest request = new UpdateRecordRequest( record )
-                .baseUrl.put( "http://localhost:8090/csw" );
-        request.execute( new NullProgressMonitor() );
     }
 
 }

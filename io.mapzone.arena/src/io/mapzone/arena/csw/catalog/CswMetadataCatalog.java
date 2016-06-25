@@ -139,6 +139,7 @@ public class CswMetadataCatalog
             public void updateEntry( String identifier, Consumer<IUpdateableMetadata> updater ) {
                 SummaryRecordType record = new SummaryRecordType();
                 CswMetadata md = new CswMetadata( record );
+                md.setIdentifier( identifier );
                 updater.accept( md );
                 requests.add( new UpdateRecordRequest( record )
                         .baseUrl.put( baseUrl.get() ) );

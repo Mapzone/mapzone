@@ -16,19 +16,26 @@ package io.mapzone.arena.csw.catalog;
 
 import static java.util.Collections.singletonList;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import java.text.ParseException;
+
 import javax.xml.bind.JAXBElement;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.google.common.base.Joiner;
+
 import org.polymap.core.catalog.IUpdateableMetadata;
 
+import io.mapzone.arena.csw.CswRequest;
 import net.opengis.cat.csw.v_2_0_2.SummaryRecordType;
 import net.opengis.cat.csw.v_2_0_2.dc.elements.ObjectFactory;
 import net.opengis.cat.csw.v_2_0_2.dc.elements.SimpleLiteral;
@@ -123,6 +130,21 @@ public class CswMetadata
         return this;
     }
 
+    
+    @Override
+    public Date getModified() {
+        Optional<String> result = first2( record.getModified() );
+        if (result.isPresent()) {
+            try {
+                return CswRequest.DF.parse( result.get() );
+            }
+            catch (ParseException e) {
+                throw new RuntimeException( e );
+            }
+        }
+        return null;
+    }
+
     /**
      * See {@link SummaryRecordType#getType()}.
      */
@@ -150,17 +172,32 @@ public class CswMetadata
     
     @Override
     public Map<String,String> getConnectionParams() {
-//        serviceUrl = getSpatial().stream().filter( o -> o.startsWith( "http" ) )
-//        WmsServiceResolver.createParams( url )
-        
-        // XXX Auto-generated method stub
-        throw new RuntimeException( "not yet implemented." );
+        return record.getSpatial().stream()
+                .map( literal -> decodeParam( literal.getContent().get( 0 ) ) )
+                .collect( Collectors.toMap( p -> p.getLeft(), p -> p.getRight() ) );
     }
 
     @Override
     public IUpdateableMetadata setConnectionParams( Map<String,String> params ) {
-        // XXX Auto-generated method stub
-        throw new RuntimeException( "not yet implemented." );
+        record.setSpatial( params.entrySet().stream()
+                .map( entry -> literal( encodeParam( entry ) ) )
+                .collect( Collectors.toList() ) );
+        return this;
+    }
+    
+    protected String encodeParam( Map.Entry<String,String> param ) {
+        if (param.getKey().contains( "=" )) {
+            throw new UnsupportedOperationException( "Connection param key must not contain '=' character." );
+        }
+        return Joiner.on( '=' ).join( 
+                param.getKey(),
+                param.getValue().replace( "=", "\\=" ) );
+    }
+    
+    protected Pair<String,String> decodeParam( String param ) {
+        param = param.replace( "\\=", "=" );
+        int mark = param.indexOf( '=' );
+        return Pair.of( param.substring( 0, mark ), param.substring( mark+1 ) );
     }
     
 }
