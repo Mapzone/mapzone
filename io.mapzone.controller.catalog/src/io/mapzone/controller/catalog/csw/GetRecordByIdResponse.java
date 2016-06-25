@@ -14,31 +14,29 @@
  */
 package io.mapzone.controller.catalog.csw;
 
-import java.util.Optional;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.polymap.model2.query.Expressions;
 import org.polymap.model2.query.Query;
 import org.polymap.model2.query.ResultSet;
 import org.polymap.model2.runtime.UnitOfWork;
 
 import io.mapzone.controller.catalog.CatalogPlugin;
 import io.mapzone.controller.catalog.model.CatalogEntry;
-import net.opengis.cat.csw.v_2_0_2.GetRecordsType;
-import net.opengis.cat.csw.v_2_0_2.QueryType;
+import net.opengis.cat.csw.v_2_0_2.GetRecordByIdType;
 
 /**
  * 
  *
  * @author Falko Bräutigam
  */
-public class GetRecordsResponse
+public class GetRecordByIdResponse
         extends CswResponse {
 
-    private static Log log = LogFactory.getLog( GetRecordsResponse.class );
+    private static Log log = LogFactory.getLog( GetRecordByIdResponse.class );
 
-    public static final String              REQUEST = "GetRecords";
+    public static final String              REQUEST = "GetRecordById";
     
     
     @Override
@@ -52,41 +50,25 @@ public class GetRecordsResponse
             throw new UnsupportedOperationException( "GetRecords: GET requests are not supported." );
         }
         // POST
-        request().<GetRecordsType>parsedBody().ifPresent( body -> {
-            Optional.ofNullable( body.getMaxRecords() ).ifPresent( v -> query.maxResults( v.intValue() ) );
-            Optional.ofNullable( body.getStartPosition() ).ifPresent( v -> query.firstResult( v.intValue() ) );
-//            if (!"application/xml".equalsIgnoreCase( body.getOutputFormat() )) {
-//                throw new UnsupportedOperationException( "OutputFormat: supported format: application/xml" );
-//            }
-            
-            QueryType queryBody = (QueryType)body.getAbstractQuery().getValue();
-            query.where( FilterParser.parse( queryBody.getConstraint() ) );
+        request().<GetRecordByIdType>parsedBody().ifPresent( body -> {
+            String identifier = body.getId().get( 0 );
+            query.where( Expressions.eq( CatalogEntry.TYPE.identifier, identifier ) );
         });
         
         ResultSet<CatalogEntry> rs = query.execute();
         
         // GetRecordsResponse
-        out().writeStartElement( "csw", "GetRecordsResponse", Namespaces.CSW  );
+        out().writeStartElement( "csw", "GetRecordByIdResponse", Namespaces.CSW  );
         out().writeNamespace( "xml", Namespaces.XML );
         out().writeNamespace( "csw", Namespaces.CSW );
         out().writeNamespace( "dc", Namespaces.DC );
         out().writeNamespace( "dct", Namespaces.DCT );
-        
-        // SearchResults
-        out().writeStartElement( "csw", "SearchResults", Namespaces.CSW );
-        String resultSize = Integer.toString( rs.size() );
-        out().writeAttribute( "numberOfRecordsMatched", resultSize );
-        out().writeAttribute( "numberOfRecordsReturned", resultSize );
-        out().writeAttribute( "nextRecord", "0" );
-        out().writeAttribute( "recordSchema", Namespaces.CSW );  // ?
-        out().writeAttribute( "elementSet", "full" );  // ?
         
         // records
         for (CatalogEntry entry : rs) {
             new SummaryRecordWriter( out() ).process( entry );
         }
         
-        out().writeEndElement();
         out().writeEndElement();
     }
 

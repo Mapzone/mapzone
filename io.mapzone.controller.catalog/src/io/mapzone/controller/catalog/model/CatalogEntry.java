@@ -31,6 +31,8 @@ public class CatalogEntry
         return proto;
     };
 
+    public static CatalogEntry              TYPE;
+
     // instance *******************************************
     
     /**

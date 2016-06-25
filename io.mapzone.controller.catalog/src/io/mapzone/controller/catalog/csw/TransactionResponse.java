@@ -14,6 +14,8 @@
  */
 package io.mapzone.controller.catalog.csw;
 
+import java.util.Date;
+
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
@@ -22,13 +24,17 @@ import org.w3c.dom.Element;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.polymap.model2.query.ResultSet;
+import org.polymap.model2.query.grammar.BooleanExpression;
 import org.polymap.model2.runtime.UnitOfWork;
 
 import io.mapzone.controller.catalog.CatalogPlugin;
 import io.mapzone.controller.catalog.model.CatalogEntry;
+import net.opengis.cat.csw.v_2_0_2.DeleteType;
 import net.opengis.cat.csw.v_2_0_2.InsertType;
 import net.opengis.cat.csw.v_2_0_2.SummaryRecordType;
 import net.opengis.cat.csw.v_2_0_2.TransactionType;
+import net.opengis.cat.csw.v_2_0_2.UpdateType;
 
 /**
  * 
@@ -49,7 +55,7 @@ public class TransactionResponse
         try (
             UnitOfWork nested = uow.newUnitOfWork();
         ){
-            // check origin
+            // XXX check origin for authorisation
             log.info( "Remote:" + request().httpRequest().getRemoteHost() );
             
             TransactionType tx = request().<TransactionType>parsedBody().get();
@@ -57,6 +63,12 @@ public class TransactionResponse
             for (Object op : tx.getInsertOrUpdateOrDelete()) {
                 if (op instanceof InsertType) {
                     handleInsert( (InsertType)op, nested );    
+                }
+                else if (op instanceof UpdateType) {
+                    handleUpdate( (UpdateType)op, nested );    
+                }
+                else if (op instanceof DeleteType) {
+                    handleDelete( (DeleteType)op, nested );    
                 }
                 else {
                     throw new RuntimeException( "Unhandled op type: " + op );
@@ -74,8 +86,55 @@ public class TransactionResponse
             SummaryRecordType record = unmarshaller.unmarshal( any, SummaryRecordType.class ).getValue();
             
             CatalogEntry entry = uow.createEntity( CatalogEntry.class, null, CatalogEntry.defaults );
-            entry.title.set( first( record.getTitle() ).get() );
-            entry.description.set( first2( record.getAbstract() ).orElse( null ) );
+            updateEntry( entry, record );
+        }
+    }
+    
+    
+    protected void handleUpdate( UpdateType op, UnitOfWork uow ) throws JAXBException {
+        Unmarshaller unmarshaller = jaxbContext.get().createUnmarshaller();
+        SummaryRecordType record = unmarshaller.unmarshal( op.getAny(), SummaryRecordType.class ).getValue();
+            
+        BooleanExpression expr = FilterParser.parse( op.getConstraint() );
+        ResultSet<CatalogEntry> rs = uow.query( CatalogEntry.class ).where( expr ).maxResults( 2 ).execute();
+        if (rs.size() == 0) {
+            log.warn( "No entry found for: " + expr );
+        }
+        else if (rs.size() > 1) {
+            log.warn( "Multiple entries found for: " + expr );            
+        }
+        else {
+            updateEntry( rs.stream().findAny().get(), record );
+        }
+    }
+    
+    
+    protected void handleDelete( DeleteType op, UnitOfWork uow ) throws JAXBException {
+        BooleanExpression expr = FilterParser.parse( op.getConstraint() );
+        ResultSet<CatalogEntry> rs = uow.query( CatalogEntry.class )
+                .where( expr ).maxResults( 2 )
+                .execute();
+        if (rs.size() == 0) {
+            log.warn( "No entry found for: " + expr );
+        }
+        else if (rs.size() > 1) {
+            log.warn( "Multiple entries found for: " + expr );            
+        }
+        else {
+            CatalogEntry entity = rs.stream().findAny().get();
+            uow.removeEntity( entity );
+        }
+    }
+    
+    
+    protected void updateEntry( CatalogEntry entry, SummaryRecordType record ) {
+        first( record.getIdentifier() ).ifPresent( value -> entry.identifier.set( value ) );
+        first( record.getTitle() ).ifPresent( value -> entry.title.set( value ) );
+        first2( record.getAbstract() ).ifPresent( value -> entry.description.set( value ) );        
+        first2( record.getModified() ).ifPresent( value -> entry.modified.set( new Date() ) ); // XXX ?
+        first( record.getFormat() ).ifPresent( value -> entry.format.set( value ) );
+        if (record.getType() != null) {
+            entry.type.set( record.getType().getContent().get( 0 ) );
         }
     }
     

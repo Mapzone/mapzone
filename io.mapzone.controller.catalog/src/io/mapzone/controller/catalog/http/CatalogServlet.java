@@ -25,9 +25,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import io.mapzone.controller.catalog.csw.GetRecordByIdResponse;
 import io.mapzone.controller.catalog.csw.GetRecordsResponse;
 import io.mapzone.controller.catalog.csw.Params;
 import io.mapzone.controller.catalog.csw.TransactionResponse;
+import net.opengis.cat.csw.v_2_0_2.GetRecordByIdType;
 import net.opengis.cat.csw.v_2_0_2.GetRecordsType;
 import net.opengis.cat.csw.v_2_0_2.RequestBaseType;
 import net.opengis.cat.csw.v_2_0_2.TransactionType;
@@ -50,6 +52,7 @@ public class CatalogServlet
     static {
         responseTypes = new HashMap();
         responseTypes.put( GetRecordsResponse.REQUEST, GetRecordsResponse.class );
+        responseTypes.put( GetRecordByIdResponse.REQUEST, GetRecordByIdResponse.class );
         responseTypes.put( TransactionResponse.REQUEST, TransactionResponse.class );
     }
     
@@ -81,6 +84,9 @@ public class CatalogServlet
 
             if (body instanceof GetRecordsType) {
                 doService( request, GetRecordsResponse.class );
+            }
+            else if (body instanceof GetRecordByIdType) {
+                doService( request, GetRecordByIdResponse.class );
             }
             else if (body instanceof TransactionType) {
                 doService( request, TransactionResponse.class );

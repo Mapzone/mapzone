@@ -20,8 +20,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.polymap.model2.Property;
+
 /**
- *
+ * Denotes the OGC name to query a {@link Property} of an catalog entry.
  *
  * @author Falko Bräutigam
  */
@@ -30,6 +32,7 @@ import java.lang.annotation.Target;
 @Documented
 public @interface OGCQueryable {
 
+    /** The OGC name to query this {@link Property}. */
     public String value();
     
 }
