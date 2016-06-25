@@ -18,6 +18,8 @@ import static io.mapzone.arena.csw.Namespaces.CSW;
 import static io.mapzone.arena.csw.Namespaces.OGC;
 
 import java.util.Iterator;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -70,6 +72,10 @@ public class GetRecordsRequest
 
         @Override
         public void close();
+        
+        public default Stream<T> stream() {
+            return StreamSupport.stream( spliterator(), false );
+        }
     }
     
     /**
@@ -100,6 +106,8 @@ public class GetRecordsRequest
     
     /**
      * Inbound: 
+     * <p/>
+     * Wildcard: '*'
      */
     @Mandatory
     @RequestParam( "Constraint" )
@@ -145,7 +153,7 @@ public class GetRecordsRequest
                 writeElement( OGC, "Filter", () -> {
                     // <PropertyIsLike wildCard="%" singleChar="_" escape="\\">
                     writeElement( OGC, "PropertyIsLike", () -> {
-                        out().writeAttribute( "wildcard", "*" );
+                        out().writeAttribute( "wildCard", "*" );
                         writeElement( OGC, "PropertyName", () -> { out().writeCharacters( "AnyText" ); } );
                         writeElement( OGC, "Literal", () -> { out().writeCharacters( constraint.get() ); } );
                     });
@@ -200,18 +208,21 @@ public class GetRecordsRequest
 //                .baseUrl.put( "http://www.geokatalog-mittelsachsen.de/geonetwork2.10/srv/eng/csw" );
 
         GetRecordsRequest getRecords = new GetRecordsRequest()
-                .constraint.put( "AnyText Like '%Test%'" )
+                .constraint.put( "*Test*" )
                 .baseUrl.put( "http://localhost:8090/csw" );
 
         ResultSet<SummaryRecordType> rs = getRecords.execute( new NullProgressMonitor() );
         System.out.println( "Results:" + rs.size() );
-        for (SummaryRecordType record : rs) {
-            System.out.println( "-----------------------------------");
-            System.out.println( record.getIdentifier().get( 0 ).getValue().getContent() );
-            System.out.println( record.getTitle().get( 0 ).getValue().getContent() );
-            //System.out.println( record.getSubject().get( 0 ).getContent() );
-            //System.out.println( record.getAbstract().get( 0 ).getContent() );
-        }
+        rs.stream().forEach( record -> print( record ) );
+    }
+
+    
+    protected static void print( SummaryRecordType record ) {
+        System.out.println( "-----------------------------------");
+        System.out.println( record.getIdentifier().get( 0 ).getValue().getContent() );
+        System.out.println( record.getTitle().get( 0 ).getValue().getContent() );
+        //System.out.println( record.getSubject().get( 0 ).getContent() );
+        //System.out.println( record.getAbstract().get( 0 ).getContent() );
     }
 
 }

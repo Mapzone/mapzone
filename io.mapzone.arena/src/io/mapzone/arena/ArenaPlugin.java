@@ -16,10 +16,7 @@ package io.mapzone.arena;
 
 import java.util.Set;
 
-import java.lang.management.ManagementFactory;
-
 import javax.management.JMX;
-import javax.management.MBeanServer;
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
@@ -71,25 +68,6 @@ public class ArenaPlugin
     private GeoServerStarter        geoServerStarter;
     
     private ArenaConfig             config = new ArenaConfig();
-
-    
-    public ArenaPlugin() {
-        // The ArenaPlugin must be started automatically at level 5 in order to
-        // make this availeable right after startup
-        try {
-            MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
-            mbeanServer.registerMBean( config, ArenaConfigMBean.NAME.get() );
-            log.info( "MBeans registered." );
-        }
-        catch (Exception e) {
-            throw new RuntimeException( e );
-        }        
-    }
-    
-    
-    public ArenaConfig config() {
-        return config;
-    }
 
     
     public void start( BundleContext context ) throws Exception {

@@ -34,15 +34,15 @@ import net.opengis.cat.csw.v_2_0_2.TransactionResponseType;
  *
  * @author Falko Bräutigam
  */
-public class InsertRecordsRequest
+public class InsertRecordRequest
         extends CswRequest<TransactionResponseType> {
 
-    private final static Log log = LogFactory.getLog( InsertRecordsRequest.class );
+    private final static Log log = LogFactory.getLog( InsertRecordRequest.class );
     
     private SummaryRecordType           record;
     
 
-    protected InsertRecordsRequest( SummaryRecordType record ) {
+    public InsertRecordRequest( SummaryRecordType record ) {
         this.record = record;
         this.request.set( "Transaction" );
     }
@@ -52,12 +52,13 @@ public class InsertRecordsRequest
     protected void prepare( IProgressMonitor monitor ) throws Exception {
         writeElement( CSW, "Insert", () -> {
             writeObject( JAXBF.createSummaryRecord( record ) );
-        });    
+        });
     }
     
         
     @Override
     protected TransactionResponseType handleResponse( InputStream in, IProgressMonitor monitor ) throws Exception {
+        // FIXME
         return null;
     }
 
@@ -72,7 +73,7 @@ public class InsertRecordsRequest
         md.setTitle( "Test" );
         md.setDescription( "HashCode: " + md.hashCode() );
         
-        InsertRecordsRequest request = new InsertRecordsRequest( record )
+        InsertRecordRequest request = new InsertRecordRequest( record )
                 .baseUrl.put( "http://localhost:8090/csw" );
         request.execute( new NullProgressMonitor() );
     }

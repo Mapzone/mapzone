@@ -118,8 +118,9 @@ public class CswMetadata
 
     @Override
     public IUpdateableMetadata setKeywords( Set<String> keywords ) {
-        // XXX Auto-generated method stub
-        throw new RuntimeException( "not yet implemented." );
+        List<SimpleLiteral> subjects = keywords.stream().map( kw -> literal( kw ) ).collect( Collectors.toList() );
+        record.setSubject( subjects );
+        return this;
     }
 
     /**

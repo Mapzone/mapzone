@@ -14,8 +14,11 @@
  */
 package io.mapzone.arena.csw.catalog;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,15 +26,22 @@ import org.apache.commons.logging.LogFactory;
 import com.google.common.collect.Iterators;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 
 import org.polymap.core.catalog.IMetadata;
-import org.polymap.core.catalog.IMetadataCatalog;
+import org.polymap.core.catalog.IUpdateableMetadata;
+import org.polymap.core.catalog.IUpdateableMetadataCatalog;
 import org.polymap.core.catalog.MetadataQuery;
 import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.Configurable;
 import org.polymap.core.runtime.config.Mandatory;
 
+import io.mapzone.arena.csw.CswRequest;
+import io.mapzone.arena.csw.DeleteRecordRequest;
+import io.mapzone.arena.csw.GetRecordByIdRequest;
 import io.mapzone.arena.csw.GetRecordsRequest;
+import io.mapzone.arena.csw.InsertRecordRequest;
+import io.mapzone.arena.csw.UpdateRecordRequest;
 import net.opengis.cat.csw.v_2_0_2.SummaryRecordType;
 
 /**
@@ -41,7 +51,7 @@ import net.opengis.cat.csw.v_2_0_2.SummaryRecordType;
  */
 public class CswMetadataCatalog
         extends Configurable
-        implements IMetadataCatalog {
+        implements IUpdateableMetadataCatalog {
 
     private static Log log = LogFactory.getLog( CswMetadataCatalog.class );
 
@@ -101,9 +111,56 @@ public class CswMetadataCatalog
 
     
     @Override
-    public Optional<? extends IMetadata> entry( String identifier, IProgressMonitor monitor ) {
-        // XXX Auto-generated method stub
-        throw new RuntimeException( "not yet implemented." );
+    public Optional<? extends IMetadata> entry( String identifier, IProgressMonitor monitor ) throws Exception {
+        GetRecordByIdRequest request = new GetRecordByIdRequest()
+                .identifier.put( identifier )
+                .baseUrl.put( baseUrl.get() );
+        
+        return request.execute( monitor )
+                .map( record -> new CswMetadata( record ) );
+    }
+
+    
+    @Override
+    public Updater prepareUpdate() {
+        return new Updater() {
+            private List<CswRequest>        requests = new ArrayList();
+            
+            @Override
+            public void newEntry( Consumer<IUpdateableMetadata> initializer ) {
+                SummaryRecordType record = new SummaryRecordType();
+                CswMetadata md = new CswMetadata( record );
+                initializer.accept( md );
+                requests.add( new InsertRecordRequest( record )
+                        .baseUrl.put( baseUrl.get() ) );
+            }
+
+            @Override
+            public void updateEntry( String identifier, Consumer<IUpdateableMetadata> updater ) {
+                SummaryRecordType record = new SummaryRecordType();
+                CswMetadata md = new CswMetadata( record );
+                updater.accept( md );
+                requests.add( new UpdateRecordRequest( record )
+                        .baseUrl.put( baseUrl.get() ) );
+            }
+
+            @Override
+            public void removeEntry( String identifier ) {
+                requests.add( new DeleteRecordRequest( identifier )
+                        .baseUrl.put( baseUrl.get() ) );
+            }
+
+            @Override
+            public void commit() throws Exception {
+                for (CswRequest request : requests) {
+                    request.execute( new NullProgressMonitor() );
+                }
+            }
+
+            @Override
+            public void close() {
+            }
+        };
     }
     
 }
