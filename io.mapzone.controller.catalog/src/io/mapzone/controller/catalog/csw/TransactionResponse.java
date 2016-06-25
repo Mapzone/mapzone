@@ -128,14 +128,23 @@ public class TransactionResponse
     
     
     protected void updateEntry( CatalogEntry entry, SummaryRecordType record ) {
+        first2( record.getModified() ).ifPresent( value -> entry.modified.set( new Date() ) );
+        
         first( record.getIdentifier() ).ifPresent( value -> entry.identifier.set( value ) );
         first( record.getTitle() ).ifPresent( value -> entry.title.set( value ) );
         first2( record.getAbstract() ).ifPresent( value -> entry.description.set( value ) );        
-        first2( record.getModified() ).ifPresent( value -> entry.modified.set( new Date() ) ); // XXX ?
         first( record.getFormat() ).ifPresent( value -> entry.format.set( value ) );
         if (record.getType() != null) {
             entry.type.set( record.getType().getContent().get( 0 ) );
         }
+        entry.subject.clear();
+        record.getSubject().stream()
+                .map( l -> l.getContent().get( 0 ) )
+                .forEach( s -> entry.subject.add( s ) );
+        entry.spatial.clear();
+        record.getSpatial().stream()
+                .map( l -> l.getContent().get( 0 ) )
+                .forEach( s -> entry.spatial.add( s ) );
     }
     
 }

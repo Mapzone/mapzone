@@ -93,7 +93,7 @@ public class CatalogCoreEntry
      */
     @Nullable
     @Queryable
-    @XML( namespace=DCT )
+    @XML( namespace=DCT, value="abstract" )
     @OGCQueryable( "Abstract" )
     public Property<String>         description;
     
@@ -134,7 +134,7 @@ public class CatalogCoreEntry
      */
     @MinOccurs( 0 )
     @Queryable
-    @XML( namespace=DC )
+    @XML( namespace=DCT )
     @OGCQueryable( "Spatial" )
     public CollectionProperty<String> spatial;
     

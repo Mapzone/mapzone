@@ -17,9 +17,6 @@ package io.mapzone.controller.catalog.csw;
 import java.util.Date;
 import java.util.Set;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -28,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.google.common.collect.Sets;
 
+import org.polymap.model2.CollectionProperty;
 import org.polymap.model2.Property;
 import org.polymap.model2.runtime.CompositeStateVisitor;
 
@@ -72,6 +70,20 @@ public abstract class CompositeWriter
     }
     
     
+    @Override
+    protected void visitCollectionProperty( CollectionProperty prop ) throws XMLStreamException {
+        XML xml = (XML)prop.info().getAnnotation( XML.class );
+        if (xml != null && namespaces.contains( xml.namespace() )) {
+            String name = xml.value().equals( XML.DEFAULT ) ? prop.info().getName() : xml.value();
+            for (Object value : prop) {
+                out().writeStartElement( xml.namespace(), name );
+                out().writeCharacters( encodedValue( value ) );
+                out().writeEndElement();
+            }
+        }
+    }
+
+
     protected String encodedValue( Object value ) {
         if (value == null) {
             return "";
@@ -80,8 +92,7 @@ public abstract class CompositeWriter
             return (String)value;
         }
         else if (value instanceof Date) {
-            DateFormat df = SimpleDateFormat.getDateInstance( SimpleDateFormat.MEDIUM );
-            return df.format( value );
+            return CswResponse.DF.format( value );
         }
         else {
             throw new UnsupportedOperationException( "Unknown value type: " + value );
