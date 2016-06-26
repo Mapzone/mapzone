@@ -80,12 +80,11 @@ public class CswMetadataCatalog
             @Override
             public ResultSet execute() throws Exception {
                 GetRecordsRequest getRecords = new GetRecordsRequest()
-                        .constraint.put( "AnyText Like '%Landschaftsschutzgebiete%'" )
+                        .constraint.put( query )
                         .baseUrl.put( baseUrl.get() );
 
                 GetRecordsRequest.ResultSet rs = getRecords.execute( monitor );
 
-                // build ResultSet
                 return new ResultSet() {
                     @Override
                     public Iterator<IMetadata> iterator() {

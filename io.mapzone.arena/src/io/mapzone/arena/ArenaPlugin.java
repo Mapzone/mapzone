@@ -31,6 +31,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 
+import io.mapzone.arena.csw.catalog.ProjectNodeSynchronizer;
 import io.mapzone.arena.jmx.ArenaConfig;
 import io.mapzone.arena.jmx.ArenaConfigMBean;
 
@@ -68,6 +69,8 @@ public class ArenaPlugin
     private GeoServerStarter        geoServerStarter;
     
     private ArenaConfig             config = new ArenaConfig();
+    
+    private ProjectNodeSynchronizer catalogSynchronizer;
 
     
     public void start( BundleContext context ) throws Exception {
@@ -79,11 +82,15 @@ public class ArenaPlugin
         // register GeoServer
         geoServerStarter = new GeoServerStarter( context );
         geoServerStarter.open();
+        
+        //
+        catalogSynchronizer = new ProjectNodeSynchronizer();
     }
 
 
     public void stop( BundleContext context ) throws Exception {
         geoServerStarter.close();
+        catalogSynchronizer.close();
         instance = null;
         super.stop( context );
     }
