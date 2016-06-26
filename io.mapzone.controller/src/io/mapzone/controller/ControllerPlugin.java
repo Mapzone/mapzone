@@ -2,11 +2,10 @@ package io.mapzone.controller;
 
 import java.util.Locale;
 
-import io.mapzone.controller.ui.util.SvgImageRenderer;
-import io.mapzone.controller.um.repository.ProjectRepository;
-import io.mapzone.controller.vm.repository.VmRepository;
-
 import org.osgi.framework.BundleContext;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
@@ -20,13 +19,19 @@ import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 
 import org.polymap.cms.ContentProvider;
 
+import io.mapzone.controller.ui.util.SvgImageRenderer;
+import io.mapzone.controller.um.repository.ProjectRepository;
+import io.mapzone.controller.vm.repository.VmRepository;
+
 /**
  * 
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class ControllerPlugin extends AbstractUIPlugin {
 
-	public static final String ID = "io.mapzone.controller"; //$NON-NLS-1$
+    private static final Log log = LogFactory.getLog( ControllerPlugin.class );
+    
+	public static final String             ID = "io.mapzone.controller";
 
 	/** Default minimum width of sections. */
     public static final MinWidthConstraint  MIN_WIDTH = new MinWidthConstraint( 500, 0 );
@@ -78,12 +83,18 @@ public class ControllerPlugin extends AbstractUIPlugin {
         // init repositories
         ProjectRepository.init( CorePlugin.getDataLocation( ControllerPlugin.instance() ) );
         VmRepository.init( CorePlugin.getDataLocation( ControllerPlugin.instance() ) );
+        log.info( "Running on HTTP port: " + httpPort() );
 	}
 
     
-	public void stop(BundleContext context) throws Exception {
+	public void stop( BundleContext context ) throws Exception {
 		instance = null;
-		super.stop(context);
+		super.stop( context );
 	}
 
+	
+	public String httpPort() {
+	    return System.getProperty( "org.osgi.service.http.port" );
+	}
+	
 }

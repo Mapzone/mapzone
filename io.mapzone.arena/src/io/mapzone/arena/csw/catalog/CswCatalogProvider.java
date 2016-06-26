@@ -17,6 +17,8 @@ package io.mapzone.arena.csw.catalog;
 import org.polymap.core.catalog.CatalogProvider;
 import org.polymap.core.catalog.IMetadataCatalog;
 
+import io.mapzone.arena.jmx.ArenaConfig;
+
 /**
  * 
  *
@@ -27,9 +29,9 @@ public class CswCatalogProvider
 
     @Override
     public IMetadataCatalog get() {
-        CswMetadataCatalog result = new CswMetadataCatalog();
-        result.baseUrl.set( "http://www.geokatalog-mittelsachsen.de/geonetwork2.10/srv/eng/csw" );
-        return result;
+        CswMetadataCatalog catalog = new CswMetadataCatalog();
+        catalog.baseUrl.set( ArenaConfig.instance().getCatalogServerUrl() );
+        return catalog;
     }
     
 }

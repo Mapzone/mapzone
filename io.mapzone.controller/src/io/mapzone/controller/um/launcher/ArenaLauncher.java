@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.polymap.model2.runtime.ValueInitializer;
 
 import io.mapzone.arena.jmx.ArenaConfigMBean;
+import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.http.ProxyServlet;
 import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
 
@@ -44,7 +45,7 @@ import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
 public class ArenaLauncher
         extends EclipseProjectLauncher {
 
-    private static Log log = LogFactory.getLog( ArenaLauncher.class );
+    private static final Log log = LogFactory.getLog( ArenaLauncher.class );
 
     @SuppressWarnings( "hiding" )
     public static final ValueInitializer<ArenaLauncher> defaults = new ValueInitializer<ArenaLauncher>() {
@@ -83,18 +84,22 @@ public class ArenaLauncher
                 log.info( "No such MBean: " + ArenaConfigMBean.NAME.get() );
                 Thread.sleep( 100 );
             }
+
+            String localHttpPort = ControllerPlugin.instance().httpPort();
             
             // title
             ArenaConfigMBean arenaConfig = JMX.newMBeanProxy( conn, ArenaConfigMBean.NAME.get(), ArenaConfigMBean.class );
             arenaConfig.setAppTitle( instance.project.get() );
+            arenaConfig.setCatalogServerUrl( "http://localhost:" + localHttpPort + "/csw" );
 
-            // baseUrl
-            String baseUrl = Joiner.on( "" ).join(
-                    System.getProperty( "io.mapzone.controller.baseUrl", "http://localhost:8080" ),
-                    ProxyServlet.SERVLET_ALIAS, "/",
+            // proxyUrl
+            String baseUrl = "mapzone".equals( System.getProperty( "user.name" ) )
+                    ? "http://mapzone.io" : "http://localhost:" + localHttpPort;
+            String proxyUrl = Joiner.on( "" ).join(
+                    baseUrl, ProxyServlet.SERVLET_ALIAS, "/",
                     URLEncoder.encode( instance.organisation.get(), "UTF8" ), "/",
                     URLEncoder.encode( instance.project.get(), "UTF8" ) );
-            arenaConfig.setProxyUrl( baseUrl );
+            arenaConfig.setProxyUrl( proxyUrl );
             
             log.info( "Instance process configured." );
         }

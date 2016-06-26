@@ -14,6 +14,10 @@
  */
 package io.mapzone.arena.jmx;
 
+import java.lang.management.ManagementFactory;
+
+import javax.management.MBeanServer;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -31,8 +35,38 @@ public class ArenaConfig
 
     private static Log log = LogFactory.getLog( ArenaConfig.class );
     
-    private String          authToken;
+    private static ArenaConfig      instance;
+    
+    /**
+     * The global instance of this JVM.
+     */
+    public static ArenaConfig instance() {
+        return instance;
+    }
+    
+    // instance *******************************************
+    
+    private String                  authToken;
+    
+    private String                  catalogServerUrl = "http://localhost:8090/csw";
 
+    /**
+     * The ArenaPlugin must be started automatically at level 5 in order to make this
+     * available right after startup.
+     */
+    public ArenaConfig() {
+        assert instance == null;
+        instance = this;
+        try {
+            MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+            mbeanServer.registerMBean( this, ArenaConfigMBean.NAME.get() );
+            log.info( "MBean registered." );
+        }
+        catch (Exception e) {
+            throw new RuntimeException( e );
+        }        
+    }
+    
     @Override
     public void setAppTitle( String title ) {
         P4AppDesign.appTitle = title;
@@ -44,13 +78,12 @@ public class ArenaConfig
 
     @Override
     public void setProxyUrl( String proxyUrl ) {
-        log.info( "proxyUrl" +  proxyUrl );
+        log.info( "Set proxyUrl: " +  proxyUrl );
         GeoServerPlugin.instance().baseUrl.set( proxyUrl );
     }
 
     @Override
     public String getProxyUrl() {
-        //return "commented out";
         return GeoServerPlugin.instance().baseUrl.get();
     }
 
@@ -61,6 +94,21 @@ public class ArenaConfig
 
     public String getServiceAuthToken() {
         return authToken;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p/>
+     * Defaults for testing: <code>http://localhost:8090/csw</code>
+     */
+    @Override
+    public String getCatalogServerUrl() {
+        return catalogServerUrl;
+    }
+    
+    @Override
+    public void setCatalogServerUrl( String url ) {
+        this.catalogServerUrl = url;
     }
     
 }

@@ -39,10 +39,32 @@ public interface ArenaConfigMBean {
     
     public void setAppTitle( String title );
     
-    public void setProxyUrl( String proxyUrl );
-
+    /**
+     * The base URL under which we are available to the internet. This delegates to
+     * {@link GeoServerPlugin#baseUrl} which is initialized to
+     * <code>http://localhost:port/</code>.
+     */
     public String getProxyUrl();
     
+    /**
+     * See {@link #getProxyUrl()}.
+     */
+    public void setProxyUrl( String proxyUrl );
+
     public void setServiceAuthToken( String authToken );
+
+    
+    /**
+     * The base URL of the catalog server (CSW) that this app instance uses to
+     * synchronize metadata of project and layers with.
+     *
+     * @see ProjectNodeSynchronizer
+     */
+    public String getCatalogServerUrl();
+
+    /**
+     * See {@link #getCatalogServerUrl()}.
+     */
+    void setCatalogServerUrl( String url );
 
 }

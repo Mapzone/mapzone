@@ -56,7 +56,12 @@ public class TransactionResponse
             UnitOfWork nested = uow.newUnitOfWork();
         ){
             // XXX check origin for authorisation
+            // when fixed then also change the catalog server URL the controller
+            // sends to clients via ArenaConfig
             log.info( "Remote:" + request().httpRequest().getRemoteHost() );
+            if (!request().httpRequest().getRemoteHost().equals( "127.0.0.1" )) {
+                throw new SecurityException( "Authorisation missing." );
+            }
             
             TransactionType tx = request().<TransactionType>parsedBody().get();
 
