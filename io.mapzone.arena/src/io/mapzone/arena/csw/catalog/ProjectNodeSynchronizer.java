@@ -67,8 +67,6 @@ public class ProjectNodeSynchronizer
 
     private static Log log = LogFactory.getLog( ProjectNodeSynchronizer.class );
     
-    private String                  serviceBaseUrl = ArenaConfig.instance().getProxyUrl() + GeoServerStarter.ALIAS;
-    
     private CswMetadataCatalog      catalog;
     
     
@@ -85,7 +83,13 @@ public class ProjectNodeSynchronizer
             }
         }.schedule( 5000 );
     }
+
     
+    protected String serviceBaseUrl() {
+        // do not cache, always use current config
+        return ArenaConfig.instance().getProxyUrl() + GeoServerStarter.ALIAS;
+    }
+
     
     @Override
     public void close() throws Exception {
@@ -141,7 +145,7 @@ public class ProjectNodeSynchronizer
 
     
     protected Map<String,String> layerConnectionParams( ILayer layer ) {
-        String wmsUrl = serviceBaseUrl + "?service=WMS";
+        String wmsUrl = serviceBaseUrl() + "?service=WMS";
         Map<String,String> params = new HashMap();
         params.putAll( WmsResourceResolver.createParams( wmsUrl, GeoServerUtils.simpleName( layer.label.get() ) ) );
         //params.put( "WMS", "This service provides image data. Style and data cannot be modified." );
