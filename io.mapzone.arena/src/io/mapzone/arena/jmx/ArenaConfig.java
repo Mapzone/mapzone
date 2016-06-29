@@ -33,7 +33,7 @@ import org.polymap.p4.P4AppDesign;
 public class ArenaConfig
         implements ArenaConfigMBean {
 
-    private static Log log = LogFactory.getLog( ArenaConfig.class );
+    private static final Log log = LogFactory.getLog( ArenaConfig.class );
     
     private static ArenaConfig      instance;
     
@@ -69,6 +69,7 @@ public class ArenaConfig
     
     @Override
     public void setAppTitle( String title ) {
+        log.info( "setAppTitle(): " + title );
         P4AppDesign.appTitle = title;
     }
     
@@ -78,7 +79,7 @@ public class ArenaConfig
 
     @Override
     public void setProxyUrl( String proxyUrl ) {
-        log.info( "Set proxyUrl: " +  proxyUrl );
+        log.info( "setProxyUrl(): " +  proxyUrl );
         GeoServerPlugin.instance().baseUrl.set( proxyUrl );
     }
 
@@ -89,6 +90,7 @@ public class ArenaConfig
 
     @Override
     public void setServiceAuthToken( String authToken ) {
+        log.info( "setServiceAuthToken(): " +  authToken );
         this.authToken = authToken;
     }
 
@@ -108,6 +110,7 @@ public class ArenaConfig
     
     @Override
     public void setCatalogServerUrl( String url ) {
+        log.info( "setCatalogServerUrl(): " +  url );
         this.catalogServerUrl = url;
     }
     
