@@ -5,6 +5,19 @@ def repoProjectsStr = '''[
       "ant": "true",
       "successor": "io.mapzone.controller.product"
    },
+   { "name": "io.mapzone.controller.catalog",
+      "repository" : "mapzone",
+      "branch": "master",
+      "ant": "true",
+      "junit": "false",
+      "successor": "io.mapzone.controller.product"
+   },
+   { "name": "io.mapzone.controller.product",
+      "repository" : "mapzone",
+      "branch": "master",
+      "ant": "false",
+      "archiveProduct": "true"
+   },
    { "name": "io.mapzone.arena.graph",
       "repository" : "mapzone",
       "branch": "master",
@@ -22,12 +35,6 @@ def repoProjectsStr = '''[
       "repository" : "mapzone",
       "branch": "master",
       "ant": "false"
-   },
-   { "name": "io.mapzone.controller.product",
-      "repository" : "mapzone",
-      "branch": "master",
-      "ant": "false",
-      "archiveProduct": "true"
    },
    { "name": "io.mapzone.arena.product",
       "repository" : "mapzone",
