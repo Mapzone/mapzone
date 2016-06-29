@@ -108,18 +108,20 @@ public class ProjectNodeSynchronizer
             for (ProjectNodeCommittedEvent ev : evs) {
                 ProjectNode entity = ev.getEntity( uow );
 
-                Optional<MetadataReference> mdRef = findMetadataRefs( entity );
-                if (mdRef.isPresent()) {
-                    String identifier = mdRef.get().metadataId.get();
-                    updater.updateEntry( identifier, update( entity ) );
-                }
-                else {
-                    String identifier = UUID.randomUUID().toString();
-                    createMetadataRefs( entity, identifier );
-                    updater.newEntry( md -> {
-                        md.setIdentifier( identifier );
-                        update( entity ).accept( md );
-                    });
+                if (entity instanceof ILayer) {
+                    Optional<MetadataReference> mdRef = findMetadataRefs( entity );
+                    if (mdRef.isPresent()) {
+                        String identifier = mdRef.get().metadataId.get();
+                        updater.updateEntry( identifier, update( entity ) );
+                    }
+                    else {
+                        String identifier = UUID.randomUUID().toString();
+                        createMetadataRefs( entity, identifier );
+                        updater.newEntry( md -> {
+                            md.setIdentifier( identifier );
+                            update( entity ).accept( md );
+                        });
+                    }
                 }
             }
             updater.commit();
