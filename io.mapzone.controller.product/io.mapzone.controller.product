@@ -24,7 +24,6 @@
    <plugins>
       <plugin id="com.ibm.icu.base"/>
       <plugin id="io.mapzone.controller"/>
-      <plugin id="io.mapzone.controller.catalog"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.xml"/>
       <plugin id="org.apache.felix.gogo.runtime"/>
