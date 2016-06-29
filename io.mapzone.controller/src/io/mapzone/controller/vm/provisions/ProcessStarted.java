@@ -9,12 +9,12 @@ import org.apache.http.client.utils.URIBuilder;
 import org.polymap.core.runtime.cache.Cache;
 import org.polymap.core.runtime.cache.CacheConfig;
 
-import io.mapzone.controller.http.ForwardRequest;
-import io.mapzone.controller.http.HttpProxyProvision;
-import io.mapzone.controller.http.HttpProvisionRuntimeException;
 import io.mapzone.controller.ops.StartProcessOperation;
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
+import io.mapzone.controller.vm.http.ForwardRequest;
+import io.mapzone.controller.vm.http.HttpProvisionRuntimeException;
+import io.mapzone.controller.vm.http.HttpProxyProvision;
 import io.mapzone.controller.vm.repository.ProcessRecord;
 import io.mapzone.controller.vm.repository.ProjectInstanceIdentifier;
 import io.mapzone.controller.vm.repository.ProjectInstanceRecord;

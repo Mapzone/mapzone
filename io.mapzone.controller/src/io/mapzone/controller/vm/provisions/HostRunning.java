@@ -1,7 +1,7 @@
 package io.mapzone.controller.vm.provisions;
 
-import io.mapzone.controller.http.HttpProxyProvision;
 import io.mapzone.controller.provision.Provision;
+import io.mapzone.controller.vm.http.HttpProxyProvision;
 
 /**
  * 

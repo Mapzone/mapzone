@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-package io.mapzone.controller.http;
+package io.mapzone.controller.vm.http;
 
 import java.util.Arrays;
 import java.util.Optional;

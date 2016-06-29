@@ -6,13 +6,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.utils.URIBuilder;
 
-import io.mapzone.controller.http.ForwardRequest;
-import io.mapzone.controller.http.HttpProxyProvision;
-import io.mapzone.controller.http.HttpProvisionRuntimeException;
 import io.mapzone.controller.ops.StartProcessOperation;
 import io.mapzone.controller.ops.StopProcessOperation;
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
+import io.mapzone.controller.vm.http.ForwardRequest;
+import io.mapzone.controller.vm.http.HttpProvisionRuntimeException;
+import io.mapzone.controller.vm.http.HttpProxyProvision;
 import io.mapzone.controller.vm.repository.ProcessRecord;
 import io.mapzone.controller.vm.repository.ProjectInstanceIdentifier;
 import io.mapzone.controller.vm.repository.ProjectInstanceRecord;

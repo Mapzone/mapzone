@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-package io.mapzone.controller.http;
+package io.mapzone.controller.vm.http;
 
 import static io.mapzone.controller.provision.Provision.Status.Severity.OK;
 import static org.apache.commons.lang3.StringUtils.substringAfter;

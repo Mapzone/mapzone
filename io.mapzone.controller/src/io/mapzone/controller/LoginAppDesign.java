@@ -38,10 +38,10 @@ import org.polymap.rhei.batik.toolkit.SimpleDialog;
 import org.polymap.rhei.batik.toolkit.md.MdAppDesign;
 import org.polymap.rhei.form.batik.BatikFormContainer;
 
-import io.mapzone.controller.http.LoginProvision;
 import io.mapzone.controller.ui.user.LoginPanel.LoginForm;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
+import io.mapzone.controller.vm.http.LoginProvision;
 
 /**
  * Provides the UI for logging into a project instance directly (bypassing the

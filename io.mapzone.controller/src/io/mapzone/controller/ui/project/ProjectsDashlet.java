@@ -62,13 +62,13 @@ import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 import org.polymap.cms.ContentProvider;
 
 import io.mapzone.controller.ControllerPlugin;
-import io.mapzone.controller.http.ProxyServlet;
 import io.mapzone.controller.ui.project.ProjectLabelProvider.Type;
 import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
 import io.mapzone.controller.um.repository.UserRole;
+import io.mapzone.controller.vm.http.ProxyServlet;
 
 /**
  * 

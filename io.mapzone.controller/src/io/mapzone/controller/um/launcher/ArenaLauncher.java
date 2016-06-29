@@ -34,7 +34,7 @@ import org.polymap.model2.runtime.ValueInitializer;
 
 import io.mapzone.arena.jmx.ArenaConfigMBean;
 import io.mapzone.controller.ControllerPlugin;
-import io.mapzone.controller.http.ProxyServlet;
+import io.mapzone.controller.vm.http.ProxyServlet;
 import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
 
 /**

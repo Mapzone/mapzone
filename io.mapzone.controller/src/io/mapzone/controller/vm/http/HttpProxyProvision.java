@@ -1,4 +1,4 @@
-package io.mapzone.controller.http;
+package io.mapzone.controller.vm.http;
 
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;

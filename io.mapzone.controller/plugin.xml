@@ -19,7 +19,7 @@
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
             alias="/projects"
-            class="io.mapzone.controller.http.ProxyServlet"
+            class="io.mapzone.controller.vm.http.ProxyServlet"
             load-on-startup="true">
       </servlet>
    </extension>
