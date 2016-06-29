@@ -104,7 +104,7 @@ public class ArenaLauncher
             log.info( "Instance process configured." );
         }
         catch (Exception e) {
-            log.info( "", e );
+            log.warn( "", e );
         }        
     }
     

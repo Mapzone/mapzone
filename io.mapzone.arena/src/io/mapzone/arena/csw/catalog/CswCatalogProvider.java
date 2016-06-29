@@ -30,7 +30,7 @@ public class CswCatalogProvider
     @Override
     public IMetadataCatalog get() {
         CswMetadataCatalog catalog = new CswMetadataCatalog();
-        catalog.baseUrl.set( ArenaConfig.instance().getCatalogServerUrl() );
+        catalog.baseUrl.set( () -> ArenaConfig.instance().getCatalogServerUrl() );
         return catalog;
     }
     

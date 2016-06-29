@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -55,8 +56,9 @@ public class CswMetadataCatalog
 
     private static Log log = LogFactory.getLog( CswMetadataCatalog.class );
 
+    /** The URL to use for requests. Allow to change overtime. */
     @Mandatory
-    public Config<String>           baseUrl;
+    public Config<Supplier<String>>         baseUrl;
     
     
     @Override
@@ -81,7 +83,7 @@ public class CswMetadataCatalog
             public ResultSet execute() throws Exception {
                 GetRecordsRequest getRecords = new GetRecordsRequest()
                         .constraint.put( query )
-                        .baseUrl.put( baseUrl.get() );
+                        .baseUrl.put( baseUrl.get().get() );
 
                 GetRecordsRequest.ResultSet rs = getRecords.execute( monitor );
 
@@ -113,7 +115,7 @@ public class CswMetadataCatalog
     public Optional<? extends IMetadata> entry( String identifier, IProgressMonitor monitor ) throws Exception {
         GetRecordByIdRequest request = new GetRecordByIdRequest()
                 .identifier.put( identifier )
-                .baseUrl.put( baseUrl.get() );
+                .baseUrl.put( baseUrl.get().get() );
         
         return request.execute( monitor )
                 .map( record -> new CswMetadata( record ) );
@@ -131,7 +133,7 @@ public class CswMetadataCatalog
                 CswMetadata md = new CswMetadata( record );
                 initializer.accept( md );
                 requests.add( new InsertRecordRequest( record )
-                        .baseUrl.put( baseUrl.get() ) );
+                        .baseUrl.put( baseUrl.get().get() ) );
             }
 
             @Override
@@ -141,13 +143,13 @@ public class CswMetadataCatalog
                 md.setIdentifier( identifier );
                 updater.accept( md );
                 requests.add( new UpdateRecordRequest( record )
-                        .baseUrl.put( baseUrl.get() ) );
+                        .baseUrl.put( baseUrl.get().get() ) );
             }
 
             @Override
             public void removeEntry( String identifier ) {
                 requests.add( new DeleteRecordRequest( identifier )
-                        .baseUrl.put( baseUrl.get() ) );
+                        .baseUrl.put( baseUrl.get().get() ) );
             }
 
             @Override
