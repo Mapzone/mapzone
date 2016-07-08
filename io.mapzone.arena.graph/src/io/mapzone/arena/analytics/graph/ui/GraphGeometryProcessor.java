@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import org.opengis.feature.Feature;
+import org.opengis.feature.simple.SimpleFeature;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -68,7 +68,7 @@ public class GraphGeometryProcessor
 
     @Override
     public void getFeatureRequest( GetFeaturesRequest request, ProcessorContext context ) throws Exception {
-        List<Feature> results = isNodesLayer.booleanValue() ? graphUi.nodes()
+        List<SimpleFeature> results = isNodesLayer.booleanValue() ? graphUi.nodes()
                 : graphUi.edges();
         context.sendResponse( new GetFeaturesResponse( results.stream().filter( f -> request.getQuery().getFilter().evaluate( f ) ).collect( Collectors.toList() ) ) );
         context.sendResponse( ProcessorResponse.EOP );

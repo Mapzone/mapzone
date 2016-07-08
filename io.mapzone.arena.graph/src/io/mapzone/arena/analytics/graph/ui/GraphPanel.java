@@ -19,7 +19,6 @@ import java.util.TreeMap;
 import java.io.IOException;
 
 import org.geotools.data.FeatureSource;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -140,6 +139,20 @@ public class GraphPanel
     public void init() {
         site().title.set( i18n.get( "title" ) );
         site().preferredWidth.set( 650 );
+        if (!site().memento().optString( NODE_STYLE_IDENTIFIER ).isPresent()) {
+            FeatureStyle featureStyle = P4Plugin.styleRepo().newFeatureStyle();
+            DefaultStyle.fillPointStyle( featureStyle );
+            TextStyle textStyle = DefaultStyle.fillTextStyle( featureStyle, null );
+            textStyle.property.createValue( PropertyString.defaults( "name" ) );
+            featureStyle.store();
+            site().memento().putString( NODE_STYLE_IDENTIFIER, featureStyle.id() );
+        }
+        if (!site().memento().optString( EDGE_STYLE_IDENTIFIER ).isPresent()) {
+            FeatureStyle featureStyle = P4Plugin.styleRepo().newFeatureStyle();
+            DefaultStyle.fillLineStyle( featureStyle );
+            featureStyle.store();
+            site().memento().putString( EDGE_STYLE_IDENTIFIER, featureStyle.id() );
+        }
     }
 
 
@@ -161,7 +174,7 @@ public class GraphPanel
     public void createContents( final Composite parent ) {
         try {
             if (!featureSelection.isPresent()) {
-                tk().createFlowText( parent, "Select a feature table to by **active** first." );
+                tk().createFlowText( parent, i18n.get("noFeatures") );
                 return;
             }
             // this.parent = parent;
@@ -288,15 +301,7 @@ public class GraphPanel
             icon.set( P4Plugin.images().svgImage( "palette.svg", P4Plugin.TOOLBAR_ICON_CONFIG ) );
             tooltip.set( i18n.get( "nodeStylerTooltip" ) );
             action.set( ev -> {
-                if (!site().memento().optString( NODE_STYLE_IDENTIFIER ).isPresent()) {
-                    FeatureStyle featureStyle = P4Plugin.styleRepo().newFeatureStyle();
-                    DefaultStyle.fillPointStyle( featureStyle );
-                    TextStyle textStyle = DefaultStyle.fillTextStyle( featureStyle, null );
-                    textStyle.property.createValue( PropertyString.defaults( "name" ) );
-                    featureStyle.store();
-                    site().memento().putString( NODE_STYLE_IDENTIFIER, featureStyle.id() );
-                }
-                styleEditorInput.set( new StyleEditorInput( site().memento().getString( NODE_STYLE_IDENTIFIER ), graphLayerProvider.graphUi().nodeSchema() ) );
+                styleEditorInput.set( new StyleEditorInput( site().memento().getString( NODE_STYLE_IDENTIFIER ), new FeatureCollectionStore(graphLayerProvider.graphUi().nodeCollection()) ) );
                 getContext().openPanel( site().path(), LayerStylePanel.ID );
             } );
         }
@@ -312,13 +317,7 @@ public class GraphPanel
             icon.set( P4Plugin.images().svgImage( "palette.svg", P4Plugin.TOOLBAR_ICON_CONFIG ) );
             tooltip.set( i18n.get( "edgeStylerTooltip" ) );
             action.set( ev -> {
-                if (!site().memento().optString( EDGE_STYLE_IDENTIFIER ).isPresent()) {
-                    FeatureStyle featureStyle = P4Plugin.styleRepo().newFeatureStyle();
-                    DefaultStyle.fillLineStyle( featureStyle );
-                    featureStyle.store();
-                    site().memento().putString( EDGE_STYLE_IDENTIFIER, featureStyle.id() );
-                }
-                styleEditorInput.set( new StyleEditorInput( site().memento().getString( EDGE_STYLE_IDENTIFIER ), graphLayerProvider.graphUi().edgeSchema() ) );
+                styleEditorInput.set( new StyleEditorInput( site().memento().getString( EDGE_STYLE_IDENTIFIER ), new FeatureCollectionStore( graphLayerProvider.graphUi().edgeCollection() ) ) );
                 getContext().openPanel( site().path(), LayerStylePanel.ID );
             } );
         }

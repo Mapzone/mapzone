@@ -16,9 +16,10 @@ package io.mapzone.arena.analytics.graph.ui;
 import java.util.List;
 import java.util.Map;
 
+import org.geotools.data.collection.ListFeatureCollection;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -208,15 +209,25 @@ public class SimpleFeatureGraphUI
     }
 
 
-    public List<Feature> nodes() {
+    public List<SimpleFeature> nodes() {
         return Lists.newArrayList( nodes.values() );
     }
 
 
-    public List<Feature> edges() {
+    public List<SimpleFeature> edges() {
         return Lists.newArrayList( edges.values() );
     }
 
+    @Override
+    public FeatureCollection nodeCollection() {
+        return new ListFeatureCollection(nodeSchema(), nodes());
+    }
+
+
+    @Override
+    public FeatureCollection edgeCollection() {
+        return new ListFeatureCollection(edgeSchema(), edges());
+    }
 
     public CoordinateReferenceSystem crs() {
         return CRS.get();

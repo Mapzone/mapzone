@@ -12,6 +12,7 @@
  */
 package io.mapzone.arena.analytics.graph;
 
+import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.type.FeatureType;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -55,7 +56,10 @@ public interface GraphUI {
 
     FeatureType nodeSchema();
 
+    FeatureCollection nodeCollection();
 
     FeatureType edgeSchema();
+    
+    FeatureCollection edgeCollection();
 
 }

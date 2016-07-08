@@ -60,9 +60,9 @@ import org.polymap.p4.data.P4PipelineIncubator;
 import org.polymap.rap.openlayers.base.OlEvent;
 import org.polymap.rap.openlayers.base.OlEventListener;
 import org.polymap.rap.openlayers.base.OlMap.Event;
-import org.polymap.rap.openlayers.layer.ImageLayer;
 import org.polymap.rap.openlayers.layer.Layer;
-import org.polymap.rap.openlayers.source.ImageWMSSource;
+import org.polymap.rap.openlayers.layer.TileLayer;
+import org.polymap.rap.openlayers.source.TileWMSSource;
 import org.polymap.rap.openlayers.source.WMSRequestParams;
 
 import io.mapzone.arena.analytics.graph.GraphUI;
@@ -183,7 +183,7 @@ public class ImageLayerProvider
                 mapViewer.getMap().addEventListener( Event.click, clickListener );
             }
 
-            return new ImageLayer().source.put( new ImageWMSSource().url.put( "."
+            return new TileLayer().source.put( new TileWMSSource().url.put( "."
                     + servletAlias ).params.put( new WMSRequestParams().version.put( "1.1.1" ).layers.put( servletPath ).format.put( "image/png" ) ) );
         }
         catch (Exception e) {

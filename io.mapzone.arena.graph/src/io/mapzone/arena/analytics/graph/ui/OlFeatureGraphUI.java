@@ -16,6 +16,7 @@ package io.mapzone.arena.analytics.graph.ui;
 import java.util.List;
 import java.util.Map;
 
+import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.type.FeatureType;
 
 import org.apache.commons.logging.Log;
@@ -218,6 +219,20 @@ public class OlFeatureGraphUI
 
     @Override
     public void updateGeometry( Edge line, Coordinate srcCoordinate, Coordinate targetCoordinate ) {
+        // XXX Auto-generated method stub
+        throw new RuntimeException( "not yet implemented." );
+    }
+
+
+    @Override
+    public FeatureCollection nodeCollection() {
+        // XXX Auto-generated method stub
+        throw new RuntimeException( "not yet implemented." );
+    }
+
+
+    @Override
+    public FeatureCollection edgeCollection() {
         // XXX Auto-generated method stub
         throw new RuntimeException( "not yet implemented." );
     }
