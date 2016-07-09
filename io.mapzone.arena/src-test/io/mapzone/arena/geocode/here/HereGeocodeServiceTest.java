@@ -20,7 +20,6 @@ import java.util.Locale;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.google.common.base.Charsets;
 import com.vividsolutions.jts.geom.Point;
 
 import io.mapzone.arena.geocode.Address;
@@ -52,10 +51,10 @@ public class HereGeocodeServiceTest {
         List<Address> result = service.geocode( query );
         assertEquals( 1, result.size() );
         Address one = result.get( 0 );
-        assertEquals( new String( "Karl-Liebknecht-Straße 10, 04683 Naunhof, Deutschland".getBytes( Charsets.ISO_8859_1 ), Charsets.ISO_8859_1 ), one.label );
+        assertEquals( new String( "Karl-Liebknecht-Straße 10, 04683 Naunhof, Deutschland".getBytes(), "utf-8" ), one.label );
         assertEquals( "Naunhof", one.city );
         assertEquals( "04683", one.postalCode );
-        assertEquals( new String( "Karl-Liebknecht-Straße".getBytes( Charsets.ISO_8859_1 ), Charsets.ISO_8859_1 ), one.street );
+        assertEquals( new String( "Karl-Liebknecht-Straße".getBytes(), "utf-8" ), one.street );
         assertEquals( "10", one.houseNumber );
         Point position = (Point)one.position;
         assertEquals( 12.59345d, position.getCoordinate().x, 0.0d );
@@ -74,10 +73,10 @@ public class HereGeocodeServiceTest {
         List<Address> result = service.geocode( query );
         assertEquals( 1, result.size() );
         Address one = result.get( 0 );
-        assertEquals( new String( "Karl-Liebknecht-Straße 10, 04683 Naunhof, Deutschland".getBytes( Charsets.ISO_8859_1 ), Charsets.ISO_8859_1 ), one.label );
+        assertEquals( new String( "Karl-Liebknecht-Straße 10, 04683 Naunhof, Deutschland".getBytes(), "utf-8" ), one.label );
         assertEquals( "Naunhof", one.city );
         assertEquals( "04683", one.postalCode );
-        assertEquals( new String( "Karl-Liebknecht-Straße".getBytes( Charsets.ISO_8859_1 ), Charsets.ISO_8859_1 ), one.street );
+        assertEquals( new String( "Karl-Liebknecht-Straße".getBytes(), "utf-8" ), one.street );
         assertEquals( "10", one.houseNumber );
         Point position = (Point)one.position;
         assertEquals( 12.59345d, position.getCoordinate().x, 0.0d );
