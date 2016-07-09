@@ -72,6 +72,8 @@ public class ArenaPlugin
     
     private ProjectNodeSynchronizer catalogSynchronizer;
 
+    private GeocodeServletStarter   geocodeService;
+
     
     public void start( BundleContext context ) throws Exception {
         super.start( context );
@@ -84,12 +86,17 @@ public class ArenaPlugin
         geoServerStarter.open();
         
         //
+        geocodeService = new GeocodeServletStarter( context );
+        geocodeService.open();
+        
+        //
         catalogSynchronizer = new ProjectNodeSynchronizer();
     }
 
 
     public void stop( BundleContext context ) throws Exception {
         geoServerStarter.close();
+        geocodeService.close();
         catalogSynchronizer.close();
         instance = null;
         super.stop( context );
