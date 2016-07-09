@@ -29,6 +29,7 @@ def repoProjectsStr = '''[
       "repository" : "mapzone",
       "branch": "master",
       "ant": "true",
+      "junit": "true",
       "successor": "io.mapzone.arena.product"
    },
    { "name": "io.mapzone.parent",
