@@ -59,8 +59,6 @@ public class HereGeocodeServiceTest {
         Point position = (Point)one.position;
         assertEquals( 12.59345d, position.getCoordinate().x, 0.0d );
         assertEquals( 51.25662d, position.getCoordinate().y, 0.0d );
-        
-        
     }
 
 

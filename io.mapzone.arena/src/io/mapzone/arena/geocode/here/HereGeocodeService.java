@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -51,11 +52,12 @@ import io.mapzone.arena.geocode.GeocodeService;
  * @author Steffen Stundzig
  */
 public class HereGeocodeService
-        extends Configurable implements GeocodeService {
+        extends Configurable
+        implements GeocodeService {
 
     private static Log                   log             = LogFactory.getLog( HereGeocodeService.class );
 
-    private final static GeometryFactory GEOMETRYFACTORY = JTSFactoryFinder.getGeometryFactory( null );
+    private final static GeometryFactory GEOMETRYFACTORY = JTSFactoryFinder.getGeometryFactory( new Hints( Hints.JTS_SRID, 4326 ) );
 
     @Mandatory
     @Immutable
