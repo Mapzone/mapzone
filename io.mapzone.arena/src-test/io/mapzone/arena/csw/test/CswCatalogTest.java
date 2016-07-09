@@ -57,7 +57,7 @@ public class CswCatalogTest {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         catalog = new CswMetadataCatalog();
-        catalog.baseUrl.set( "http://localhost:8090/csw" );
+        catalog.baseUrl.set( () -> "http://localhost:8090/csw" );
     }
 
     // instance *******************************************
