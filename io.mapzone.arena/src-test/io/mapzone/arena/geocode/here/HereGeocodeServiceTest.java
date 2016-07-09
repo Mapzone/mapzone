@@ -51,10 +51,10 @@ public class HereGeocodeServiceTest {
         List<Address> result = service.geocode( query );
         assertEquals( 1, result.size() );
         Address one = result.get( 0 );
-        assertEquals( new String( "Karl-Liebknecht-Straße 10, 04683 Naunhof, Deutschland".getBytes(), "utf-8" ), one.label );
+        assertEquals( "Karl-Liebknecht-Stra\u00DFe 10, 04683 Naunhof, Deutschland", one.label );
         assertEquals( "Naunhof", one.city );
         assertEquals( "04683", one.postalCode );
-        assertEquals( new String( "Karl-Liebknecht-Straße".getBytes(), "utf-8" ), one.street );
+        assertEquals( "Karl-Liebknecht-Stra\u00DFe", one.street );
         assertEquals( "10", one.houseNumber );
         Point position = (Point)one.position;
         assertEquals( 12.59345d, position.getCoordinate().x, 0.0d );
@@ -73,10 +73,10 @@ public class HereGeocodeServiceTest {
         List<Address> result = service.geocode( query );
         assertEquals( 1, result.size() );
         Address one = result.get( 0 );
-        assertEquals( new String( "Karl-Liebknecht-Straße 10, 04683 Naunhof, Deutschland".getBytes(), "utf-8" ), one.label );
+        assertEquals( "Karl-Liebknecht-Stra\u00DFe 10, 04683 Naunhof, Deutschland", one.label );
         assertEquals( "Naunhof", one.city );
         assertEquals( "04683", one.postalCode );
-        assertEquals( new String( "Karl-Liebknecht-Straße".getBytes(), "utf-8" ), one.street );
+        assertEquals( "Karl-Liebknecht-Stra\u00DFe", one.street );
         assertEquals( "10", one.houseNumber );
         Point position = (Point)one.position;
         assertEquals( 12.59345d, position.getCoordinate().x, 0.0d );
