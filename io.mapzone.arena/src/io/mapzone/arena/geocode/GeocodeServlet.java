@@ -157,8 +157,8 @@ public class GeocodeServlet
         if (address.position != null) {
             JSONObject position = new JSONObject();
             json.put( "position", position );
-            position.put( "latitude", address.position.getX() );
-            position.put( "longitude", address.position.getY() );
+            position.put( "longitude", address.position.getX() );
+            position.put( "latitude", address.position.getY() );
         }
         return json;
     }
