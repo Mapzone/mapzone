@@ -34,6 +34,7 @@ import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import io.mapzone.arena.csw.catalog.ProjectNodeSynchronizer;
 import io.mapzone.arena.jmx.ArenaConfig;
 import io.mapzone.arena.jmx.ArenaConfigMBean;
+import io.mapzone.arena.tracker.GoogleAnalyticsTracker;
 
 /**
  * 
@@ -74,6 +75,8 @@ public class ArenaPlugin
 
     private GeocodeServletStarter   geocodeService;
 
+    private GoogleAnalyticsTracker googleAnalyticsTracker;
+
     
     public void start( BundleContext context ) throws Exception {
         super.start( context );
@@ -91,6 +94,10 @@ public class ArenaPlugin
         
         //
         catalogSynchronizer = new ProjectNodeSynchronizer();
+        
+        // tracker id for property mapzone.io in analytics account of steffen@mapzone.io
+        googleAnalyticsTracker = new GoogleAnalyticsTracker("UA-80603328-1");
+        googleAnalyticsTracker.start();
     }
 
 
