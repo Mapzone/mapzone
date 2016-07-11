@@ -70,7 +70,7 @@ public class GoogleAnalyticsTracker
         EventManager.instance().unsubscribe( this );
     }
 
-
+    // delay introduced a async background job here
     @EventHandler( delay = 100, scope = Scope.JVM )
     public void track( List<EventObject> events ) {
         List<NameValuePair> params = Lists.newArrayList();
