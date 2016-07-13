@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +28,8 @@ import org.json.JSONWriter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
+
+import org.polymap.core.runtime.event.EventManager;
 
 /**
  * Servlet to expose the geocode service.
@@ -52,6 +55,9 @@ public class GeocodeServlet
     @Override
     protected void doGet( HttpServletRequest req, HttpServletResponse resp ) throws ServletException, IOException {
         try {
+            
+            EventManager.instance().publish( new ServletRequestEvent( getServletContext(), req ));
+            
             GeocodeQuery query = extractQuery( req );
 
             // perform search
