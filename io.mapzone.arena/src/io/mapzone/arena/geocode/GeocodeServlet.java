@@ -17,8 +17,6 @@ import java.util.Locale;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.net.URLEncoder;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -102,20 +100,20 @@ public class GeocodeServlet
             query.targetLanguage.set( new Locale( req.getParameter( "targetLanguage" ) ) );
         }
         if (!StringUtils.isBlank( req.getParameter( "text" ) )) {
-            query.text.set( URLEncoder.encode( req.getParameter( "text" ), "iso-8859-1" ) );
+            query.text.set( req.getParameter( "text" ));
         }
         else {
             if (!StringUtils.isBlank( req.getParameter( "postalCode" ) )) {
-                query.postalCode.set( URLEncoder.encode( req.getParameter( "postalCode" ), "iso-8859-1" ) );
+                query.postalCode.set( req.getParameter( "postalCode" ));
             }
             if (!StringUtils.isBlank( req.getParameter( "city" ) )) {
-                query.city.set( URLEncoder.encode( req.getParameter( "city" ), "iso-8859-1" ) );
+                query.city.set( req.getParameter( "city" ));
             }
             if (!StringUtils.isBlank( req.getParameter( "street" ) )) {
-                query.street.set( URLEncoder.encode( req.getParameter( "street" ), "iso-8859-1" ) );
+                query.street.set( req.getParameter( "street" ));
             }
             if (!StringUtils.isBlank( req.getParameter( "houseNumber" ) )) {
-                query.houseNumber.set( URLEncoder.encode( req.getParameter( "houseNumber" ), "iso-8859-1" ) );
+                query.houseNumber.set( req.getParameter( "houseNumber" ));
             }
         }
         return query;
