@@ -95,9 +95,12 @@ public class ArenaPlugin
         //
         catalogSynchronizer = new ProjectNodeSynchronizer();
         
-        // tracker id for property mapzone.io in analytics account of steffen@mapzone.io
-        googleAnalyticsTracker = new GoogleAnalyticsTracker("UA-80603328-1");
-        googleAnalyticsTracker.start();
+        if (!"off".equals( System.getProperty( "io.mapzone.arena.googleAnalytics", "on" ))) {
+            // tracker id for property mapzone.io in analytics account of
+            // steffen@mapzone.io
+            googleAnalyticsTracker = new GoogleAnalyticsTracker( "UA-80603328-1" );
+            googleAnalyticsTracker.start();
+        }
     }
 
 
