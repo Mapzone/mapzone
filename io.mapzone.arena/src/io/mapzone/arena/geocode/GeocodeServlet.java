@@ -17,6 +17,8 @@ import java.util.Locale;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.net.URLDecoder;
+
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServlet;
@@ -100,26 +102,26 @@ public class GeocodeServlet
         GeocodeQuery query = new GeocodeQuery();
         // extract params
         if (!StringUtils.isBlank( req.getParameter( "country" ) )) {
-            query.country.set( new Locale("", req.getParameter( "country" ) ) );
+            query.country.set( new Locale( "", req.getParameter( "country" ) ) );
         }
         if (!StringUtils.isBlank( req.getParameter( "targetLanguage" ) )) {
             query.targetLanguage.set( new Locale( req.getParameter( "targetLanguage" ) ) );
         }
         if (!StringUtils.isBlank( req.getParameter( "text" ) )) {
-            query.text.set( req.getParameter( "text" ));
+            query.text.set( URLDecoder.decode( req.getParameter( "text" ), "utf-8" ) );
         }
         else {
             if (!StringUtils.isBlank( req.getParameter( "postalCode" ) )) {
-                query.postalCode.set( req.getParameter( "postalCode" ));
+                query.postalCode.set( URLDecoder.decode( req.getParameter( "postalCode" ), "utf-8" ) );
             }
             if (!StringUtils.isBlank( req.getParameter( "city" ) )) {
-                query.city.set( req.getParameter( "city" ));
+                query.city.set( URLDecoder.decode( req.getParameter( "city" ), "utf-8" ) );
             }
             if (!StringUtils.isBlank( req.getParameter( "street" ) )) {
-                query.street.set( req.getParameter( "street" ));
+                query.street.set( URLDecoder.decode( req.getParameter( "street" ), "utf-8" ) );
             }
             if (!StringUtils.isBlank( req.getParameter( "houseNumber" ) )) {
-                query.houseNumber.set( req.getParameter( "houseNumber" ));
+                query.houseNumber.set( URLDecoder.decode( req.getParameter( "houseNumber" ), "utf-8" ) );
             }
         }
         return query;

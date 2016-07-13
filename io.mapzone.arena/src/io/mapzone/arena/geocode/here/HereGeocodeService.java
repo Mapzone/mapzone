@@ -13,10 +13,10 @@
 package io.mapzone.arena.geocode.here;
 
 import java.util.List;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.json.JSONArray;
@@ -164,7 +164,7 @@ public class HereGeocodeService
     }
 
 
-    protected URI createUrl( GeocodeQuery query ) throws URISyntaxException {
+    protected URI createUrl( GeocodeQuery query ) throws URISyntaxException, IOException {
         URIBuilder builder = new URIBuilder().setScheme( "https" ).setHost( baseUrl.get() ).setPath( "/6.2/geocode.json" ).setParameter( "app_code", appCode.get() ).setParameter( "app_id", appId.get() ).setParameter( "jsonattributes", "1" ).setParameter( "gen", "9" );
         if (query.country.isPresent()) {
             builder.setParameter( "country", query.country.get().getISO3Country() );
@@ -174,7 +174,7 @@ public class HereGeocodeService
         }
         builder.setParameter( "maxresults", String.valueOf( query.maxResults.get() ) );
         if (query.text.isPresent()) {
-            builder.setParameter( "searchtext", query.text.get() );
+            builder.setParameter( "searchtext",  query.text.get() );
         }
         else {
             final StringBuilder text = new StringBuilder();
@@ -190,7 +190,7 @@ public class HereGeocodeService
             if (query.houseNumber.isPresent()) {
                 text.append( query.houseNumber.get() ).append( " " );
             }
-            builder.setParameter( "searchtext", text.toString() );
+            builder.setParameter( "searchtext",  text.toString() );
         }
         return builder.build();
     }

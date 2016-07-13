@@ -66,7 +66,7 @@ public class HereGeocodeServiceTest {
     public void lindhardtByParameters() throws Exception {
         GeocodeQuery query = new GeocodeQuery();
         query.houseNumber.set( "10" );
-        query.street.set( "Karl Liebknecht St" );
+        query.street.set( "Karl Liebknecht Straße" );
         query.city.set( "Lindhardt" );
         query.country.set( Locale.GERMANY );
         query.targetLanguage.set( Locale.GERMAN );
