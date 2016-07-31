@@ -96,11 +96,11 @@ public class TransactionResponse
     }
     
     
-    protected void handleUpdate( UpdateType op, UnitOfWork uow ) throws JAXBException {
+    protected void handleUpdate( UpdateType op, UnitOfWork uow ) throws Exception {
         Unmarshaller unmarshaller = jaxbContext.get().createUnmarshaller();
         SummaryRecordType record = unmarshaller.unmarshal( op.getAny(), SummaryRecordType.class ).getValue();
             
-        BooleanExpression expr = FilterParser.parse( op.getConstraint() );
+        BooleanExpression expr = new FilterParser( op.getConstraint(), null ).parse();
         ResultSet<CatalogEntry> rs = uow.query( CatalogEntry.class ).where( expr ).maxResults( 2 ).execute();
         if (rs.size() == 0) {
             log.warn( "No entry found for: " + expr );
@@ -114,8 +114,8 @@ public class TransactionResponse
     }
     
     
-    protected void handleDelete( DeleteType op, UnitOfWork uow ) throws JAXBException {
-        BooleanExpression expr = FilterParser.parse( op.getConstraint() );
+    protected void handleDelete( DeleteType op, UnitOfWork uow ) throws Exception {
+        BooleanExpression expr = new FilterParser( op.getConstraint(), null ).parse();
         ResultSet<CatalogEntry> rs = uow.query( CatalogEntry.class )
                 .where( expr ).maxResults( 2 )
                 .execute();

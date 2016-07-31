@@ -31,9 +31,7 @@ import io.mapzone.controller.catalog.model.OGCQueryable;
 public class CatalogEntryFulltextTransformer 
         extends EntityFeatureTransformer {
 
-    
     public CatalogEntryFulltextTransformer() {
-        super();
         honorQueryableAnnotation.set( true );
         duplicateHandler.set( DuplicateHandler.CONCAT );
         fieldNameProvider.set( prop -> {

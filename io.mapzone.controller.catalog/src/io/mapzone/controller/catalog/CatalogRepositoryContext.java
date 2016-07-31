@@ -24,6 +24,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.polymap.core.CorePlugin;
+
+import org.polymap.rhei.fulltext.FullQueryProposalDecorator;
+import org.polymap.rhei.fulltext.FulltextIndex;
 import org.polymap.rhei.fulltext.indexing.FeatureTransformer;
 import org.polymap.rhei.fulltext.indexing.LowerCaseTokenFilter;
 import org.polymap.rhei.fulltext.model2.FulltextIndexer;
@@ -31,6 +34,7 @@ import org.polymap.rhei.fulltext.store.lucene.LuceneFulltextIndex;
 
 import org.polymap.model2.runtime.EntityRepository;
 import org.polymap.model2.runtime.UnitOfWork;
+import org.polymap.model2.runtime.locking.CommitLockStrategy;
 import org.polymap.model2.runtime.locking.OptimisticLocking;
 import org.polymap.model2.store.recordstore.RecordStoreAdapter;
 import org.polymap.recordstore.lucene.LuceneRecordStore;
@@ -58,15 +62,6 @@ public class CatalogRepositoryContext {
     private UnitOfWork              uow;
 
     
-    public EntityRepository repo() {
-        return repo;
-    }
-
-    public LuceneFulltextIndex index() {
-        return index;
-    }
-
-
     /**
      * Creates the repository instance. 
      */
@@ -78,7 +73,7 @@ public class CatalogRepositoryContext {
         index = new LuceneFulltextIndex( new File( dataDir, "fulltext" ) );
         index.addTokenFilter( new LowerCaseTokenFilter() );
         List<FeatureTransformer> transformers = singletonList( new CatalogEntryFulltextTransformer() ); 
-
+    
         // store
         File dir = new File( dataDir, "store" );
         dir.mkdirs();
@@ -90,12 +85,25 @@ public class CatalogRepositoryContext {
                         new OptimisticLocking(
                         new FulltextIndexer( index, (entity) -> true, transformers,
                         new RecordStoreAdapter( store ) ) ) )
+                .commitLockStrategy.set( () -> 
+                        new CommitLockStrategy.Serialize() )
                 .create();
         
         uow = repo.newUnitOfWork();
     }
 
     
+    public EntityRepository repo() {
+        return repo;
+    }
+
+    
+    public FulltextIndex index() {
+        return new FullQueryProposalDecorator(
+               new LowerCaseTokenFilter( index ) );
+    }
+
+
     /**
      * The global read-cache. Do not close or modify contents!
      */

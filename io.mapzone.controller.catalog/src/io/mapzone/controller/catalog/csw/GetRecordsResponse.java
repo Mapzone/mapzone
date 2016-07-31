@@ -14,8 +14,6 @@
  */
 package io.mapzone.controller.catalog.csw;
 
-import java.util.Optional;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -24,6 +22,7 @@ import org.polymap.model2.query.ResultSet;
 import org.polymap.model2.runtime.UnitOfWork;
 
 import io.mapzone.controller.catalog.CatalogPlugin;
+import io.mapzone.controller.catalog.CatalogRepositoryContext;
 import io.mapzone.controller.catalog.model.CatalogEntry;
 import net.opengis.cat.csw.v_2_0_2.GetRecordsType;
 import net.opengis.cat.csw.v_2_0_2.QueryType;
@@ -43,8 +42,10 @@ public class GetRecordsResponse
     
     @Override
     protected void doExecute() throws Exception {
+        CatalogRepositoryContext catalog = CatalogPlugin.instance().catalog();
+        
         // query
-        UnitOfWork uow = CatalogPlugin.instance().catalog().unitOfWork();
+        UnitOfWork uow = catalog.unitOfWork();
         Query<CatalogEntry> query = uow.query( CatalogEntry.class );
 
         // GET
@@ -52,16 +53,21 @@ public class GetRecordsResponse
             throw new UnsupportedOperationException( "GetRecords: GET requests are not supported." );
         }
         // POST
-        request().<GetRecordsType>parsedBody().ifPresent( body -> {
-            Optional.ofNullable( body.getMaxRecords() ).ifPresent( v -> query.maxResults( v.intValue() ) );
-            Optional.ofNullable( body.getStartPosition() ).ifPresent( v -> query.firstResult( v.intValue() ) );
+        GetRecordsType body = request().<GetRecordsType>parsedBody().orElse( null );
+        if (body != null) {
+            if (body.getMaxRecords() != null ) {
+                query.maxResults( body.getMaxRecords().intValue() );
+            }
+            if (body.getStartPosition() != null ) {
+                query.firstResult( body.getStartPosition().intValue() );
+            }
 //            if (!"application/xml".equalsIgnoreCase( body.getOutputFormat() )) {
 //                throw new UnsupportedOperationException( "OutputFormat: supported format: application/xml" );
 //            }
             
             QueryType queryBody = (QueryType)body.getAbstractQuery().getValue();
-            query.where( FilterParser.parse( queryBody.getConstraint() ) );
-        });
+            query.where( new FilterParser( queryBody.getConstraint(), catalog.index() ).parse() );
+        }
         
         ResultSet<CatalogEntry> rs = query.execute();
         

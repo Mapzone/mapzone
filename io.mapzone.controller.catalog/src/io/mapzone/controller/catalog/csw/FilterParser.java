@@ -22,6 +22,9 @@ import javax.xml.bind.JAXBElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.polymap.rhei.fulltext.FulltextIndex;
+import org.polymap.rhei.fulltext.model2.FulltextIndexer;
+
 import org.polymap.model2.Property;
 import org.polymap.model2.query.Expressions;
 import org.polymap.model2.query.grammar.BooleanExpression;
@@ -49,29 +52,29 @@ public class FilterParser {
 
     private static final Log log = LogFactory.getLog( FilterParser.class );
     
-    public static BooleanExpression parse( FilterType filter ) {
-        return new FilterParser( filter ).parse();
-    }
-
-    public static BooleanExpression parse( QueryConstraintType constraint ) {
-        if (constraint.getCqlText() != null) {
-            throw new UnsupportedOperationException( "CQL ist not supported yet." );            
-        }
-        return new FilterParser( constraint.getFilter() ).parse();
-    }
-
-    // instance *******************************************
-    
     private FilterType          filter;
     
     private BooleanExpression   result = Expressions.TRUE;
 
-    public FilterParser( FilterType filter ) {
+    private FulltextIndex       index;
+
+    
+    public FilterParser( QueryConstraintType constraint, FulltextIndex index ) {
+        this( constraint.getFilter(), index );
+
+        if (constraint.getCqlText() != null) {
+            throw new UnsupportedOperationException( "CQL ist not supported yet." );            
+        }
+    }
+    
+    
+    public FilterParser( FilterType filter, FulltextIndex index ) {
         this.filter = filter;
+        this.index = index;
     }
 
     
-    public BooleanExpression parse() {
+    public BooleanExpression parse() throws Exception {
         handleComparison( filter.getComparisonOps() );
         handleLogic( filter.getLogicOps() );
         handleSpatial( filter.getSpatialOps() );
@@ -86,7 +89,7 @@ public class FilterParser {
     }
 
 
-    protected void handleComparison( JAXBElement<? extends ComparisonOpsType> jaxb ) {
+    protected void handleComparison( JAXBElement<? extends ComparisonOpsType> jaxb ) throws Exception {
         if (jaxb != null && jaxb.getValue() != null) {
             ComparisonOpsType op = jaxb.getValue();
 
@@ -96,7 +99,7 @@ public class FilterParser {
                 binary.getExpression().stream().forEach( expr -> log.info( "EXPRESSION: " + expr.getValue() ) );
                 
                 // FIXME super hack; PropertyIsEqulTo is unmarshalled as BinaryComparison; I don't know
-                // whre to get op type from
+                // where to get op type from
                 PropertyNameType propName = (PropertyNameType)binary.getExpression().get( 0 ).getValue();
                 LiteralType literal = (LiteralType)binary.getExpression().get( 1 ).getValue();
                 handleComparison( (String)propName.getContent().get( 0 ), 
@@ -122,11 +125,14 @@ public class FilterParser {
     }
 
     
-    protected void handleComparison( String propName, String literal, ComparisonOperatorType op ) {
+    protected void handleComparison( String propName, String literal, ComparisonOperatorType op ) throws Exception {
         // AnyText: fulltext
         if (propName.equalsIgnoreCase( "AnyText" )) {
-            log.warn( "Fulltext search not yet supported: " + literal );
+            result = literal.equals( "*" )
+                ? Expressions.TRUE
+                : FulltextIndexer.query( index, literal, -1 );
         }
+        
         // property
         else {
             Collection<PropertyInfo> props = CatalogEntry.TYPE.info().getProperties();
@@ -150,6 +156,7 @@ public class FilterParser {
 
     }
 
+    
     protected void handleSpatial( JAXBElement<? extends SpatialOpsType> jaxb ) {
         if (jaxb != null && jaxb.getValue() != null) {
             throw new UnsupportedOperationException( "Spatial ops are not supported." );
