@@ -29,6 +29,8 @@ import org.json.JSONObject;
 import org.json.JSONWriter;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
 
 import org.polymap.core.runtime.event.EventManager;
@@ -43,6 +45,8 @@ import org.polymap.core.runtime.event.EventManager;
 public class GeocodeServlet
         extends HttpServlet {
 
+    private static Log log = LogFactory.getLog( GeocodeServlet.class );
+    
     /** serialVersionUID */
     private static final long    serialVersionUID = 1L;
 
@@ -59,6 +63,11 @@ public class GeocodeServlet
         try {
             
             EventManager.instance().publish( new ServletRequestEvent( getServletContext(), req ));
+            
+            if (req.getParameterMap().isEmpty()) {
+                resp.sendError( 400, "No parameters found! Please specify at least 'text'." );
+                return;
+            }
             
             GeocodeQuery query = extractQuery( req );
 
