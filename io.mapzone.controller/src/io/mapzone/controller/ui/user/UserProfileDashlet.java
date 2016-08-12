@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
+import io.mapzone.controller.um.repository.ProjectRepository.ProjectUnitOfWork;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -58,7 +59,7 @@ public class UserProfileDashlet
     @Scope("io.mapzone.controller")
     protected Context<UserPrincipal>        userPrincipal;
     
-    private ProjectRepository               repo = ProjectRepository.instance();
+    private ProjectUnitOfWork               uow;
     
     private User                            user;
     
@@ -68,7 +69,9 @@ public class UserProfileDashlet
     @Override
     public void init( DashletSite site ) {
         super.init( site );
-        user = repo.findUser( userPrincipal.get().getName() )
+        
+        uow = ProjectRepository.session();
+        user = uow.findUser( userPrincipal.get().getName() )
                 .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) );
         
         site.title.set( "Profile of " + user.name.get() );

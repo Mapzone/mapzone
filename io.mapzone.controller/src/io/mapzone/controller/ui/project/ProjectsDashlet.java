@@ -66,6 +66,7 @@ import io.mapzone.controller.ui.project.ProjectLabelProvider.Type;
 import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
+import io.mapzone.controller.um.repository.ProjectRepository.ProjectUnitOfWork;
 import io.mapzone.controller.um.repository.User;
 import io.mapzone.controller.um.repository.UserRole;
 import io.mapzone.controller.vm.http.ProxyServlet;
@@ -87,8 +88,6 @@ public class ProjectsDashlet
     @Scope("io.mapzone.controller")
     protected Context<Project>              selected;
     
-    private ProjectRepository               repo;
-    
     private User                            user;
     
     private MdListViewer                    viewer;
@@ -103,8 +102,8 @@ public class ProjectsDashlet
         site.constraints.get().add( new MinWidthConstraint( 350, 10 ) );
 //        site.constraints.get().add( new MinHeightConstraint( dp(72)*3 , 10 ) );
         
-        repo = ProjectRepository.instance();
-        user = repo.findUser( userPrincipal.get().getName() )
+        ProjectUnitOfWork uow = ProjectRepository.session();
+        user = uow.findUser( userPrincipal.get().getName() )
                 .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) );
         
         EventManager.instance().subscribe( this, ifType( EntityChangedEvent.class, ev -> 

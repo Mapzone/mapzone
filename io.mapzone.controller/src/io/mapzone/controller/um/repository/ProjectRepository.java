@@ -22,12 +22,11 @@ import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.runtime.session.SessionContext;
 import org.polymap.core.runtime.session.SessionSingleton;
 
-import org.polymap.model2.Entity;
-import org.polymap.model2.query.Query;
 import org.polymap.model2.query.ResultSet;
+import org.polymap.model2.runtime.DelegatingUnitOfWork;
 import org.polymap.model2.runtime.EntityRepository;
 import org.polymap.model2.runtime.UnitOfWork;
-import org.polymap.model2.runtime.ValueInitializer;
+import org.polymap.model2.runtime.locking.CommitLockStrategy;
 import org.polymap.model2.runtime.locking.OptimisticLocking;
 import org.polymap.model2.store.recordstore.RecordStoreAdapter;
 import org.polymap.recordstore.lucene.LuceneRecordStore;
@@ -37,12 +36,13 @@ import org.polymap.recordstore.lucene.LuceneRecordStore;
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-public class ProjectRepository
-        extends SessionSingleton
-        implements AutoCloseable {
+public class ProjectRepository {
 
     private static Log log = LogFactory.getLog( ProjectRepository.class );
     
+    private static EntityRepository     repo;
+    
+
     public static void init( File basedir ) throws IOException {
         File dir  = new File( basedir, "um" );
         LuceneRecordStore store = new LuceneRecordStore( dir, false );
@@ -60,6 +60,8 @@ public class ProjectRepository
                         // make sure to never loose updates or something
                         new OptimisticLocking(
                         new RecordStoreAdapter( store ) ) )
+                .commitLockStrategy.set( () ->
+                        new CommitLockStrategy.Serialize() )
                 .create();
             
         checkInit();
@@ -94,150 +96,111 @@ public class ProjectRepository
     }
     
     
-    private static EntityRepository     repo;
-    
-
     /**
-     * The instance of the current {@link SessionContext}. This is the <b>read</b>
-     * cache for all entities used by the UI.
+     * The {@link UnitOfWork} of the current {@link SessionContext}.
      * <p/>
-     * Do <b>not</b> use this for <b>modifications</b> that might be canceled or
-     * otherwise may left pending changes! Create a {@link #newNested()} instance for
-     * that. This helps to prevent your modifications from being committed by another
-     * party are leaving half-done, uncommitted changes. Commiting a nested instance
-     * commits also the parent, hence making changes persistent, in one atomic
-     * action. If that fails the <b>parent</b> is rolled back.
+     * Consider creating a {@link ProjectUnitOfWork#newUnitOfWork() nested
+     * UnitOfWork}. This helps to prevent your modifications from being
+     * committed by another party are leaving half-done, uncommitted changes.
      */
-    public static ProjectRepository instance() {
-        return instance( ProjectRepository.class );
+    public static ProjectUnitOfWork session() {
+        return SessionHolder.instance( SessionHolder.class ).uow;
     }
 
+    static class SessionHolder
+            extends SessionSingleton {
+        private ProjectUnitOfWork       uow = new ProjectUnitOfWork( repo.newUnitOfWork() );
+    }
+    
     /**
-     *
+     * A newly created {@link UnitOfWork}, independent from any session.
      */
-    public static ProjectRepository newInstance() {
-        return new ProjectRepository();
+    public static ProjectUnitOfWork newUnitOfWork() {
+        return new ProjectUnitOfWork( repo.newUnitOfWork() );
     }
 
     
-    // instance *******************************************
-    
-    private UnitOfWork              uow;
-    
-    
-    protected ProjectRepository() {
-        this.uow = repo.newUnitOfWork();
-    }
-    
-    
-    protected ProjectRepository( UnitOfWork uow ) {
-        this.uow = uow;
-    }
+    /**
+     * The {@link UnitOfWork} of a {@link ProjectRepository}.
+     */
+    public static class ProjectUnitOfWork
+            extends DelegatingUnitOfWork {
 
-    
-    public Optional<Project> findProject( String organization, String project ) {
-        Organization org = uow.query( Organization.class )
-                .where( eq( Organization.TYPE.name, organization ) )
-                .execute().stream().findAny().get();
+        public ProjectUnitOfWork( UnitOfWork delegate ) {
+            super( delegate );
+        }
         
-        return org.projects.stream()
-                .filter( p -> p.name.get().equals( project ) )
-                .findAny();
-    }
-
-    
-    public Optional<User> findUser( String usernameOrEmail ) {
-        ResultSet<User> rs = uow.query( User.class )
-                .where( or( 
-                        eq( User.TYPE.name, usernameOrEmail ),
-                        eq( User.TYPE.email, usernameOrEmail ) ) )
-                .execute();
-        assert rs.size() <= 1;
-        return rs.stream().findAny();
-    }
+        
+        @Override
+        public UnitOfWork delegate() {
+            return super.delegate();
+        }
 
 
-    public Set<String> groupsOfUser( User user ) {
-        return Collections.EMPTY_SET;
-    }
+        public Optional<Project> findProject( String organization, String project ) {
+            Organization org = delegate().query( Organization.class )
+                    .where( eq( Organization.TYPE.name, organization ) )
+                    .execute().stream().findAny().get();
 
-    
-    protected <T extends Entity> Query<T> query( Class<T> entityClass ) {
-        return uow.query( entityClass );
-    }
-
-
-    public <T extends Entity> T createEntity( Class<T> entityClass, Object id, ValueInitializer<T>... initializers ) {
-        return uow.createEntity( entityClass, id, initializers );
-    }
+            return org.projects.stream()
+                    .filter( p -> p.name.get().equals( project ) )
+                    .findAny();
+        }
 
 
-    public void removeEntity( Entity entity ) {
-        uow.removeEntity( entity );
-    }
+        public Optional<User> findUser( String usernameOrEmail ) {
+            ResultSet<User> rs = delegate().query( User.class )
+                    .where( or( 
+                            eq( User.TYPE.name, usernameOrEmail ),
+                            eq( User.TYPE.email, usernameOrEmail ) ) )
+                    .execute();
+            assert rs.size() <= 1;
+            return rs.stream().findAny();
+        }
 
-    
-    public void rollback() {
-        EventManager.instance().publish( new LifecycleEvent( this, Type.BEFORE_ROLLBACK ) );
-        uow.rollback();
-        EventManager.instance().publish( new LifecycleEvent( this, Type.AFTER_ROLLBACK ) );
-    }
 
-    
-    public void commit() {
-        EventManager.instance().publish( new LifecycleEvent( this, Type.BEFORE_COMMIT ) );
-        uow.commit();
-        EventManager.instance().publish( new LifecycleEvent( this, Type.AFTER_COMMIT ) );
-    }
+        public Set<String> groupsOfUser( User user ) {
+            return Collections.EMPTY_SET;
+        }
 
-    
-    public void close() {
-        EventManager.instance().publish( new LifecycleEvent( this, Type.BEFORE_CLOSE ) );
-        uow.close();
-    }
+        
+        public void rollback() {
+            EventManager.instance().publish( new LifecycleEvent( this, Type.BEFORE_ROLLBACK ) );
+            super.rollback();
+            EventManager.instance().publish( new LifecycleEvent( this, Type.AFTER_ROLLBACK ) );
+        }
 
-    
-    public ProjectRepository newNested() {
-        @SuppressWarnings("resource")
-        ProjectRepository parent = this;
-        return new ProjectRepository( uow.newUnitOfWork() ) {
-            @Override
-            public void commit() {
-                synchronized (parent) {
-                    try {
-                        super.commit();
-                        parent.commit();
-                    }
-                    catch (Exception e) {
-                        log.info( "Commit nested ProjectRepository failed.", e );
-                        parent.rollback();
-                    }
-                }
-            }            
-        };
-    }
 
-    
-    public <T extends Entity> T entity( T entity ) {
-        return uow.entity( entity );
-    }
+        public void commit() {
+            EventManager.instance().publish( new LifecycleEvent( this, Type.BEFORE_COMMIT ) );
+            super.commit();
+            EventManager.instance().publish( new LifecycleEvent( this, Type.AFTER_COMMIT ) );
+        }
 
-    
-    /**
-     * Registers the given handler for {@link LifecycleEvent}s. 
-     * 
-     * @see EventManager#subscribe(Object, org.polymap.core.runtime.event.EventFilter...)
-     * @param annotated The weakly stored handler.
-     * @return this 
-     */
-    public ProjectRepository addLifecycleListener( Object annotated ) {
-        EventManager.instance().subscribe( annotated, ev -> ev.getSource() == this );
-        return this;
-    }
-    
-    
-    public boolean removeLifecycleListener( Object annotated ) {
-        return EventManager.instance().unsubscribe( annotated );    
+
+        public void close() {
+            EventManager.instance().publish( new LifecycleEvent( this, Type.BEFORE_CLOSE ) );
+            super.close();
+        }
+        
+        
+        /**
+         * Registers the given handler for {@link LifecycleEvent}s. 
+         * 
+         * @see EventManager#subscribe(Object, org.polymap.core.runtime.event.EventFilter...)
+         * @param annotated The weakly stored handler.
+         * @return this 
+         */
+        public ProjectUnitOfWork addLifecycleListener( Object annotated ) {
+            EventManager.instance().subscribe( annotated, ev -> ev.getSource() == this );
+            return this;
+        }
+
+
+        public boolean removeLifecycleListener( Object annotated ) {
+            return EventManager.instance().unsubscribe( annotated );    
+        }
+
     }
     
 }

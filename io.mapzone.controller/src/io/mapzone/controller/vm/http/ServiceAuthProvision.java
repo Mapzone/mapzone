@@ -74,7 +74,7 @@ public class ServiceAuthProvision
         ProjectInstanceIdentifier pid = new ProjectInstanceIdentifier( request.get() );
         CacheKey key = new CacheKey( requestToken, pid );
         Boolean valid = loggedIn.get( key, _key -> {
-            Project project = projectRepo().findProject( pid.organization(), pid.project() )
+            Project project = projectUow().findProject( pid.organization(), pid.project() )
                     .orElseThrow( () -> new HttpProvisionRuntimeException( 404, "No such project: " + pid ) );
             return project.serviceAuthToken().map( t -> t.isValid( requestToken ) ).orElse( false );
         });

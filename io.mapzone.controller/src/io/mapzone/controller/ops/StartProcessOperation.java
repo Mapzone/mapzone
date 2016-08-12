@@ -28,9 +28,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
-import org.polymap.core.operation.DefaultOperation;
 import org.polymap.core.runtime.config.Config;
-import org.polymap.core.runtime.config.ConfigurationFactory;
 import org.polymap.core.runtime.config.Immutable;
 import org.polymap.core.runtime.config.Mandatory;
 
@@ -41,7 +39,7 @@ import org.polymap.core.runtime.config.Mandatory;
  * @author Falko Bräutigam
  */
 public class StartProcessOperation
-        extends DefaultOperation {
+        extends VmOperation {
 
     private static Log log = LogFactory.getLog( StartProcessOperation.class );
 
@@ -56,7 +54,6 @@ public class StartProcessOperation
     
     public StartProcessOperation() {
         super( "Start instance" );
-        ConfigurationFactory.inject( this );
     }
 
 

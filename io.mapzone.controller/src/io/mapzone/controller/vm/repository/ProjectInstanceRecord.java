@@ -29,6 +29,7 @@ import io.mapzone.controller.um.launcher.ProjectLauncher;
 import io.mapzone.controller.um.repository.Organization;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
+import io.mapzone.controller.um.repository.ProjectRepository.ProjectUnitOfWork;
 
 /**
  * Represents an installed instance of a {@link Project} consisting of exe/bin path,
@@ -79,9 +80,9 @@ public class ProjectInstanceRecord
      */
     public void executeLauncher( Consumer<ProjectLauncher,Exception> task ) throws Exception {
         try (
-            ProjectRepository pr = ProjectRepository.newInstance();
+            ProjectUnitOfWork uow = ProjectRepository.newUnitOfWork();
         ){
-            Project p = pr.findProject( organisation.get(), project.get() )
+            Project p = uow.findProject( organisation.get(), project.get() )
                     .orElseThrow( () -> new IllegalStateException( "No project for instance: " + organisation.get() + "/" + project.get() ) );
             task.accept( p.launcher.get() );
         }

@@ -17,6 +17,8 @@ package io.mapzone.controller.um.repository;
 import org.polymap.model2.Entity;
 import org.polymap.model2.runtime.UnitOfWork;
 
+import io.mapzone.controller.um.repository.ProjectRepository.ProjectUnitOfWork;
+
 /**
  * 
  *
@@ -30,6 +32,11 @@ public class ProjectEntity
      */
     public UnitOfWork uow() {
         return context.getUnitOfWork();
+    }
+
+    public boolean belongsTo( UnitOfWork uow ) {
+        return uow() == uow 
+                || uow instanceof ProjectUnitOfWork && uow() == ((ProjectUnitOfWork)uow).delegate();
     }
 
 }

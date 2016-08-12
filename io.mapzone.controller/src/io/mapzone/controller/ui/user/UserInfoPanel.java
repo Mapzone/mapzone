@@ -1,15 +1,11 @@
 package io.mapzone.controller.ui.user;
 
 import io.mapzone.controller.ControllerPlugin;
+import io.mapzone.controller.ops.UpdateUserOperation;
 import io.mapzone.controller.ui.CtrlPanel;
 import io.mapzone.controller.ui.DashboardPanel;
 import io.mapzone.controller.ui.util.PropertyAdapter;
-import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.LoginCookie;
-import io.mapzone.controller.um.repository.ProjectRepository;
-import io.mapzone.controller.um.repository.User;
-import io.mapzone.controller.um.xauth.PasswordEncryptor;
-
 import java.util.Optional;
 
 import org.apache.commons.logging.Log;
@@ -21,14 +17,9 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 
-import org.polymap.core.operation.DefaultOperation;
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.runtime.event.EventHandler;
@@ -72,9 +63,7 @@ public class UserInfoPanel
     @Scope("io.mapzone.controller")
     protected Context<UserPrincipal>    userPrincipal;
     
-    private ProjectRepository       nested;
-    
-    private User                    user;
+    private UpdateUserOperation         op;
 
     private BatikFormContainer      profileForm;
 
@@ -100,10 +89,8 @@ public class UserInfoPanel
     @Override
     public void init() {
         super.init();
-        nested = ProjectRepository.instance().newNested();
-        user = nested.findUser( userPrincipal.get().getName() )
-                .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) );
-        getSite().setTitle( "Account: " + user.name.get() );
+        op = new UpdateUserOperation( userPrincipal.get().getName() );
+        getSite().setTitle( "Account: " + op.user.get().name.get() );
     }
 
 
@@ -147,25 +134,6 @@ public class UserInfoPanel
                     return;
                 }
                 
-                // operation
-                DefaultOperation op = new DefaultOperation( "Update user" ) {
-                    @Override
-                    public IStatus doExecute( IProgressMonitor monitor, IAdaptable info ) throws Exception {
-                        monitor.beginTask( getLabel(), 3 );
-
-                        // password hash
-                        newPassword.ifPresent( password -> {
-                            PasswordEncryptor encryptor = PasswordEncryptor.instance();
-                            String hash = encryptor.encryptPassword( password );
-                            user.passwordHash.set( hash );
-                        });
-
-                        nested.commit();
-                        EventManager.instance().publish( new EntityChangedEvent( user ) );
-                        return Status.OK_STATUS;
-                    }
-                };
-                    
                 // execute
                 OperationSupport.instance().execute2( op, true, false, ev2 -> UIThreadExecutor.asyncFast( () -> {
                     if (ev2.getResult().isOK()) {
@@ -209,28 +177,28 @@ public class UserInfoPanel
                     .margins( getSite().getLayoutPreference().getSpacing() / 2 ).create() );
             
             // fullname
-            site.newFormField( new PropertyAdapter( user.fullname ) ).create();
+            site.newFormField( new PropertyAdapter( op.user.get().fullname ) ).create();
             
             // email
-            site.newFormField( new PropertyAdapter( user.email ) )
+            site.newFormField( new PropertyAdapter( op.user.get().email ) )
                     .validator.put( Validators.AND( new NotEmptyValidator(), new EMailAddressValidator() {
                         @Override
                         public String validate( Object fieldValue ) {
                             return Optional.ofNullable( super.validate( fieldValue ) )
-                                    .orElse( nested.findUser( (String)fieldValue ).isPresent() && !fieldValue.equals( user.email.get() )
+                                    .orElse( op.umUow.get().findUser( (String)fieldValue ).isPresent() && !fieldValue.equals( op.user.get().email.get() )
                                             ? "EMail is already taken" : null );
                         }
                     }))
                     .create();
             
             // website
-            site.newFormField( new PropertyAdapter( user.website ) ).create();
+            site.newFormField( new PropertyAdapter( op.user.get().website ) ).create();
             
             // company
-            site.newFormField( new PropertyAdapter( user.company ) ).create();
+            site.newFormField( new PropertyAdapter( op.user.get().company ) ).create();
             
             // location
-            site.newFormField( new PropertyAdapter( user.location ) ).create();            
+            site.newFormField( new PropertyAdapter( op.user.get().location ) ).create();            
         }
     }
     
@@ -252,7 +220,7 @@ public class UserInfoPanel
                     .margins( getSite().getLayoutPreference().getSpacing() / 2 ).create() );
             
             // name
-            site.newFormField( new PropertyAdapter( user.name ) )
+            site.newFormField( new PropertyAdapter( op.user.get().name ) )
                     .fieldEnabled.put( false ).create();
 
             // password

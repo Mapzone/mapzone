@@ -14,106 +14,105 @@
  */
 package io.mapzone.controller.ops;
 
-import io.mapzone.controller.Messages;
-import io.mapzone.controller.um.repository.EntityChangedEvent;
-import io.mapzone.controller.um.repository.Project;
-import io.mapzone.controller.um.repository.ProjectRepository;
-import io.mapzone.controller.vm.repository.HostRecord;
-import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
-import io.mapzone.controller.vm.repository.ProcessRecord;
-import io.mapzone.controller.vm.repository.ProjectInstanceIdentifier;
-import io.mapzone.controller.vm.repository.VmRepository;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 
-import org.polymap.core.operation.DefaultOperation;
 import org.polymap.core.runtime.config.Config;
-import org.polymap.core.runtime.config.ConfigurationFactory;
 import org.polymap.core.runtime.config.Mandatory;
 import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.runtime.i18n.IMessages;
 
+import io.mapzone.controller.Messages;
+import io.mapzone.controller.um.repository.EntityChangedEvent;
+import io.mapzone.controller.um.repository.Project;
+import io.mapzone.controller.um.repository.ProjectRepository;
+import io.mapzone.controller.vm.repository.HostRecord;
+import io.mapzone.controller.vm.repository.ProcessRecord;
+import io.mapzone.controller.vm.repository.ProjectInstanceIdentifier;
+import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
+import io.mapzone.controller.vm.repository.VmRepository;
+
 /**
- * Deletes a new {@link Project}.
+ * Deletes a {@link Project}.
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class DeleteProjectOperation
-        extends DefaultOperation {
+        extends UmOperation {
 
     private static Log log = LogFactory.getLog( DeleteProjectOperation.class );
 
     public static final IMessages i18n = Messages.forPrefix( "DeleteProjectOperation" );
     
     @Mandatory
-    public Config<ProjectRepository>    repo;
-    
-    @Mandatory
     public Config<Project>              project;
     
     
+    /**
+     * Creates a new instance wirh {@link ProjectRepository#session()} set.
+     */
     public DeleteProjectOperation() {
         super( i18n.get( "title" ) );
-        ConfigurationFactory.inject( this );
+        vmUow.set( VmRepository.newUnitOfWork() );
+        umUow.set( ProjectRepository.session() );
     }
 
 
     @Override
-    public IStatus doExecute( IProgressMonitor monitor, IAdaptable info ) throws Exception {
-        VmRepository vmRepo = VmRepository.newInstance();
-        try {
-            monitor.beginTask( getLabel(), 10 );
+    public IStatus doWithCommit( IProgressMonitor monitor, IAdaptable info ) throws Exception {
+        assert project.isPresent();
+        assert project.get().belongsTo( umUow.get() );
 
-            // find instance on host
-            ProjectInstanceRecord instance = vmRepo.findInstance( new ProjectInstanceIdentifier( project.get() ) )
-                    .orElseThrow( () -> new RuntimeException( "No project instance found for: " + project.get() ) );
-            monitor.worked( 1 );
+        monitor.beginTask( getLabel(), 10 );
 
-            // stop process
-            ProcessRecord process = instance.process.get();
-            if (process != null) {
-                StopProcessOperation op = new StopProcessOperation();
-                op.process.set( process );
-                op.vmRepo.set( vmRepo );
-                op.execute( null, null );
-            }
-            monitor.worked( 1 );
-            
-            // uninstall filesystem on host
-            project.get().launcher.get().uninstall( instance, new SubProgressMonitor( monitor, 7 ) );
-            
-            // remove instance and association
-            Object instanceId = instance.id();
-            vmRepo.removeEntity( instance );
-            HostRecord host = instance.host.get();
-            assert host.instances.stream().allMatch( i -> !i.id().equals( instanceId ) );
-            
-            // remove project
-            repo.get().removeEntity( project.get() );
+        // find instance on host
+        ProjectInstanceRecord instance = vmUow.get().findInstance( new ProjectInstanceIdentifier( project.get() ) )
+                .orElseThrow( () -> new RuntimeException( "No project instance found for: " + project.get() ) );
+        monitor.worked( 1 );
 
-            // commit
-            vmRepo.commit();
-            repo.get().commit();
-            EventManager.instance().publish( new EntityChangedEvent( project.get() ) );
-            monitor.done();
-            return Status.OK_STATUS;
+        // stop process
+        ProcessRecord process = instance.process.get();
+        if (process != null) {
+            StopProcessOperation op = new StopProcessOperation();
+            op.process.set( process );
+            op.vmUow.set( vmUow.get() );
+            op.execute( null, null );
         }
-        catch (Exception e) {
-            log.warn( "", e );
-            vmRepo.rollback();
-            throw new ExecutionException( i18n.get( "errorMsg", e.getLocalizedMessage() ), e );
-        }
-        finally {
-            vmRepo.close();
-        }
+        monitor.worked( 1 );
+
+        // uninstall filesystem on host
+        project.get().launcher.get().uninstall( instance, new SubProgressMonitor( monitor, 7 ) );
+
+        // remove instance and association
+        Object instanceId = instance.id();
+        vmUow.get().removeEntity( instance );
+        HostRecord host = instance.host.get();
+        assert host.instances.stream().allMatch( i -> !i.id().equals( instanceId ) );
+
+        // remove project
+        umUow.get().removeEntity( project.get() );
+
+        monitor.done();
+        return Status.OK_STATUS;
     }
 
+
+    @Override
+    protected void onSuccess() {
+        EventManager.instance().publish( new EntityChangedEvent( project.get() ) );
+        vmUow.get().close();
+    }
+
+
+    @Override
+    protected void onError( Throwable e ) {
+        vmUow.get().close();
+    }
+    
 }

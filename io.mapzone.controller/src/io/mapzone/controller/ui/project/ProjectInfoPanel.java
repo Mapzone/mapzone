@@ -17,16 +17,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
-
-import org.polymap.core.operation.DefaultOperation;
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.UIThreadExecutor;
-import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.security.UserPrincipal;
 import org.polymap.core.ui.ColumnLayoutFactory;
 import org.polymap.core.ui.FormLayoutFactory;
@@ -48,14 +41,11 @@ import org.polymap.rhei.form.IFormPageSite;
 import org.polymap.rhei.form.batik.BatikFormContainer;
 
 import io.mapzone.controller.ops.DeleteProjectOperation;
+import io.mapzone.controller.ops.UpdateProjectOperation;
 import io.mapzone.controller.ui.CtrlPanel;
 import io.mapzone.controller.ui.util.PropertyAdapter;
 import io.mapzone.controller.um.repository.AuthToken;
-import io.mapzone.controller.um.repository.EntityChangedEvent;
-import io.mapzone.controller.um.repository.Organization;
 import io.mapzone.controller.um.repository.Project;
-import io.mapzone.controller.um.repository.ProjectRepository;
-import io.mapzone.controller.um.repository.User;
 
 /**
  * 
@@ -77,43 +67,23 @@ public class ProjectInfoPanel
     @Scope("io.mapzone.controller")
     protected Context<Project>          selected;
     
-    private ProjectRepository           nested;
+    /**
+     * The operation to be prepared and executed by this panel.
+     */
+    private UpdateProjectOperation      op;
     
-    /** The instance that belongs to {@link #nested}. */
-    private Project                     nestedProject;
-    
-    private User                        user;
-
     private BatikFormContainer          form;
 
     private Button                      fab;
-
-    private Optional<Organization>      organization = Optional.empty();
 
     
     @Override
     public void init() {
         super.init();
         site().title.set( "Project" );
-        nested = ProjectRepository.instance().newNested();
-        user = nested.findUser( userPrincipal.get().getName() )
-                .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) );
-        nestedProject = nested.entity( selected.get() );
         
-//        VmRepository vmrepo = null;
-//        try {
-//            vmrepo = VmRepository.newInstance();
-//            ProjectInstanceIdentifier pid = new ProjectInstanceIdentifier( nestedProject );
-//            ProjectInstanceRecord instance = vmrepo.findInstance( pid ).get();
-//
-//            ArenaLauncher.configureInstance( instance );
-//        }
-//        catch (MalformedURLException e) {
-//            throw new RuntimeException( e );
-//        }
-//        finally {
-//            vmrepo.close();
-//        }
+        op = new UpdateProjectOperation( userPrincipal.get().getName() );
+        op.project.set( selected.get() );
     }
 
 
@@ -151,16 +121,6 @@ public class ProjectInfoPanel
                     StatusDispatcher.handleError( "Unable to create project.", e );
                     return;
                 }
-                // operation
-                DefaultOperation op = new DefaultOperation( "Update project" ) {
-                    @Override
-                    public IStatus doExecute( IProgressMonitor monitor, IAdaptable info ) throws Exception {
-                        monitor.beginTask( getLabel(), 1 );
-                        nested.commit();
-                        EventManager.instance().publish( new EntityChangedEvent( nestedProject ) );
-                        return Status.OK_STATUS;
-                    }
-                };
                 // execute
                 OperationSupport.instance().execute2( op, true, false, ev2 -> UIThreadExecutor.asyncFast( () -> {
                     if (ev2.getResult().isOK()) {
@@ -191,7 +151,7 @@ public class ProjectInfoPanel
         
         Label msg = tk().createLabel( section.getBody(), "This token ..." );
         
-        Optional<AuthToken> authToken = nestedProject.serviceAuthToken();
+        Optional<AuthToken> authToken = op.project.get().serviceAuthToken();
         Text text = tk().createText( section.getBody(), "<No auth token>", SWT.BORDER, SWT.READ_ONLY );
         authToken.ifPresent( t -> text.setText( t.toString() ) );
         //text.setBackground( text.getParent().getBackground() );
@@ -201,7 +161,7 @@ public class ProjectInfoPanel
         createBtn.addSelectionListener( new SelectionAdapter() {
             @Override
             public void widgetSelected( SelectionEvent ev ) {
-                AuthToken newToken = nestedProject.newServiceAuthToken( new NullProgressMonitor() );
+                AuthToken newToken = op.project.get().newServiceAuthToken( new NullProgressMonitor() );
                 text.setText( newToken.toString() );
                 updateEnabled();
             }
@@ -225,12 +185,11 @@ public class ProjectInfoPanel
 //                MdSnackbar snackbar = tk.createSnackbar();
 //                snackbar.showIssue( MessageType.WARNING, "We are going to delete the project." );
                 
-                DeleteProjectOperation op = new DeleteProjectOperation();
-                op.repo.set( nested );
-                op.project.set( nestedProject );
+                DeleteProjectOperation dop = new DeleteProjectOperation();
+                dop.project.set( selected.get() );
 
                 // execute sync as long as there is no progress indicator
-                OperationSupport.instance().execute2( op, false, false, ev2 -> asyncFast( () -> {
+                OperationSupport.instance().execute2( dop, false, false, ev2 -> asyncFast( () -> {
                     if (ev2.getResult().isOK()) {
                         getContext().closePanel( site().path() );
                     }
@@ -246,7 +205,7 @@ public class ProjectInfoPanel
     protected void updateEnabled() {
         fab.setVisible( 
                 form.isDirty() && form.isValid() ||
-                !Objects.equals( selected.get().serviceAuthToken.get(), nestedProject.serviceAuthToken.get() ) );
+                !Objects.equals( selected.get().serviceAuthToken.get(), op.project.get().serviceAuthToken.get() ) );
     }
     
     
@@ -267,26 +226,26 @@ public class ProjectInfoPanel
                     .margins( getSite().getLayoutPreference().getSpacing() / 2 ).create() );
             
             // organization
-            site.newFormField( new PlainValuePropertyAdapter( "organizationOrUser", nestedProject.organization.get().name.get() ) )
+            site.newFormField( new PlainValuePropertyAdapter( "organizationOrUser", op.project.get().organization.get().name.get() ) )
                     .label.put( "Organization" )
                     .tooltip.put( "Changing organization is not yet supported." )
                     .fieldEnabled.put( false )
                     .create();
             
             // name
-            site.newFormField( new PropertyAdapter( nestedProject.name ) )
+            site.newFormField( new PropertyAdapter( op.project.get().name ) )
                     .tooltip.put( "Changing name is not yet supported." )
                     .fieldEnabled.put( false )
                     .create();
             
             // description
-            site.newFormField( new PropertyAdapter( nestedProject.description ) ).create();
+            site.newFormField( new PropertyAdapter( op.project.get().description ) ).create();
             
             // website
-            site.newFormField( new PropertyAdapter( nestedProject.website ) ).create();
+            site.newFormField( new PropertyAdapter( op.project.get().website ) ).create();
             
             // location
-            site.newFormField( new PropertyAdapter( nestedProject.location ) ).create();
+            site.newFormField( new PropertyAdapter( op.project.get().location ) ).create();
             
             site.addFieldListener( this );
         }
@@ -295,9 +254,10 @@ public class ProjectInfoPanel
         @Override
         public void fieldChange( FormFieldEvent ev ) {
             if (ev.getEventCode() == VALUE_CHANGE) {
-                if (ev.getFieldName().equals( "organizationOrUser" )) {
-                    organization = ev.getNewModelValue();
-                }
+//                if (ev.getFieldName().equals( "organizationOrUser" )) {
+//                    ev.getNewModelValue().ifPresent( v -> op.organization.set( (Organization)v ) );
+//                   // op.organization.set( (Organization)ev.getNewModelValue().orElse( null ) );
+//                }
                 updateEnabled();
             }
         }

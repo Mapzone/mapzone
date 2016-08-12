@@ -34,10 +34,10 @@ import org.polymap.core.runtime.cache.CacheConfig;
 
 import org.polymap.model2.Entity;
 import org.polymap.model2.query.ResultSet;
+import org.polymap.model2.runtime.DelegatingUnitOfWork;
 import org.polymap.model2.runtime.EntityRepository;
 import org.polymap.model2.runtime.ModelRuntimeException;
 import org.polymap.model2.runtime.UnitOfWork;
-import org.polymap.model2.runtime.ValueInitializer;
 import org.polymap.model2.runtime.locking.CommitLockStrategy;
 import org.polymap.model2.runtime.locking.OptimisticLocking;
 import org.polymap.model2.runtime.locking.PessimisticLocking;
@@ -104,84 +104,71 @@ public class VmRepository {
     /**
      * Make sure to {@link VmRepository#commit()} or {@link VmRepository#rollback()}!
      */
-    public static VmRepository newInstance() {
-        return new VmRepository();
+    public static VmUnitOfWork newUnitOfWork() {
+        return new VmUnitOfWork( repo.newUnitOfWork() );
     }
     
-    
-    // instance *******************************************
-    
-    private UnitOfWork                  uow = repo.newUnitOfWork();
 
-//    /**
-//     * Synchronizes modifications of {@link VmRepository} and the real host/process
-//     * state. This implements pessimistic locking. A lock must be aquired *before*
-//     * accessing the entity to modify. See {@link VmRepository} for detail.
-//     * <p/>
-//     * XXX This might get a huge bottleneck. We will find a more fine grained
-//     * solution later. However, the API will not change to much. The Provision sees a
-//     * lock in its context which it aquires for modification. It does not know where
-//     * it comes from.
-//     */
-//    public ReentrantReadWriteLock       lock = new ReentrantReadWriteLock();
-    
-    /** Global write lock count. Helps to find intercepted read->write upgrade. */
-    private volatile int                globalLockCount;
-    
-    private Cache<ProjectInstanceIdentifier,Optional<ProjectInstanceRecord>> 
-                                        instanceCache = CacheConfig.defaults().initSize( 256 ).createCache();
-    
-    
-    public Optional<ProjectInstanceRecord> findInstance( ProjectInstanceIdentifier pid ) {
-        return instanceCache.get( pid, key -> {
-            ResultSet<ProjectInstanceRecord> rs = uow.query( ProjectInstanceRecord.class )
-                    .where( and( 
-                            eq( ProjectInstanceRecord.TYPE.organisation, pid.organization() ),
-                            eq( ProjectInstanceRecord.TYPE.project, pid.project() ) ) )
-                    .execute();
-            assert rs.size() < 2;
-            return rs.stream().findAny();
-        });
+    /**
+     * The {@link UnitOfWork} of a {@link VmRepository}. 
+     *
+     * @author Falko Bräutigam
+     */
+    public static class VmUnitOfWork
+            extends DelegatingUnitOfWork {
+
+        /** Global write lock count. Helps to find intercepted read->write upgrade. */
+        private volatile int    globalLockCount;
+
+        private Cache<ProjectInstanceIdentifier,Optional<ProjectInstanceRecord>> 
+                                instanceCache = CacheConfig.defaults().initSize( 256 ).createCache();
+     
+        public VmUnitOfWork( UnitOfWork delegate ) {
+            super( delegate );
+        }
+        
+
+        public Optional<ProjectInstanceRecord> findInstance( ProjectInstanceIdentifier pid ) {
+            return instanceCache.get( pid, key -> {
+                ResultSet<ProjectInstanceRecord> rs = delegate().query( ProjectInstanceRecord.class )
+                        .where( and( 
+                                eq( ProjectInstanceRecord.TYPE.organisation, pid.organization() ),
+                                eq( ProjectInstanceRecord.TYPE.project, pid.project() ) ) )
+                        .execute();
+                assert rs.size() < 2;
+                return rs.stream().findAny();
+            });
+        }
+
+
+        public Optional<ProcessRecord> findProcess( ProjectInstanceIdentifier pid ) {
+            return findInstance( pid ).map( _instance -> _instance.process.get() );
+        }
+
+
+        public List<HostRecord> allHosts() {
+            return delegate().query( HostRecord.class ).execute().stream().collect( Collectors.toList() );
+        }
+
+
+        public void commit() throws ModelRuntimeException {
+            log.info( "COMMIT provision: ..." );
+            delegate().commit();
+            close();
+        }
+
+
+        public void rollback() throws ModelRuntimeException {
+            log.info( "ROLLBACK provision: ..." );
+            delegate().rollback();
+            close();
+        }
+
+
+        public void close() {
+            delegate().close();
+            PessimisticLocking.notifyClosed( delegate() );
+        }
     }
-
     
-    public Optional<ProcessRecord> findProcess( ProjectInstanceIdentifier pid ) {
-        return findInstance( pid ).map( _instance -> _instance.process.get() );
-    }
-    
-    
-    public void removeEntity( Entity entity ) {
-        uow.removeEntity( entity );
-    }
-
-
-    public List<HostRecord> allHosts() {
-        return uow.query( HostRecord.class ).execute().stream().collect( Collectors.toList() );
-    }
-
-
-    public <T extends Entity> T createEntity( Class<T> entityClass, Object id, ValueInitializer<T>... initializers ) {
-        return uow.createEntity( entityClass, id, initializers );
-    }
-
-
-    public void commit() throws ModelRuntimeException {
-        log.info( "COMMIT provision: ..." );
-        uow.commit();
-        close();
-    }
-
-    
-    public void rollback() throws ModelRuntimeException {
-        log.info( "ROLLBACK provision: ..." );
-        uow.rollback();
-        close();
-    }
-
-
-    public void close() {
-        uow.close();
-        PessimisticLocking.notifyClosed( uow );
-    }
-
 }

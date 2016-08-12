@@ -8,7 +8,6 @@ import io.mapzone.controller.ui.CtrlPanel;
 import io.mapzone.controller.ui.DashboardPanel;
 import io.mapzone.controller.ui.StartPanel;
 import io.mapzone.controller.ui.util.PropertyAdapter;
-import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
 
 import java.util.Optional;
@@ -22,7 +21,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-import org.eclipse.core.commands.operations.IUndoableOperation;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
@@ -71,17 +69,14 @@ public class RegisterPanel
 
     public static final IMessages       i18n = Messages.forPrefix( "RegisterPanel" );
 
-    /** The nested transaction that allows to rollback. */
-    private ProjectRepository           repo;
-    
     @Scope("io.mapzone.controller")
     private Context<UserPrincipal>      userPrincipal;
 
+    private CreateUserOperation         op;
+    
     private Button                      okBtn;
 
     private BatikFormContainer          form;
-
-    private User                        user;
 
     private Composite                   panelContainer;
 
@@ -104,7 +99,8 @@ public class RegisterPanel
     @Override
     public void init() {
         super.init();
-        repo = ProjectRepository.instance().newNested();
+        op = new CreateUserOperation();
+        op.createEntity();
     }
 
 
@@ -114,7 +110,6 @@ public class RegisterPanel
             form.removeFieldListener( this );
             form = null;
         }
-        repo.close();
     }
 
 
@@ -146,8 +141,6 @@ public class RegisterPanel
         // form section
         formSection = tk.createPanelSection( parent, "Personal account settings", SWT.BORDER );
         formSection.getBody().setLayout( ColumnLayoutFactory.defaults().spacing( 8 ).margins( 0, 0 ).create() );
-
-        user = repo.createEntity( User.class, null, User.defaults );
         
         form = new BatikFormContainer( new NamePasswordForm() );
         form.createContents( formSection );
@@ -165,11 +158,11 @@ public class RegisterPanel
                     return;
                 }
 
-                IUndoableOperation op = new CreateUserOperation( repo, user, password );
                 OperationSupport.instance().execute( op, true, false, new JobChangeAdapter() {
                     @Override
                     public void done( IJobChangeEvent ev2 ) {
                         if (ev2.getResult().isOK()) {
+                            User user = op.user.get();
                             userPrincipal.set( SecurityContext.instance().loginTrusted( user.name.get() ) );
                             
                             //getSite().setStatus( new Status( IStatus.OK, ControllerPlugin.ID, i18n.get( "okText" ) ) );
@@ -188,8 +181,6 @@ public class RegisterPanel
     }
 
     
-    private String      password;
-    
     @Override
     public void fieldChange( FormFieldEvent ev ) {
         if (ev.getEventCode() == IFormFieldListener.VALUE_CHANGE
@@ -197,7 +188,8 @@ public class RegisterPanel
             okBtn.setEnabled( false );            
 
             if (ev.getFieldName().equals( "password" )) {
-                password = (String)ev.getNewModelValue().orElse( null );
+                String password = (String)ev.getNewModelValue().orElse( null );
+                op.password.set( password );
             }
             
             okBtn.setEnabled( form.isValid() );
@@ -233,22 +225,22 @@ public class RegisterPanel
                     .spacing( 5 /*panelSite.getLayoutPreference( LAYOUT_SPACING_KEY ) / 4*/ )
                     .margins( getSite().getLayoutPreference().getSpacing() / 2 ).create() );
 
-            site.newFormField( new PropertyAdapter( user.name ) )
+            site.newFormField( new PropertyAdapter( op.user.get().name ) )
                     .label.put( "Username" )
                     .validator.put( new NotEmptyValidator() {
                         @Override
                         public String validate( Object fieldValue ) {
                             return Optional.ofNullable( super.validate( fieldValue ) )
-                                    .orElse( repo.findUser( (String)fieldValue ).isPresent() ? "Username is already taken" : null );
+                                    .orElse( op.umUow.get().findUser( (String)fieldValue ).isPresent() ? "Username is already taken" : null );
                         }
                     }).create();
             
-            site.newFormField( new PropertyAdapter( user.email ) )
+            site.newFormField( new PropertyAdapter( op.user.get().email ) )
                     .validator.put( Validators.AND( new NotEmptyValidator(), new EMailAddressValidator() {
                         @Override
                         public String validate( Object fieldValue ) {
                             return Optional.ofNullable( super.validate( fieldValue ) )
-                                    .orElse( repo.findUser( (String)fieldValue ).isPresent() ? "EMail is already taken" : null );
+                                    .orElse( op.umUow.get().findUser( (String)fieldValue ).isPresent() ? "EMail is already taken" : null );
                         }
                     }))
                     .create();

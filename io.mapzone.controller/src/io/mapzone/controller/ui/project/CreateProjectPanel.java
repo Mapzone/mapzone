@@ -8,14 +8,9 @@ import io.mapzone.controller.ops.CreateProjectOperation;
 import io.mapzone.controller.ui.CtrlPanel;
 import io.mapzone.controller.ui.DashboardPanel;
 import io.mapzone.controller.ui.util.PropertyAdapter;
-import io.mapzone.controller.um.launcher.ArenaLauncher;
 import io.mapzone.controller.um.repository.Organization;
 import io.mapzone.controller.um.repository.Project;
-import io.mapzone.controller.um.repository.ProjectRepository;
-import io.mapzone.controller.um.repository.User;
-
 import java.util.Map;
-import java.util.Optional;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -70,11 +65,10 @@ public class CreateProjectPanel
     @Scope("io.mapzone.controller")
     protected Context<UserPrincipal> userPrincipal;
     
-    private ProjectRepository       nested;
-    
-    private Project                 project;
-    
-    private User                    user;
+    /**
+     * The operation to be prepared and executed by this panel.
+     */
+    private CreateProjectOperation  op;
 
     private BatikFormContainer      projectForm;
 
@@ -82,15 +76,12 @@ public class CreateProjectPanel
 
     private Button                  fab;
 
-    private Optional<Organization>  organization = Optional.empty();
-
-
     
     @Override
     public boolean wantsToBeShown() {
         if (parentPanel().get() instanceof DashboardPanel) {
-            getSite().setTitle( "" );
-            getSite().setIcon( icon );
+            site().title.set( "" );
+            site().icon.set( icon );
             return true;
         }
         return false;
@@ -101,11 +92,9 @@ public class CreateProjectPanel
     public void init() {
         super.init();
         site().title.set( "New project" );
-        nested = ProjectRepository.instance().newNested();
-        user = nested.findUser( userPrincipal.get().getName() )
-                .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) );
-        project = nested.createEntity( Project.class, null, Project.defaults );        
-        project.launcher.createValue( ArenaLauncher.defaults );
+        
+        op = new CreateProjectOperation( userPrincipal.get().getName() );
+        op.createProject();
     }
 
 
@@ -149,12 +138,6 @@ public class CreateProjectPanel
                     return;
                 }
                 
-                // prepare operation
-                CreateProjectOperation op = new CreateProjectOperation();
-                op.repo.set( nested );
-                op.project.set( project );
-                op.organization.set( organization.get() );
-                
                 // XXX execute sync as long as there is no progress indicator
                 OperationSupport.instance().execute2( op, false, false, ev2 -> asyncFast( () -> {
                     if (ev2.getResult().isOK()) {
@@ -192,7 +175,7 @@ public class CreateProjectPanel
                     .margins( getSite().getLayoutPreference().getSpacing() / 2 ).create() );
             
             // organization
-            Map<String,Organization> orgs = user.organizations.stream()
+            Map<String,Organization> orgs = op.user.get().organizations.stream()
                     .map( role -> role.organization.get() )
                     .collect( toMap( org -> org.name.get(), org -> org ) );
             site.newFormField( new PlainValuePropertyAdapter( "organizationOrUser", null ) )
@@ -202,14 +185,14 @@ public class CreateProjectPanel
                     .create();
             
             // name
-            site.newFormField( new PropertyAdapter( project.name ) )
+            site.newFormField( new PropertyAdapter( op.project.get().name ) )
                     .validator.put( new NotEmptyValidator<String,String>() {
                         @Override
                         public String validate( String fieldValue ) {
                             String result = super.validate( fieldValue );
                             if (result == null) {
-                                if (organization.isPresent()) {
-                                    if (nested.findProject( organization.get().name.get(), (String)fieldValue ).isPresent()) { 
+                                if (op.organization.isPresent()) {
+                                    if (op.umUow.get().findProject( op.organization.get().name.get(), (String)fieldValue ).isPresent()) { 
                                         result = "Project name is already taken";
                                     }
                                 }
@@ -222,13 +205,13 @@ public class CreateProjectPanel
                     }).create();
             
             // description
-            site.newFormField( new PropertyAdapter( project.description ) ).create();
+            site.newFormField( new PropertyAdapter( op.project.get().description ) ).create();
             
             // website
-            site.newFormField( new PropertyAdapter( project.website ) ).create();
+            site.newFormField( new PropertyAdapter( op.project.get().website ) ).create();
             
             // location
-            site.newFormField( new PropertyAdapter( project.location ) ).create();
+            site.newFormField( new PropertyAdapter( op.project.get().location ) ).create();
             
             site.addFieldListener( this );
         }
@@ -238,7 +221,8 @@ public class CreateProjectPanel
         public void fieldChange( FormFieldEvent ev ) {
             if (ev.getEventCode() == VALUE_CHANGE) {
                 if (ev.getFieldName().equals( "organizationOrUser" )) {
-                    organization = ev.getNewModelValue();
+                    ev.getNewModelValue().ifPresent( v -> op.organization.set( (Organization)v ) );
+                   // op.organization.set( (Organization)ev.getNewModelValue().orElse( null ) );
                 }
                 updateEnabled();
             }

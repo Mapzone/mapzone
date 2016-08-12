@@ -3,7 +3,9 @@ package io.mapzone.controller.vm.http;
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
 import io.mapzone.controller.um.repository.ProjectRepository;
+import io.mapzone.controller.um.repository.ProjectRepository.ProjectUnitOfWork;
 import io.mapzone.controller.vm.repository.VmRepository;
+import io.mapzone.controller.vm.repository.VmRepository.VmUnitOfWork;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,17 +33,17 @@ public abstract class HttpProxyProvision
     
     protected Context<HttpResponse>         proxyResponse;
 
-    Context<VmRepository>                   vmRepo;
+    Context<VmUnitOfWork>                   vmUow;
     
-    Context<ProjectRepository>              projectRepo;
+    Context<ProjectUnitOfWork>              projectUow;
     
 
-    public VmRepository vmRepo() {
-        return vmRepo.get( () -> VmRepository.newInstance() );
+    public VmUnitOfWork vmUow() {
+        return vmUow.get( () -> VmRepository.newUnitOfWork() );
     }
     
-    public ProjectRepository projectRepo() {
-        return projectRepo.get( () -> ProjectRepository.newInstance() );
+    public ProjectUnitOfWork projectUow() {
+        return projectUow.get( () -> ProjectRepository.newUnitOfWork() );
     }
     
 }
