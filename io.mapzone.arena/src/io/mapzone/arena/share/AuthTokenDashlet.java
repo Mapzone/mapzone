@@ -33,6 +33,15 @@ public class AuthTokenDashlet
 
     @Override
     public void createContents( Composite parent ) {
-    }
+        getSite().toolkit().createLabel( parent, "AuthTokenDashlet" );
+
+        // Dashboard mapDashboard = new Dashboard( getSite().panelSite(), "foo" );
+        // mapDashboard.addDashlet( new FacebookMapDashlet() );
+        // mapDashboard.addDashlet( new FacebookMapDashlet() );
+        // mapDashboard.addDashlet( new FacebookMapDashlet() );
+        // mapDashboard.addDashlet( new FacebookMapDashlet() );
+        // mapDashboard.addDashlet( new FacebookMapDashlet() );
+        // mapDashboard.createContents( parent );
+        }
     
 }
