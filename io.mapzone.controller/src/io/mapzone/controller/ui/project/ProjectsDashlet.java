@@ -82,10 +82,10 @@ public class ProjectsDashlet
     private static Log log = LogFactory.getLog( ProjectsDashlet.class );
     
     @Mandatory
-    @Scope("io.mapzone.controller")
+    @Scope( "io.mapzone.controller" )
     protected Context<UserPrincipal>        userPrincipal;
     
-    @Scope("io.mapzone.controller")
+    @Scope( "io.mapzone.controller" )
     protected Context<Project>              selected;
     
     private User                            user;
@@ -203,7 +203,7 @@ public class ProjectsDashlet
             @Override
             public void perform( @SuppressWarnings("hiding") MdListViewer viewer, Object elm ) {
                 Project project = (Project)elm;
-                String projectUrl = ProxyServlet.projectUrl( project );
+                String projectUrl = ProxyServlet.relativeClientUrl( project );
                 UrlLauncher launcher = RWT.getClient().getService( UrlLauncher.class );
                 launcher.openURL( projectUrl );
             }

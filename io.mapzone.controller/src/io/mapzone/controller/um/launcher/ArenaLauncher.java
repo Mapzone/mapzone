@@ -15,8 +15,6 @@
 package io.mapzone.controller.um.launcher;
 
 import java.net.MalformedURLException;
-import java.net.URLEncoder;
-
 import javax.management.JMX;
 import javax.management.MBeanServerConnection;
 import javax.management.remote.JMXConnector;
@@ -25,8 +23,6 @@ import javax.management.remote.JMXServiceURL;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import com.google.common.base.Joiner;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -52,7 +48,8 @@ public class ArenaLauncher
         @Override
         public ArenaLauncher initialize( ArenaLauncher proto ) throws Exception {
             EclipseProjectLauncher.defaults.initialize( proto );
-            String uri = System.getProperty( "io.mapzone.controller.installArchiveUri", "file:///home/falko/servers/arena.tgz" );
+            // http://build.mapzone.io/release/io.mapzone.arena.product/1.0.0-SNAPSHOT/io.mapzone.arena.product-1.0.0-SNAPSHOT-linux.gtk.x86_64.zip
+            String uri = System.getProperty( "io.mapzone.controller.installArchiveUri", "file:///home/falko/servers/arena.zip" );
             proto.installArchiveUri.set( uri );
             return proto;
         }
@@ -87,19 +84,11 @@ public class ArenaLauncher
 
             String localHttpPort = ControllerPlugin.instance().httpPort();
             
-            // title
             ArenaConfigMBean arenaConfig = JMX.newMBeanProxy( conn, ArenaConfigMBean.NAME.get(), ArenaConfigMBean.class );
             arenaConfig.setAppTitle( instance.project.get() );
             arenaConfig.setCatalogServerUrl( "http://localhost:" + localHttpPort + "/csw" );
-
-            // proxyUrl
-            String baseUrl = "mapzone".equals( System.getProperty( "user.name" ) )
-                    ? "http://mapzone.io" : "http://localhost:" + localHttpPort;
-            String proxyUrl = Joiner.on( "" ).join(
-                    baseUrl, ProxyServlet.SERVLET_ALIAS, "/",
-                    URLEncoder.encode( instance.organisation.get(), "UTF8" ), "/",
-                    URLEncoder.encode( instance.project.get(), "UTF8" ) );
-            arenaConfig.setProxyUrl( proxyUrl );
+            arenaConfig.setProxyUrl( ProxyServlet.projectUrlBase( project() ) );
+            arenaConfig.setProjectCatalogId( project().catalogId.get() );
             
             log.info( "Instance process configured." );
         }

@@ -58,9 +58,6 @@ public class CatalogRepositoryContext {
 
     private LuceneFulltextIndex     index;
     
-//    /** The global read-cache. */
-//    private UnitOfWork              uow;
-
     
     /**
      * Creates the repository instance. 
@@ -88,8 +85,6 @@ public class CatalogRepositoryContext {
                 .commitLockStrategy.set( () -> 
                         new CommitLockStrategy.Serialize() )
                 .create();
-        
-//        uow = repo.newUnitOfWork();
     }
 
     

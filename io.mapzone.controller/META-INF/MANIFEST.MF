@@ -8,15 +8,16 @@ Bundle-Vendor: mapzone.io
 Require-Bundle: org.eclipse.equinox.http.registry;bundle-version="1.1.300",
  org.eclipse.equinox.security;bundle-version="1.0.200",
  org.eclipse.rap.ui;bundle-version="2.3.1",
+ org.polymap.rap.updownload;bundle-version="2.0.0",
  org.polymap.core;bundle-version="4.0.0",
- org.polymap.rhei.batik;bundle-version="4.0.0",
+ org.polymap.core.data,
  org.polymap.model2;bundle-version="3.0.0",
  org.polymap.model2.store.recordstore;bundle-version="3.0.0",
+ org.polymap.rhei.batik;bundle-version="4.0.0",
  org.polymap.rhei.form,
  org.polymap.rhei.form.batik,
  org.polymap.cms;bundle-version="1.1.0",
- org.polymap.rap.updownload;bundle-version="2.0.0",
- org.polymap.core.data
+ io.mapzone.controller.catalog;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/commons-codec-1.9.jar,
