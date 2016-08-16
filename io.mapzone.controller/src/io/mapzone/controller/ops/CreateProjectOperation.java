@@ -14,12 +14,10 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.Immutable;
 import org.polymap.core.runtime.config.Mandatory;
-import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.runtime.i18n.IMessages;
 
 import io.mapzone.controller.Messages;
 import io.mapzone.controller.um.launcher.ArenaLauncher;
-import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.Organization;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
@@ -125,7 +123,6 @@ public class CreateProjectOperation
         
     @Override
     protected void onSuccess() {
-        EventManager.instance().publish( new EntityChangedEvent( project.get() ) );
         vmUow.get().close();
         super.onSuccess();
     }

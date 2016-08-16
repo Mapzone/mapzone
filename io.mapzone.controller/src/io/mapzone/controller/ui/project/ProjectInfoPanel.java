@@ -109,11 +109,12 @@ public class ProjectInfoPanel
 
         // FAB
         fab = tk().createFab();
-        fab.setToolTipText( "Update project" );
+        fab.setToolTipText( "Submit changes" );
         fab.setVisible( false );
         fab.addSelectionListener( new SelectionAdapter() {
             @Override
             public void widgetSelected( SelectionEvent ev ) {
+                // submit form
                 try {
                     form.submit( null );
                 }
@@ -121,7 +122,7 @@ public class ProjectInfoPanel
                     StatusDispatcher.handleError( "Unable to create project.", e );
                     return;
                 }
-                // execute
+                // execute operation
                 OperationSupport.instance().execute2( op, true, false, ev2 -> UIThreadExecutor.asyncFast( () -> {
                     if (ev2.getResult().isOK()) {
                         PanelPath panelPath = getSite().getPath();

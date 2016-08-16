@@ -25,11 +25,9 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 
 import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.Mandatory;
-import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.runtime.i18n.IMessages;
 
 import io.mapzone.controller.Messages;
-import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.vm.repository.HostRecord;
@@ -105,14 +103,15 @@ public class DeleteProjectOperation
 
     @Override
     protected void onSuccess() {
-        EventManager.instance().publish( new EntityChangedEvent( project.get() ) );
         vmUow.get().close();
+        super.onSuccess();
     }
 
 
     @Override
     protected void onError( Throwable e ) {
         vmUow.get().close();
+        super.onError( e );
     }
     
 }

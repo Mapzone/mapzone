@@ -10,11 +10,9 @@ import org.eclipse.core.runtime.Status;
 import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.Immutable;
 import org.polymap.core.runtime.config.Mandatory;
-import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.runtime.i18n.IMessages;
 
 import io.mapzone.controller.Messages;
-import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
@@ -64,12 +62,5 @@ public class UpdateProjectOperation
         
         return Status.OK_STATUS;
     }
-
         
-    @Override
-    protected void onSuccess() {
-        EventManager.instance().publish( new EntityChangedEvent( project.get() ) );
-        super.onSuccess();
-    }
-
 }

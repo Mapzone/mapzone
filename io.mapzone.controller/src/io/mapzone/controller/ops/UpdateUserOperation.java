@@ -21,9 +21,6 @@ import org.eclipse.core.runtime.Status;
 
 import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.Mandatory;
-import org.polymap.core.runtime.event.EventManager;
-
-import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
 import io.mapzone.controller.um.xauth.PasswordEncryptor;
@@ -46,7 +43,7 @@ public class UpdateUserOperation
  
     
     /**
-     * Creates a new instance wirh {@link ProjectRepository#session()} set.
+     * Creates a new instance with {@link ProjectRepository#session()} set.
      */
     public UpdateUserOperation( String username ) {
         super( "Update user" );
@@ -71,10 +68,4 @@ public class UpdateUserOperation
         return Status.OK_STATUS;
     }
 
-
-    @Override
-    protected void onSuccess() {
-        EventManager.instance().publish( new EntityChangedEvent( user.get() ) );
-    }
-    
 }

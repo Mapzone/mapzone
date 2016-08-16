@@ -26,8 +26,6 @@ import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.ConfigurationFactory;
 import org.polymap.core.runtime.config.Immutable;
 import org.polymap.core.runtime.config.Mandatory;
-import org.polymap.core.ui.StatusDispatcher;
-
 import org.polymap.model2.runtime.TwoPhaseCommit;
 import org.polymap.model2.runtime.TwoPhaseCommit.CommitType;
 import org.polymap.model2.runtime.TwoPhaseCommit.UnitOfWorkAdapter;
@@ -79,7 +77,7 @@ public abstract class UmOperation
      * Override in order to perform task after rollback.
      */
     protected void onError( Throwable e ) {
-        StatusDispatcher.handleError( "", e );
+//        StatusDispatcher.handleError( "", e );
     }
     
     
