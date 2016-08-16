@@ -14,6 +14,8 @@
  */
 package io.mapzone.arena;
 
+import static com.google.common.base.Throwables.propagate;
+
 import java.util.EventObject;
 import java.util.List;
 import java.util.function.Supplier;
@@ -53,7 +55,10 @@ import org.polymap.p4.project.ProjectRepository;
 /**
  * Track {@link HttpService} instances and register {@link OnDemandServlet} with
  * {@link GeoServerServlet} when found.
- *
+ * <p/>
+ * Listens to {@link ProjectNodeCommittedEvent} and {@link FeatureStyleCommitedEvent}
+ * in order to restart servlet.
+ * 
  * @author Falko Bräutigam
  */
 public class GeoServerStarter
@@ -82,15 +87,14 @@ public class GeoServerStarter
     protected void registerGeoServer( HttpService service ) {
         Supplier<GeoServerServlet> supplier = () -> {
             try {
-                IMap map = ProjectRepository.newUnitOfWork().entity( IMap.class, "root" );
-                return createGeoServer( ALIAS, map );             
+                return createGeoServer( ALIAS );             
             }
             catch (NoClassDefFoundError e) {
                 log.warn( "No GeoServer plugin found!", e );
                 throw e;
             }
             catch (Exception e) {
-                throw new RuntimeException( e );
+                throw propagate( e );
             }
         };
         try {
@@ -124,8 +128,12 @@ public class GeoServerStarter
     }
     
     
-    protected GeoServerServlet createGeoServer( String alias, IMap map ) {
-        return new GeoServerServlet( alias, map ) {
+    protected GeoServerServlet createGeoServer( String alias ) {
+        return new GeoServerServlet( alias ) {
+            @Override
+            protected IMap createMap() {
+                return ProjectRepository.unitOfWork().entity( IMap.class, "root" );
+            }
             @Override
             protected Pipeline createPipeline( ILayer layer,
                     Class<? extends PipelineProcessor> usecase ) throws Exception {

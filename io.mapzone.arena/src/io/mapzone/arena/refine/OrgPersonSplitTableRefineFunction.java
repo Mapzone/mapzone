@@ -55,8 +55,9 @@ import org.polymap.core.data.rs.catalog.RServiceInfo;
 import org.polymap.core.data.util.NameImpl;
 import org.polymap.core.operation.DefaultOperation;
 import org.polymap.core.operation.OperationSupport;
+import org.polymap.core.project.ILayer;
 import org.polymap.core.project.IMap;
-import org.polymap.core.project.operations.NewLayerOperation;
+import org.polymap.core.project.ops.NewLayerOperation;
 import org.polymap.core.style.DefaultStyle;
 import org.polymap.core.style.model.FeatureStyle;
 import org.polymap.core.ui.FormDataFactory;
@@ -243,9 +244,15 @@ public class OrgPersonSplitTableRefineFunction implements RefineFunction {
         // log.info( "FeatureStyle.id: " + featureStyle.id() );
         featureStyle.store();
 
-        NewLayerOperation op = new NewLayerOperation().uow.put(ProjectRepository.unitOfWork().newUnitOfWork()).map
-                .put(map.get()).label.put(features.getSchema().getName().getLocalPart()).resourceIdentifier
-                        .put(resourceIdentifier(features)).styleIdentifier.put(featureStyle.id());
+        NewLayerOperation op = new NewLayerOperation()
+                .uow.put( ProjectRepository.unitOfWork() )
+                .map.put( map.get() )
+                .initializer.put( (ILayer proto) -> {
+                    proto.label.set( features.getSchema().getName().getLocalPart() );
+                    proto.resourceIdentifier.set( resourceIdentifier( features ) );
+                    proto.styleIdentifier.set( featureStyle.id() );
+                    return proto;
+                });
         OperationSupport.instance().execute(op, true, false);
     }
 

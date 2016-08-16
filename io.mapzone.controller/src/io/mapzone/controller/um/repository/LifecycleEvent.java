@@ -16,6 +16,8 @@ package io.mapzone.controller.um.repository;
 
 import java.util.EventObject;
 
+import io.mapzone.controller.um.repository.ProjectRepository.ProjectUnitOfWork;
+
 /**
  * 
  *
@@ -30,14 +32,14 @@ public class LifecycleEvent
     
     private Type            type;
     
-    public LifecycleEvent( ProjectRepository source, Type type ) {
+    public LifecycleEvent( ProjectUnitOfWork source, Type type ) {
         super( source );
         this.type = type;
     }
 
     @Override
-    public ProjectRepository getSource() {
-        return (ProjectRepository)super.getSource();
+    public ProjectUnitOfWork getSource() {
+        return (ProjectUnitOfWork)super.getSource();
     }
     
     public Type getType() {

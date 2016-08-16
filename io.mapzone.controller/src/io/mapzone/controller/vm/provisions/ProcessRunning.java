@@ -56,7 +56,7 @@ public class ProcessRunning
     public Status execute() throws Exception {
         // find instance -> process
         ProjectInstanceIdentifier pid = new ProjectInstanceIdentifier( request.get() );
-        instance.set( vmRepo().findInstance( pid )
+        instance.set( vmUow().findInstance( pid )
                 .orElseThrow( () -> new HttpProvisionRuntimeException( 404, "No such project: " + pid ) ) );
 
         instance.get().homePath.get();  // force (pessimistic) lock on instance
@@ -66,7 +66,7 @@ public class ProcessRunning
         if (process.isPresent()) {
             log.warn( "Killing process without checking OS process!" );
             StopProcessOperation op = new StopProcessOperation();
-            op.vmRepo.set( vmRepo() );
+            op.vmUow.set( vmUow() );
             op.process.set( process.get() );
             op.execute( null, null );
         }

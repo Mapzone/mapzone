@@ -5,7 +5,7 @@ import org.polymap.model2.Property;
 import org.polymap.model2.Queryable;
 
 /**
- * 
+ * Provides common metadata properties.
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */

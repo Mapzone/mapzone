@@ -80,7 +80,7 @@ public class MaxProcesses
                 log.info( "    stopping process: " + p.instance.get().project.get() + " -- started at " + p.started.get() );
                 StopProcessOperation op = new StopProcessOperation();
                 op.process.set( p );
-                op.vmRepo.set( vmRepo() );
+                op.vmUow.set( vmUow() );
                 op.execute( null, null );
             }
         }

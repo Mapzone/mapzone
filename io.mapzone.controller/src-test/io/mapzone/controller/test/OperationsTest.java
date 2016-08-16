@@ -33,9 +33,11 @@ import io.mapzone.controller.um.launcher.ProjectLauncher;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
+import io.mapzone.controller.um.repository.ProjectRepository.ProjectUnitOfWork;
 import io.mapzone.controller.vm.repository.HostRecord;
 import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
 import io.mapzone.controller.vm.repository.VmRepository;
+import io.mapzone.controller.vm.repository.VmRepository.VmUnitOfWork;
 import io.mapzone.controller.vm.runtime.HostRuntime;
 
 /**
@@ -45,10 +47,8 @@ import io.mapzone.controller.vm.runtime.HostRuntime;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class OperationsTest {
    
-    protected static ProjectRepository      repo;
+    protected static ProjectUnitOfWork      uow;
     
-    protected static ProjectRepository      nested;
-
     protected static User                   user;
     
     protected static Project                project;
@@ -63,22 +63,18 @@ public class OperationsTest {
         VmRepository.init( basedir );
         ProjectRepository.init( basedir );
         
-        repo = ProjectRepository.newInstance();
-        nested = repo.newNested();
+        uow = ProjectRepository.newUnitOfWork();
     }
 
 
     @Test
     public void _1_createUser() throws Exception {
-        user = nested.createEntity( User.class, null, (User proto) -> {
-            User.defaults.initialize( proto );
-            proto.name.set( "test" );
-            return proto;
-        });
-        CreateUserOperation op = new CreateUserOperation( nested, user, "geheim" );
+        CreateUserOperation op = new CreateUserOperation( uow );
+        user = op.createEntity();
+        op.user.get().name.set( "test" );
+        op.password.set( "geheim" );
 
         op.doExecute( new NullProgressMonitor(), null );
-        assertEquals( "test", user.userOrg().name.get() );
     }
 
     
@@ -91,35 +87,31 @@ public class OperationsTest {
     @Test
     public void _2_createProjectOperation() throws Exception {
        // check host
-        VmRepository vmRepo = VmRepository.newInstance();
-        assertEquals( 1, vmRepo.allHosts().size() );
-        HostRecord host = vmRepo.allHosts().get( 0 );
+        VmUnitOfWork vmUow = VmRepository.newUnitOfWork();
+        assertEquals( 1, vmUow.allHosts().size() );
+        HostRecord host = vmUow.allHosts().get( 0 );
 
         // mock runtime
         HostRuntime mockedHostRuntime = mock( HostRuntime.class );
-        vmRepo.allHosts().stream()
+        vmUow.allHosts().stream()
                 .forEach( h -> h.runtime = new LockedLazyInit( () -> mockedHostRuntime ) );
-
-        // prepare project
-        project = nested.createEntity( Project.class, null, (Project proto) -> {
-            proto.name.set( "cool" );
-            proto.launcher = new Property<ProjectLauncher>() {
-                ProjectLauncher mock = mock( ProjectLauncher.class );
-                public PropertyInfo info() { throw new RuntimeException( "not yet implemented." ); }
-                public ProjectLauncher get() { return mock; }
-                public <U extends ProjectLauncher> U createValue( ValueInitializer<U> initializer ) { throw new RuntimeException( "not yet implemented." ); }
-                public void set( ProjectLauncher value ) { throw new RuntimeException( "not yet implemented." ); }
-            };
-            return Project.defaults.initialize( proto );
-        });
 
         //       User user = nested.entity( defaultUser );
 
         // operation
-        CreateProjectOperation op = new CreateProjectOperation();
-        op.repo.set( nested );
-        op.project.set( project );
+        CreateProjectOperation op = new CreateProjectOperation( uow, user.name.get() );
         op.organization.set( user.userOrg() );
+
+        // prepare project
+        project = op.createProject();
+        op.project.get().name.set( "cool" );
+        op.project.get().launcher = new Property<ProjectLauncher>() {
+            ProjectLauncher mock = mock( ProjectLauncher.class );
+            public PropertyInfo info() { throw new RuntimeException( "not yet implemented." ); }
+            public ProjectLauncher get() { return mock; }
+            public <U extends ProjectLauncher> U createValue( ValueInitializer<U> initializer ) { throw new RuntimeException( "not yet implemented." ); }
+            public void set( ProjectLauncher value ) { throw new RuntimeException( "not yet implemented." ); }
+        };
         op.doExecute( new NullProgressMonitor(), null );
 
         // check launcher call
@@ -141,11 +133,11 @@ public class OperationsTest {
         assertEquals( project.name.get(), instance.project.get() );
 
         // check committed
-        ProjectRepository repo2 = ProjectRepository.newInstance();
-        Project project2 = repo2.entity( project );
+        ProjectUnitOfWork uow2 = ProjectRepository.newUnitOfWork();
+        Project project2 = uow2.entity( project );
         assertNotSame( project, project2 );
         
-        vmRepo.commit();
+        vmUow.commit();
     }
 
 
@@ -162,7 +154,7 @@ public class OperationsTest {
     public void _3_deleteProjectOperation() throws Exception {
         // operation (no process to stop)
         DeleteProjectOperation op = new DeleteProjectOperation();
-        op.repo.set( nested );
+        op.umUow.set( uow );
         op.project.set( project );
         op.doExecute( new NullProgressMonitor(), null );
 
@@ -170,8 +162,8 @@ public class OperationsTest {
         assertEquals( 0, user.userOrg().projects.size() );
 
         // check host instances
-        VmRepository vmRepo = VmRepository.newInstance();
-        HostRecord host = vmRepo.allHosts().get( 0 );
+        VmUnitOfWork vmUow = VmRepository.newUnitOfWork();
+        HostRecord host = vmUow.allHosts().get( 0 );
         assertTrue( host.instances.isEmpty() );
 
         // check launcher call
@@ -179,7 +171,7 @@ public class OperationsTest {
                 Matchers.argThat( instanceOfProject( project ) ), 
                 Matchers.any() );
         
-        vmRepo.commit();
+        vmUow.commit();
     }
 
 

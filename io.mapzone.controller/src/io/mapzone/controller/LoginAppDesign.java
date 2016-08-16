@@ -123,7 +123,7 @@ public class LoginAppDesign
     protected Optional<User> tryLogin( String name, String passwd ) {
         SecurityContext sc = SecurityContext.instance();
         return sc.login( name, passwd )
-                ? ProjectRepository.newInstance().findUser( name )
+                ? ProjectRepository.newUnitOfWork().findUser( name )
                 : Optional.empty();
     }
     

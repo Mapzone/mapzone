@@ -108,8 +108,8 @@ public class ProxyServlet
                 Status status = executor.execute( forwardRequest );
                 assert status.severity( OK ) : "No success forwarding request: ...";
 
-                if (forwardRequest.vmRepo.isPresent()) {
-                    forwardRequest.vmRepo.get().commit();
+                if (forwardRequest.vmUow.isPresent()) {
+                    forwardRequest.vmUow.get().commit();
                 }
             }
             catch (HttpProvisionRuntimeException e) {
@@ -125,7 +125,7 @@ public class ProxyServlet
                 Throwables.propagateIfPossible( e );
             }
             finally {
-                forwardRequest.vmRepo.ifPresent( vmRepo -> vmRepo.close() );
+                forwardRequest.vmUow.ifPresent( vmRepo -> vmRepo.close() );
             }
 
             // response

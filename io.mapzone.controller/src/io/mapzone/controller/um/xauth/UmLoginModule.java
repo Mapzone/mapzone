@@ -3,6 +3,7 @@ package io.mapzone.controller.um.xauth;
 import io.mapzone.controller.Messages;
 import io.mapzone.controller.um.repository.ProjectRepository;
 import io.mapzone.controller.um.repository.User;
+import io.mapzone.controller.um.repository.ProjectRepository.ProjectUnitOfWork;
 
 import java.util.Map;
 import java.util.Optional;
@@ -48,7 +49,7 @@ public class UmLoginModule
     
     private AuthorizationModule             authModule;
     
-    protected ProjectRepository             repo;
+    protected ProjectUnitOfWork             uow;
     
     private boolean                         loggedIn;
 
@@ -57,7 +58,7 @@ public class UmLoginModule
     @SuppressWarnings("hiding")
     public void initialize( Subject subject, CallbackHandler callbackHandler, 
             Map<String,?> sharedState, Map<String,?> options ) {
-        this.repo = ProjectRepository.newInstance();
+        this.uow = ProjectRepository.newUnitOfWork();
         this.subject = subject;
         this.callbackHandler = callbackHandler;
         if (this.callbackHandler == null) {
@@ -103,7 +104,7 @@ public class UmLoginModule
         }
 
         // ordinary user
-        Optional<User> user = repo.findUser( username );
+        Optional<User> user = uow.findUser( username );
 
         if (user.isPresent()) {
             PasswordEncryptor encryptor = PasswordEncryptor.instance();

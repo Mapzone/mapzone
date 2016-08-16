@@ -12,8 +12,10 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.polymap.core.CorePlugin;
 import org.polymap.core.security.SecurityContext;
 import org.polymap.core.security.StandardConfiguration;
+import org.polymap.core.ui.StatusDispatcher;
 
 import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
+import org.polymap.rhei.batik.toolkit.BatikDialogStatusAdapter;
 import org.polymap.rhei.batik.toolkit.DefaultToolkit;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 
@@ -79,6 +81,10 @@ public class ControllerPlugin extends AbstractUIPlugin {
                 return SecurityContext.SERVICES_CONFIG_NAME;
             }
         });
+
+        // handling errors in the UI
+        StatusDispatcher.registerAdapter( new StatusDispatcher.LogAdapter() );
+        StatusDispatcher.registerAdapter( new BatikDialogStatusAdapter() );
 
         // init repositories
         ProjectRepository.init( CorePlugin.getDataLocation( ControllerPlugin.instance() ) );

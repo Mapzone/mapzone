@@ -23,6 +23,8 @@ import org.polymap.model2.Entity;
 import org.polymap.model2.Property;
 import org.polymap.model2.Queryable;
 
+import io.mapzone.controller.um.repository.ProjectRepository.ProjectUnitOfWork;
+
 /**
  * 
  *
@@ -43,11 +45,11 @@ public class LoginCookie
 
     
     public static Access access( ) {
-        return new Access( ProjectRepository.newInstance(), RWT.getRequest(), RWT.getResponse() );
+        return new Access( ProjectRepository.newUnitOfWork(), RWT.getRequest(), RWT.getResponse() );
     }
 
     public static Access access( HttpServletRequest request, HttpServletResponse response ) {
-        return new Access( ProjectRepository.newInstance(), request, response );
+        return new Access( ProjectRepository.newUnitOfWork(), request, response );
     }
 
     /**
@@ -55,15 +57,15 @@ public class LoginCookie
      */
     public static class Access {
 
-        private ProjectRepository           repo;
+        private ProjectUnitOfWork           uow;
         
         private HttpServletRequest          request;
         
         private HttpServletResponse         response;
         
         
-        public Access( ProjectRepository repo, HttpServletRequest request, HttpServletResponse response ) {
-            this.repo = repo;
+        public Access( ProjectUnitOfWork uow, HttpServletRequest request, HttpServletResponse response ) {
+            this.uow = uow;
             this.request = request;
             this.response = response;
         }
@@ -74,7 +76,7 @@ public class LoginCookie
                 if (cookie.getName().equals( COOKIE_NAME )) {
                     log.info( "Found: " + cookie.getValue() );
 
-                    List<LoginCookie> storedCookies = repo.query( LoginCookie.class )
+                    List<LoginCookie> storedCookies = uow.query( LoginCookie.class )
                             .where( eq( LoginCookie.TYPE.value, cookie.getValue() ) )
                             .execute().stream().collect( Collectors.toList() );
 
@@ -84,10 +86,10 @@ public class LoginCookie
                     else if (!storedCookies.isEmpty()) {
                         LoginCookie storedCookie = storedCookies.get( 0 );
                         String token = newToken();
-                        assert repo.query( LoginCookie.class ).where( eq( LoginCookie.TYPE.value, token ) ).execute().size() == 0;
+                        assert uow.query( LoginCookie.class ).where( eq( LoginCookie.TYPE.value, token ) ).execute().size() == 0;
 
                         storedCookie.value.set( token );
-                        repo.commit();
+                        uow.commit();
 
                         sendCookie( token );
                         return Optional.of( storedCookie );
@@ -99,16 +101,16 @@ public class LoginCookie
 
 
         public void create( String username ) {
-            User _user = repo.findUser( username ).orElseThrow( () -> new RuntimeException( "No such user: " + username ) );
+            User _user = uow.findUser( username ).orElseThrow( () -> new RuntimeException( "No such user: " + username ) );
             String token = newToken();
-            assert repo.query( LoginCookie.class ).where( eq( LoginCookie.TYPE.value, token ) ).execute().size() == 0;
+            assert uow.query( LoginCookie.class ).where( eq( LoginCookie.TYPE.value, token ) ).execute().size() == 0;
 
-            repo.createEntity( LoginCookie.class, null, (LoginCookie proto) -> {
+            uow.createEntity( LoginCookie.class, null, (LoginCookie proto) -> {
                 proto.value.set( token );
                 proto.user.set( _user );
                 return proto;
             });
-            repo.commit();
+            uow.commit();
 
             sendCookie( token );
         }
@@ -119,14 +121,14 @@ public class LoginCookie
                 if (cookie.getName().equals( COOKIE_NAME )) {
                     log.info( "Found: " + cookie.getValue() );
 
-                    Iterable<LoginCookie> storedCookies = repo.query( LoginCookie.class )
+                    Iterable<LoginCookie> storedCookies = uow.query( LoginCookie.class )
                             .where( eq( LoginCookie.TYPE.value, cookie.getValue() ) )
                             .execute();
 
                     for (LoginCookie storedCookie : storedCookies) {
-                        repo.removeEntity( storedCookie );
+                        uow.removeEntity( storedCookie );
                     }
-                    repo.commit();
+                    uow.commit();
                 }
             }
         }

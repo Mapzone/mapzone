@@ -68,7 +68,7 @@ public class ProcessStarted
     public Status execute() throws Exception {
         // find instance -> process
         ProjectInstanceIdentifier pid = new ProjectInstanceIdentifier( request.get() );
-        instance.set( vmRepo().findInstance( pid )
+        instance.set( vmUow().findInstance( pid )
                 .orElseThrow( () -> new HttpProvisionRuntimeException( 404, "No such project: " + pid ) ) );
 
         instance.get().homePath.get();  // force (pessimistic) lock on instance
