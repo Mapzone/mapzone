@@ -43,57 +43,59 @@ public class GetRecordsResponse
     @Override
     protected void doExecute() throws Exception {
         CatalogRepositoryContext catalog = CatalogPlugin.instance().catalog();
-        
-        // query
-        UnitOfWork uow = catalog.unitOfWork();
-        Query<CatalogEntry> query = uow.query( CatalogEntry.class );
+        try (
+            UnitOfWork uow = CatalogPlugin.instance().catalog().unitOfWork();
+        ){
+            // query
+            Query<CatalogEntry> query = uow.query( CatalogEntry.class );
 
-        // GET
-        if (!request().parameters().isEmpty()) {
-            throw new UnsupportedOperationException( "GetRecords: GET requests are not supported." );
-        }
-        // POST
-        GetRecordsType body = request().<GetRecordsType>parsedBody().orElse( null );
-        if (body != null) {
-            if (body.getMaxRecords() != null ) {
-                query.maxResults( body.getMaxRecords().intValue() );
+            // GET
+            if (!request().parameters().isEmpty()) {
+                throw new UnsupportedOperationException( "GetRecords: GET requests are not supported." );
             }
-            if (body.getStartPosition() != null ) {
-                query.firstResult( body.getStartPosition().intValue() );
+            // POST
+            GetRecordsType body = request().<GetRecordsType>parsedBody().orElse( null );
+            if (body != null) {
+                if (body.getMaxRecords() != null ) {
+                    query.maxResults( body.getMaxRecords().intValue() );
+                }
+                if (body.getStartPosition() != null ) {
+                    query.firstResult( body.getStartPosition().intValue() );
+                }
+                //            if (!"application/xml".equalsIgnoreCase( body.getOutputFormat() )) {
+                //                throw new UnsupportedOperationException( "OutputFormat: supported format: application/xml" );
+                //            }
+
+                QueryType queryBody = (QueryType)body.getAbstractQuery().getValue();
+                query.where( new FilterParser( queryBody.getConstraint(), catalog.index() ).parse() );
             }
-//            if (!"application/xml".equalsIgnoreCase( body.getOutputFormat() )) {
-//                throw new UnsupportedOperationException( "OutputFormat: supported format: application/xml" );
-//            }
-            
-            QueryType queryBody = (QueryType)body.getAbstractQuery().getValue();
-            query.where( new FilterParser( queryBody.getConstraint(), catalog.index() ).parse() );
+
+            ResultSet<CatalogEntry> rs = query.execute();
+
+            // GetRecordsResponse
+            out().writeStartElement( "csw", "GetRecordsResponse", Namespaces.CSW  );
+            out().writeNamespace( "xml", Namespaces.XML );
+            out().writeNamespace( "csw", Namespaces.CSW );
+            out().writeNamespace( "dc", Namespaces.DC );
+            out().writeNamespace( "dct", Namespaces.DCT );
+
+            // SearchResults
+            out().writeStartElement( "csw", "SearchResults", Namespaces.CSW );
+            String resultSize = Integer.toString( rs.size() );
+            out().writeAttribute( "numberOfRecordsMatched", resultSize );
+            out().writeAttribute( "numberOfRecordsReturned", resultSize );
+            out().writeAttribute( "nextRecord", "0" );
+            out().writeAttribute( "recordSchema", Namespaces.CSW );  // ?
+            out().writeAttribute( "elementSet", "full" );  // ?
+
+            // records
+            for (CatalogEntry entry : rs) {
+                new SummaryRecordWriter( out() ).process( entry );
+            }
+
+            out().writeEndElement();
+            out().writeEndElement();
         }
-        
-        ResultSet<CatalogEntry> rs = query.execute();
-        
-        // GetRecordsResponse
-        out().writeStartElement( "csw", "GetRecordsResponse", Namespaces.CSW  );
-        out().writeNamespace( "xml", Namespaces.XML );
-        out().writeNamespace( "csw", Namespaces.CSW );
-        out().writeNamespace( "dc", Namespaces.DC );
-        out().writeNamespace( "dct", Namespaces.DCT );
-        
-        // SearchResults
-        out().writeStartElement( "csw", "SearchResults", Namespaces.CSW );
-        String resultSize = Integer.toString( rs.size() );
-        out().writeAttribute( "numberOfRecordsMatched", resultSize );
-        out().writeAttribute( "numberOfRecordsReturned", resultSize );
-        out().writeAttribute( "nextRecord", "0" );
-        out().writeAttribute( "recordSchema", Namespaces.CSW );  // ?
-        out().writeAttribute( "elementSet", "full" );  // ?
-        
-        // records
-        for (CatalogEntry entry : rs) {
-            new SummaryRecordWriter( out() ).process( entry );
-        }
-        
-        out().writeEndElement();
-        out().writeEndElement();
     }
 
 }
