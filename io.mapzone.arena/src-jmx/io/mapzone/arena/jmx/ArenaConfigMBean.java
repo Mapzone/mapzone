@@ -67,4 +67,13 @@ public interface ArenaConfigMBean {
      */
     void setCatalogServerUrl( String url );
 
+    /**
+     * The identifier of the project in the global metadata catalog.
+     *
+     * @see ProjectNodeSynchronizer
+     */
+    public String getProjectCatalogId();
+
+    public void setProjectCatalogId( String projectCatalogId );
+
 }
