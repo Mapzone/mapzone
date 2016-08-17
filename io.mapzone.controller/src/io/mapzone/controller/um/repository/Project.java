@@ -18,28 +18,19 @@ import static org.polymap.model2.runtime.EntityRuntimeContext.EntityStatus.CREAT
 import static org.polymap.model2.runtime.EntityRuntimeContext.EntityStatus.MODIFIED;
 import static org.polymap.model2.runtime.EntityRuntimeContext.EntityStatus.REMOVED;
 
-import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-
-import org.polymap.core.runtime.UIJob;
 
 import org.polymap.model2.Association;
 import org.polymap.model2.DefaultValue;
 import org.polymap.model2.Nullable;
 import org.polymap.model2.Property;
 import org.polymap.model2.Queryable;
-import org.polymap.model2.query.Expressions;
-import org.polymap.model2.runtime.UnitOfWork;
 import org.polymap.model2.runtime.ValueInitializer;
 
-import io.mapzone.controller.catalog.CatalogPlugin;
-import io.mapzone.controller.catalog.CatalogRepositoryContext;
-import io.mapzone.controller.catalog.model.CatalogEntry;
 import io.mapzone.controller.um.launcher.ProjectLauncher;
-import io.mapzone.controller.vm.http.ProxyServlet;
 
 /**
  * 
@@ -114,131 +105,14 @@ public class Project
         
         else if (state.equals( State.BEFORE_COMMIT )) {
             if (status() == CREATED) {
-                new CreateCatalogEntry( this ).schedule();
+                new ProjectCatalogSynchronizer.CreateCatalogEntry( this ).schedule();
             }
             else if (status() == MODIFIED) {
-                new UpdateCatalogEntry( this ).schedule();
+                new ProjectCatalogSynchronizer.UpdateCatalogEntry( this ).schedule();
             }
             else if (status() == REMOVED) {
-                new RemoveCatalogEntry( this ).schedule();
+                new ProjectCatalogSynchronizer.RemoveCatalogEntry( this ).schedule();
             }
-        }
-    }
-
-    
-    /**
-     * Synchronizes the content of a {@link Project} with one entry in the
-     * {@link CatalogPlugin}.
-     */
-    protected static abstract class CatalogSynchronizer
-            extends UIJob {
-        
-        protected Project               project;
-        
-        protected UnitOfWork            uow;
-
-        public CatalogSynchronizer( Project project ) {
-            super( "Catalog synchronizer" );
-            setSystem( true );
-            this.project = project;
-        }
-
-        
-        protected abstract void doWithUnitOfWork();
-        
-        @Override
-        protected void runWithException( IProgressMonitor monitor ) throws Exception {
-            CatalogRepositoryContext catalog = CatalogPlugin.instance().catalog();
-            assert uow == null;
-            uow = catalog.unitOfWork();
-            try {
-                doWithUnitOfWork();        
-                uow.commit();
-            }
-            finally {
-                uow.close();
-                uow = null;
-            }
-        }
-
-
-        protected Optional<CatalogEntry> findEntry() {
-            return uow.query( CatalogEntry.class )
-                    .where( Expressions.eq( CatalogEntry.TYPE.identifier, project.catalogId.get() ) )
-                    .maxResults( 1 )
-                    .execute().stream().findAny();
-        }
-
-
-        protected void update( CatalogEntry entry ) {
-            entry.format.set( "Service" );
-            entry.onlineResource.set( ProxyServlet.projectUrlBase( project ) + "/ows" );
-            entry.title.set( project.name.get() );
-            entry.description.set( project.description.get() );
-            entry.modified.set( new Date() );
-//            entry.subject.clear();
-//            project.keywords.stream()
-//                    .map( l -> l.getContent().get( 0 ) )
-//                    .forEach( s -> entry.subject.add( s ) );
-        }
-    }
-    
-    
-    /**
-     * 
-     */
-    protected static class CreateCatalogEntry
-            extends CatalogSynchronizer {
-        
-        public CreateCatalogEntry( Project project ) {
-            super( project );
-        }
-
-        @Override
-        protected void doWithUnitOfWork() {
-            if (findEntry().isPresent()) {
-                throw new IllegalStateException( "There is an entry for: " + project.catalogId.get() );
-            }
-                    
-            CatalogEntry entry = uow.createEntity( CatalogEntry.class, null, (CatalogEntry proto) -> {
-                proto.identifier.set( project.catalogId.get() );
-                return proto;
-            });
-            update( entry );
-        }
-    }
-    
-    /**
-     * 
-     */
-    protected static class UpdateCatalogEntry
-            extends CatalogSynchronizer {
-        
-        public UpdateCatalogEntry( Project project ) {
-            super( project );
-        }
-
-        @Override
-        protected void doWithUnitOfWork() {
-            update( findEntry()
-                    .orElseThrow( () -> new IllegalStateException( "No entry for: " + project.catalogId.get() ) ) );
-        }
-    }
-    
-    /**
-     * 
-     */
-    protected static class RemoveCatalogEntry
-            extends CatalogSynchronizer {
-        
-        public RemoveCatalogEntry( Project project ) {
-            super( project );
-        }
-
-        @Override
-        protected void doWithUnitOfWork() {
-            uow.removeEntity( findEntry()
-                    .orElseThrow( () -> new IllegalStateException( "No entry for: " + project.catalogId.get() ) ) );
         }
     }
     
