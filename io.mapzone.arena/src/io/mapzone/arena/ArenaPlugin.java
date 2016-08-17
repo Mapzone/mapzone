@@ -75,7 +75,7 @@ public class ArenaPlugin
 
     private GeocodeServletStarter   geocodeService;
 
-    private GoogleAnalyticsTracker googleAnalyticsTracker;
+    private GoogleAnalyticsTracker  googleAnalyticsTracker;
 
     
     public void start( BundleContext context ) throws Exception {

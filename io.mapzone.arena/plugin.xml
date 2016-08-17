@@ -56,4 +56,10 @@
             class="io.mapzone.arena.csw.catalog.CswCatalogProvider">
       </catalogProvider>
    </extension>
+   <extension
+         point="org.polymap.core.catalog.resolverProviders">
+      <resolver
+            class="io.mapzone.arena.csw.catalog.MapzoneResolverProvider">
+      </resolver>
+   </extension>
 </plugin>

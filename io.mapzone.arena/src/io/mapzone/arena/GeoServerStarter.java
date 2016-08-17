@@ -52,6 +52,8 @@ import org.polymap.p4.catalog.LocalResolver;
 import org.polymap.p4.data.P4PipelineIncubator;
 import org.polymap.p4.project.ProjectRepository;
 
+import io.mapzone.arena.jmx.ArenaConfigMBean;
+
 /**
  * Track {@link HttpService} instances and register {@link OnDemandServlet} with
  * {@link GeoServerServlet} when found.
@@ -66,7 +68,7 @@ public class GeoServerStarter
 
     private static Log log = LogFactory.getLog( GeoServerStarter.class );
     
-    public static final String          ALIAS = "/ows";
+    public static final String          ALIAS = ArenaConfigMBean.GEOSERVER_ALIAS;
 
     private OnDemandServlet             onDemandServlet;
     

@@ -26,6 +26,19 @@ import org.polymap.core.runtime.PlainLazyInit;
  */
 public interface ArenaConfigMBean {
 
+    /**
+     * URL param that specifies the mapzone user of service (request). Checked by
+     * io.mapzone.controller.vm.http.ServiceAuthProvision. Set for example by
+     * {@link MapzoneProjectResolver}
+     */
+    public static final String              REQUEST_PARAM_USER = "_user$!._";
+
+    /**
+     * The servlet alias used by {@link GeoServerStarter GeoServer} to provide OWS
+     * services.
+     */
+    public static final String              GEOSERVER_ALIAS = "/ows";
+
     public static final Lazy<ObjectName>    NAME = new PlainLazyInit( () -> {
         try {
             return ObjectName.getInstance( "io.mapzone.arena:type=ArenaConfig" );
