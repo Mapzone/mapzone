@@ -23,18 +23,18 @@ import org.polymap.p4.P4Panel;
 import io.mapzone.arena.Messages;
 
 /**
- * Panel to share e.g. javascript, image or url to a blog.
+ * Panel to share on facebook.
  *
  * @author Steffen Stundzig
  */
-public class BlogShareletPanel
+public class FacebookShareletPanel
         extends P4Panel {
 
-    private static Log                  log  = LogFactory.getLog( BlogShareletPanel.class );
+    private static Log                  log  = LogFactory.getLog( FacebookShareletPanel.class );
 
-    public static final PanelIdentifier ID   = PanelIdentifier.parse( "blogshare" );
+    public static final PanelIdentifier ID   = PanelIdentifier.parse( "facebookSharelet" );
 
-    private static final IMessages      i18n = Messages.forPrefix( "BlogSharePanel" );
+    private static final IMessages      i18n = Messages.forPrefix( "FacebookShareletPanel" );
 
 
     @Override

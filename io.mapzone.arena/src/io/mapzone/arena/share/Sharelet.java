@@ -22,8 +22,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import org.polymap.core.ui.FormDataFactory;
-import org.polymap.core.ui.FormLayoutFactory;
+import org.polymap.core.runtime.i18n.IMessages;
+import org.polymap.core.ui.ColumnDataFactory;
+import org.polymap.core.ui.ColumnDataFactory.Alignment;
+import org.polymap.core.ui.ColumnLayoutFactory;
 
 import org.polymap.rhei.batik.BatikApplication;
 import org.polymap.rhei.batik.PanelIdentifier;
@@ -31,91 +33,89 @@ import org.polymap.rhei.batik.dashboard.DashletSite;
 import org.polymap.rhei.batik.dashboard.DefaultDashlet;
 import org.polymap.rhei.batik.toolkit.IPanelToolkit;
 
+import io.mapzone.arena.Messages;
+
 /**
  * @author Steffen Stundzig
  */
-public abstract class Sharelet
-        extends DefaultDashlet {
+public class Sharelet
+        extends DefaultDashlet
+        implements MouseListener {
 
-    private static Log log = LogFactory.getLog( Sharelet.class );
+    private static final long serialVersionUID = 1L;
+
+    private static Log        log              = LogFactory.getLog( Sharelet.class );
+
+    private IMessages         i18n;
+
+    private Image             image;
+
+    private PanelIdentifier   shareletPanelId;
+
+
+    public Sharelet( String i18nKey, PanelIdentifier shareletPanelId, Image image ) {
+        this.i18n = Messages.forPrefix( i18nKey );
+        this.shareletPanelId = shareletPanelId;
+        this.image = image;
+
+    }
 
 
     @Override
     public void init( DashletSite site ) {
-        site.isExpandable.set( true );
+        site.isExpandable.set( false );
         site.border.set( true );
-        site.title.set( title() );
+        site.title.set( i18n.get( "title" ) );
+        // site.constraints.get().add( new PriorityConstraint( 100 ) );
+        // FIXME, doesnt work correctly
+        // site.constraints.get().add( new MinWidthConstraint( 15, 100 ) );
+        // site.constraints.get().add( new MaxWidthConstraint( 250, 1 ) );
         super.init( site );
     }
 
 
     @Override
     public final void createContents( Composite parent ) {
-        parent.addMouseListener( new MouseListener() {
+        parent.addMouseListener( this );
 
-            @Override
-            public void mouseUp( MouseEvent e ) {
-                openPanel();
-            }
-
-
-            @Override
-            public void mouseDown( MouseEvent e ) {
-                // ignore
-            }
-
-
-            @Override
-            public void mouseDoubleClick( MouseEvent e ) {
-                openPanel();
-            }
-
-
-            private void openPanel() {
-                BatikApplication.instance().getContext().openPanel( dashletSite.panelSite().getPath(), shareletPanelId() );
-            }
-        } );
-        parent.setLayout( FormLayoutFactory.defaults().create() );
+        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).margins( 10, 0, 0, 0 ).create() );
         Label title = getSite().toolkit().createLabel( parent, "", SWT.NONE );
-        title.setImage( image() );
+        title.setImage( image );
+        title.addMouseListener( this );
 
-        Label description = getSite().toolkit().createLabel( parent, description() );
+        Label description = getSite().toolkit().createLabel( parent, i18n.get( "description" ), SWT.WRAP );
+        description.addMouseListener( this );
 
-        Composite content = getSite().toolkit().createComposite( parent, SWT.BORDER );
-        content.setLayout( FormLayoutFactory.defaults().create() );
-
-        createSubContents( content );
-
-        FormDataFactory.on( title ).width( 48 ).left( 45 ).right( 55 ).top( 10 );
-        FormDataFactory.on( description ).left( 5 ).right( 95 ).top( title, 10 );
-        FormDataFactory.on( content ).left( 5 ).right( 95 ).top( description, 10 ).bottom( 100 );
-        // composite.layout();
+        ColumnDataFactory.on( title ).widthHint( 48 ).heightHint( 48 ).horizAlign( Alignment.CENTER );
+        ColumnDataFactory.on( description ).widthHint( 150 ).heightHint( 50 ).horizAlign( Alignment.CENTER );
     }
-
-
-    protected abstract PanelIdentifier shareletPanelId();
 
 
     protected final IPanelToolkit tk() {
         return getSite().toolkit();
     }
 
+    // MouseListener stuff
 
-    protected abstract String title();
-
-
-    /**
-     * @param content is setup with FormLayout
-     */
-    protected void createSubContents( Composite content ) {
+    @Override
+    public void mouseUp( MouseEvent e ) {
+        openPanel();
     }
 
 
-    protected abstract String description();
+    @Override
+    public void mouseDown( MouseEvent e ) {
+        // ignore
+    }
 
 
-    /**
-     * @return the image should be 48x48px. Its displayed on a white background.
-     */
-    protected abstract Image image();
+    @Override
+    public void mouseDoubleClick( MouseEvent e ) {
+        openPanel();
+    }
+
+
+    private void openPanel() {
+        BatikApplication.instance().getContext().openPanel( dashletSite.panelSite().getPath(), shareletPanelId );
+    }
 }

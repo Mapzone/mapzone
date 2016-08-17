@@ -17,17 +17,23 @@ import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.swt.widgets.Composite;
 
+import org.polymap.core.mapeditor.MapViewer;
+import org.polymap.core.project.ILayer;
 import org.polymap.core.runtime.i18n.IMessages;
+
+import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.PanelIdentifier;
+import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.dashboard.Dashboard;
 import org.polymap.p4.P4Panel;
 import org.polymap.p4.P4Plugin;
+import org.polymap.p4.map.ProjectMapPanel;
 
 import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.Messages;
 
 /**
- * Promote public APIs.
+ * Show all available sharelets.
  *
  * @author Falko Bräutigam
  * @author Steffen Stundzig
@@ -35,20 +41,27 @@ import io.mapzone.arena.Messages;
 public class SharePanel
         extends P4Panel {
 
-    private static Log                  log      = LogFactory.getLog( SharePanel.class );
+    private static Log                   log                   = LogFactory.getLog( SharePanel.class );
 
-    public static final PanelIdentifier ID       = PanelIdentifier.parse( "share" );
+    public static final String           SCOPE                 = "share";
 
-    private static final IMessages      i18n     = Messages.forPrefix( "SharePanel" );
+    public static final PanelIdentifier  ID                    = PanelIdentifier.parse( SCOPE );
 
-    private static final String         SOURCES_ID   = "sourcesDashboard";
+    private static final IMessages       i18n                  = Messages.forPrefix( "SharePanel" );
 
-    private Dashboard                   sourcesDashboard;
+    private static final String          SOURCES_ID            = "sourcesDashboard";
+
+    private Dashboard                    sourcesDashboard;
+
+    @Scope( SharePanel.SCOPE )
+    protected Context<SharePanelContext> sharePanelContext;
+
+    private boolean                      defaultContextCreated = false;
 
 
     @Override
-    public boolean wantsToBeShown() {
-        if (site().path().size() == 2) {
+    public boolean beforeInit() {
+        if (parentPanel().orElse( null ) instanceof ProjectMapPanel) {
             site().icon.set( ArenaPlugin.images().svgImage( "share.svg", P4Plugin.HEADER_ICON_CONFIG ) );
             site().tooltip.set( i18n.get( "tooltip" ) );
             site().title.set( "" );
@@ -61,16 +74,48 @@ public class SharePanel
     @Override
     public void init() {
         site().title.set( i18n.get( "title" ) );
+        site().minWidth.set( 150 );
+        site().preferredWidth.set( 450 );
+        
+        // set useful defaults into the context
+        final MapViewer<ILayer> mapViewer = ((ProjectMapPanel)parentPanel().get()).mapViewer;
+        if (!sharePanelContext.isPresent()) {
+            defaultContextCreated = true;
+            sharePanelContext.set( new SharePanelContext() );
+        }
+        if (!sharePanelContext.get().boundingBox.isPresent()) {
+            sharePanelContext.get().boundingBox.set( mapViewer.mapExtent.get() );
+        }
+        if (!sharePanelContext.get().crs.isPresent()) {
+            sharePanelContext.get().crs.set( mapViewer.maxExtent.get().getCoordinateReferenceSystem() );
+        }
+        if (!sharePanelContext.get().resolution.isPresent()) {
+            sharePanelContext.get().resolution.set( mapViewer.resolution.get() );
+        }
+        if (sharePanelContext.get().selectionDescriptors.get().isEmpty()) {
+            mapViewer.getLayers().stream()
+            .sorted( ( elm1, elm2 ) -> (elm1.orderKey.get() - elm2.orderKey.get()) )
+            .filter( l -> mapViewer.isVisible( l ) )
+            .forEach( layer -> sharePanelContext.get().add( new SharePanelContext.SelectionDescriptor( layer ) ) );
+        }
     }
 
 
     @Override
     public void createContents( Composite parent ) {
-        
         sourcesDashboard = new Dashboard( getSite(), SOURCES_ID );
-        sourcesDashboard.addDashlet( new BlogSharelet() );
-        sourcesDashboard.addDashlet( new FacebookSharelet() );
+        sourcesDashboard.addDashlet( new Sharelet( "EmbedSharelet", EmbedShareletPanel.ID, ArenaPlugin.images().svgImage( "ic_web_black_48px.svg", P4Plugin.TOOLBAR_ICON_CONFIG ) ) );
+        sourcesDashboard.addDashlet( new Sharelet( "FacebookSharelet", FacebookShareletPanel.ID, null ) );
         sourcesDashboard.createContents( parent );
+    }
+
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (defaultContextCreated) {
+            sharePanelContext.set( null );
+        }
     }
 
 }

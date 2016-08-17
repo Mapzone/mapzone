@@ -26,17 +26,19 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Steffen Stundzig
  */
-public class ShareInfoServletStarter
+public class ShareServletsStarter
         extends ServiceTracker<HttpService,Object> {
 
-    private static Log         log   = LogFactory.getLog( ShareInfoServletStarter.class );
+    private static Log         log             = LogFactory.getLog( ShareServletsStarter.class );
 
-    public static final String ALIAS = "/shareinfo";
+    public static final String ALIAS_SHAREINFO = "/shareinfo";
 
-    private ShareInfoServlet   servlet;
+    public static final String ALIAS_JSFIDDLE  = "/jsfiddle";
+
+    private ShareInfoServlet   shareInfoServlet;
 
 
-    public ShareInfoServletStarter( BundleContext context ) {
+    public ShareServletsStarter( BundleContext context ) {
         super( context, HttpService.class.getName(), null );
     }
 
@@ -51,12 +53,12 @@ public class ShareInfoServletStarter
 
     protected void registerServlet( HttpService service ) {
         try {
-            assert servlet == null;
+            assert shareInfoServlet == null;
             // TODO load user/project default connection data or geocode
             // implementations
-            servlet = new ShareInfoServlet();
-            service.registerServlet( ALIAS, servlet, null, null );
-            log.info( "Registered share info service at " + ALIAS );
+            shareInfoServlet = new ShareInfoServlet();
+            service.registerServlet( ALIAS_SHAREINFO, shareInfoServlet, null, null );
+            log.info( "Registered share info service at " + ALIAS_SHAREINFO );
         }
         catch (Exception e) {
             throw new RuntimeException( e );

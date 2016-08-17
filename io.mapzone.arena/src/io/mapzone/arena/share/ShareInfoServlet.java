@@ -65,8 +65,8 @@ public class ShareInfoServlet
 
             final String projectName = "organisation/projectname";
             final String description = "description of the project";
-            final String arenaUrl = req.getRequestURL().toString().replace( ShareInfoServletStarter.ALIAS, "/arena" );
-            final StringBuilder imageUrl = new StringBuilder(req.getRequestURL().toString().replace( ShareInfoServletStarter.ALIAS, "/ows" ));
+            final String arenaUrl = req.getRequestURL().toString().replace( ShareServletsStarter.ALIAS, "/arena" );
+            final StringBuilder imageUrl = new StringBuilder(req.getRequestURL().toString().replace( ShareServletsStarter.ALIAS, "/ows" ));
             imageUrl.append( "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&LAYERS=" +encodedLayers + "&CRS=EPSG%3A3857&STYLES=&WIDTH=400&HEIGHT=300&BBOX=" + encodedBBox + "" );
 
             // convert addresses to result json
