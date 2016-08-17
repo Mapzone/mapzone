@@ -17,35 +17,34 @@ import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.swt.widgets.Composite;
 
-import org.polymap.rhei.batik.dashboard.Dashboard;
-import org.polymap.rhei.batik.dashboard.DashletSite;
-import org.polymap.rhei.batik.dashboard.DefaultDashlet;
+import org.polymap.core.runtime.i18n.IMessages;
+import org.polymap.rhei.batik.PanelIdentifier;
+import org.polymap.p4.P4Panel;
+import io.mapzone.arena.Messages;
 
 /**
- * Share the map link with facebook
+ * Panel to share e.g. javascript, image or url to a blog.
  *
  * @author Steffen Stundzig
  */
-public class MapDashlet
-        extends DefaultDashlet {
+public class BlogShareletPanel
+        extends P4Panel {
 
-    private static Log log = LogFactory.getLog( MapDashlet.class );
+    private static Log                  log  = LogFactory.getLog( BlogShareletPanel.class );
+
+    public static final PanelIdentifier ID   = PanelIdentifier.parse( "blogshare" );
+
+    private static final IMessages      i18n = Messages.forPrefix( "BlogSharePanel" );
+
 
     @Override
-    public void init( DashletSite site ) {
-        site.isExpandable.set( true );
-        site.border.set( false );
-        site.title.set( "map" );
-        super.init( site );
+    public void init() {
+        site().title.set( i18n.get( "title" ) );
     }
-    
+
+
     @Override
     public void createContents( Composite parent ) {
-        getSite().toolkit().createLabel( parent, "map" );
-        Dashboard mapDashboard = new Dashboard( getSite().panelSite(), "foo" );
-        mapDashboard.addDashlet( new IframeMapDashlet() );
-        mapDashboard.addDashlet( new FacebookMapDashlet() );
-        mapDashboard.createContents( parent );
-
     }
+
 }

@@ -41,17 +41,9 @@ public class SharePanel
 
     private static final IMessages      i18n     = Messages.forPrefix( "SharePanel" );
 
-    private static final String         MAP_ID   = "mapDashboard";
+    private static final String         SOURCES_ID   = "sourcesDashboard";
 
-    private static final String         DATA_ID  = "dataDashboard";
-
-    private static final String         IMAGE_ID = "imageDashboard";
-
-    private Dashboard                   mapDashboard;
-
-    private Dashboard                   imageDashboard;
-
-    private Dashboard                   dataDashboard;
+    private Dashboard                   sourcesDashboard;
 
 
     @Override
@@ -74,29 +66,11 @@ public class SharePanel
 
     @Override
     public void createContents( Composite parent ) {
-//        Section section = tk().createSection( parent, 
-//                i18n.get( "mapDashboard_title" ), 
-//                TREE_NODE, Section.SHORT_TITLE_BAR, Section.FOCUS_TITLE, SWT.BORDER );
-//        section.setToolTipText( i18n.get( "mapDashboard_tooltip" ) );
-//        section.setExpanded( true );
-////        section.setBackground( UIUtils.getColor( sectionBackgroundColor.getRed() * (11-level) /10, sectionBackgroundColor.getGreen()* (11-level) /10, sectionBackgroundColor.getBlue()* (11-level) /10) );
-//        ((Composite)section.getClient()).setLayout( parent.getLayout());
-//        
         
-        mapDashboard = new Dashboard( getSite(), MAP_ID );
-        mapDashboard.addDashlet( new MapDashlet() );
-        mapDashboard.createContents( parent );
-//        ContributionManager.instance().contributeTo( mapDashboard, this, ID.id() );
-
-        dataDashboard = new Dashboard( getSite(), DATA_ID );
-//        dataDashboard.addDashlet( new AuthTokenDashlet() );
-        dataDashboard.createContents( parent );
-//        ContributionManager.instance().contributeTo( dataDashboard, this, DATA_ID );
-
-        imageDashboard = new Dashboard( getSite(), IMAGE_ID );
-//        imageDashboard.addDashlet( new AuthTokenDashlet() );
-        imageDashboard.createContents( parent );
-//        ContributionManager.instance().contributeTo( imageDashboard, this, IMAGE_ID );
+        sourcesDashboard = new Dashboard( getSite(), SOURCES_ID );
+        sourcesDashboard.addDashlet( new BlogSharelet() );
+        sourcesDashboard.addDashlet( new FacebookSharelet() );
+        sourcesDashboard.createContents( parent );
     }
 
 }

@@ -16,12 +16,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+
 import org.polymap.core.ui.FormDataFactory;
 import org.polymap.core.ui.FormLayoutFactory;
 
+import org.polymap.rhei.batik.BatikApplication;
+import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.dashboard.DashletSite;
 import org.polymap.rhei.batik.dashboard.DefaultDashlet;
 import org.polymap.rhei.batik.toolkit.IPanelToolkit;
@@ -29,10 +34,11 @@ import org.polymap.rhei.batik.toolkit.IPanelToolkit;
 /**
  * @author Steffen Stundzig
  */
-public abstract class ShareDashlet
+public abstract class Sharelet
         extends DefaultDashlet {
 
-    private static Log log = LogFactory.getLog( ShareDashlet.class );
+    private static Log log = LogFactory.getLog( Sharelet.class );
+
 
     @Override
     public void init( DashletSite site ) {
@@ -41,39 +47,72 @@ public abstract class ShareDashlet
         site.title.set( title() );
         super.init( site );
     }
-    
+
 
     @Override
     public final void createContents( Composite parent ) {
+        parent.addMouseListener( new MouseListener() {
+
+            @Override
+            public void mouseUp( MouseEvent e ) {
+                openPanel();
+            }
+
+
+            @Override
+            public void mouseDown( MouseEvent e ) {
+                // ignore
+            }
+
+
+            @Override
+            public void mouseDoubleClick( MouseEvent e ) {
+                openPanel();
+            }
+
+
+            private void openPanel() {
+                BatikApplication.instance().getContext().openPanel( dashletSite.panelSite().getPath(), shareletPanelId() );
+            }
+        } );
         parent.setLayout( FormLayoutFactory.defaults().create() );
         Label title = getSite().toolkit().createLabel( parent, "", SWT.NONE );
         title.setImage( image() );
-        
+
         Label description = getSite().toolkit().createLabel( parent, description() );
 
         Composite content = getSite().toolkit().createComposite( parent, SWT.BORDER );
         content.setLayout( FormLayoutFactory.defaults().create() );
 
         createSubContents( content );
-        
+
         FormDataFactory.on( title ).width( 48 ).left( 45 ).right( 55 ).top( 10 );
-        FormDataFactory.on( description ).left(5).right( 95 ).top( title, 10 );
-        FormDataFactory.on( content ).left(5).right( 95 ).top( description, 10 ).bottom( 100 );
-        //composite.layout();
+        FormDataFactory.on( description ).left( 5 ).right( 95 ).top( title, 10 );
+        FormDataFactory.on( content ).left( 5 ).right( 95 ).top( description, 10 ).bottom( 100 );
+        // composite.layout();
     }
+
+
+    protected abstract PanelIdentifier shareletPanelId();
+
 
     protected final IPanelToolkit tk() {
         return getSite().toolkit();
     }
-    
+
+
     protected abstract String title();
-    
+
+
     /**
      * @param content is setup with FormLayout
      */
-    protected abstract void createSubContents( Composite content );
+    protected void createSubContents( Composite content ) {
+    }
+
 
     protected abstract String description();
+
 
     /**
      * @return the image should be 48x48px. Its displayed on a white background.

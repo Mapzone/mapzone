@@ -15,31 +15,52 @@ package io.mapzone.arena.share;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.polymap.core.runtime.i18n.IMessages;
 
-import org.polymap.rhei.batik.dashboard.DashletSite;
-import org.polymap.rhei.batik.dashboard.DefaultDashlet;
+import org.polymap.rhei.batik.PanelIdentifier;
+
+import io.mapzone.arena.Messages;
 
 /**
  * Share the map link with facebook
  *
  * @author Steffen Stundzig
  */
-public class FacebookMapDashlet
-        extends DefaultDashlet {
+public class FacebookSharelet
+        extends Sharelet {
 
-    private static Log log = LogFactory.getLog( FacebookMapDashlet.class );
+    private static Log log = LogFactory.getLog( FacebookSharelet.class );
 
-    @Override
-    public void init( DashletSite site ) {
-        site.isExpandable.set( true );
-        site.border.set( true );
-        site.title.set( "facebook" );
-        super.init( site );
-    }
+    private static final IMessages i18n = Messages.forPrefix( "FacebookSharelet" );
     
+
     @Override
-    public void createContents( Composite parent ) {
-        getSite().toolkit().createLabel( parent, "facebook" );
+    protected String title() {
+        return i18n.get( "title" );
+    }
+
+
+    @Override
+    protected String description() {
+        return i18n.get( "description" );
+    }
+
+
+    @Override
+    protected void createSubContents( Composite content ) {
+    }
+
+
+    @Override
+    protected Image image() {
+        return null;
+    }
+
+
+    @Override
+    protected PanelIdentifier shareletPanelId() {
+        return BlogShareletPanel.ID;
     }
 }
