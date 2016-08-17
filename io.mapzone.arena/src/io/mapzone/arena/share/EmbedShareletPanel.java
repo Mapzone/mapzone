@@ -40,6 +40,8 @@ import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 
 import org.polymap.p4.P4Panel;
+import org.polymap.p4.P4Plugin;
+
 import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.Messages;
 import io.mapzone.arena.share.OpenLayersContentBuilder.OpenLayersContent;
@@ -111,10 +113,10 @@ public class EmbedShareletPanel
             Text text = tk().createText( panel.getBody(), content.complete, SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
             ColumnDataFactory.on( text ).widthHint( width ).heightHint( 180 );
 
-            Button button = tk().createButton( panel.getBody(), "jsfiddle", SWT.NONE );
-//            button.setImage( ArenaPlugin.images().image( "jsfiddle.png") );
+            Button button = tk().createButton( panel.getBody(), "", SWT.NONE );
+            button.setImage( ArenaPlugin.images().svgImage( "jsfiddle.svg", P4Plugin.HEADER_ICON_CONFIG) );
             button.setToolTipText( "jsfiddle.net" );
-            ColumnDataFactory.on( button ).widthHint( 96 ).heightHint( 24 ).horizAlign( Alignment.RIGHT );
+            ColumnDataFactory.on( button ).widthHint( 36 ).heightHint( 36 ).horizAlign( Alignment.RIGHT );
             button.addSelectionListener( new SelectionAdapter() {
 
                 @Override
