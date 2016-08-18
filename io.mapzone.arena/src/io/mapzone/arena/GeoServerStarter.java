@@ -48,9 +48,11 @@ import org.polymap.service.geoserver.GeoServerServlet;
 import org.polymap.service.geoserver.OnDemandServlet;
 
 import org.polymap.p4.P4Plugin;
-import org.polymap.p4.catalog.LocalResolver;
+import org.polymap.p4.catalog.AllResolver;
 import org.polymap.p4.data.P4PipelineIncubator;
 import org.polymap.p4.project.ProjectRepository;
+
+import io.mapzone.arena.jmx.ArenaConfigMBean;
 
 /**
  * Track {@link HttpService} instances and register {@link OnDemandServlet} with
@@ -66,7 +68,7 @@ public class GeoServerStarter
 
     private static Log log = LogFactory.getLog( GeoServerStarter.class );
     
-    public static final String          ALIAS = "/ows";
+    public static final String          ALIAS = ArenaConfigMBean.GEOSERVER_ALIAS;
 
     private OnDemandServlet             onDemandServlet;
     
@@ -138,7 +140,7 @@ public class GeoServerStarter
             protected Pipeline createPipeline( ILayer layer,
                     Class<? extends PipelineProcessor> usecase ) throws Exception {
                 // resolve service
-                DataSourceDescription dsd = LocalResolver
+                DataSourceDescription dsd = AllResolver
                         .instance()
                         .connectLayer( layer, new NullProgressMonitor() )
                         .orElseThrow( () -> new RuntimeException( "No data source for layer: " + layer ) );

@@ -58,9 +58,6 @@ public class CatalogRepositoryContext {
 
     private LuceneFulltextIndex     index;
     
-    /** The global read-cache. */
-    private UnitOfWork              uow;
-
     
     /**
      * Creates the repository instance. 
@@ -88,8 +85,6 @@ public class CatalogRepositoryContext {
                 .commitLockStrategy.set( () -> 
                         new CommitLockStrategy.Serialize() )
                 .create();
-        
-        uow = repo.newUnitOfWork();
     }
 
     
@@ -105,16 +100,15 @@ public class CatalogRepositoryContext {
 
 
     /**
-     * The global read-cache. Do not close or modify contents!
+     * Creates a new {@link UnitOfWork}. Close after use!
      */
     public UnitOfWork unitOfWork() {
-        return uow;
+        return repo.newUnitOfWork();
     }
     
     
     public void createTestData() {
         try (
-            @SuppressWarnings( "hiding" )
             UnitOfWork uow = repo.newUnitOfWork();
         ){
             if (uow.query( CatalogEntry.class ).maxResults( 1 ).execute().size() == 0) {

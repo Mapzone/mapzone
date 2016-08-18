@@ -41,35 +41,38 @@ public class GetRecordByIdResponse
     
     @Override
     protected void doExecute() throws Exception {
-        // query
-        UnitOfWork uow = CatalogPlugin.instance().catalog().unitOfWork();
-        Query<CatalogEntry> query = uow.query( CatalogEntry.class );
+        try (
+            UnitOfWork uow = CatalogPlugin.instance().catalog().unitOfWork();
+        ){
+            // query
+            Query<CatalogEntry> query = uow.query( CatalogEntry.class );
 
-        // GET
-        if (!request().parameters().isEmpty()) {
-            throw new UnsupportedOperationException( "GetRecords: GET requests are not supported." );
+            // GET
+            if (!request().parameters().isEmpty()) {
+                throw new UnsupportedOperationException( "GetRecords: GET requests are not supported." );
+            }
+            // POST
+            request().<GetRecordByIdType>parsedBody().ifPresent( body -> {
+                String identifier = body.getId().get( 0 );
+                query.where( Expressions.eq( CatalogEntry.TYPE.identifier, identifier ) );
+            });
+
+            ResultSet<CatalogEntry> rs = query.execute();
+
+            // GetRecordsResponse
+            out().writeStartElement( "csw", "GetRecordByIdResponse", Namespaces.CSW  );
+            out().writeNamespace( "xml", Namespaces.XML );
+            out().writeNamespace( "csw", Namespaces.CSW );
+            out().writeNamespace( "dc", Namespaces.DC );
+            out().writeNamespace( "dct", Namespaces.DCT );
+
+            // records
+            for (CatalogEntry entry : rs) {
+                new SummaryRecordWriter( out() ).process( entry );
+            }
+
+            out().writeEndElement();
         }
-        // POST
-        request().<GetRecordByIdType>parsedBody().ifPresent( body -> {
-            String identifier = body.getId().get( 0 );
-            query.where( Expressions.eq( CatalogEntry.TYPE.identifier, identifier ) );
-        });
-        
-        ResultSet<CatalogEntry> rs = query.execute();
-        
-        // GetRecordsResponse
-        out().writeStartElement( "csw", "GetRecordByIdResponse", Namespaces.CSW  );
-        out().writeNamespace( "xml", Namespaces.XML );
-        out().writeNamespace( "csw", Namespaces.CSW );
-        out().writeNamespace( "dc", Namespaces.DC );
-        out().writeNamespace( "dct", Namespaces.DCT );
-        
-        // records
-        for (CatalogEntry entry : rs) {
-            new SummaryRecordWriter( out() ).process( entry );
-        }
-        
-        out().writeEndElement();
     }
 
 }

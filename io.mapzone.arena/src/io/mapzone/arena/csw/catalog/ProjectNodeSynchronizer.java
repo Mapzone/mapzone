@@ -27,11 +27,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.conn.HttpHostConnectException;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
-
 import org.polymap.core.catalog.IMetadataCatalog;
 import org.polymap.core.catalog.IUpdateableMetadata;
 import org.polymap.core.catalog.IUpdateableMetadataCatalog.Updater;
@@ -49,7 +44,6 @@ import org.polymap.service.geoserver.GeoServerUtils;
 import org.polymap.model2.query.Expressions;
 import org.polymap.model2.query.ResultSet;
 import org.polymap.model2.runtime.UnitOfWork;
-import org.polymap.p4.P4Plugin;
 import org.polymap.p4.project.MetadataReference;
 import org.polymap.p4.project.ProjectRepository;
 
@@ -71,17 +65,18 @@ public class ProjectNodeSynchronizer
     
     
     public ProjectNodeSynchronizer() {
-        // allow P4 to startup and initialize catalogs
-        new Job( "Start delay" ) {
-            @Override
-            protected IStatus run( IProgressMonitor monitor ) {
-                catalog = (CswMetadataCatalog)P4Plugin.catalogs().stream().filter( c -> c instanceof CswMetadataCatalog )
-                        .findAny().orElseThrow( () -> new IllegalStateException( "No CswMetadataCatalog found." ) );
-                
-                EventManager.instance().subscribe( ProjectNodeSynchronizer.this );
-                return Status.OK_STATUS;
-            }
-        }.schedule( 5000 );
+        // FIXME deaktivated, just sync layers to the record of the project
+//        // allow P4 to startup and initialize catalogs
+//        new Job( "Start delay" ) {
+//            @Override
+//            protected IStatus run( IProgressMonitor monitor ) {
+//                catalog = (CswMetadataCatalog)P4Plugin.catalogs().stream().filter( c -> c instanceof CswMetadataCatalog )
+//                        .findAny().orElseThrow( () -> new IllegalStateException( "No CswMetadataCatalog found." ) );
+//                
+//                EventManager.instance().subscribe( ProjectNodeSynchronizer.this );
+//                return Status.OK_STATUS;
+//            }
+//        }.schedule( 5000 );
     }
 
     

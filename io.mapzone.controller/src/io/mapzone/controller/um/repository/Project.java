@@ -1,6 +1,25 @@
+/* 
+ * mapzone.io
+ * Copyright (C) 2016, the @authors. All rights reserved.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3.0 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ */
 package io.mapzone.controller.um.repository;
 
+import static org.polymap.model2.runtime.EntityRuntimeContext.EntityStatus.CREATED;
+import static org.polymap.model2.runtime.EntityRuntimeContext.EntityStatus.MODIFIED;
+import static org.polymap.model2.runtime.EntityRuntimeContext.EntityStatus.REMOVED;
+
 import java.util.Optional;
+import java.util.UUID;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -52,6 +71,12 @@ public class Project
     @Queryable
     public Property<String>             serviceAuthToken;
     
+    /**
+     *
+     */
+    @Nullable
+    public Property<String>             catalogId;
+    
     
     public Optional<AuthToken> serviceAuthToken() {
         return serviceAuthToken.get() != null 
@@ -65,6 +90,30 @@ public class Project
         // XXX encrypt?
         serviceAuthToken.set( authToken.toString() );
         return authToken;
+    }
+
+
+    @Override
+    public void onLifecycleChange( State state ) {
+        super.onLifecycleChange( state );
+        
+        if (state.equals( State.BEFORE_PREPARE )) {
+            if (catalogId.get() == null) {
+                catalogId.set( UUID.randomUUID().toString() );
+            }
+        }
+        
+        else if (state.equals( State.BEFORE_COMMIT )) {
+            if (status() == CREATED) {
+                new ProjectCatalogSynchronizer.CreateCatalogEntry( this ).schedule();
+            }
+            else if (status() == MODIFIED) {
+                new ProjectCatalogSynchronizer.UpdateCatalogEntry( this ).schedule();
+            }
+            else if (status() == REMOVED) {
+                new ProjectCatalogSynchronizer.RemoveCatalogEntry( this ).schedule();
+            }
+        }
     }
     
 }

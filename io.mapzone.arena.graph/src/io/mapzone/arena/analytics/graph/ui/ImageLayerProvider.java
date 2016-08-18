@@ -55,7 +55,7 @@ import org.polymap.core.ui.StatusDispatcher;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
 import org.polymap.p4.P4Plugin;
-import org.polymap.p4.catalog.LocalResolver;
+import org.polymap.p4.catalog.AllResolver;
 import org.polymap.p4.data.P4PipelineIncubator;
 import org.polymap.rap.openlayers.base.OlEvent;
 import org.polymap.rap.openlayers.base.OlEventListener;
@@ -121,7 +121,7 @@ public class ImageLayerProvider
             final String servletPath ) {
         try {
             // XXX don't connect again (use some cache on layer)
-            DataSourceDescription dsd = LocalResolver.instance().connectLayer( baseLayer, null ).orElseThrow( () -> new RuntimeException( "No data source for layer: "
+            DataSourceDescription dsd = AllResolver.instance().connectLayer( baseLayer, null ).orElseThrow( () -> new RuntimeException( "No data source for layer: "
                     + baseLayer ) );
 
             // create pipeline for it

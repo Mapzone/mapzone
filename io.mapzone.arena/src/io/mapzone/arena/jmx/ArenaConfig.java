@@ -50,6 +50,8 @@ public class ArenaConfig
     
     private String                  catalogServerUrl = "http://localhost:8090/csw";
 
+    private String                  projectCatalogId;
+
     /**
      * The ArenaPlugin must be started automatically at level 5 in order to make this
      * available right after startup.
@@ -112,6 +114,18 @@ public class ArenaConfig
     public void setCatalogServerUrl( String url ) {
         log.info( "setCatalogServerUrl(): " +  url );
         this.catalogServerUrl = url;
+    }
+
+    @Override
+    public String getProjectCatalogId() {
+        return projectCatalogId;
+        
+    }
+
+    @Override
+    public void setProjectCatalogId( String projectCatalogId ) {
+        log.info( "setProjectCatalogId(): " + projectCatalogId );
+        this.projectCatalogId = projectCatalogId;
     }
     
 }

@@ -16,15 +16,6 @@ package io.mapzone.controller.vm.http;
 import static io.mapzone.controller.provision.Provision.Status.Severity.OK;
 import static org.apache.commons.lang3.StringUtils.substringAfter;
 
-import io.mapzone.controller.provision.Provision.Status;
-import io.mapzone.controller.provision.ProvisionExecutor;
-import io.mapzone.controller.provision.ProvisionExecutor2;
-import io.mapzone.controller.provision.ProvisionRuntimeException;
-import io.mapzone.controller.um.repository.Project;
-import io.mapzone.controller.vm.provisions.MaxProcesses;
-import io.mapzone.controller.vm.provisions.ProcessRunning;
-import io.mapzone.controller.vm.provisions.ProcessStarted;
-
 import java.util.regex.Pattern;
 
 import java.io.IOException;
@@ -39,10 +30,21 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
+
 import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
 
 import org.polymap.core.runtime.Closer;
+
+import io.mapzone.controller.ControllerPlugin;
+import io.mapzone.controller.provision.Provision.Status;
+import io.mapzone.controller.provision.ProvisionExecutor;
+import io.mapzone.controller.provision.ProvisionExecutor2;
+import io.mapzone.controller.provision.ProvisionRuntimeException;
+import io.mapzone.controller.um.repository.Project;
+import io.mapzone.controller.vm.provisions.MaxProcesses;
+import io.mapzone.controller.vm.provisions.ProcessRunning;
+import io.mapzone.controller.vm.provisions.ProcessStarted;
 
 /**
  * The proxy servlet takes request targeting a project instance and forwards it via
@@ -72,7 +74,10 @@ public class ProxyServlet
     private static final Pattern    NO_URL_CHAR = Pattern.compile( "[^a-zA-Z0-9_-]" );
 
     
-    public static String projectUrl( Project project ) {
+    /**
+     * 
+     */
+    public static String relativeClientUrl( Project project ) {
         try {
             // assuming that we are in /dashboard servlet
             return Joiner.on( "/" ).join( "..",
@@ -80,6 +85,27 @@ public class ProxyServlet
                     URLEncoder.encode( project.organization.get().name.get(), "UTF8" ),
                     URLEncoder.encode( project.name.get(), "UTF8" ),
                     substringAfter( project.servletAlias.get(), "/" ) );
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    
+    /**
+     * 
+     */
+    public static String projectUrlBase( Project project ) {
+        try {
+            String localHttpPort = ControllerPlugin.instance().httpPort();
+            String baseUrl = "mapzone".equals( System.getProperty( "user.name" ) )
+                    ? "http://mapzone.io" 
+                    : "http://localhost:" + localHttpPort;
+            
+            return Joiner.on( "" ).join(
+                    baseUrl, ProxyServlet.SERVLET_ALIAS, "/",
+                    URLEncoder.encode( project.organization.get().name.get(), "UTF8" ), "/",
+                    URLEncoder.encode( project.name.get(), "UTF8" ) );
         }
         catch (UnsupportedEncodingException e) {
             throw new RuntimeException( e );

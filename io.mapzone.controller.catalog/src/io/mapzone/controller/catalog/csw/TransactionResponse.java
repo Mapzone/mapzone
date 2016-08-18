@@ -51,9 +51,8 @@ public class TransactionResponse
     
     @Override
     protected void doExecute() throws Exception {
-        UnitOfWork uow = CatalogPlugin.instance().catalog().unitOfWork();
         try (
-            UnitOfWork nested = uow.newUnitOfWork();
+            UnitOfWork uow = CatalogPlugin.instance().catalog().unitOfWork();
         ){
             // XXX check origin for authorisation
             // when fixed then also change the catalog server URL the controller
@@ -67,19 +66,18 @@ public class TransactionResponse
 
             for (Object op : tx.getInsertOrUpdateOrDelete()) {
                 if (op instanceof InsertType) {
-                    handleInsert( (InsertType)op, nested );    
+                    handleInsert( (InsertType)op, uow );    
                 }
                 else if (op instanceof UpdateType) {
-                    handleUpdate( (UpdateType)op, nested );    
+                    handleUpdate( (UpdateType)op, uow );    
                 }
                 else if (op instanceof DeleteType) {
-                    handleDelete( (DeleteType)op, nested );    
+                    handleDelete( (DeleteType)op, uow );    
                 }
                 else {
                     throw new RuntimeException( "Unhandled op type: " + op );
                 }
             }
-            nested.commit();
             uow.commit();
         }
     }

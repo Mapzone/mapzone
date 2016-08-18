@@ -14,22 +14,25 @@
  */
 package io.mapzone.controller.vm.http;
 
-import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.google.common.collect.Sets;
+
 import org.polymap.core.runtime.cache.Cache;
 import org.polymap.core.runtime.cache.CacheConfig;
 
+import io.mapzone.arena.jmx.ArenaConfigMBean;
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.vm.repository.ProjectInstanceIdentifier;
 
 /**
- * Makes sure that a request of API (/ows or /webdav) has proper auth token set.
+ * Makes sure that a request of API (/ows or /webdav) has proper auth token or user set.
  *
  * @author Falko Bräutigam
  */
@@ -38,9 +41,13 @@ public class ServiceAuthProvision
 
     private static Log log = LogFactory.getLog( ServiceAuthProvision.class );
 
-    public static final String[]            SERVICE_ALIASES = {"/ows", "/webdav"};
+    // see io.mapzone.arena.GeoServerStarter
+    public static final Set<String>         SERVICE_ALIASES = Sets.newHashSet( "/ows", "/webdav" );
     
-    public static final String              TOKEN_REQUEST_PARAM = "authToken";
+    public static final String              REQUEST_PARAM_TOKEN = "authToken";
+    
+    /** */
+    public static final String              REQUEST_PARAM_USER = ArenaConfigMBean.REQUEST_PARAM_USER;
     
     private static Cache<CacheKey,Boolean>  loggedIn = CacheConfig.defaults().createCache();
     
@@ -50,7 +57,7 @@ public class ServiceAuthProvision
     @Override
     public boolean init( Provision failed, Status cause ) {
         String pathInfo = request.get().getPathInfo();
-        Optional<String> serviceRequest = Arrays.stream( SERVICE_ALIASES )
+        Optional<String> serviceRequest = SERVICE_ALIASES.stream()
                 .filter( alias -> pathInfo.contains( alias ) ).findAny();
         
         return serviceRequest.isPresent() &&
@@ -64,10 +71,41 @@ public class ServiceAuthProvision
     public Status execute() throws Exception {
         checked.set( this );
         
+        if (checkAuthToken()) {
+            return OK_STATUS;
+        }
+        else if (checkUser()) {
+            return OK_STATUS;            
+        }
+        else {
+            throw new HttpProvisionRuntimeException( 401, "No auth token specified. See the project info page for more information." );            
+        }
+    }
+
+
+    /**
+     * Check for user in URL to allow mapzone client to access service of other
+     * clients.
+     */
+    protected boolean checkUser() {
+        // geotools's WebMapServer automatically changes all params to upper case
+        String user = request.get().getParameter( REQUEST_PARAM_USER.toUpperCase() );
+        if (user == null) {
+            return false;
+        }
+        log.warn( "***NOT CHECKED*** User param found: " + user + "." );
+        return true;
+    }
+    
+    
+    /**
+     *
+     */
+    protected boolean checkAuthToken() {
         // find request token
-        String requestToken = request.get().getParameter( TOKEN_REQUEST_PARAM );
+        String requestToken = request.get().getParameter( REQUEST_PARAM_TOKEN );
         if (requestToken == null) {
-            throw new HttpProvisionRuntimeException( 401, "No auth token specified. See the project info page for more information." );
+            return false;
         }
 
         // check token
@@ -82,10 +120,13 @@ public class ServiceAuthProvision
         if (!valid) {
             throw new HttpProvisionRuntimeException( 401, "Given auth token is not valid for this project." );
         }
-        return OK_STATUS;
+        return true;
     }
 
     
+    /**
+     * 
+     */
     protected class CacheKey {
         
         public String                       token;

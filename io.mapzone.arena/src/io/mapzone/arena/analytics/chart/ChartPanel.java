@@ -87,7 +87,7 @@ import org.polymap.rhei.batik.PanelIdentifier;
 
 import org.polymap.p4.P4Panel;
 import org.polymap.p4.P4Plugin;
-import org.polymap.p4.catalog.LocalResolver;
+import org.polymap.p4.catalog.AllResolver;
 import org.polymap.p4.data.P4PipelineIncubator;
 import org.polymap.rap.openlayers.control.MousePositionControl;
 import org.polymap.rap.openlayers.control.ScaleLineControl;
@@ -244,7 +244,7 @@ public class ChartPanel
         public Layer getLayer( @SuppressWarnings("hiding") ILayer layer ) {
             try {
                 // XXX don't connect again (use some cache on layer)
-                DataSourceDescription dsd = LocalResolver.instance().connectLayer( layer, null )
+                DataSourceDescription dsd = AllResolver.instance().connectLayer( layer, null )
                         .orElseThrow( () -> new RuntimeException( "No data source for layer: " + layer ) );
 
                 // create pipeline for it

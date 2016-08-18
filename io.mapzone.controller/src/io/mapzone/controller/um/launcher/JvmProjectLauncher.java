@@ -55,6 +55,7 @@ import io.mapzone.controller.vm.runtime.Script;
  *
  * @author Falko Bräutigam
  */
+@SuppressWarnings( "deprecation" )
 public class JvmProjectLauncher
         extends ArchiveLauncher {
 
@@ -171,7 +172,6 @@ public class JvmProjectLauncher
         try { Thread.sleep( 1000 ); } catch (InterruptedException e) {}
         
         try (
-            @SuppressWarnings("deprecation")
             CloseableHttpClient httpClient = new SystemDefaultHttpClient();
         ){
             // XXX use Project#servletAlias

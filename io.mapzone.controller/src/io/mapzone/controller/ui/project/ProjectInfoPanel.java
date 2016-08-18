@@ -18,6 +18,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.service.UrlLauncher;
+
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.security.UserPrincipal;
@@ -25,11 +28,14 @@ import org.polymap.core.ui.ColumnLayoutFactory;
 import org.polymap.core.ui.FormLayoutFactory;
 import org.polymap.core.ui.StatusDispatcher;
 
+import org.polymap.rhei.batik.BatikPlugin;
 import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.Mandatory;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PanelPath;
 import org.polymap.rhei.batik.Scope;
+import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
+import org.polymap.rhei.batik.toolkit.ConstraintData;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
@@ -40,12 +46,14 @@ import org.polymap.rhei.form.DefaultFormPage;
 import org.polymap.rhei.form.IFormPageSite;
 import org.polymap.rhei.form.batik.BatikFormContainer;
 
+import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.ops.DeleteProjectOperation;
 import io.mapzone.controller.ops.UpdateProjectOperation;
 import io.mapzone.controller.ui.CtrlPanel;
 import io.mapzone.controller.ui.util.PropertyAdapter;
 import io.mapzone.controller.um.repository.AuthToken;
 import io.mapzone.controller.um.repository.Project;
+import io.mapzone.controller.vm.http.ProxyServlet;
 
 /**
  * 
@@ -60,11 +68,11 @@ public class ProjectInfoPanel
     public static final PanelIdentifier ID = PanelIdentifier.parse( "editProject" );
     
     @Mandatory
-    @Scope("io.mapzone.controller")
+    @Scope( "io.mapzone.controller" )
     protected Context<UserPrincipal>    userPrincipal;
     
     @Mandatory
-    @Scope("io.mapzone.controller")
+    @Scope( "io.mapzone.controller" )
     protected Context<Project>          selected;
     
     /**
@@ -89,20 +97,7 @@ public class ProjectInfoPanel
 
     @Override
     public void createContents( Composite parent ) {
-//        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( 10 ).create() );
-        
-//        // welcome
-//        IPanelSection welcomeSection = tk.createPanelSection( parent, null );
-//        welcomeSection.addConstraint( new MinWidthConstraint( 350, 1 ) );
-//        tk.createFlowText( welcomeSection.getBody(), "Changing orginization or name is not yet supported." );
-
-//        // toolbar
-//        tk.createToolbar( "Toolbar", SWT.NONE ).addAction( new ActionConfiguration()
-//                .name.put( "remove" )
-//                .image.put( BatikPlugin.images().svgImage( "ic_delete_48px.svg", SvgImageRegistryHelper.NORMAL24 ) )
-//                .showName.put( false )
-//                .tooltipText.put( "Remove this project altogether" ) );
-        
+        createLaunchSection( parent );        
         createFormSection( parent );
         createAuthSection( parent );
         createDeleteSection( parent );
@@ -132,6 +127,22 @@ public class ProjectInfoPanel
                         StatusDispatcher.handleError( "Unable to create project.", ev2.getResult().getException() );
                     }
                 }));
+            }
+        });
+    }
+
+
+    protected void createLaunchSection( Composite parent ) {
+        Button btn = tk().createButton( parent, "Launch", SWT.PUSH, SWT.FLAT );
+        btn.setLayoutData( new ConstraintData( new PriorityConstraint( 100 ) ) );
+        btn.setImage( ControllerPlugin.images().svgImage( "rocket.svg", ControllerPlugin.OK_ICON_CONFIG ) );
+        btn.setToolTipText( "Launch this project in another browser tab" );
+        btn.addSelectionListener( new SelectionAdapter() {
+            @Override
+            public void widgetSelected( SelectionEvent ev ) {
+                String projectUrl = ProxyServlet.relativeClientUrl( selected.get() );
+                UrlLauncher launcher = RWT.getClient().getService( UrlLauncher.class );
+                launcher.openURL( projectUrl );
             }
         });
     }
@@ -178,7 +189,9 @@ public class ProjectInfoPanel
         // delete project
         IPanelSection section = tk().createPanelSection( parent, "Danger zone" );
         section.addConstraint( new PriorityConstraint( 0 ), new MinWidthConstraint( 350, 1 ) );
-        Button deleteBtn = tk().createButton( section.getBody(), "Destroy this project", SWT.PUSH );
+        
+        Button deleteBtn = tk().createButton( section.getBody(), "Destroy this project", SWT.PUSH, SWT.FLAT );
+        deleteBtn.setImage( BatikPlugin.images().svgImage( "delete-circle.svg", SvgImageRegistryHelper.DISABLED24 ) );
         deleteBtn.setToolTipText( "Delete everything!<br/><b>There is no way to get the data back!</b>" );
         deleteBtn.addSelectionListener( new SelectionAdapter() {
             @Override

@@ -145,6 +145,17 @@ public class CswMetadata
         return null;
     }
 
+    
+    @Override
+    public String getPublisher() {
+        return "???";
+    }
+
+    @Override
+    public String getRights() {
+        return "???";
+    }
+
     /**
      * See {@link SummaryRecordType#getType()}.
      */
