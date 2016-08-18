@@ -54,7 +54,7 @@ public class EmbedSharelet
     public void init( ShareletSite site ) {
         site.title.set( i18n.get( "title" ) );
         site.description.set( i18n.get( "description" ) );
-        site.image.set( ArenaPlugin.images().svgImage( "ic_web_black_48px.svg", SvgImageRegistryHelper.NORMAL48 ) );
+        site.image.set( ArenaPlugin.images().svgImage( "embed.svg", SvgImageRegistryHelper.NORMAL48 ) );
         super.init( site );
     }
 
