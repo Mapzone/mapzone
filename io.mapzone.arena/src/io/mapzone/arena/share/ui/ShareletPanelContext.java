@@ -10,37 +10,25 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  */
-package io.mapzone.arena.share;
+package io.mapzone.arena.share.ui;
 
+import org.polymap.core.runtime.config.Config;
+import org.polymap.core.runtime.config.Configurable;
 import org.polymap.core.runtime.config.Mandatory;
 
-import org.polymap.rhei.batik.Context;
-import org.polymap.rhei.batik.Scope;
-
-import org.polymap.p4.P4Panel;
+import io.mapzone.arena.share.Sharelet;
 
 /**
- * Base Sharelet Panel
+ * A context to propagate data from the sharelet dashlet ui to the sharelet panel.
  *
  * @author Steffen Stundzig
  */
-public abstract class ShareletPanel
-        extends P4Panel {
+public class ShareletPanelContext
+        extends Configurable {
 
     @Mandatory
-    @Scope( SharePanel.SCOPE )
-    protected Context<SharePanelContext> sharePanelContext;
+    public Config<Sharelet>     sharelet;
 
-    protected final static int           width = 350;
-
-
-    @Override
-    public void init() {
-        site().minWidth.set( width );
-        site().preferredWidth.set( 500 );
-        site().title.set( title() );
-    }
-
-
-    protected abstract String title();
+    @Mandatory
+    public Config<ShareContext> shareContext;
 }

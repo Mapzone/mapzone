@@ -10,7 +10,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  */
-package io.mapzone.arena.share;
+package io.mapzone.arena.share.ui;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,38 +25,43 @@ import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.dashboard.Dashboard;
+
 import org.polymap.p4.P4Panel;
 import org.polymap.p4.P4Plugin;
 import org.polymap.p4.map.ProjectMapPanel;
 
 import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.Messages;
+import io.mapzone.arena.share.Sharelet;
+import io.mapzone.arena.share.ShareletSite;
+import io.mapzone.arena.share.Sharelets;
+import io.mapzone.arena.share.ui.ShareContext.SelectionDescriptor;
 
 /**
- * Show all available sharelets.
+ * The main panel, which shows all known sharelets, packed in dashlets in a
+ * dashboard.
  *
- * @author Falko Bräutigam
  * @author Steffen Stundzig
  */
 public class SharePanel
         extends P4Panel {
 
-    private static Log                   log                   = LogFactory.getLog( SharePanel.class );
+    private static Log                  log                   = LogFactory.getLog( SharePanel.class );
 
-    public static final String           SCOPE                 = "share";
+    public static final String          SCOPE                 = "share";
 
-    public static final PanelIdentifier  ID                    = PanelIdentifier.parse( SCOPE );
+    public static final PanelIdentifier ID                    = PanelIdentifier.parse( SCOPE );
 
-    private static final IMessages       i18n                  = Messages.forPrefix( "SharePanel" );
+    private static final IMessages      i18n                  = Messages.forPrefix( "SharePanel" );
 
-    private static final String          SOURCES_ID            = "sourcesDashboard";
+    private static final String         SOURCES_ID            = "sourcesDashboard";
 
-    private Dashboard                    sourcesDashboard;
+    private Dashboard                   sourcesDashboard;
 
     @Scope( SharePanel.SCOPE )
-    protected Context<SharePanelContext> sharePanelContext;
+    protected Context<ShareContext>     shareContext;
 
-    private boolean                      defaultContextCreated = false;
+    private boolean                     defaultContextCreated = false;
 
 
     @Override
@@ -76,29 +81,27 @@ public class SharePanel
         site().title.set( i18n.get( "title" ) );
         site().minWidth.set( 150 );
         site().preferredWidth.set( 450 );
-        
+
         // set useful defaults into the context
         final MapViewer<ILayer> mapViewer = ((ProjectMapPanel)parentPanel().get()).mapViewer;
-        if (!sharePanelContext.isPresent()) {
+        if (!shareContext.isPresent()) {
             defaultContextCreated = true;
-            sharePanelContext.set( new SharePanelContext() );
+            shareContext.set( new ShareContext() );
         }
-        if (!sharePanelContext.get().boundingBox.isPresent()) {
-            sharePanelContext.get().boundingBox.set( mapViewer.mapExtent.get() );
+        if (!shareContext.get().boundingBox.isPresent()) {
+            shareContext.get().boundingBox.set( mapViewer.mapExtent.get() );
         }
-        if (!sharePanelContext.get().crs.isPresent()) {
-            sharePanelContext.get().crs.set( mapViewer.maxExtent.get().getCoordinateReferenceSystem() );
+        if (!shareContext.get().crs.isPresent()) {
+            shareContext.get().crs.set( mapViewer.maxExtent.get().getCoordinateReferenceSystem() );
         }
-        if (!sharePanelContext.get().resolution.isPresent()) {
-            //sharePanelContext.get().resolution.set( mapViewer.resolution.get() );
-            // FIXME, remove this
-            sharePanelContext.get().resolution.set( 5000.0f );
+        if (!shareContext.get().resolution.isPresent()) {
+            shareContext.get().resolution.set( mapViewer.resolution.get() );
         }
-        if (sharePanelContext.get().selectionDescriptors.get().isEmpty()) {
+        if (shareContext.get().selectionDescriptors.get().isEmpty()) {
             mapViewer.getLayers().stream()
             .sorted( ( elm1, elm2 ) -> (elm1.orderKey.get() - elm2.orderKey.get()) )
             .filter( l -> mapViewer.isVisible( l ) )
-            .forEach( layer -> sharePanelContext.get().add( new SharePanelContext.SelectionDescriptor( layer ) ) );
+            .forEach( layer -> shareContext.get().add( new ShareContext.SelectionDescriptor( layer ) ) );
         }
     }
 
@@ -106,8 +109,14 @@ public class SharePanel
     @Override
     public void createContents( Composite parent ) {
         sourcesDashboard = new Dashboard( getSite(), SOURCES_ID );
-        sourcesDashboard.addDashlet( new Sharelet( "EmbedSharelet", EmbedShareletPanel.ID, ArenaPlugin.images().svgImage( "ic_web_black_48px.svg", P4Plugin.TOOLBAR_ICON_CONFIG ) ) );
-        sourcesDashboard.addDashlet( new Sharelet( "FacebookSharelet", FacebookShareletPanel.ID, null ) );
+        for (Sharelet sharelet : Sharelets.instance().get()) {
+            ShareletSite site = new ShareletSite();
+            site.tk.set( site().toolkit() );
+            site.context.set( shareContext.get() );
+            site.preferredWidth.set( 350 );
+            sharelet.init( site );
+            sourcesDashboard.addDashlet( new ShareletDashlet( sharelet ) );
+        }
         sourcesDashboard.createContents( parent );
     }
 
@@ -116,7 +125,7 @@ public class SharePanel
     public void dispose() {
         super.dispose();
         if (defaultContextCreated) {
-            sharePanelContext.set( null );
+            shareContext.set( null );
         }
     }
 

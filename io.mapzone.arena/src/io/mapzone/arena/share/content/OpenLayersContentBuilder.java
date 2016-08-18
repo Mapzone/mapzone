@@ -10,7 +10,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  */
-package io.mapzone.arena.share;
+package io.mapzone.arena.share.content;
 
 import java.util.StringJoiner;
 
@@ -18,8 +18,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.vividsolutions.jts.geom.Coordinate;
+
 import io.mapzone.arena.ArenaPlugin;
-import io.mapzone.arena.share.SharePanelContext.SelectionDescriptor;
+import io.mapzone.arena.share.ui.ShareContext;
+import io.mapzone.arena.share.ui.ShareContext.SelectionDescriptor;
 
 /**
  * Creates a complete openlayers HTML page as string.
@@ -43,7 +45,7 @@ public class OpenLayersContentBuilder
 
     public final static String MIMETYPE = "application/openlayers";
 
-    private SharePanelContext  context;
+    private ShareContext  context;
 
 
     @Override
@@ -106,7 +108,7 @@ public class OpenLayersContentBuilder
 
 
     @Override
-    public boolean supports( final String mimeType, SharePanelContext context ) {
+    public boolean supports( final String mimeType, ShareContext context ) {
         this.context = context;
         return MIMETYPE.equals( mimeType ) && !context.selectionDescriptors.get().isEmpty();
     }

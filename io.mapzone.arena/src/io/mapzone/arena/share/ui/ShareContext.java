@@ -10,7 +10,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  */
-package io.mapzone.arena.share;
+package io.mapzone.arena.share.ui;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ import org.polymap.core.runtime.config.Configurable;
  *
  * @author Steffen Stundzig
  */
-public class SharePanelContext
+public class ShareContext
         extends Configurable {
 
     public Config<Envelope>                  boundingBox;
@@ -44,14 +44,10 @@ public class SharePanelContext
     public Config<CoordinateReferenceSystem> crs;
 
 
-    public SharePanelContext() {
+    public ShareContext() {
         super();
         this.selectionDescriptors.set( Lists.newArrayList() );
     }
-    //
-    // public SharePanelContext( Envelope mapExtent ) {
-    // this.mapExtent.set( mapExtent );
-    // }
 
 
     public static class SelectionDescriptor
@@ -72,10 +68,4 @@ public class SharePanelContext
     public void add( SelectionDescriptor selectionDescriptor ) {
         selectionDescriptors.get().add( selectionDescriptor );
     }
-
-    //
-    // public String baseUrl() {
-    // return baseUrl;
-    // }
-
 }

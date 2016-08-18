@@ -13,41 +13,40 @@
 package io.mapzone.arena.share;
 
 import java.util.List;
-import java.util.Optional;
-
 import com.google.common.collect.Lists;
 
 import org.polymap.core.runtime.session.SessionSingleton;
 
-public class ShareableContentBuilders
+/**
+ * Extension point to add more sharelet classes.
+ *
+ * @author Steffen Stundzig
+ */
+public class Sharelets
         extends SessionSingleton {
 
-
-    public final static ShareableContentBuilders instance() {
-        return instance( ShareableContentBuilders.class );
+    public final static Sharelets instance() {
+        return instance( Sharelets.class );
     }
 
-    /** Terminal and transformer processors. */
     @SuppressWarnings( "unchecked" )
-    private static List<Class<? extends ShareableContentBuilder>> contentBuilders = Lists.newArrayList( 
-            ArenaContentBuilder.class,
-            OpenLayersContentBuilder.class,
-            WMSUrlBuilder.class);
+    private final static List<Class<? extends Sharelet>> shareletClasses = Lists.newArrayList( 
+            FacebookSharelet.class, 
+            EmbedSharelet.class );
 
 
-    public Optional<ShareableContentBuilder> get( final String mimeType, final SharePanelContext context ) {
-        for (Class<? extends ShareableContentBuilder> builderClass : contentBuilders) {
-            ShareableContentBuilder builder;
+    public List<Sharelet> get() {
+        List<Sharelet> sharelets = Lists.newArrayList();
+        for (Class<? extends Sharelet> clazz : shareletClasses) {
+            Sharelet instance;
             try {
-                builder = builderClass.newInstance();
+                instance = clazz.newInstance();
             }
             catch (InstantiationException | IllegalAccessException e) {
                 throw new RuntimeException( e );
             }
-            if (builder.supports( mimeType, context )) {
-                return Optional.of( builder );
-            }
+            sharelets.add( instance );
         }
-        return Optional.empty();
+        return sharelets;
     }
 }

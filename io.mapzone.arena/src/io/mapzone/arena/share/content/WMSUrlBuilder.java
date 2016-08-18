@@ -10,44 +10,43 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  */
-package io.mapzone.arena.share;
+package io.mapzone.arena.share.content;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import io.mapzone.arena.ArenaPlugin;
+import io.mapzone.arena.share.ui.ShareContext;
 
 /**
- * Creates an url to the arena client.
+ * Creates an url to the ows.
  *
  * @author Steffen Stundzig
  */
-public class ArenaContentBuilder
+public class WMSUrlBuilder
         implements ShareableContentBuilder {
 
-    
-    public class ArenaContent {
+    private static Log         log      = LogFactory.getLog( WMSUrlBuilder.class );
 
-        public String arena;
-        public String shareInfo;
-
-    }
-
-    public final static String MIMETYPE = "application/arena";
-
-    private SharePanelContext context;
+    public final static String MIMETYPE = "application/wms";
 
 
     @Override
-    public ArenaContent content() {
-            ArenaContent content = new ArenaContent();
-            content.arena = ArenaPlugin.instance().config().getProxyUrl() + ArenaPlugin.ALIAS;
-            // FIXME
-            content.shareInf o = "";
-            return content;
+    public URL content() {
+        try {
+            return new URL( ArenaPlugin.instance().config().getProxyUrl() + "/ows" );
+        }
+        catch (MalformedURLException e) {
+            throw new RuntimeException( e );
+        }
     }
 
 
     @Override
-    public boolean supports( final String mimeType, final SharePanelContext context ) {
-        this.context = context;
+    public boolean supports( final String mimeType, ShareContext context ) {
         return MIMETYPE.equals( mimeType );
     }
 }

@@ -10,7 +10,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  */
-package io.mapzone.arena.share;
+package io.mapzone.arena.share.ui;
 
 import java.util.StringJoiner;
 
@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 
-import org.polymap.rhei.batik.toolkit.md.MdToolkit;
+import org.polymap.rhei.batik.toolkit.IPanelToolkit;
 
 import org.polymap.p4.P4Plugin;
 
@@ -41,7 +41,7 @@ public class JsFiddleButton {
     private Button button;
 
 
-    public JsFiddleButton( Composite parent, MdToolkit tk, String htmlCode, String jsCode, String... resources ) {
+    public JsFiddleButton( Composite parent, IPanelToolkit tk, String htmlCode, String jsCode, String... resources ) {
         button = tk.createButton( parent, "", SWT.NONE );
         button.setImage( ArenaPlugin.images().svgImage( "jsfiddle.svg", P4Plugin.HEADER_ICON_CONFIG ) );
         button.setToolTipText( "jsfiddle.net" );

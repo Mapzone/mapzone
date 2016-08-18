@@ -10,7 +10,9 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  */
-package io.mapzone.arena.share;
+package io.mapzone.arena.share.content;
+
+import io.mapzone.arena.share.ui.ShareContext;
 
 /**
  * @author Steffen Stundzig
@@ -20,5 +22,5 @@ public interface ShareableContentBuilder {
     Object content();
 
 
-    boolean supports( String mimeType, SharePanelContext context );
+    boolean supports( String mimeType, ShareContext context );
 }
