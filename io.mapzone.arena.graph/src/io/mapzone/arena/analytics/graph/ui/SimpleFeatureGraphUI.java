@@ -228,7 +228,7 @@ public class SimpleFeatureGraphUI
     public FeatureCollection edgeCollection() {
         return new ListFeatureCollection(edgeSchema(), edges());
     }
-    
+
     public CoordinateReferenceSystem crs() {
         return CRS.get();
     }
@@ -246,6 +246,4 @@ public class SimpleFeatureGraphUI
             }
         }.schedule();
     }
-
-
 }

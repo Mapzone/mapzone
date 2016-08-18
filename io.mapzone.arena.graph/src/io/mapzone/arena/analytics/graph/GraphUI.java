@@ -58,7 +58,6 @@ public interface GraphUI {
 
     FeatureCollection nodeCollection();
 
-
     FeatureType edgeSchema();
     
     FeatureCollection edgeCollection();

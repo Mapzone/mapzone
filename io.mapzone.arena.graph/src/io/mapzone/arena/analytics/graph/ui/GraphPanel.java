@@ -262,6 +262,7 @@ public class GraphPanel
 
         // must be global, because its used as eventlistener
         // ImageLayerProvider and VectorLayerProvider are supported
+
         graphLayerProvider = new ImageLayerProvider( tk(), mapViewer, featureSelection.get().layer(), id -> {
             try {
                 // xxx add a filter for all features with a distance of 1 to the
@@ -299,8 +300,8 @@ public class GraphPanel
             // XXX we need a text icon here
             icon.set( P4Plugin.images().svgImage( "palette.svg", P4Plugin.TOOLBAR_ICON_CONFIG ) );
             tooltip.set( i18n.get( "nodeStylerTooltip" ) );
-            action.set( ev -> {                
-                styleEditorInput.set( new StyleEditorInput( site().memento().getString( NODE_STYLE_IDENTIFIER ), new FeatureCollectionStore( graphLayerProvider.graphUi().nodeCollection() ) ));
+            action.set( ev -> {
+                styleEditorInput.set( new StyleEditorInput( site().memento().getString( NODE_STYLE_IDENTIFIER ), new FeatureCollectionStore(graphLayerProvider.graphUi().nodeCollection()) ) );
                 getContext().openPanel( site().path(), LayerStylePanel.ID );
             } );
         }
@@ -315,8 +316,8 @@ public class GraphPanel
             // XXX we need a text icon here
             icon.set( P4Plugin.images().svgImage( "palette.svg", P4Plugin.TOOLBAR_ICON_CONFIG ) );
             tooltip.set( i18n.get( "edgeStylerTooltip" ) );
-            action.set( ev -> {                
-                styleEditorInput.set( new StyleEditorInput( site().memento().getString( EDGE_STYLE_IDENTIFIER ), new FeatureCollectionStore(graphLayerProvider.graphUi().edgeCollection() ) ) );
+            action.set( ev -> {
+                styleEditorInput.set( new StyleEditorInput( site().memento().getString( EDGE_STYLE_IDENTIFIER ), new FeatureCollectionStore( graphLayerProvider.graphUi().edgeCollection() ) ) );
                 getContext().openPanel( site().path(), LayerStylePanel.ID );
             } );
         }

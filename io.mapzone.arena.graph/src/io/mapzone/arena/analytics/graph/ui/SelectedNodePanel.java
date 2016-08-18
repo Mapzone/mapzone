@@ -92,7 +92,7 @@ public class SelectedNodePanel
     @Override
     public void init() {
         site().title.set( "Selected nodes" );
-        site().preferredWidth.set( 650 );
+        site().preferredWidth.set( 400 );
 
     }
 
