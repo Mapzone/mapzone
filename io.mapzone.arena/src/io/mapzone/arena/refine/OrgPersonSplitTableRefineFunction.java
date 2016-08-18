@@ -260,7 +260,7 @@ public class OrgPersonSplitTableRefineFunction implements RefineFunction {
         IResolvableInfo info = P4Plugin.localCatalog().localFeaturesStoreInfo();
         IResourceInfo res = ((RServiceInfo) info.getServiceInfo()).resource(
                 P4Plugin.localCatalog().localFeaturesStore().getFeatureSource(features.getSchema().getName()));
-        return P4Plugin.localResolver().resourceIdentifier(res);
+        return P4Plugin.allResolver().resourceIdentifier(res);
     }
 
     private void store(final DefaultFeatureCollection features) throws IOException {

@@ -19,15 +19,11 @@ import java.util.Set;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.geotools.data.wms.WebMapServer;
 import org.geotools.ows.ServiceException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import com.google.common.base.Joiner;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import org.polymap.core.catalog.IMetadata;
@@ -83,10 +79,8 @@ public class MapzoneProjectResolver
         public static MapzoneProjectServiceInfo of( IMetadata md ) 
                 throws ServiceException, MalformedURLException, IOException {
             String url = md.getConnectionParams().get( IMetadataResourceResolver.CONNECTION_PARAM_URL );
-            assert !url.contains( "?" );
             String user = SecurityContext.instance().getUser().getName();
-            url = Joiner.on( "" ).join( url, "?SERVICE=WMS&", ArenaConfigMBean.REQUEST_PARAM_USER, "=", user );
-            WebMapServer wms = new WebMapServer( new URL( url ), 10 );
+            WebMapServer wms = new MapzoneWebMapServer( url, ArenaConfigMBean.REQUEST_PARAM_USER, user );
             return new MapzoneProjectServiceInfo( md, wms );
         }
 

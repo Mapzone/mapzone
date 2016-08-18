@@ -327,6 +327,6 @@ public class GraphPanel
     private String resourceIdentifier( final FeatureSource selectedFeatureSource ) throws IOException {
         IResolvableInfo info = P4Plugin.localCatalog().localFeaturesStoreInfo();
         IResourceInfo res = ((RServiceInfo)info.getServiceInfo()).resource( selectedFeatureSource );
-        return P4Plugin.localResolver().resourceIdentifier( res );
+        return P4Plugin.allResolver().resourceIdentifier( res );
     }
 }
