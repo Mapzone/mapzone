@@ -49,12 +49,13 @@
             class="io.mapzone.arena.refine.RefinePanel"
             id="io.mapzone.arena.refine.RefinePanel">
       </panel>
-   </extension>
-   <extension
-         point="org.polymap.rhei.batik.panels">
       <panel
             class="io.mapzone.arena.share.ui.SharePanel"
             id="io.mapzone.arena.share.ui.SharePanel">
+      </panel>
+      <panel
+            class="io.mapzone.arena.share.ui.ShareletPanel"
+            id="sharelet">
       </panel>
    </extension>
    <extension
@@ -62,13 +63,6 @@
       <catalogProvider
             class="io.mapzone.arena.csw.catalog.CswCatalogProvider">
       </catalogProvider>
-   </extension>
-   <extension
-         point="org.polymap.rhei.batik.panels">
-      <panel
-            class="io.mapzone.arena.share.ui.ShareletPanel"
-            id="sharelet">
-      </panel>
    </extension>
    <extension
          point="org.polymap.core.catalog.resolverProviders">
