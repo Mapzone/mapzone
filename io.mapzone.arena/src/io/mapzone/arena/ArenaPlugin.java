@@ -34,6 +34,7 @@ import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import io.mapzone.arena.csw.catalog.ProjectNodeSynchronizer;
 import io.mapzone.arena.jmx.ArenaConfig;
 import io.mapzone.arena.jmx.ArenaConfigMBean;
+import io.mapzone.arena.share.ShareServletsStarter;
 import io.mapzone.arena.tracker.GoogleAnalyticsTracker;
 
 /**
@@ -47,6 +48,8 @@ public class ArenaPlugin
     private static Log log = LogFactory.getLog( ArenaPlugin.class );
 
     public static final String ID = "io.mapzone.arena";
+
+    public static final String ALIAS = "/arena";
 
 	private static ArenaPlugin instance;
 	
@@ -77,6 +80,11 @@ public class ArenaPlugin
 
     private GoogleAnalyticsTracker  googleAnalyticsTracker;
 
+    private ShareServletsStarter    shareServlets;
+
+    public ArenaConfig config() {
+        return config;
+    }
     
     public void start( BundleContext context ) throws Exception {
         super.start( context );
@@ -92,6 +100,8 @@ public class ArenaPlugin
         geocodeService = new GeocodeServletStarter( context );
         geocodeService.open();
         
+        shareServlets = new ShareServletsStarter( context );
+        shareServlets.open();
         //
         catalogSynchronizer = new ProjectNodeSynchronizer();
         
@@ -108,6 +118,7 @@ public class ArenaPlugin
         geoServerStarter.close();
         geocodeService.close();
         catalogSynchronizer.close();
+        shareServlets.close();
         instance = null;
         super.stop( context );
     }
