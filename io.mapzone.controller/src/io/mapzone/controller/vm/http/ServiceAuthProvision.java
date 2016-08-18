@@ -88,7 +88,8 @@ public class ServiceAuthProvision
      * clients.
      */
     protected boolean checkUser() {
-        String user = request.get().getParameter( REQUEST_PARAM_USER );
+        // geotools's WebMapServer automatically changes all params to upper case
+        String user = request.get().getParameter( REQUEST_PARAM_USER.toUpperCase() );
         if (user == null) {
             return false;
         }
