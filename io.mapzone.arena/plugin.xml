@@ -54,7 +54,7 @@
          point="org.polymap.rhei.batik.panels">
       <panel
             class="io.mapzone.arena.share.ui.SharePanel"
-            id="io.mapzone.arena.share.APIsPanel">
+            id="io.mapzone.arena.share.ui.SharePanel">
       </panel>
    </extension>
    <extension
