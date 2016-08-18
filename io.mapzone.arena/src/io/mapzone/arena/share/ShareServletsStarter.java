@@ -33,8 +33,6 @@ public class ShareServletsStarter
 
     public static final String ALIAS_SHAREINFO = "/shareinfo";
 
-    public static final String ALIAS_JSFIDDLE  = "/jsfiddle";
-
     private ShareInfoServlet   shareInfoServlet;
 
 
@@ -54,8 +52,6 @@ public class ShareServletsStarter
     protected void registerServlet( HttpService service ) {
         try {
             assert shareInfoServlet == null;
-            // TODO load user/project default connection data or geocode
-            // implementations
             shareInfoServlet = new ShareInfoServlet();
             service.registerServlet( ALIAS_SHAREINFO, shareInfoServlet, null, null );
             log.info( "Registered share info service at " + ALIAS_SHAREINFO );

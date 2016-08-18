@@ -12,12 +12,6 @@
  */
 package io.mapzone.arena.share;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import io.mapzone.arena.ArenaPlugin;
 
 /**
@@ -25,27 +19,35 @@ import io.mapzone.arena.ArenaPlugin;
  *
  * @author Steffen Stundzig
  */
-public class MapzoneApplicationBuilder
+public class ArenaContentBuilder
         implements ShareableContentBuilder {
 
-    private static Log         log      = LogFactory.getLog( MapzoneApplicationBuilder.class );
+    
+    public class ArenaContent {
 
-    public final static String MIMETYPE = "application/mapzone";
+        public String arena;
+        public String shareInfo;
+
+    }
+
+    public final static String MIMETYPE = "application/arena";
+
+    private SharePanelContext context;
 
 
     @Override
-    public Object content() {
-        try {
-            return new URL( ArenaPlugin.instance().config().getProxyUrl() + "/arena" );
-        }
-        catch (MalformedURLException e) {
-            throw new RuntimeException( e );
-        }
+    public ArenaContent content() {
+            ArenaContent content = new ArenaContent();
+            content.arena = ArenaPlugin.instance().config().getProxyUrl() + ArenaPlugin.ALIAS;
+            // FIXME
+            content.shareInf o = "";
+            return content;
     }
 
 
     @Override
-    public boolean supports( final String mimeType, SharePanelContext context ) {
+    public boolean supports( final String mimeType, final SharePanelContext context ) {
+        this.context = context;
         return MIMETYPE.equals( mimeType );
     }
 }

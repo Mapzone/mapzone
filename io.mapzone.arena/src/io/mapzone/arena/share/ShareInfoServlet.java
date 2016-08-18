@@ -27,6 +27,8 @@ import org.apache.http.HttpStatus;
 
 import org.polymap.core.runtime.event.EventManager;
 
+import io.mapzone.arena.ArenaPlugin;
+
 /**
  * Servlet to expose the share infos for facebook, google, twitter and co.
  * 
@@ -52,22 +54,27 @@ public class ShareInfoServlet
         try {
 
             EventManager.instance().publish( new ServletRequestEvent( getServletContext(), req ) );
-            //
-            // if (req.getParameterMap().isEmpty()) {
-            // resp.sendError( 400, "No parameters found! Please specify at least
-            // 'text'." );
-            // return;
-            // }
+
+            if (req.getParameterMap().isEmpty() || StringUtils.isBlank( req.getParameter( "layers" ) )
+                    || StringUtils.isBlank( req.getParameter( "bbox" ) )) {
+                resp.sendError( 400, "No parameters found! Please specify at least 'layers' and 'bbox'." );
+                return;
+            }
+
+            final String encodedLayers = req.getParameter( "layers" );
+            final String encodedBBox = req.getParameter( "bbox" );
 
             resp.setStatus( HttpStatus.SC_OK );
             resp.setContentType( "text/html;charset=utf-8" );
             handleCors( req, resp );
 
-            final String projectName = "organisation/projectname";
-            final String description = "description of the project";
-            final String arenaUrl = req.getRequestURL().toString().replace( ShareServletsStarter.ALIAS, "/arena" );
-            final StringBuilder imageUrl = new StringBuilder(req.getRequestURL().toString().replace( ShareServletsStarter.ALIAS, "/ows" ));
-            imageUrl.append( "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&LAYERS=" +encodedLayers + "&CRS=EPSG%3A3857&STYLES=&WIDTH=400&HEIGHT=300&BBOX=" + encodedBBox + "" );
+            final String projectName = ArenaPlugin.instance().config().getAppTitle();
+            // FIXME add the project description here
+            final String description = ArenaPlugin.instance().config().getAppTitle();
+            final String arenaUrl = ArenaPlugin.instance().config().getProxyUrl() + ArenaPlugin.ALIAS;
+            final StringBuilder imageUrl = new StringBuilder( ArenaPlugin.instance().config().getProxyUrl() ).append( ShareServletsStarter.ALIAS_SHAREINFO );
+            imageUrl.append( "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&LAYERS=" + encodedLayers
+                    + "&CRS=EPSG%3A3857&STYLES=&WIDTH=1200&HEIGHT=630&BBOX=" + encodedBBox + "" );
 
             // convert addresses to result json
             OutputStreamWriter writer = new OutputStreamWriter( resp.getOutputStream() );
@@ -83,8 +90,8 @@ public class ShareInfoServlet
             // facebook/opengraph
             writer.write( "  <meta name='og:image:url' content='" + imageUrl.toString() + "' />" );
             writer.write( "  <meta name='og:image:type' content='image/png' />" );
-            writer.write( "  <meta name='og:image:width' content='400' />" );
-            writer.write( "  <meta name='og:image:height' content='300' />" );
+            writer.write( "  <meta name='og:image:width' content='1200' />" );
+            writer.write( "  <meta name='og:image:height' content='630' />" );
             writer.write( "  <meta name='og:type' content='website' />" );
             writer.write( "  <meta name='og:url' content='" + arenaUrl + "' />" );
 
@@ -93,7 +100,8 @@ public class ShareInfoServlet
                     + arenaUrl + "'; },10000);</script>" );
             writer.write( " </head>" );
             writer.write( " <body>" );
-            writer.write( "  <iframe src='" + arenaUrl + "' width='100%' height='520' frameborder='0' allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>" );
+            writer.write( "  <iframe src='" + arenaUrl
+                    + "' width='100%' height='520' frameborder='0' allowfullscreen='allowfullscreen'></iframe>" );
             writer.write( " </body>" );
             writer.write( "<head>" );
             writer.flush();

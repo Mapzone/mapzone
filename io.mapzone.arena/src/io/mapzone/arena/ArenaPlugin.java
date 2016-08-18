@@ -48,6 +48,8 @@ public class ArenaPlugin
 
     public static final String ID = "io.mapzone.arena";
 
+    public static final String ALIAS = "/arena";
+
 	private static ArenaPlugin instance;
 	
 

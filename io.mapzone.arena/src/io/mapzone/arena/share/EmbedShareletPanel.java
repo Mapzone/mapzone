@@ -14,36 +14,23 @@ package io.mapzone.arena.share;
 
 import java.util.Optional;
 
-import java.net.URL;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
-import org.polymap.core.runtime.config.Mandatory;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.ui.ColumnDataFactory;
 import org.polymap.core.ui.ColumnDataFactory.Alignment;
 import org.polymap.core.ui.ColumnLayoutFactory;
 
-import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.PanelIdentifier;
-import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 
-import org.polymap.p4.P4Panel;
-import org.polymap.p4.P4Plugin;
-
-import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.Messages;
+import io.mapzone.arena.share.ArenaContentBuilder.ArenaContent;
 import io.mapzone.arena.share.OpenLayersContentBuilder.OpenLayersContent;
 
 /**
@@ -52,42 +39,34 @@ import io.mapzone.arena.share.OpenLayersContentBuilder.OpenLayersContent;
  * @author Steffen Stundzig
  */
 public class EmbedShareletPanel
-        extends P4Panel {
+        extends ShareletPanel {
 
-    private static Log                   log   = LogFactory.getLog( EmbedShareletPanel.class );
+    private static Log                  log  = LogFactory.getLog( EmbedShareletPanel.class );
 
-    public static final PanelIdentifier  ID    = PanelIdentifier.parse( "embedSharelet" );
+    public static final PanelIdentifier ID   = PanelIdentifier.parse( "embedSharelet" );
 
-    private static final IMessages       i18n  = Messages.forPrefix( "EmbedShareletPanel" );
-
-    @Mandatory
-    @Scope( SharePanel.SCOPE )
-    protected Context<SharePanelContext> sharePanelContext;
-
-    private final static int             width = 350;
+    private static final IMessages      i18n = Messages.forPrefix( "EmbedShareletPanel" );
 
 
     @Override
-    public void init() {
-        site().minWidth.set( width );
-        site().preferredWidth.set( 500 );
-        site().title.set( i18n.get( "title" ) );
+    protected String title() {
+        return i18n.get( "title" );
     }
 
 
     @Override
     public void createContents( Composite parent ) {
         parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).margins( 0 ).spacing( 15 ).create() );
-        Optional<ShareableContentBuilder> mapzoneBuilder = ShareableContentBuilders.instance().get( "application/mapzone", sharePanelContext.get() );
-        if (mapzoneBuilder.isPresent()) {
+        Optional<ShareableContentBuilder> arenaBuilder = ShareableContentBuilders.instance().get( "application/arena", sharePanelContext.get() );
+        if (arenaBuilder.isPresent()) {
             IPanelSection panel = tk().createPanelSection( parent, i18n.get( "iframe_title" ), SWT.BORDER );
             panel.getBody().setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).margins( 1 ).spacing( 10 ).create() );
 
             ColumnDataFactory.on( tk().createLabel( panel.getBody(), i18n.get( "iframe" ), SWT.WRAP ) ).widthHint( width ).heightHint( 40 );
 
-            StringBuffer iframe = new StringBuffer( "<iframe width=\"100%\" height=\"640\" src=\"" );
-            iframe.append( ((URL)mapzoneBuilder.get().content()).toExternalForm() );
-            iframe.append( "\" frameborder=\"0\" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>" );
+            StringBuffer iframe = new StringBuffer( "<iframe width='100%' height='640' src='" );
+            iframe.append( ((ArenaContent)arenaBuilder.get().content()).arena );
+            iframe.append( "' frameborder='0' allowfullscreen='allowfullscreen'></iframe>" );
             Text text = tk().createText( panel.getBody(), iframe.toString(), SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
             ColumnDataFactory.on( text ).widthHint( width ).heightHint( 80 );
         }
@@ -113,62 +92,8 @@ public class EmbedShareletPanel
             Text text = tk().createText( panel.getBody(), content.complete, SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
             ColumnDataFactory.on( text ).widthHint( width ).heightHint( 180 );
 
-            Button button = tk().createButton( panel.getBody(), "", SWT.NONE );
-            button.setImage( ArenaPlugin.images().svgImage( "jsfiddle.svg", P4Plugin.HEADER_ICON_CONFIG) );
-            button.setToolTipText( "jsfiddle.net" );
-            ColumnDataFactory.on( button ).widthHint( 36 ).heightHint( 36 ).horizAlign( Alignment.RIGHT );
-            button.addSelectionListener( new SelectionAdapter() {
-
-                @Override
-                public void widgetSelected( SelectionEvent e ) {
-                    // UrlLauncher launcher = RWT.getClient().getService(
-                    // UrlLauncher.class );
-                    // launcher.openURL(
-                    // ArenaPlugin.instance().config().getProxyUrl() + "/jsfiddle" );
-                    JavaScriptExecutor executor = RWT.getClient().getService( JavaScriptExecutor.class );
-                    StringBuffer js = new StringBuffer( "javascript:" );
-                    js.append( "var form = document.createElement('form');" );
-                    js.append( "form.setAttribute('method', 'POST');" );
-                    js.append( "form.setAttribute('target', '_blank');" );
-                    js.append( "form.setAttribute('action', 'http://jsfiddle.net/api/post/library/pure/');" );
-                    // html
-                    js.append( "var hiddenField = document.createElement('input');" );
-                    js.append( "hiddenField.setAttribute('name', 'html');" );
-                    js.append( "hiddenField.setAttribute('value', \"" ).append( content.body.replaceAll( "\n", "" ).trim() ).append( "\");" );
-                    js.append( "form.appendChild(hiddenField);" );
-                    // js
-                    js.append( "hiddenField = document.createElement('input');" );
-                    js.append( "hiddenField.setAttribute('name', 'js');" );
-                    js.append( "hiddenField.setAttribute('value', \"" ).append( content.js.replaceAll( "\n", "" ).trim() ).append( "\");" );
-                    js.append( "form.appendChild(hiddenField);" );
-                    // resources
-                    js.append( "hiddenField = document.createElement('input');" );
-                    js.append( "hiddenField.setAttribute('name', 'resources');" );
-                    js.append( "hiddenField.setAttribute('value', \"" ).append( content.jsressource ).append( "," ).append( content.cssressource ).append( "\");" );
-                    js.append( "form.appendChild(hiddenField);" );
-                    // wrap
-                    js.append( "hiddenField = document.createElement('input');" );
-                    js.append( "hiddenField.setAttribute('name', 'wrap');" );
-                    js.append( "hiddenField.setAttribute('value', 'd');" );
-                    js.append( "form.appendChild(hiddenField);" );
-                    // title
-                    js.append( "hiddenField = document.createElement('input');" );
-                    js.append( "hiddenField.setAttribute('name', 'title');" );
-                    js.append( "hiddenField.setAttribute('value', \"" ).append( ArenaPlugin.instance().config().getAppTitle() ).append( "\");" );
-                    js.append( "form.appendChild(hiddenField);" );
-                    // description
-                    js.append( "hiddenField = document.createElement('input');" );
-                    js.append( "hiddenField.setAttribute('name', 'description');" );
-                    js.append( "hiddenField.setAttribute('value', \"" ).append( "hit Tidy to format the JS code" ).append( "\");" );
-                    js.append( "form.appendChild(hiddenField);" );
-                    
-                    js.append( "document.body.appendChild(form);" );
-                    js.append( "form.submit();" );
-                    js.append( "document.body.removeChild(form);" );
-
-                    executor.execute( js.toString() );
-                }
-            } );
+            JsFiddleButton jsFiddle = new JsFiddleButton( panel.getBody(), tk(), content.body, content.js, content.jsressource, content.cssressource );
+            ColumnDataFactory.on( jsFiddle.control() ).widthHint( 36 ).heightHint( 36 ).horizAlign( Alignment.RIGHT );
         }
     }
 

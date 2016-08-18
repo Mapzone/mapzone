@@ -30,7 +30,7 @@ public class ShareableContentBuilders
     /** Terminal and transformer processors. */
     @SuppressWarnings( "unchecked" )
     private static List<Class<? extends ShareableContentBuilder>> contentBuilders = Lists.newArrayList( 
-            MapzoneApplicationBuilder.class,
+            ArenaContentBuilder.class,
             OpenLayersContentBuilder.class,
             WMSUrlBuilder.class);
 

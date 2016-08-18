@@ -90,7 +90,9 @@ public class SharePanel
             sharePanelContext.get().crs.set( mapViewer.maxExtent.get().getCoordinateReferenceSystem() );
         }
         if (!sharePanelContext.get().resolution.isPresent()) {
-            sharePanelContext.get().resolution.set( mapViewer.resolution.get() );
+            //sharePanelContext.get().resolution.set( mapViewer.resolution.get() );
+            // FIXME, remove this
+            sharePanelContext.get().resolution.set( 5000.0f );
         }
         if (sharePanelContext.get().selectionDescriptors.get().isEmpty()) {
             mapViewer.getLayers().stream()
