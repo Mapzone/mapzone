@@ -114,15 +114,15 @@ public class ShareInfoServlet
             writer.write( "  <meta name='audience' content='all' />" );
             writer.write( "  <meta name='revisit-after' content='5 days' />" );
             // facebook/opengraph
-            writer.write( "  <meta name='og:image:url' content='" + imageUrl.toString() + "' />" );
-            writer.write( "  <meta name='og:image' content='" + imageUrl.toString() + "' />" );
-            writer.write( "  <meta name='og:image:type' content='image/png' />" );
-            writer.write( "  <meta name='og:image:width' content='1200' />" );
-            writer.write( "  <meta name='og:image:height' content='630' />" );
-            writer.write( "  <meta name='og:type' content='website' />" );
-            writer.write( "  <meta name='og:site_name' content='mapzone - '" + projectName + " />" );
-            writer.write( "  <meta name='fb:app_id' content='1754931524765083' />" );
-            writer.write( "  <meta name='fb:admins' content='739545402735248' />" );
+            writer.write( "  <meta property='og:image:url' content='" + imageUrl.toString() + "' />" );
+//            writer.write( "  <meta property='og:image' content='" + imageUrl.toString() + "' />" );
+            writer.write( "  <meta property='og:image:type' content='image/png' />" );
+            writer.write( "  <meta property='og:image:width' content='1200' />" );
+            writer.write( "  <meta property='og:image:height' content='630' />" );
+            writer.write( "  <meta property='og:type' content='website' />" );
+            writer.write( "  <meta property='og:site_name' content='mapzone - '" + projectName + " />" );
+            writer.write( "  <meta property='fb:app_id' content='1754931524765083' />" );
+            writer.write( "  <meta property='fb:admins' content='739545402735248' />" );
             writer.write( "  <meta property='article:publisher' content='https://www.facebook.com/mapzoneio-1401853630109662' />" );
             writer.write( "  <meta property='article:author' content='https://www.facebook.com/stundzig' />" );
             /*
