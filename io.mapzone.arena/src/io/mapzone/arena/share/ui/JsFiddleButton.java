@@ -29,6 +29,7 @@ import org.polymap.rhei.batik.toolkit.IPanelToolkit;
 import org.polymap.p4.P4Plugin;
 
 import io.mapzone.arena.ArenaPlugin;
+import io.mapzone.arena.jmx.ArenaConfig;
 
 /**
  * A simple button which opens a browser at jsfiddle.net.
@@ -86,7 +87,7 @@ public class JsFiddleButton {
                 // title
                 js.append( "hiddenField = document.createElement('input');" );
                 js.append( "hiddenField.setAttribute('name', 'title');" );
-                js.append( "hiddenField.setAttribute('value', \"" ).append( ArenaPlugin.instance().config().getAppTitle() ).append( "\");" );
+                js.append( "hiddenField.setAttribute('value', \"" ).append( ArenaConfig.getAppTitle() ).append( "\");" );
                 js.append( "form.appendChild(hiddenField);" );
                 // description
                 js.append( "hiddenField = document.createElement('input');" );

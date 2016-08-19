@@ -14,12 +14,14 @@ package io.mapzone.arena.share.content;
 
 import java.util.StringJoiner;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
 import io.mapzone.arena.ArenaPlugin;
+import io.mapzone.arena.jmx.ArenaConfig;
 import io.mapzone.arena.share.ui.ShareContext;
 import io.mapzone.arena.share.ui.ShareContext.SelectionDescriptor;
 
@@ -52,18 +54,18 @@ public class OpenLayersContentBuilder
     public OpenLayersContent content() {
 
         OpenLayersContent content = new OpenLayersContent();
-        content.jsressource = jsressource;
-        content.cssressource = cssressource;
-        content.body = body;
+        content.jsressource = JSRESOURCE;
+        content.cssressource = CSSRESOURCE;
+        content.body = BODY;
 
-        StringBuffer js = new StringBuffer(mapjsstart);
+        StringBuffer js = new StringBuffer(MAPJSSTART);
         
         StringJoiner layers = new StringJoiner( ",\n" );
         for (SelectionDescriptor selection : context.selectionDescriptors.get()) {
-            String layer = replace( layerjs, "WMSURL", ArenaPlugin.instance().config().getProxyUrl() + "/ows" );
+            String layer = replace( LAYERJS, "WMSURL", ArenaPlugin.instance().config().getProxyUrl() + "/ows" );
             layer = replace( layer, "LAYER", selection.layer.get().label.get() );
-            if (ArenaPlugin.instance().config().getServiceAuthToken() != null) {
-                layer = replace( layer, "AUTH", ", 'authtoken': '"
+            if (!StringUtils.isBlank( ArenaPlugin.instance().config().getServiceAuthToken() )) {
+                layer = replace( layer, "AUTH", ", 'authToken': '"
                         + ArenaPlugin.instance().config().getServiceAuthToken() + "'" );
             }
             else {
@@ -79,7 +81,7 @@ public class OpenLayersContentBuilder
 
         Coordinate centreCoordinate = context.boundingBox.get().centre();
         StringBuffer centre = new StringBuffer().append( (int)centreCoordinate.x ).append( "," ).append( (int)centreCoordinate.y );
-        String jsend = replace( mapjsend, "CENTER", centre.toString() );
+        String jsend = replace( MAPJSEND, "CENTER", centre.toString() );
         jsend = replace(jsend, "RESOLUTION", "" + context.resolution.get().intValue());
         js.append( jsend );
         
@@ -89,7 +91,7 @@ public class OpenLayersContentBuilder
         complete.append( "<!DOCTYPE html>\n" );
         complete.append( "<html>\n" );
         complete.append( "  <head>\n" );
-        complete.append( "    <title>" ).append( ArenaPlugin.instance().config().getAppTitle() ).append( "</title>\n" );
+        complete.append( "    <title>" ).append( ArenaConfig.getAppTitle() ).append( "</title>\n" );
         complete.append( "    <link rel='stylesheet' href='" ).append( content.cssressource ).append( "' type='text/css'>\n" );
         complete.append( "    <script src='" ).append( content.jsressource ).append( "'></script>\n" );
         complete.append( "  </head>\n" );
@@ -108,7 +110,7 @@ public class OpenLayersContentBuilder
 
 
     @Override
-    public boolean supports( final String mimeType, ShareContext context ) {
+    public boolean supports( final String mimeType, @SuppressWarnings( "hiding" ) final ShareContext context ) {
         this.context = context;
         return MIMETYPE.equals( mimeType ) && !context.selectionDescriptors.get().isEmpty();
     }
@@ -118,10 +120,10 @@ public class OpenLayersContentBuilder
         return template.replaceAll( "_" + key + "_", value );
     }
     
-    private final static String jsressource = "http://openlayers.org/en/v3.17.1/build/ol.js";
-    private final static String cssressource = "http://openlayers.org/en/v3.17.1/css/ol.css";
-    private final static String body = "<div id='map' class='map'></div>";
-    private final static String layerjs = new StringBuffer()
+    private final static String JSRESOURCE = "http://openlayers.org/en/v3.17.1/build/ol.js";
+    private final static String CSSRESOURCE = "http://openlayers.org/en/v3.17.1/css/ol.css";
+    private final static String BODY = "<div id='map' class='map'></div>";
+    private final static String LAYERJS = new StringBuffer()
             .append( "        new ol.layer.Tile({\n")
 //            .append( "          extent: [_EXTENT_],\n")
             .append( "          source: new ol.source.TileWMS({\n")
@@ -130,9 +132,9 @@ public class OpenLayersContentBuilder
 //            .append( "            serverType: 'geoserver'\n")
             .append( "          })\n")
             .append( "        })").toString();
-    private final static String mapjsstart = new StringBuffer()
+    private final static String MAPJSSTART = new StringBuffer()
             .append( "      var layers = [\n").toString();
-    private final static String mapjsend = new StringBuffer()
+    private final static String MAPJSEND = new StringBuffer()
             .append( "\n      ];\n")
             .append( "      var map = new ol.Map({\n")
             .append( "        layers: layers,\n")

@@ -31,7 +31,7 @@ public abstract class Sharelet {
     }
 
 
-    public void init( ShareletSite site ) {
+    public void init( @SuppressWarnings( "hiding" ) final ShareletSite site ) {
         this.site = site;
     }
 
@@ -41,5 +41,16 @@ public abstract class Sharelet {
 
     protected IPanelToolkit tk() {
         return site().tk.get();
+    }
+
+
+    /**
+     * If the sharelet handles the share action itself, implement this method and return true.
+     * Otherwise, a UI is created and createContents is called afterwards.
+     *
+     * @return true, if the sharelet handles the share action by itself, false otherwise
+     */
+    public boolean share() {
+        return false;
     }
 }

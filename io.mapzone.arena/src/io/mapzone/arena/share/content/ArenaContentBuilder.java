@@ -17,6 +17,8 @@ import java.util.StringJoiner;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.vividsolutions.jts.geom.Envelope;
 
 import io.mapzone.arena.ArenaPlugin;
@@ -67,6 +69,9 @@ public class ArenaContentBuilder
         try {
             shareInfo.append( ShareInfoServlet.PARAMETER_LAYERS ).append( "=" ).append( URLEncoder.encode( layers.toString(), "utf-8") );
             shareInfo.append( "&" ).append( ShareInfoServlet.PARAMETER_BBOX ).append( "=" ).append( URLEncoder.encode(extent.toString(), "utf-8" ));
+            if (!StringUtils.isBlank( ArenaPlugin.instance().config().getServiceAuthToken() )) {
+                shareInfo.append( "&" ).append( ShareInfoServlet.PARAMETER_AUTHTOKEN ).append( "=" ).append( URLEncoder.encode(ArenaPlugin.instance().config().getServiceAuthToken(), "utf-8" ));
+            }
         }
         catch (UnsupportedEncodingException e) {
             throw new RuntimeException( e );
@@ -80,7 +85,7 @@ public class ArenaContentBuilder
 
 
     @Override
-    public boolean supports( final String mimeType, final ShareContext context ) {
+    public boolean supports( final String mimeType, @SuppressWarnings( "hiding" ) final ShareContext context ) {
         this.context = context;
         return MIMETYPE.equals( mimeType );
     }

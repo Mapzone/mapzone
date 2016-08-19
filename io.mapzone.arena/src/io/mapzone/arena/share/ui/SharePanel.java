@@ -35,7 +35,6 @@ import io.mapzone.arena.Messages;
 import io.mapzone.arena.share.Sharelet;
 import io.mapzone.arena.share.ShareletSite;
 import io.mapzone.arena.share.Sharelets;
-import io.mapzone.arena.share.ui.ShareContext.SelectionDescriptor;
 
 /**
  * The main panel, which shows all known sharelets, packed in dashlets in a
@@ -100,7 +99,6 @@ public class SharePanel
         if (shareContext.get().selectionDescriptors.get().isEmpty()) {
             mapViewer.getLayers().stream()
             .sorted( ( elm1, elm2 ) -> (elm1.orderKey.get() - elm2.orderKey.get()) )
-            .filter( l -> mapViewer.isVisible( l ) )
             .forEach( layer -> shareContext.get().add( new ShareContext.SelectionDescriptor( layer ) ) );
         }
     }

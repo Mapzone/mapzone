@@ -33,6 +33,7 @@ import org.polymap.core.runtime.event.EventManager;
 
 import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.GeoServerStarter;
+import io.mapzone.arena.jmx.ArenaConfig;
 
 /**
  * Servlet to expose the share infos for facebook, google, twitter and co.
@@ -44,30 +45,32 @@ import io.mapzone.arena.GeoServerStarter;
 public class ShareInfoServlet
         extends HttpServlet {
 
-    private static Log         log              = LogFactory.getLog( ShareInfoServlet.class );
+    private static Log         log                 = LogFactory.getLog( ShareInfoServlet.class );
 
     /** serialVersionUID */
-    private static final long  serialVersionUID = 1L;
+    private static final long  serialVersionUID    = 1L;
 
-    public final static String PARAMETER_LAYERS = "layers";
+    public final static String PARAMETER_LAYERS    = "layers";
 
-    public final static String PARAMETER_BBOX   = "bbox";
+    public final static String PARAMETER_BBOX      = "bbox";
+
+    public final static String PARAMETER_AUTHTOKEN = "authToken";
 
 
     public ShareInfoServlet() {
     }
 
-    //http://localhost:8080/shareinfo?layers=OSM-WMS%2CAV&bbox=-3225406%2C5087116%2C5995406%2C8282883
+
+    // http://localhost:8080/shareinfo?layers=OSM-WMS%2CAV&bbox=-3225406%2C5087116%2C5995406%2C8282883
 
     @Override
     protected void doGet( HttpServletRequest req, HttpServletResponse resp ) throws ServletException, IOException {
         try {
 
-            log.info( req.getHeaderNames() );
             Enumeration<String> headerNames = req.getHeaderNames();
             while (headerNames.hasMoreElements()) {
                 String header = headerNames.nextElement();
-                log.info( "HEADER '" + header + "': '"+ req.getHeader( header ) + "'" );
+                log.info( "HEADER '" + header + "': '" + req.getHeader( header ) + "'" );
             }
             EventManager.instance().publish( new ServletRequestEvent( getServletContext(), req ) );
 
@@ -80,18 +83,24 @@ public class ShareInfoServlet
 
             final String layers = req.getParameter( PARAMETER_LAYERS );
             final String bbox = req.getParameter( PARAMETER_BBOX );
+            final String authToken = req.getParameter( PARAMETER_AUTHTOKEN );
 
             resp.setStatus( HttpStatus.SC_OK );
             resp.setContentType( "text/html;charset=utf-8" );
             handleCors( req, resp );
 
-            final String projectName = ArenaPlugin.instance().config().getAppTitle();
+            final String projectName = ArenaConfig.getAppTitle();
             // FIXME add the project description here
-            final String description = ArenaPlugin.instance().config().getAppTitle();
-            final String arenaUrl = ArenaPlugin.instance().config().getProxyUrl() + ArenaPlugin.ALIAS;
-            final StringBuilder imageUrl = new StringBuilder( ArenaPlugin.instance().config().getProxyUrl() ).append( GeoServerStarter.ALIAS );
-            imageUrl.append( "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&LAYERS=" + URLEncoder.encode( layers, "utf-8" )
-                    + "&CRS=EPSG%3A3857&STYLES=&WIDTH=1200&HEIGHT=630&BBOX=" + URLEncoder.encode( bbox, "utf-8" ) + "" );
+            final String description = ArenaConfig.getAppTitle();
+//            final String arenaUrl = ArenaPlugin.instance().config().getProxyUrl() + ArenaPlugin.ALIAS;
+            final StringBuilder imageUrl = new StringBuilder( ArenaPlugin.instance().config().getProxyUrl() );
+            imageUrl.append( GeoServerStarter.ALIAS );
+            imageUrl.append( "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&CRS=EPSG%3A3857&STYLES=&WIDTH=1200&HEIGHT=630" );
+            imageUrl.append( "&LAYERS=" ).append( URLEncoder.encode( layers, "utf-8" ) );
+            imageUrl.append( "&BBOX=" ).append( URLEncoder.encode( bbox, "utf-8" ) );
+            if (!StringUtils.isBlank( authToken )) {
+                imageUrl.append( "&authToken=" ).append( URLEncoder.encode( authToken, "utf-8" ) );
+            }
 
             // convert addresses to result json
             OutputStreamWriter writer = new OutputStreamWriter( resp.getOutputStream() );
@@ -114,17 +123,22 @@ public class ShareInfoServlet
             writer.write( "  <meta name='og:site_name' content='mapzone - '" + projectName + " />" );
             writer.write( "  <meta name='fb:app_id' content='1754931524765083' />" );
             writer.write( "  <meta name='fb:admins' content='739545402735248' />" );
-            writer.write( "  <meta property='article:publisher' content='https://www.facebook.com/mapzoneio-1401853630109662' />");
-            writer.write( "  <meta property='article:author' content='https://www.facebook.com/stundzig' />");
-            /*writer.write( "  <meta name='og:url' content='" + arenaUrl + "' />" );*/
+            writer.write( "  <meta property='article:publisher' content='https://www.facebook.com/mapzoneio-1401853630109662' />" );
+            writer.write( "  <meta property='article:author' content='https://www.facebook.com/stundzig' />" );
+            /*
+             * writer.write( "  <meta name='og:url' content='" + arenaUrl + "' />" );
+             */
 
             // perform a redirect
-            //writer.write( " <script type='text/javascript'>window.setTimeout(function(){ window.location.href = '"
-            //        + arenaUrl + "'; },10000);</script>" );
+            // writer.write( " <script
+            // type='text/javascript'>window.setTimeout(function(){
+            // window.location.href = '"
+            // + arenaUrl + "'; },10000);</script>" );
             writer.write( " </head>" );
             writer.write( " <body>" );
-            writer.write( "  <iframe src='" + arenaUrl
-                    + "' width='100%' height='520' frameborder='0' allowfullscreen='allowfullscreen'></iframe>" );
+            // writer.write( " <iframe src='" + arenaUrl
+            // + "' width='100%' height='520' frameborder='0'
+            // allowfullscreen='allowfullscreen'></iframe>" );
             writer.write( " </body>" );
             writer.write( "<head>" );
             writer.flush();

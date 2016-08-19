@@ -50,9 +50,9 @@ import io.mapzone.arena.share.ui.ShareletPanel;
 public class FacebookSharelet
         extends Sharelet {
 
-    private static Log                  log  = LogFactory.getLog( FacebookSharelet.class );
+    private static Log             log  = LogFactory.getLog( FacebookSharelet.class );
 
-    private static final IMessages      i18n = Messages.forPrefix( "FacebookSharelet" );
+    private static final IMessages i18n = Messages.forPrefix( "FacebookSharelet" );
 
 
     @Override
@@ -72,30 +72,18 @@ public class FacebookSharelet
         if (arenaBuilder.isPresent()) {
             IPanelSection panel = tk().createPanelSection( parent, i18n.get( "map_title" ), SWT.BORDER );
             panel.getBody().setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).margins( 1 ).spacing( 10 ).create() );
-            
+
             ArenaContent content = (ArenaContent)arenaBuilder.get().content();
 
-            Button button = tk().createButton( panel.getBody(),i18n.get( "map_button"), SWT.NONE );
-            //button.setImage( ArenaPlugin.images().svgImage( "facebook.svg", P4Plugin.HEADER_ICON_CONFIG ) );
-            button.setToolTipText( i18n.get( "map_tooltip") );
+            Button button = tk().createButton( panel.getBody(), i18n.get( "map_button" ), SWT.NONE );
+            // button.setImage( ArenaPlugin.images().svgImage( "facebook.svg",
+            // P4Plugin.HEADER_ICON_CONFIG ) );
+            button.setToolTipText( i18n.get( "map_tooltip" ) );
             button.addSelectionListener( new SelectionAdapter() {
 
                 @Override
                 public void widgetSelected( SelectionEvent e ) {
-                    // UrlLauncher launcher = RWT.getClient().getService(
-                    // UrlLauncher.class );
-                    String shareletPanelUrl = ArenaPlugin.instance().config().getProxyUrl() + "/arena#" + ShareletPanel.ID.id();
-
-                    JavaScriptLoader loader = RWT.getClient().getService( JavaScriptLoader.class );
-                    loader.require( "https://connect.facebook.net/en_US/sdk.js" );
-
-                    JavaScriptExecutor executor = RWT.getClient().getService( JavaScriptExecutor.class );
-                    // init
-                    executor.execute( "FB.init({ appId:'1754931524765083', status:false, cookie:true, xfbml:false, version:'v2.7'});" );
-                    // open popup
-                    executor.execute( "FB.ui({ method:'share', mobile_iframe:true, href:'" + content.shareInfo
-                            + "', redirect_uri:'" + shareletPanelUrl
-                            + "', hashtag:'#mapzone'}, function(response){console.log(response);});" );
+                    shareButtonClicked( content );
                 }
             } );
             ColumnDataFactory.on( button ).widthHint( 96 ).heightHint( 48 ).horizAlign( Alignment.RIGHT );
@@ -103,4 +91,32 @@ public class FacebookSharelet
     }
 
 
+    protected void shareButtonClicked( final ArenaContent content ) {
+        // UrlLauncher launcher = RWT.getClient().getService(
+        // UrlLauncher.class );
+        String shareletPanelUrl = ArenaPlugin.instance().config().getProxyUrl() + "/arena#" + ShareletPanel.ID.id();
+
+        JavaScriptLoader loader = RWT.getClient().getService( JavaScriptLoader.class );
+        loader.require( "https://connect.facebook.net/en_US/sdk.js" );
+
+        JavaScriptExecutor executor = RWT.getClient().getService( JavaScriptExecutor.class );
+        // init
+        executor.execute( "FB.init({ appId:'1754931524765083', status:false, cookie:true, xfbml:false, version:'v2.7'});" );
+        // open popup
+        executor.execute( "FB.ui({ method:'share', mobile_iframe:true, href:'" + content.shareInfo
+                + "', redirect_uri:'" + shareletPanelUrl
+                + "', hashtag:'#mapzone'}, function(response){console.log(response);});" );
+    }
+
+
+    @Override
+    public boolean share() {
+        Optional<ShareableContentBuilder> arenaBuilder = ShareableContentBuilders.instance().get( "application/arena", site().context.get() );
+        if (arenaBuilder.isPresent()) {
+            ArenaContent content = (ArenaContent)arenaBuilder.get().content();
+            shareButtonClicked( content );
+            return true;
+        }
+        return super.share();
+    }
 }

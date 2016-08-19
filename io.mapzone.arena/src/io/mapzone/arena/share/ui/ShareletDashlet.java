@@ -98,7 +98,7 @@ public class ShareletDashlet
 
     @Override
     public void mouseUp( MouseEvent e ) {
-        openPanel();
+        handleClick();
     }
 
 
@@ -110,14 +110,16 @@ public class ShareletDashlet
 
     @Override
     public void mouseDoubleClick( MouseEvent e ) {
-        openPanel();
+        handleClick();
     }
 
 
-    private void openPanel() {
-        shareletPanelContext.set( new ShareletPanelContext() );
-        shareletPanelContext.get().sharelet.set( sharelet );
-        shareletPanelContext.get().shareContext.set( sharelet.site().context.get() );
-        BatikApplication.instance().getContext().openPanel( dashletSite.panelSite().getPath(), ShareletPanel.ID );
+    private void handleClick() {
+        if (!sharelet.share()) {
+            shareletPanelContext.set( new ShareletPanelContext() );
+            shareletPanelContext.get().sharelet.set( sharelet );
+            shareletPanelContext.get().shareContext.set( sharelet.site().context.get() );
+            BatikApplication.instance().getContext().openPanel( dashletSite.panelSite().getPath(), ShareletPanel.ID );
+        }
     }
 }
