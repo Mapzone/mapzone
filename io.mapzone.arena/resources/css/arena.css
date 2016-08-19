@@ -5,9 +5,6 @@ Display {
 }
 * {
   font: 13px 'Roboto', Helvetica, Arial, sans-serif;
-  color: #404040;
-  background-color: transparent;
-  background-image: none;
 }
 Label.atlas-panel-header {
   font: 14px 'Roboto', Helvetica, Arial, sans-serif;
