@@ -103,45 +103,45 @@ public class ShareInfoServlet
 
             // convert addresses to result json
             OutputStreamWriter writer = new OutputStreamWriter( resp.getOutputStream() );
-            writer.write( "<html>" );
-            writer.write( " <head>" );
-            writer.write( "  <title>mapzone - " + projectName + "</title>" );
-            writer.write( "  <meta name='author' content='mapzone' />" );
-            writer.write( "  <meta name='description' content='" + description + "' />" );
-            writer.write( "  <meta name='keywords' content='location, geo, web, osm, map, maps, styling, wms, csv, xls, georeference, geofence, geocode' />" );
-            writer.write( "  <meta name='robots' content='index,follow' />" );
-            writer.write( "  <meta name='audience' content='all' />" );
-            // writer.write( " <meta name='revisit-after' content='5 days' />" );
+            writer.write( "<html>\n");
+            writer.write( " <head>\n");
+            writer.write( "  <title>mapzone - " + projectName + "</title>\n");
+            writer.write( "  <meta name='author' content='mapzone' />\n");
+            writer.write( "  <meta name='description' content='" + description + "' />\n");
+            writer.write( "  <meta name='keywords' content='location, geo, web, osm, map, maps, styling, wms, csv, xls, georeference, geofence, geocode' />\n");
+            writer.write( "  <meta name='robots' content='index,follow' />\n");
+            writer.write( "  <meta name='audience' content='all' />\n");
+            // writer.write( " <meta name='revisit-after' content='5 days' />\n");
             // facebook/opengraph
-            writer.write( "  <meta property='og:locality' content='Leipzig'/>" );
-            writer.write( "  <meta property='og:country-name' content='Germany'/>" );
-            writer.write( "  <meta property='og:latitude' content='51.32794'/>" );
-            writer.write( "  <meta property='og:longitude' content='12.33126'/>" );
-            writer.write( "  <meta property='og:image:url' content='" + imageUrl.toString() + "' />" );
-            // writer.write( " <meta property='og:image:type' content='image/png' />" );
-            writer.write( "  <meta property='og:image:width' content='1200' />" );
-            writer.write( "  <meta property='og:image:height' content='630' />" );
-            writer.write( "  <meta property='og:type' content='article' />" );
-            writer.write( "  <meta property='og:site_name' content='mapzone - " + projectName + "' />" );
+            writer.write( "  <meta property='og:locality' content='Leipzig'/>\n");
+            writer.write( "  <meta property='og:country-name' content='Germany'/>\n");
+            writer.write( "  <meta property='og:latitude' content='51.32794'/>\n");
+            writer.write( "  <meta property='og:longitude' content='12.33126'/>\n");
+            writer.write( "  <meta property='og:image:url' content='" + imageUrl.toString() + "' />\n");
+            // writer.write( " <meta property='og:image:type' content='image/png' />\n");
+            writer.write( "  <meta property='og:image:width' content='1200' />\n");
+            writer.write( "  <meta property='og:image:height' content='630' />\n");
+            writer.write( "  <meta property='og:type' content='article' />\n");
+            writer.write( "  <meta property='og:site_name' content='mapzone - " + projectName + "' />\n");
             // wird grad nicht von Facebook unterstützt
             // writer.write( " <meta property='fb:app_id' content='1754931524765083'
-            // />" );
+            // />\n");
             // writer.write( " <meta property='fb:admins' content='739545402735248'
-            // />" );
-            writer.write( "  <meta property='article:publisher' content='https://www.facebook.com/mapzoneio-1401853630109662' />" );
-            writer.write( "  <meta property='article:author' content='https://www.facebook.com/stundzig' />" );
+            // />\n");
+            writer.write( "  <meta property='article:publisher' content='https://www.facebook.com/mapzoneio-1401853630109662' />\n");
+            writer.write( "  <meta property='article:author' content='https://www.facebook.com/stundzig' />\n");
 
-            writer.write( "  <meta property='og:url' content='" + arenaUrl + "' />" );
+            writer.write( "  <meta property='og:url' content='" + arenaUrl + "' />\n");
 
             // perform a redirect
-            writer.write( "  <script type='text/javascript'>window.setTimeout(function(){window.location.href = '" + arenaUrl + "'; },10000);</script>" );
-            writer.write( " </head>" );
-            writer.write( " <body>" );
+            writer.write( "  <script type='text/javascript'>window.setTimeout(function(){window.location.href = '" + arenaUrl + "'; },10000);</script>\n");
+            writer.write( " </head>\n");
+            writer.write( " <body>\n");
             // writer.write( " <iframe src='" + arenaUrl
             // + "' width='100%' height='520' frameborder='0'
-            // allowfullscreen='allowfullscreen'></iframe>" );
-            writer.write( " </body>" );
-            writer.write( "<head>" );
+            // allowfullscreen='allowfullscreen'></iframe>\n");
+            writer.write( " </body>\n");
+            writer.write( "<head>\n");
             writer.flush();
             writer.close();
         }
