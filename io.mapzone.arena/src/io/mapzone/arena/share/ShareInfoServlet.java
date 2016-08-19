@@ -12,6 +12,8 @@
  */
 package io.mapzone.arena.share;
 
+import java.util.Enumeration;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.URLEncoder;
@@ -61,6 +63,12 @@ public class ShareInfoServlet
     protected void doGet( HttpServletRequest req, HttpServletResponse resp ) throws ServletException, IOException {
         try {
 
+            log.info( req.getHeaderNames() );
+            Enumeration<String> headerNames = req.getHeaderNames();
+            while (headerNames.hasMoreElements()) {
+                String header = headerNames.nextElement();
+                log.info( "HEADER '" + header + "': '"+ req.getHeader( header ) + "'" );
+            }
             EventManager.instance().publish( new ServletRequestEvent( getServletContext(), req ) );
 
             if (req.getParameterMap().isEmpty() || StringUtils.isBlank( req.getParameter( PARAMETER_LAYERS ) )
@@ -89,20 +97,26 @@ public class ShareInfoServlet
             OutputStreamWriter writer = new OutputStreamWriter( resp.getOutputStream() );
             writer.write( "<html>" );
             writer.write( " <head>" );
-            writer.write( "  <title>mapzone.io " + projectName + "</title>" );
+            writer.write( "  <title>mapzone - " + projectName + "</title>" );
             writer.write( "  <meta name='author' content='mapzone' />" );
             writer.write( "  <meta name='description' content='" + description + "' />" );
-            writer.write( "  <meta name='keywords' content='' />" );
+            writer.write( "  <meta name='keywords' content='location, geo, web, osm, map, maps, styling, wms, csv, xls, georeference, geofence, geocode' />" );
             writer.write( "  <meta name='robots' content='index,follow' />" );
             writer.write( "  <meta name='audience' content='all' />" );
             writer.write( "  <meta name='revisit-after' content='5 days' />" );
             // facebook/opengraph
             writer.write( "  <meta name='og:image:url' content='" + imageUrl.toString() + "' />" );
+            writer.write( "  <meta name='og:image' content='" + imageUrl.toString() + "' />" );
             writer.write( "  <meta name='og:image:type' content='image/png' />" );
             writer.write( "  <meta name='og:image:width' content='1200' />" );
             writer.write( "  <meta name='og:image:height' content='630' />" );
             writer.write( "  <meta name='og:type' content='website' />" );
-            writer.write( "  <meta name='og:url' content='" + arenaUrl + "' />" );
+            writer.write( "  <meta name='og:site_name' content='mapzone - '" + projectName + " />" );
+            writer.write( "  <meta name='fb:app_id' content='1754931524765083' />" );
+            writer.write( "  <meta name='fb:admins' content='739545402735248' />" );
+            writer.write( "  <meta property='article:publisher' content='https://www.facebook.com/mapzoneio-1401853630109662' />");
+            writer.write( "  <meta property='article:author' content='https://www.facebook.com/stundzig' />");
+            /*writer.write( "  <meta name='og:url' content='" + arenaUrl + "' />" );*/
 
             // perform a redirect
             //writer.write( " <script type='text/javascript'>window.setTimeout(function(){ window.location.href = '"
