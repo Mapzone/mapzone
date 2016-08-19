@@ -23,6 +23,7 @@ import com.vividsolutions.jts.geom.Envelope;
 
 import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.share.ShareInfoServlet;
+import io.mapzone.arena.share.ShareServletsStarter;
 import io.mapzone.arena.share.ui.ShareContext;
 import io.mapzone.arena.share.ui.ShareContext.SelectionDescriptor;
 
@@ -63,12 +64,13 @@ public class ArenaContentBuilder
         extent.add( String.valueOf( (int)envelope.getMaxX() ) );
         extent.add( String.valueOf( (int)envelope.getMaxY() ) );
         
-        StringBuffer shareInfo = new StringBuffer( );
+        StringBuffer shareInfo = new StringBuffer( ArenaPlugin.instance().config().getProxyUrl() );
+        shareInfo.append( ShareServletsStarter.ALIAS_SHAREINFO ).append( "?" );
         try {
-            shareInfo.append( "&" ).append( ShareInfoServlet.PARAMETER_LAYERS ).append( "=" ).append( URLEncoder.encode( layers.toString(), "utf-8") );
+            shareInfo.append( ShareInfoServlet.PARAMETER_LAYERS ).append( "=" ).append( URLEncoder.encode( layers.toString(), "utf-8") );
             shareInfo.append( "&" ).append( ShareInfoServlet.PARAMETER_BBOX ).append( "=" ).append( URLEncoder.encode(extent.toString(), "utf-8" ));
             if (!StringUtils.isBlank( ArenaPlugin.instance().config().getServiceAuthToken() )) {
-                shareInfo.append( "&" ).append( ShareInfoServlet.PARAMETER_AUTHTOKEN ).append( "=" ).append( URLEncoder.encode(ArenaPlugin.instance().config().getServiceAuthToken(), "utf-8" ));
+               shareInfo.append( "&" ).append( ShareInfoServlet.PARAMETER_AUTHTOKEN ).append( "=" ).append( URLEncoder.encode(ArenaPlugin.instance().config().getServiceAuthToken(), "utf-8" ));
             }
         }
         catch (UnsupportedEncodingException e) {

@@ -134,10 +134,7 @@ public class ShareInfoServlet
             writer.write( "  <meta property='og:url' content='" + arenaUrl + "' />" );
 
             // perform a redirect
-            // writer.write( " <script
-            // type='text/javascript'>window.setTimeout(function(){
-            // window.location.href = '"
-            // + arenaUrl + "'; },10000);</script>" );
+            writer.write( "  <script type='text/javascript'>window.setTimeout(function(){window.location.href = '" + arenaUrl + "'; },10000);</script>" );
             writer.write( " </head>" );
             writer.write( " <body>" );
             // writer.write( " <iframe src='" + arenaUrl
