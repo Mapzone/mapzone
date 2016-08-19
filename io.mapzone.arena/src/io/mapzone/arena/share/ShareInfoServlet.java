@@ -87,12 +87,11 @@ public class ShareInfoServlet
 
             resp.setStatus( HttpStatus.SC_OK );
             resp.setContentType( "text/html;charset=utf-8" );
-            handleCors( req, resp );
 
             final String projectName = ArenaConfig.getAppTitle();
             // FIXME add the project description here
             final String description = ArenaConfig.getAppTitle();
-//            final String arenaUrl = ArenaPlugin.instance().config().getProxyUrl() + ArenaPlugin.ALIAS;
+            final String arenaUrl = ArenaPlugin.instance().config().getProxyUrl() + ArenaPlugin.ALIAS;
             final StringBuilder imageUrl = new StringBuilder( ArenaPlugin.instance().config().getProxyUrl() );
             imageUrl.append( GeoServerStarter.ALIAS );
             imageUrl.append( "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&CRS=EPSG%3A3857&STYLES=&WIDTH=1200&HEIGHT=630" );
@@ -112,22 +111,27 @@ public class ShareInfoServlet
             writer.write( "  <meta name='keywords' content='location, geo, web, osm, map, maps, styling, wms, csv, xls, georeference, geofence, geocode' />" );
             writer.write( "  <meta name='robots' content='index,follow' />" );
             writer.write( "  <meta name='audience' content='all' />" );
-            writer.write( "  <meta name='revisit-after' content='5 days' />" );
+            // writer.write( " <meta name='revisit-after' content='5 days' />" );
             // facebook/opengraph
+            writer.write( "  <meta property='og:locality' content='Leipzig'/>" );
+            writer.write( "  <meta property='og:country-name' content='Germany'/>" );
+            writer.write( "  <meta property='og:latitude' content='51.32794'/>" );
+            writer.write( "  <meta property='og:longitude' content='12.33126'/>" );
             writer.write( "  <meta property='og:image:url' content='" + imageUrl.toString() + "' />" );
-//            writer.write( "  <meta property='og:image' content='" + imageUrl.toString() + "' />" );
-            writer.write( "  <meta property='og:image:type' content='image/png' />" );
+            // writer.write( " <meta property='og:image:type' content='image/png' />" );
             writer.write( "  <meta property='og:image:width' content='1200' />" );
             writer.write( "  <meta property='og:image:height' content='630' />" );
-            writer.write( "  <meta property='og:type' content='website' />" );
-            writer.write( "  <meta property='og:site_name' content='mapzone - '" + projectName + " />" );
-            writer.write( "  <meta property='fb:app_id' content='1754931524765083' />" );
-            writer.write( "  <meta property='fb:admins' content='739545402735248' />" );
+            writer.write( "  <meta property='og:type' content='article' />" );
+            writer.write( "  <meta property='og:site_name' content='mapzone - " + projectName + "' />" );
+            // wird grad nicht von Facebook unterstützt
+            // writer.write( " <meta property='fb:app_id' content='1754931524765083'
+            // />" );
+            // writer.write( " <meta property='fb:admins' content='739545402735248'
+            // />" );
             writer.write( "  <meta property='article:publisher' content='https://www.facebook.com/mapzoneio-1401853630109662' />" );
             writer.write( "  <meta property='article:author' content='https://www.facebook.com/stundzig' />" );
-            /*
-             * writer.write( "  <meta name='og:url' content='" + arenaUrl + "' />" );
-             */
+
+            writer.write( "  <meta property='og:url' content='" + arenaUrl + "' />" );
 
             // perform a redirect
             // writer.write( " <script
@@ -148,13 +152,5 @@ public class ShareInfoServlet
             e.printStackTrace();
             resp.sendError( HttpStatus.SC_INTERNAL_SERVER_ERROR, e.getMessage() );
         }
-    }
-
-
-    private void handleCors( HttpServletRequest req, HttpServletResponse resp ) {
-        String origin = req.getHeader( "Origin" );
-        resp.addHeader( "Access-Control-Allow-Origin", StringUtils.isBlank( origin ) ? "*" : origin );
-        resp.addHeader( "Access-Control-Allow-Headers", req.getHeader( "Access-Control-Request-Headers" ) );
-        resp.addHeader( "Access-Control-Allow-Methods", "GET" );
     }
 }
