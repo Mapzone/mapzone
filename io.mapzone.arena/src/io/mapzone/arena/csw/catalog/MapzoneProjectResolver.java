@@ -19,21 +19,28 @@ import java.util.Set;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+
+import org.geotools.data.ows.Layer;
 import org.geotools.data.wms.WebMapServer;
 import org.geotools.ows.ServiceException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.google.common.collect.Sets;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import org.polymap.core.catalog.IMetadata;
+import org.polymap.core.catalog.resolve.DefaultResourceInfo;
 import org.polymap.core.catalog.resolve.DefaultServiceInfo;
 import org.polymap.core.catalog.resolve.IMetadataResourceResolver;
 import org.polymap.core.catalog.resolve.IResolvableInfo;
 import org.polymap.core.catalog.resolve.IResourceInfo;
-import org.polymap.core.data.wms.catalog.WmsResourceInfo;
+import org.polymap.core.catalog.resolve.IServiceInfo;
 import org.polymap.core.runtime.StreamIterable;
 import org.polymap.core.security.SecurityContext;
+
 import io.mapzone.arena.jmx.ArenaConfigMBean;
 
 /**
@@ -99,62 +106,37 @@ public class MapzoneProjectResolver
         @Override
         public Iterable<IResourceInfo> getResources( IProgressMonitor monitor ) {
             return StreamIterable.of( wms.getCapabilities().getLayerList().stream()
-                    .map( layer -> wms.getInfo( layer ) )
-                    .map( info -> new WmsResourceInfo( MapzoneProjectServiceInfo.this, info ) ) );
+                    .map( layer -> new MapzoneProjectResourceInfo( MapzoneProjectServiceInfo.this, wms, layer ) ) );
         }
     }
 
-    
+
     /**
      * 
      */
-    protected static abstract class MapzoneProjectResolvableInfo
-            implements IResolvableInfo {
-
-        protected CswMetadata           md;
+    public static class MapzoneProjectResourceInfo
+            extends DefaultResourceInfo {
         
-        protected MapzoneProjectResolvableInfo( CswMetadata md ) {
-            this.md = md;
-        }
+        private WebMapServer            wms;
+        
+        private Layer                   layer;
 
-        @Override
-        public String getTitle() {
-            return md.getTitle();
+        public MapzoneProjectResourceInfo( IServiceInfo serviceInfo, WebMapServer wms, Layer layer ) {
+            super( serviceInfo, wms.getInfo( layer ) );
+            this.wms = wms;
+            this.layer = layer;
         }
 
         @Override
         public Set<String> getKeywords() {
-            return md.getKeywords();
+            return Sets.newHashSet( layer.getKeywords() );
         }
 
         @Override
         public String getDescription() {
-            return md.getDescription();
+            return "[Cascade] " + layer.getTitle() + ": " + super.getDescription() + "\n\n";
         }
+        
     }
-
     
-//    /**
-//     * 
-//     */
-//    protected static class WmsResourceInfo
-//            extends CswResolvableInfo
-//            implements IResourceInfo {
-//
-//        protected WmsResourceInfo( CswMetadata md ) {
-//            super( md );
-//            new Wms
-//        }
-//
-//        @Override
-//        public String getName() {
-//        }
-//
-//        @Override
-//        public IServiceInfo getServiceInfo() {
-//            // XXX Auto-generated method stub
-//            throw new RuntimeException( "not yet implemented." );
-//        }
-//    }
-
 }

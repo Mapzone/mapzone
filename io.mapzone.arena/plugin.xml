@@ -70,4 +70,11 @@
             class="io.mapzone.arena.csw.catalog.MapzoneResolverProvider">
       </resolver>
    </extension>
+   <extension
+         point="org.polymap.core.operation.concerns">
+      <concern
+            class="io.mapzone.arena.csw.catalog.NewLayerOperationConcern"
+            id="io.mapzone.arena.concern1">
+      </concern>
+   </extension>
 </plugin>
