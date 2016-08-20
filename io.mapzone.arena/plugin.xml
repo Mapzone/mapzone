@@ -51,7 +51,8 @@
       </panel>
       <panel
             class="io.mapzone.arena.share.ui.SharePanel"
-            id="io.mapzone.arena.share.ui.SharePanel">
+            id="io.mapzone.arena.share.ui.SharePanel"
+            stackPriority="90">
       </panel>
       <panel
             class="io.mapzone.arena.share.ui.ShareletPanel"
