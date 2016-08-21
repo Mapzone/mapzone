@@ -102,22 +102,31 @@ public class CatalogCoreEntry
      * the Distributor in ISO and FGDC metadata.
      */
     @Nullable
+    @Queryable
     public Property<String>         publisher;
     
     /**
      * An entity responsible for making contributions to the content of the resource.
      */
     @Nullable
+    @Queryable
     public Property<String>         contributor;
     
     /**
-     * The date of a creation or update event of the catalogue record.
+     * The date of an update event of the catalogue record.
      */
     @Nullable
     @Queryable
     @XML( namespace=DCT )
     @OGCQueryable( "Modified" )
     public Property<Date>           modified;
+    
+    /**
+     * The date of the creation event of the catalogue record.
+     */
+    @Nullable
+    @Queryable
+    public Property<Date>           created;
     
     /**
      * The nature or genre of the content of the resource.
@@ -166,6 +175,14 @@ public class CatalogCoreEntry
      * 
      */
     @Nullable
+    @Queryable
     public Property<String>         rights;
+    
+    /**
+     * 
+     */
+    @Nullable
+    @Queryable
+    public Property<String>         accessRights;
     
 }

@@ -14,6 +14,8 @@
  */
 package io.mapzone.controller.catalog;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.polymap.rhei.fulltext.model2.DuplicateHandler;
 import org.polymap.rhei.fulltext.model2.EntityFeatureTransformer;
 
@@ -36,7 +38,9 @@ public class CatalogEntryFulltextTransformer
         duplicateHandler.set( DuplicateHandler.CONCAT );
         fieldNameProvider.set( prop -> {
             OGCQueryable a = (OGCQueryable)prop.info().getAnnotation( OGCQueryable.class );
-            return a.value();
+            return a != null
+                ? a.value()
+                : StringUtils.capitalize( prop.info().getName() );
         });
     }
 
