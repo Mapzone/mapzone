@@ -69,6 +69,7 @@ public class UserProfileDashlet
     @Override
     public void init( DashletSite site ) {
         super.init( site );
+        site.border.set( false );
         
         uow = ProjectRepository.session();
         user = uow.findUser( userPrincipal.get().getName() )

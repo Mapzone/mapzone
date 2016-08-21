@@ -1,5 +1,7 @@
 package io.mapzone.controller.ops;
 
+import java.util.Date;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -59,6 +61,8 @@ public class UpdateProjectOperation
     protected IStatus doWithCommit( IProgressMonitor monitor, IAdaptable info ) throws Exception {
         assert project.isPresent();
         assert project.get().belongsTo( umUow.get() );
+        
+        project.get().modified.set( new Date() );
         
         return Status.OK_STATUS;
     }

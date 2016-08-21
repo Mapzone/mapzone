@@ -27,15 +27,11 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.security.SecurityContext;
-import org.polymap.core.security.UserPrincipal;
 import org.polymap.core.ui.ColumnLayoutFactory;
 
 import org.polymap.rhei.batik.BatikPlugin;
-import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.PanelIdentifier;
-import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
-import org.polymap.rhei.batik.toolkit.IPanelToolkit;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
@@ -69,9 +65,6 @@ public class RegisterPanel
 
     public static final IMessages       i18n = Messages.forPrefix( "RegisterPanel" );
 
-    @Scope("io.mapzone.controller")
-    private Context<UserPrincipal>      userPrincipal;
-
     private CreateUserOperation         op;
     
     private Button                      okBtn;
@@ -99,6 +92,7 @@ public class RegisterPanel
     @Override
     public void init() {
         super.init();
+        site().setSize( SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH );
         op = new CreateUserOperation();
         op.createEntity();
     }
@@ -110,6 +104,7 @@ public class RegisterPanel
             form.removeFieldListener( this );
             form = null;
         }
+        op.cleanup();
     }
 
 
@@ -129,24 +124,23 @@ public class RegisterPanel
     @Override
     public void createContents( Composite parent ) {
         this.panelContainer = parent;
-        getSite().setTitle( i18n.get( "title" ) );
-        getSite().setIcon( BatikPlugin.images().svgImage( "account.svg", NORMAL24 ) );
-        IPanelToolkit tk = getSite().toolkit();
+        site().title.set( i18n.get( "title" ) );
+        site().icon.set( BatikPlugin.images().svgImage( "account.svg", NORMAL24 ) );
 
         // welcome section
-        welcomeSection = tk.createPanelSection( parent, i18n.get( "title" ) );
+        welcomeSection = tk().createPanelSection( parent, i18n.get( "title" ) );
         welcomeSection.addConstraint( new PriorityConstraint( 10 ), new MinWidthConstraint( 450, 0 ) );
-        tk.createFlowText( welcomeSection.getBody(), ContentProvider.instance().findContent( "ui/register-welcome.md").content() );
+        tk().createFlowText( welcomeSection.getBody(), ContentProvider.instance().findContent( "ui/register-welcome.md").content() );
 
         // form section
-        formSection = tk.createPanelSection( parent, "Personal account settings", SWT.BORDER );
+        formSection = tk().createPanelSection( parent, "Personal account settings", SWT.BORDER );
         formSection.getBody().setLayout( ColumnLayoutFactory.defaults().spacing( 8 ).margins( 0, 0 ).create() );
         
         form = new BatikFormContainer( new NamePasswordForm() );
         form.createContents( formSection );
 
         // btn
-        okBtn = tk.createButton( form.getContents(), i18n.get( "okBtn" ), SWT.PUSH );
+        okBtn = tk().createButton( form.getContents(), i18n.get( "okBtn" ), SWT.PUSH );
         okBtn.setEnabled( false );
         okBtn.addSelectionListener( new SelectionAdapter() {
             public void widgetSelected( SelectionEvent ev ) {

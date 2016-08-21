@@ -32,10 +32,8 @@ import org.polymap.core.ui.ColumnDataFactory;
 import org.polymap.core.ui.ColumnLayoutFactory;
 
 import org.polymap.rhei.batik.BatikApplication;
-import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PanelSite;
-import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
 import org.polymap.rhei.field.CheckboxFormField;
@@ -67,9 +65,6 @@ public class LoginPanel
     
     private static final IMessages      i18n = Messages.forPrefix( "LoginForm" );
 
-    @Scope("io.mapzone.controller")
-    protected Context<UserPrincipal>    userPrincipal;
-
     
     @Override
     public boolean wantsToBeShown() {
@@ -90,6 +85,7 @@ public class LoginPanel
     @Override
     public void init() {
         super.init();
+        site().setSize( SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH );
         site().title.set( "Sign in" );
     }
     

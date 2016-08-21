@@ -100,10 +100,10 @@ public class OperationsTest {
 
         // operation
         CreateProjectOperation op = new CreateProjectOperation( uow, user.name.get() );
-        op.organization.set( user.userOrg() );
 
         // prepare project
         project = op.createProject();
+        op.project.get().organization.set( user.userOrg() );
         op.project.get().name.set( "cool" );
         op.project.get().launcher = new Property<ProjectLauncher>() {
             ProjectLauncher mock = mock( ProjectLauncher.class );

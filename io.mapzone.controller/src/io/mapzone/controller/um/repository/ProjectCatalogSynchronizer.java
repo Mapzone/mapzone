@@ -14,7 +14,6 @@
  */
 package io.mapzone.controller.um.repository;
 
-import java.util.Date;
 import java.util.Optional;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -82,15 +81,21 @@ abstract class ProjectCatalogSynchronizer
         entry.spatial.clear();
         entry.spatial.add( "_type_=Mapzone Project Service" );  // see io.mapzone.arena.csw.catalog.MapzoneProjectResolver
         entry.spatial.add( "_url_=" + serviceUrl );
-        entry.format.set( "Service" );
+        
+        entry.type.set( "Service" );
+        entry.format.set( "application/vnd.ogc.wms_xml" );
         entry.onlineResource.set( serviceUrl );
         entry.title.set( project.name.get() );
         entry.description.set( project.description.get() );
-        entry.modified.set( new Date() );
-        //    entry.subject.clear();
-        //    project.keywords.stream()
-        //            .map( l -> l.getContent().get( 0 ) )
-        //            .forEach( s -> entry.subject.add( s ) );
+        entry.modified.set( project.modified.get() );
+        entry.created.set( project.created.get() );
+        entry.creator.set( project.creator.get() );
+        entry.publisher.set( project.publisher.get() );
+        entry.rights.set( project.rights.get() );
+        entry.accessRights.set( project.accessRights.get() );
+        
+        entry.subject.clear();
+        entry.subject.addAll( project.keywords );
     }
 
     

@@ -1,16 +1,13 @@
 package io.mapzone.controller.ui.project;
 
-import static java.util.stream.Collectors.toMap;
 import static org.polymap.core.runtime.UIThreadExecutor.asyncFast;
 import static org.polymap.rhei.batik.toolkit.md.dp.dp;
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.ops.CreateProjectOperation;
 import io.mapzone.controller.ui.CtrlPanel;
 import io.mapzone.controller.ui.DashboardPanel;
-import io.mapzone.controller.ui.util.PropertyAdapter;
-import io.mapzone.controller.um.repository.Organization;
 import io.mapzone.controller.um.repository.Project;
-import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -22,25 +19,17 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 import org.polymap.core.operation.OperationSupport;
-import org.polymap.core.security.UserPrincipal;
 import org.polymap.core.ui.ColumnLayoutFactory;
 import org.polymap.core.ui.StatusDispatcher;
 
-import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PanelPath;
-import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.app.SvgImageRegistryHelper.Quadrant;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
-import org.polymap.rhei.field.FormFieldEvent;
-import org.polymap.rhei.field.IFormFieldListener;
-import org.polymap.rhei.field.NotEmptyValidator;
-import org.polymap.rhei.field.PicklistFormField;
-import org.polymap.rhei.field.PlainValuePropertyAdapter;
 import org.polymap.rhei.form.DefaultFormPage;
 import org.polymap.rhei.form.IFormPageSite;
 import org.polymap.rhei.form.batik.BatikFormContainer;
@@ -62,9 +51,6 @@ public class CreateProjectPanel
             "plus-circle-filled.svg", SvgImageRegistryHelper.OVR12_ACTION, 
             Quadrant.TopRight );
 
-    @Scope("io.mapzone.controller")
-    protected Context<UserPrincipal> userPrincipal;
-    
     /**
      * The operation to be prepared and executed by this panel.
      */
@@ -99,6 +85,12 @@ public class CreateProjectPanel
 
 
     @Override
+    public void dispose() {
+        op.cleanup();
+    }
+
+
+    @Override
     public void createContents( Composite parent ) {
         MdToolkit tk = (MdToolkit)getSite().toolkit();
         
@@ -114,7 +106,13 @@ public class CreateProjectPanel
         projectSection.addConstraint( new PriorityConstraint( 10 ) );
         projectSection.getBody().setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( dp(10).pix() ).create() );
         
-        projectForm = new BatikFormContainer( new ProjectForm() );
+        ProjectForm formPage = new ProjectForm( op.umUow.get(), op.project.get(), op.user.get() ) {
+            @Override
+            protected void updateEnabled() {
+                CreateProjectPanel.this.updateEnabled();
+            }
+        };
+        projectForm = new BatikFormContainer( formPage.creation.put( true ) );
         projectForm.createContents( projectSection.getBody() );
 
 //        // ProjectLauncher
@@ -130,104 +128,36 @@ public class CreateProjectPanel
         fab.addSelectionListener( new SelectionAdapter() {
             @Override
             public void widgetSelected( SelectionEvent ev ) {
-                try {
-                    projectForm.submit( null );
-                }
-                catch (Exception e) {
-                    StatusDispatcher.handleError( "Unable to create project.", e );
-                    return;
-                }
-                
-                // XXX execute sync as long as there is no progress indicator
-                OperationSupport.instance().execute2( op, false, false, ev2 -> asyncFast( () -> {
-                    if (ev2.getResult().isOK()) {
-                        PanelPath panelPath = getSite().getPath();
-                        getContext().closePanel( panelPath );                        
-                    }
-                    else {
-                        StatusDispatcher.handleError( "Unable to create project.", ev2.getResult().getException() );
-                    }
-                }));
+                submit( ev );
             }
         } );
     }
 
+
+    protected void submit( SelectionEvent ev ) {
+        try {
+            projectForm.submit( null );
+        }
+        catch (Exception e) {
+            StatusDispatcher.handleError( "Unable to create project.", e );
+            return;
+        }
+        
+        // XXX execute sync as long as there is no progress indicator
+        OperationSupport.instance().execute2( op, false, false, ev2 -> asyncFast( () -> {
+            if (ev2.getResult().isOK()) {
+                PanelPath panelPath = getSite().getPath();
+                getContext().closePanel( panelPath );                        
+            }
+            else {
+                StatusDispatcher.handleError( "Unable to create project.", ev2.getResult().getException() );
+            }
+        }));
+        
+    }
     
     protected void updateEnabled() {
         fab.setVisible( projectForm.isDirty() && projectForm.isValid() );
-    }
-    
-    
-    /**
-     * {@link Project} settings. 
-     */
-    class ProjectForm
-            extends DefaultFormPage 
-            implements IFormFieldListener {
-        
-        @Override
-        public void createFormContents( IFormPageSite site ) {
-            super.createFormContents( site );
-            
-            Composite body = site.getPageBody();
-            body.setLayout( ColumnLayoutFactory.defaults()
-                    .spacing( 5 /*panelSite.getLayoutPreference( LAYOUT_SPACING_KEY ) / 4*/ )
-                    .margins( getSite().getLayoutPreference().getSpacing() / 2 ).create() );
-            
-            // organization
-            Map<String,Organization> orgs = op.user.get().organizations.stream()
-                    .map( role -> role.organization.get() )
-                    .collect( toMap( org -> org.name.get(), org -> org ) );
-            site.newFormField( new PlainValuePropertyAdapter( "organizationOrUser", null ) )
-                    .label.put( "Organization or User" )
-                    .field.put( new PicklistFormField( orgs ) )
-                    .tooltip.put( "" )
-                    .create();
-            
-            // name
-            site.newFormField( new PropertyAdapter( op.project.get().name ) )
-                    .validator.put( new NotEmptyValidator<String,String>() {
-                        @Override
-                        public String validate( String fieldValue ) {
-                            String result = super.validate( fieldValue );
-                            if (result == null) {
-                                if (op.organization.isPresent()) {
-                                    if (op.umUow.get().findProject( op.organization.get().name.get(), (String)fieldValue ).isPresent()) { 
-                                        result = "Project name is already taken";
-                                    }
-                                }
-                                else {
-                                    result = "Choose an organization first";
-                                }
-                            };
-                            return result;
-                        }
-                    }).create();
-            
-            // description
-            site.newFormField( new PropertyAdapter( op.project.get().description ) ).create();
-            
-            // website
-            site.newFormField( new PropertyAdapter( op.project.get().website ) ).create();
-            
-            // location
-            site.newFormField( new PropertyAdapter( op.project.get().location ) ).create();
-            
-            site.addFieldListener( this );
-        }
-
-        
-        @Override
-        public void fieldChange( FormFieldEvent ev ) {
-            if (ev.getEventCode() == VALUE_CHANGE) {
-                if (ev.getFieldName().equals( "organizationOrUser" )) {
-                    ev.getNewModelValue().ifPresent( v -> op.organization.set( (Organization)v ) );
-                   // op.organization.set( (Organization)ev.getNewModelValue().orElse( null ) );
-                }
-                updateEnabled();
-            }
-        }
-        
     }
     
     

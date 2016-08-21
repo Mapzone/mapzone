@@ -14,14 +14,12 @@
  */
 package io.mapzone.controller.ui;
 
-import io.mapzone.controller.um.repository.LoginCookie;
-import io.mapzone.controller.um.repository.User;
-
 import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.polymap.core.ui.FormDataFactory.on;
 
 import java.util.List;
 import java.util.Optional;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -37,20 +35,21 @@ import org.polymap.core.runtime.StreamIterable;
 import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.runtime.event.EventHandler;
 import org.polymap.core.security.SecurityContext;
-import org.polymap.core.security.UserPrincipal;
 import org.polymap.core.ui.ColumnDataFactory;
 import org.polymap.core.ui.ColumnLayoutFactory;
 import org.polymap.core.ui.FormDataFactory.Alignment;
 import org.polymap.core.ui.FormLayoutFactory;
+
 import org.polymap.rhei.batik.BatikApplication;
-import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PropertyAccessEvent;
-import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.toolkit.ConstraintLayout;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.LayoutSupplier;
 import org.polymap.cms.ContentProvider;
+
+import io.mapzone.controller.um.repository.LoginCookie;
+import io.mapzone.controller.um.repository.User;
 
 /**
  * Landing page or open {@link DashboardPanel} if {@link LoginCookie} is set.
@@ -64,11 +63,8 @@ public class StartPanel
 
     public static final PanelIdentifier     ID = PanelIdentifier.parse( "start" );
 
-    @Scope("io.mapzone.controller")
-    protected Context<UserPrincipal>        userPrincipal;
-    
     private Composite                       parent;
-    
+
     
     @Override
     public boolean wantsToBeShown() {
@@ -80,22 +76,29 @@ public class StartPanel
     public void createContents( @SuppressWarnings("hiding") Composite parent ) {
         this.parent = parent;
         site().maxWidth.set( Integer.MAX_VALUE );
-        site().preferredWidth.set( Integer.MAX_VALUE );
-        site().minWidth.set( Integer.MAX_VALUE );
+        site().preferredWidth.set( 650 );
+        site().minWidth.set( SIDE_PANEL_WIDTH );
         site().title.set( "Welcome to mapzone" );
         
         // login cookie -> dashboard
         Optional<LoginCookie> loginCookie = LoginCookie.access().findAndUpdate();
         if (loginCookie.isPresent()) {
-            User user = loginCookie.get().user.get();            
-            userPrincipal.set( SecurityContext.instance().loginTrusted( user.name.get() ) );
+            User cookieUser = loginCookie.get().user.get();            
+            userPrincipal.set( SecurityContext.instance().loginTrusted( cookieUser.name.get() ) );
             log.info( "Cookie user: " + userPrincipal.get().getName() );
+            
             openDashboard();
+
+            // frontpage, always created in case we get back from dashboard
+            // but delay to avoid frontpage showing short before dashboard
+            UIThreadExecutor.async( () -> {
+                createFrontpageContents();
+            });
         }
-        // frontpage, always created in case we get back from dashboard
-        // XXX delay to avoid frontpage showing short before dashboard
-        createFrontpageContents();
-        userPrincipal.addListener( this, (PropertyAccessEvent ev) -> ev.getType() == PropertyAccessEvent.TYPE.SET );
+        else {
+            userPrincipal.addListener( this, (PropertyAccessEvent ev) -> ev.getType() == PropertyAccessEvent.TYPE.SET );
+            createFrontpageContents();
+        }
     }
 
 
@@ -182,6 +185,10 @@ public class StartPanel
     
     
     protected void openDashboard() {
+        // make StartPanel/frontpage to big to be shown beside the dashboard
+        site().preferredWidth.set( Integer.MAX_VALUE );
+        site().minWidth.set( Integer.MAX_VALUE );
+
         UIThreadExecutor.async( () -> getContext().openPanel( getSite().getPath(), DashboardPanel.ID ) );
     }
 

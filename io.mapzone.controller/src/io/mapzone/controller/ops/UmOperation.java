@@ -61,7 +61,13 @@ public abstract class UmOperation
         ConfigurationFactory.inject( this );
     }
 
-
+    /**
+     * Cleanup any created project if panel was just closed.
+     */
+    public void cleanup() {
+        umUow.get().rollback();    
+    }
+    
     /**
      *
      */

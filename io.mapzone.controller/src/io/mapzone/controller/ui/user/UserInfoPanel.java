@@ -24,14 +24,11 @@ import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.runtime.event.EventHandler;
 import org.polymap.core.runtime.event.EventManager;
-import org.polymap.core.security.UserPrincipal;
 import org.polymap.core.ui.ColumnLayoutFactory;
 import org.polymap.core.ui.StatusDispatcher;
 
-import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PanelPath;
-import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.toolkit.ConstraintData;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
@@ -60,18 +57,15 @@ public class UserInfoPanel
 
     public static final PanelIdentifier ID = PanelIdentifier.parse( "editUser" );
     
-    @Scope("io.mapzone.controller")
-    protected Context<UserPrincipal>    userPrincipal;
-    
     private UpdateUserOperation         op;
 
-    private BatikFormContainer      profileForm;
+    private BatikFormContainer          profileForm;
 
-    private BatikFormContainer      accountForm;
+    private BatikFormContainer          accountForm;
     
-    private Optional<String>        newPassword = Optional.empty();
+    private Optional<String>            newPassword = Optional.empty();
 
-    private Button                  fab;
+    private Button                      fab;
 
     
     @Override
@@ -97,27 +91,28 @@ public class UserInfoPanel
     @Override
     public void createContents( Composite parent ) {
         // profile form
-        IPanelSection profileSection = tk().createPanelSection( parent, "Profile" );
+        IPanelSection profileSection = tk().createPanelSection( parent, "Profile", SWT.BORDER );
         profileSection.getControl().setLayoutData( new ConstraintData( new MinWidthConstraint( 350, 1 ) ) );
         profileForm = new BatikFormContainer( new UserForm() );
         profileForm.createContents( profileSection.getBody() );
 
         // account form
-        IPanelSection accountSection = tk().createPanelSection( parent, "Account" );
+        IPanelSection accountSection = tk().createPanelSection( parent, "Account", SWT.BORDER );
         accountForm = new BatikFormContainer( new AccountForm() );
         accountForm.createContents( accountSection.getBody() );
 
         // sign out
         IPanelSection signOutSection = tk().createPanelSection( parent, "Sign out" );
-        tk().createButton( signOutSection.getBody(), "Sign out", SWT.PUSH )
-                .addSelectionListener( new SelectionAdapter() {
-                    @Override
-                    public void widgetSelected( SelectionEvent e ) {
-                        LoginCookie.access().destroy();
-                        JavaScriptExecutor executor = RWT.getClient().getService( JavaScriptExecutor.class );
-                        executor.execute( "window.location.reload(true);" );
-                    }
-                });
+        Button btn = tk().createButton( signOutSection.getBody(), "Sign out", SWT.PUSH, SWT.FLAT );
+        btn.setImage( ControllerPlugin.images().svgImage( "logout.svg", ControllerPlugin.ACTION_ICON_CONFIG ) );
+        btn.addSelectionListener( new SelectionAdapter() {
+            @Override
+            public void widgetSelected( SelectionEvent e ) {
+                LoginCookie.access().destroy();
+                JavaScriptExecutor executor = RWT.getClient().getService( JavaScriptExecutor.class );
+                executor.execute( "window.location.reload(true);" );
+            }
+        });
 
         // FAB
         fab = tk().createFab();

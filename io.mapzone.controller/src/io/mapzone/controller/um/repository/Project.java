@@ -18,13 +18,16 @@ import static org.polymap.model2.runtime.EntityRuntimeContext.EntityStatus.CREAT
 import static org.polymap.model2.runtime.EntityRuntimeContext.EntityStatus.MODIFIED;
 import static org.polymap.model2.runtime.EntityRuntimeContext.EntityStatus.REMOVED;
 
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import org.polymap.model2.Association;
+import org.polymap.model2.CollectionProperty;
 import org.polymap.model2.DefaultValue;
+import org.polymap.model2.Defaults;
 import org.polymap.model2.Nullable;
 import org.polymap.model2.Property;
 import org.polymap.model2.Queryable;
@@ -77,6 +80,38 @@ public class Project
     @Nullable
     public Property<String>             catalogId;
     
+    @Defaults
+    @Queryable
+    public Property<String>             creator;
+
+    @Defaults
+    @Queryable
+    public Property<Date>               created;
+
+    @Defaults
+    @Queryable
+    public Property<Date>               modified;
+
+    @Defaults
+    @Queryable
+    public Property<String>             publisher;
+
+    @Defaults
+    @Queryable
+    public Property<String>             rights;
+
+    @Defaults
+    @Queryable
+    public Property<String>             accessRights;
+
+    @Defaults
+    @Queryable
+    public CollectionProperty<String>   languages;
+
+    @Defaults
+    @Queryable
+    public CollectionProperty<String>   keywords;
+
     
     public Optional<AuthToken> serviceAuthToken() {
         return serviceAuthToken.get() != null 
@@ -92,7 +127,7 @@ public class Project
         return authToken;
     }
 
-
+    
     @Override
     public void onLifecycleChange( State state ) {
         super.onLifecycleChange( state );

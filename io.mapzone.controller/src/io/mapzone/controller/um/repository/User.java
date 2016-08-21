@@ -15,6 +15,8 @@
 package io.mapzone.controller.um.repository;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.polymap.model2.Computed;
 import org.polymap.model2.ComputedBidiManyAssocation;
@@ -74,5 +76,22 @@ public class User
         // always the first entry; created by CreateUserOperation
         return organizations.iterator().next().organization.get();
     }
+
     
+    /**
+     * A User is associated with many {@link Organization} with many {@link Project}s. 
+     *
+     * @return Unmodifiable list of associated projects.
+     */
+    public List<Project> projects() {
+        return organizations.stream().flatMap( role -> role.organization.get().projects.stream() ).collect( Collectors.toList() );
+        
+//        List<Project> result = new ArrayList();
+//        for (UserRole role : user.get().organizations) {
+//            result.addAll( role.organization.get().projects );
+//        }
+//        return result;
+    }
+
+
 }

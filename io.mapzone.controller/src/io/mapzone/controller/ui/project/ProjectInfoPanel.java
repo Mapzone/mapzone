@@ -23,8 +23,6 @@ import org.eclipse.rap.rwt.client.service.UrlLauncher;
 
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.UIThreadExecutor;
-import org.polymap.core.security.UserPrincipal;
-import org.polymap.core.ui.ColumnLayoutFactory;
 import org.polymap.core.ui.FormLayoutFactory;
 import org.polymap.core.ui.StatusDispatcher;
 
@@ -39,18 +37,12 @@ import org.polymap.rhei.batik.toolkit.ConstraintData;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
-import org.polymap.rhei.field.FormFieldEvent;
-import org.polymap.rhei.field.IFormFieldListener;
-import org.polymap.rhei.field.PlainValuePropertyAdapter;
-import org.polymap.rhei.form.DefaultFormPage;
-import org.polymap.rhei.form.IFormPageSite;
 import org.polymap.rhei.form.batik.BatikFormContainer;
 
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.ops.DeleteProjectOperation;
 import io.mapzone.controller.ops.UpdateProjectOperation;
 import io.mapzone.controller.ui.CtrlPanel;
-import io.mapzone.controller.ui.util.PropertyAdapter;
 import io.mapzone.controller.um.repository.AuthToken;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.vm.http.ProxyServlet;
@@ -66,10 +58,6 @@ public class ProjectInfoPanel
     private static Log log = LogFactory.getLog( ProjectInfoPanel.class );
 
     public static final PanelIdentifier ID = PanelIdentifier.parse( "editProject" );
-    
-    @Mandatory
-    @Scope( "io.mapzone.controller" )
-    protected Context<UserPrincipal>    userPrincipal;
     
     @Mandatory
     @Scope( "io.mapzone.controller" )
@@ -109,29 +97,34 @@ public class ProjectInfoPanel
         fab.addSelectionListener( new SelectionAdapter() {
             @Override
             public void widgetSelected( SelectionEvent ev ) {
-                // submit form
-                try {
-                    form.submit( null );
-                }
-                catch (Exception e) {
-                    StatusDispatcher.handleError( "Unable to create project.", e );
-                    return;
-                }
-                // execute operation
-                OperationSupport.instance().execute2( op, true, false, ev2 -> UIThreadExecutor.asyncFast( () -> {
-                    if (ev2.getResult().isOK()) {
-                        PanelPath panelPath = getSite().getPath();
-                        getContext().closePanel( panelPath );                        
-                    }
-                    else {
-                        StatusDispatcher.handleError( "Unable to create project.", ev2.getResult().getException() );
-                    }
-                }));
+                submit( ev );
             }
         });
     }
 
+    
+    protected void submit( SelectionEvent ev ) {
+        // submit form
+        try {
+            form.submit( null );
+        }
+        catch (Exception e) {
+            StatusDispatcher.handleError( "Unable to create project.", e );
+            return;
+        }
+        // execute operation
+        OperationSupport.instance().execute2( op, true, false, ev2 -> UIThreadExecutor.asyncFast( () -> {
+            if (ev2.getResult().isOK()) {
+                PanelPath panelPath = getSite().getPath();
+                getContext().closePanel( panelPath );                        
+            }
+            else {
+                StatusDispatcher.handleError( "Unable to create project.", ev2.getResult().getException() );
+            }
+        }));
+    }
 
+    
     protected void createLaunchSection( Composite parent ) {
         Button btn = tk().createButton( parent, "Launch", SWT.PUSH, SWT.FLAT );
         btn.setLayoutData( new ConstraintData( new PriorityConstraint( 100 ) ) );
@@ -149,15 +142,22 @@ public class ProjectInfoPanel
 
 
     protected void createFormSection( Composite parent ) {
-        IPanelSection section = tk().createPanelSection( parent, "Basic settings" );
+        IPanelSection section = tk().createPanelSection( parent, "Basic settings", SWT.BORDER );
         section.addConstraint( new PriorityConstraint( 10 ), new MinWidthConstraint( 350, 1 ) );
-        form = new BatikFormContainer( new ProjectForm() );
+        ProjectForm formPage = new ProjectForm( op.umUow.get(), op.project.get(), op.user.get() ) {
+            @Override
+            protected void updateEnabled() {
+                ProjectInfoPanel.this.updateEnabled();
+            }
+        };
+        formPage.creation.set( false );
+        form = new BatikFormContainer( formPage );
         form.createContents( section.getBody() );
     }
 
 
     protected void createAuthSection( Composite parent ) {
-        IPanelSection section = tk().createPanelSection( parent, "API token" );
+        IPanelSection section = tk().createPanelSection( parent, "Auth token" );
         section.addConstraint( new PriorityConstraint( 1 ), new MinWidthConstraint( 350, 1 ) );
         section.getBody().setLayout( FormLayoutFactory.defaults().margins( 3 ).spacing( 5 ).create() );
         
@@ -223,59 +223,59 @@ public class ProjectInfoPanel
     }
     
     
-    /**
-     * 
-     */
-    class ProjectForm
-            extends DefaultFormPage 
-            implements IFormFieldListener {
-        
-        @Override
-        public void createFormContents( IFormPageSite site ) {
-            super.createFormContents( site );
-            
-            Composite body = site.getPageBody();
-            body.setLayout( ColumnLayoutFactory.defaults()
-                    .spacing( 5 /*panelSite.getLayoutPreference( LAYOUT_SPACING_KEY ) / 4*/ )
-                    .margins( getSite().getLayoutPreference().getSpacing() / 2 ).create() );
-            
-            // organization
-            site.newFormField( new PlainValuePropertyAdapter( "organizationOrUser", op.project.get().organization.get().name.get() ) )
-                    .label.put( "Organization" )
-                    .tooltip.put( "Changing organization is not yet supported." )
-                    .fieldEnabled.put( false )
-                    .create();
-            
-            // name
-            site.newFormField( new PropertyAdapter( op.project.get().name ) )
-                    .tooltip.put( "Changing name is not yet supported." )
-                    .fieldEnabled.put( false )
-                    .create();
-            
-            // description
-            site.newFormField( new PropertyAdapter( op.project.get().description ) ).create();
-            
-            // website
-            site.newFormField( new PropertyAdapter( op.project.get().website ) ).create();
-            
-            // location
-            site.newFormField( new PropertyAdapter( op.project.get().location ) ).create();
-            
-            site.addFieldListener( this );
-        }
-
-        
-        @Override
-        public void fieldChange( FormFieldEvent ev ) {
-            if (ev.getEventCode() == VALUE_CHANGE) {
-//                if (ev.getFieldName().equals( "organizationOrUser" )) {
-//                    ev.getNewModelValue().ifPresent( v -> op.organization.set( (Organization)v ) );
-//                   // op.organization.set( (Organization)ev.getNewModelValue().orElse( null ) );
-//                }
-                updateEnabled();
-            }
-        }
-        
-    }
+//    /**
+//     * 
+//     */
+//    class ProjectForm
+//            extends DefaultFormPage 
+//            implements IFormFieldListener {
+//        
+//        @Override
+//        public void createFormContents( IFormPageSite site ) {
+//            super.createFormContents( site );
+//            
+//            Composite body = site.getPageBody();
+//            body.setLayout( ColumnLayoutFactory.defaults()
+//                    .spacing( 5 /*panelSite.getLayoutPreference( LAYOUT_SPACING_KEY ) / 4*/ )
+//                    .margins( getSite().getLayoutPreference().getSpacing() / 2 ).create() );
+//            
+//            // organization
+//            site.newFormField( new PlainValuePropertyAdapter( "organizationOrUser", op.project.get().organization.get().name.get() ) )
+//                    .label.put( "Organization" )
+//                    .tooltip.put( "Changing organization is not yet supported." )
+//                    .fieldEnabled.put( false )
+//                    .create();
+//            
+//            // name
+//            site.newFormField( new PropertyAdapter( op.project.get().name ) )
+//                    .tooltip.put( "Changing name is not yet supported." )
+//                    .fieldEnabled.put( false )
+//                    .create();
+//            
+//            // description
+//            site.newFormField( new PropertyAdapter( op.project.get().description ) ).create();
+//            
+//            // website
+//            site.newFormField( new PropertyAdapter( op.project.get().website ) ).create();
+//            
+//            // location
+//            site.newFormField( new PropertyAdapter( op.project.get().location ) ).create();
+//            
+//            site.addFieldListener( this );
+//        }
+//
+//        
+//        @Override
+//        public void fieldChange( FormFieldEvent ev ) {
+//            if (ev.getEventCode() == VALUE_CHANGE) {
+////                if (ev.getFieldName().equals( "organizationOrUser" )) {
+////                    ev.getNewModelValue().ifPresent( v -> op.organization.set( (Organization)v ) );
+////                   // op.organization.set( (Organization)ev.getNewModelValue().orElse( null ) );
+////                }
+//                updateEnabled();
+//            }
+//        }
+//        
+//    }
     
 }

@@ -14,17 +14,23 @@
  */
 package io.mapzone.controller.ui;
 
-import io.mapzone.controller.ui.project.ProjectsDashlet;
-import io.mapzone.controller.ui.user.UserProfileDashlet;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.swt.widgets.Composite;
 
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
+
 import org.polymap.rhei.batik.PanelIdentifier;
+import org.polymap.rhei.batik.contribution.ContributionManager;
 import org.polymap.rhei.batik.dashboard.Dashboard;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
+
+import io.mapzone.controller.ui.project.ProjectsDashlet;
+import io.mapzone.controller.ui.user.UserProfileDashlet;
+import io.mapzone.controller.um.repository.LoginCookie;
+import io.mapzone.controller.um.repository.ProjectRepository;
 
 /**
  * The user's dashboard.
@@ -44,17 +50,45 @@ public class DashboardPanel
     
     
     @Override
+    public void init() {
+        super.init();
+
+        // initialize panel context
+        uow.compareAndSet( null, ProjectRepository.session() );
+        user.set( uow.get().findUser( userPrincipal.get().getName() )
+                .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) ) );
+    }
+
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        
+        // XXX logout to work around correct user and panel size setting
+        LoginCookie.access().destroy();
+        JavaScriptExecutor executor = RWT.getClient().getService( JavaScriptExecutor.class );
+        executor.execute( "window.location.reload(true);" );
+    }
+
+
+    @Override
     public void createContents( Composite parent ) {
-        site().preferredWidth.set( 650 );
         site().title.set( "Dashboard" );
+        site().setSize( SIDE_PANEL_WIDTH, 650, Integer.MAX_VALUE );
+        ContributionManager.instance().contributeTo( this, this );
         
         dashboard = new Dashboard( getSite(), DASHBOARD_ID );
         dashboard.addDashlet( new ProjectsDashlet().addConstraint( new PriorityConstraint( 5 ) ) );
-        dashboard.addDashlet( new WelcomeDashlet( "ui/dashboard-welcome.md")
-                .addConstraint( new PriorityConstraint( 10 ) ) );
 //        dashboard.addDashlet( new ActivitiesDashlet().addConstraint( new PriorityConstraint( 10 ) ) );
         dashboard.addDashlet( new UserProfileDashlet() );
-        dashboard.createContents( parent );        
+        
+        if (user.get().projects().isEmpty()) {
+            dashboard.addDashlet( new WelcomeDashlet( "ui/dashboard-welcome.md")
+                    .addConstraint( new PriorityConstraint( 10 ) ) );
+        }
+        
+        dashboard.createContents( parent );
+        ContributionManager.instance().contributeTo( dashboard, this );
     }
 
 }

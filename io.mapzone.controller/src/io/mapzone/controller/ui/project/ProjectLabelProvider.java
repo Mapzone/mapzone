@@ -16,11 +16,17 @@ package io.mapzone.controller.ui.project;
 
 import io.mapzone.controller.um.repository.Project;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.google.common.base.Joiner;
+
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
+
+import org.eclipse.rap.rwt.RWT;
 
 /**
  * 
@@ -53,9 +59,10 @@ public class ProjectLabelProvider
                 break;
             }
             case Description: {
-                cell.setText( project.description.get() 
-                        //+ " - Organization: " + project.organizationOrUser().name.get()
-                        + " - Last modified: ???"  );
+                DateFormat df = SimpleDateFormat.getDateInstance( SimpleDateFormat.MEDIUM, RWT.getLocale() );
+                cell.setText( Joiner.on( " - " ).join( 
+                        project.description.get(), 
+                        "Last modified: " + project.modified.opt().map( v -> df.format( v ) ).orElse( "???" ) ) );
                 break;
             }
             default: throw new RuntimeException( "Unhandled Type: " + type );

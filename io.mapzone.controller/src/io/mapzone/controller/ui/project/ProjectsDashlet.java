@@ -19,7 +19,6 @@ import static org.polymap.core.runtime.event.TypeEventFilter.ifType;
 import static org.polymap.core.ui.ColumnDataFactory.Alignment.CENTER;
 import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL24;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,7 +38,6 @@ import org.eclipse.rap.rwt.client.service.UrlLauncher;
 
 import org.polymap.core.runtime.event.EventHandler;
 import org.polymap.core.runtime.event.EventManager;
-import org.polymap.core.security.UserPrincipal;
 import org.polymap.core.ui.ColumnDataFactory;
 import org.polymap.core.ui.ColumnLayoutFactory;
 import org.polymap.core.ui.FormDataFactory;
@@ -65,10 +63,7 @@ import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.ui.project.ProjectLabelProvider.Type;
 import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.Project;
-import io.mapzone.controller.um.repository.ProjectRepository;
-import io.mapzone.controller.um.repository.ProjectRepository.ProjectUnitOfWork;
 import io.mapzone.controller.um.repository.User;
-import io.mapzone.controller.um.repository.UserRole;
 import io.mapzone.controller.vm.http.ProxyServlet;
 
 /**
@@ -83,12 +78,10 @@ public class ProjectsDashlet
     
     @Mandatory
     @Scope( "io.mapzone.controller" )
-    protected Context<UserPrincipal>        userPrincipal;
+    protected Context<User>                 user;
     
     @Scope( "io.mapzone.controller" )
     protected Context<Project>              selected;
-    
-    private User                            user;
     
     private MdListViewer                    viewer;
 
@@ -101,10 +94,6 @@ public class ProjectsDashlet
         site.title.set( "Projects" );
         site.constraints.get().add( new MinWidthConstraint( 350, 10 ) );
 //        site.constraints.get().add( new MinHeightConstraint( dp(72)*3 , 10 ) );
-        
-        ProjectUnitOfWork uow = ProjectRepository.session();
-        user = uow.findUser( userPrincipal.get().getName() )
-                .orElseThrow( () -> new RuntimeException( "No such user: " + userPrincipal.get() ) );
         
         EventManager.instance().subscribe( this, ifType( EntityChangedEvent.class, ev -> 
                 ev.getEntity() instanceof Project ) );
@@ -123,7 +112,7 @@ public class ProjectsDashlet
             return;
         }
         
-        List<Project> projects = projects();
+        List<Project> projects = user.get().projects();
         
         // first project created
         if (viewer == null && !projects.isEmpty()) {
@@ -152,7 +141,7 @@ public class ProjectsDashlet
     @Override
     public void createContents( @SuppressWarnings("hiding") Composite parent ) {
         this.parent = parent;
-        if (projects().isEmpty()) {
+        if (user.get().projects().isEmpty()) {
             createWelcomeContents();
         }
         else {
@@ -218,18 +207,9 @@ public class ProjectsDashlet
                 });
             }
         } );
-        viewer.setInput( projects() );
+        viewer.setInput( user.get().projects() );
         
         viewer.getControl().setLayoutData( FormDataFactory.filled()/*.height( dp(72)*2  )*/.create() );
-    }
-    
-    
-    protected List<Project> projects() {
-        List<Project> result = new ArrayList();
-        for (UserRole role : user.organizations) {
-            result.addAll( role.organization.get().projects );
-        }
-        return result;
     }
     
 }

@@ -1,6 +1,8 @@
 package io.mapzone.controller.ops;
 
+import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,6 +17,8 @@ import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.Immutable;
 import org.polymap.core.runtime.config.Mandatory;
 import org.polymap.core.runtime.i18n.IMessages;
+
+import org.polymap.model2.Property;
 
 import io.mapzone.controller.Messages;
 import io.mapzone.controller.um.launcher.ArenaLauncher;
@@ -41,10 +45,6 @@ public class CreateProjectOperation
 
     public static final IMessages i18n = Messages.forPrefix( "CreateProjectOperation" );
     
-    /** Inbound: */
-    @Mandatory
-    public Config<Organization>         organization;
-
     /** Outbound: the newly created {@link Project}. */
     @Mandatory
     @Immutable
@@ -80,15 +80,43 @@ public class CreateProjectOperation
     public Project createProject() {
         project.set( umUow.get().createEntity( Project.class, null, Project.defaults ) );        
         project.get().launcher.createValue( ArenaLauncher.defaults );
+        
+        project.get().created.set( new Date() );
+        project.get().modified.set( new Date() );
+        
+        // creator / publisher
+        StringBuilder buf = new StringBuilder( 1024 );
+        ifPresent( buf, user.get().fullname, v -> v + "\n" );
+        ifPresent( buf, user.get().company, v -> "  * " + v + "\n" );
+        ifPresent( buf, user.get().location, v -> "  * " + v + "\n" );
+        ifPresent( buf, user.get().website, v -> "  * " + v + "\n" );
+        ifPresent( buf, user.get().email, v -> "  * " + v + "\n" );
+        project.get().creator.set( buf.toString() );
+        project.get().publisher.set( buf.toString() );
+        
+        project.get().accessRights.set( "[Open Data Commons Open Database License (ODbL)](http://opendatacommons.org/licenses/odbl/)" );
+        
         return project.get();
     }
     
+    
+    protected <T> void ifPresent( StringBuilder buf, Property<T> prop, Function<T,String> code ) {
+        T value = prop.get();
+        if (value != null 
+                && !(value instanceof String && ((String)value).length() == 0)) {
+            buf.append( code.apply( value ) );
+        }
+    }
 
+    
     @Override
     protected IStatus doWithCommit( IProgressMonitor monitor, IAdaptable info ) throws Exception {
         assert project.isPresent();
         
         monitor.beginTask( getLabel(), 10 );
+        
+        // default authToken
+        project.get().newServiceAuthToken( monitor );
 
         // find host to use
         List<HostRecord> hosts = vmUow.get().allHosts();
@@ -101,12 +129,10 @@ public class CreateProjectOperation
         HostRecord host = hosts.get( 0 );
         monitor.worked( 1 );
 
-        // set user/org on project
-        project.get().organization.set( organization.get() );
-
         // create new instance
+        Organization org = project.get().organization.get();
         ProjectInstanceRecord instance = vmUow.get().createEntity( ProjectInstanceRecord.class, null, (ProjectInstanceRecord proto) -> {
-            proto.organisation.set( organization.get().name.get() );
+            proto.organisation.set( org.name.get() );
             proto.project.set( project.get().name.get() );
             proto.host.set( host );
             return proto;
