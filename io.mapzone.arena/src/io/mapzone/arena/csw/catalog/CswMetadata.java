@@ -17,6 +17,7 @@ package io.mapzone.arena.csw.catalog;
 import static java.util.Collections.singletonList;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -106,8 +107,8 @@ public class CswMetadata
     }
 
     @Override
-    public String getDescription() {
-        return first2( record.getAbstract() ).orElse( null );
+    public Optional<String> getDescription() {
+        return first2( record.getAbstract() );
     }
 
     @Override
@@ -130,13 +131,12 @@ public class CswMetadata
         return this;
     }
 
-    
     @Override
-    public Date getModified() {
+    public Optional<Date> getModified() {
         Optional<String> result = first2( record.getModified() );
         if (result.isPresent()) {
             try {
-                return CswRequest.DF.parse( result.get() );
+                return Optional.of( CswRequest.DF.parse( result.get() ) );
             }
             catch (ParseException e) {
                 throw new RuntimeException( e );
@@ -144,32 +144,71 @@ public class CswMetadata
         }
         return null;
     }
-
     
-    @Override
-    public String getPublisher() {
-        return "???";
-    }
-
-    @Override
-    public String getRights() {
-        return "???";
-    }
-
     /**
      * See {@link SummaryRecordType#getType()}.
      */
-    public String getType() {
-        return "Service";
+    @Override
+    public Optional<String> getType() {
+        return Optional.of( "Service" );
         //return record.getType().getContent().get( 0 );
+    }
+
+    @Override
+    public IUpdateableMetadata setType( String type ) {
+        // XXX Auto-generated method stub
+        throw new RuntimeException( "not yet implemented." );
     }
 
     /**
      * See {@link SummaryRecordType#getFormat()}.
      */
-    public String getFormat() {
-        //return "WMS";
-        return record.getFormat().get( 0 ).getValue().getContent().get( 0 );
+    @Override
+    public Set<String> getFormats() {
+        return new HashSet( record.getFormat().get( 0 ).getValue().getContent() );
+    }
+
+    
+    @Override
+    public IUpdateableMetadata setFormats( Set<String> formats ) {
+        // XXX Auto-generated method stub
+        throw new RuntimeException( "not yet implemented." );
+    }
+
+    @Override
+    public Set<String> getLanguages() {
+        // XXX Auto-generated method stub
+        throw new RuntimeException( "not yet implemented." );
+    }
+
+    @Override
+    public IUpdateableMetadata setLanguages( Set<String> langs ) {
+        // XXX Auto-generated method stub
+        throw new RuntimeException( "not yet implemented." );
+    }
+
+    @Override
+    public Optional<Date> getCreated() {
+        // XXX Auto-generated method stub
+        throw new RuntimeException( "not yet implemented." );
+    }
+
+    @Override
+    public Date[] getAvailable() {
+        // XXX Auto-generated method stub
+        throw new RuntimeException( "not yet implemented." );
+    }
+
+    @Override
+    public Optional<String> getDescription( Field field ) {
+        // XXX Auto-generated method stub
+        throw new RuntimeException( "not yet implemented." );
+    }
+
+    @Override
+    public IUpdateableMetadata setDescription( Field field, String description ) {
+        // XXX Auto-generated method stub
+        throw new RuntimeException( "not yet implemented." );
     }
 
     /**

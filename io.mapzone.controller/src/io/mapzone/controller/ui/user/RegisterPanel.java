@@ -8,8 +8,6 @@ import io.mapzone.controller.ui.CtrlPanel;
 import io.mapzone.controller.ui.DashboardPanel;
 import io.mapzone.controller.ui.StartPanel;
 import io.mapzone.controller.ui.util.PropertyAdapter;
-import io.mapzone.controller.um.repository.User;
-
 import java.util.Optional;
 
 import org.apache.commons.logging.Log;
@@ -156,8 +154,8 @@ public class RegisterPanel
                     @Override
                     public void done( IJobChangeEvent ev2 ) {
                         if (ev2.getResult().isOK()) {
-                            User user = op.user.get();
-                            userPrincipal.set( SecurityContext.instance().loginTrusted( user.name.get() ) );
+                            String username = op.user.get().name.get();
+                            userPrincipal.set( SecurityContext.instance().loginTrusted( username ) );
                             
                             //getSite().setStatus( new Status( IStatus.OK, ControllerPlugin.ID, i18n.get( "okText" ) ) );
                             getContext().closePanel( site().path() );

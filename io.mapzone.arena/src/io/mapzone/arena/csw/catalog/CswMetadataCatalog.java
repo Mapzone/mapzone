@@ -63,7 +63,7 @@ public class CswMetadataCatalog
     
     @Override
     public String getTitle() {
-        return "Community resources";
+        return "Community";
     }
 
     @Override

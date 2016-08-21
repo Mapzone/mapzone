@@ -15,6 +15,7 @@
 package io.mapzone.arena.csw.catalog;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import java.io.IOException;
@@ -27,6 +28,7 @@ import org.geotools.ows.ServiceException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Sets;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -38,7 +40,6 @@ import org.polymap.core.catalog.resolve.IMetadataResourceResolver;
 import org.polymap.core.catalog.resolve.IResolvableInfo;
 import org.polymap.core.catalog.resolve.IResourceInfo;
 import org.polymap.core.catalog.resolve.IServiceInfo;
-import org.polymap.core.runtime.StreamIterable;
 import org.polymap.core.security.SecurityContext;
 
 import io.mapzone.arena.jmx.ArenaConfigMBean;
@@ -105,8 +106,9 @@ public class MapzoneProjectResolver
 
         @Override
         public Iterable<IResourceInfo> getResources( IProgressMonitor monitor ) {
-            return StreamIterable.of( wms.getCapabilities().getLayerList().stream()
-                    .map( layer -> new MapzoneProjectResourceInfo( MapzoneProjectServiceInfo.this, wms, layer ) ) );
+            return FluentIterable.from( wms.getCapabilities().getLayerList() )
+                    .skip( 1 )  // first entry represents the service itself
+                    .transform( layer -> new MapzoneProjectResourceInfo( MapzoneProjectServiceInfo.this, wms, layer ) );
         }
     }
 
@@ -133,8 +135,8 @@ public class MapzoneProjectResolver
         }
 
         @Override
-        public String getDescription() {
-            return "[Cascade] " + layer.getTitle() + ": " + super.getDescription() + "\n\n";
+        public Optional<String> getDescription() {
+            return Optional.of( "[Cascade] " + layer.getTitle() + ": " + super.getDescription().orElse( "" ) + "\n\n" );
         }
         
     }
