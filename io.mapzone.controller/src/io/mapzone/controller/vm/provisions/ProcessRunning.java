@@ -18,7 +18,7 @@ import io.mapzone.controller.vm.repository.ProjectInstanceIdentifier;
 import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
 
 /**
- * 
+ * After {@link ForwardRequest} failed: stop/start
  * 
  * @author Falko Bräutigam
  */
@@ -62,18 +62,24 @@ public class ProcessRunning
         instance.get().homePath.get();  // force (pessimistic) lock on instance
         process.set( instance.get().process.get() );
 
-        // stop
+        // stop: just to make sure
         if (process.isPresent()) {
-            log.warn( "Killing process without checking OS process!" );
-            StopProcessOperation op = new StopProcessOperation();
-            op.vmUow.set( vmUow() );
-            op.process.set( process.get() );
-            op.execute( null, null );
+            try {
+                log.info( "Killing without checking OS process!" );
+                StopProcessOperation op = new StopProcessOperation();
+                op.vmUow.set( vmUow() );
+                op.process.set( process.get() );
+                op.execute( null, null );
+            }
+            catch (Exception e) {
+                log.warn( "StopProcessOperation failed.", e );
+            }
         }
         
         // start
         StartProcessOperation op2 = new StartProcessOperation();
-        op2.instance.set( instance.get() );        
+        op2.vmUow.set( vmUow() );
+        op2.instance.set( instance.get() );
         op2.execute( null, null );
         process.set( op2.process.get() );
 
@@ -81,6 +87,7 @@ public class ProcessRunning
                 .setHost( instance.get().host.get().inetAddress.get() )
                 .setPort( process.get().port.get() )
                 .build() );
+        
         ProcessStarted.targetUris.remove( pid );
 
         checked.set( this );

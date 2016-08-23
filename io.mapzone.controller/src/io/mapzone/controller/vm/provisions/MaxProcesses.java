@@ -50,7 +50,7 @@ public class MaxProcesses
     public boolean init( Provision failed, Status cause ) {
         return failed instanceof ForwardRequest
                 && cause == null
-                && process.isPresent()  // check only if ProcessStarted did not used a cached fast-forward targetUri
+                && process.isPresent()  // check only if ProcessStarted did not use a cached fast-forward targetUri
                 && !checked.isPresent();
     }
 

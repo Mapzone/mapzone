@@ -74,14 +74,16 @@ public class ProcessStarted
         instance.get().homePath.get();  // force (pessimistic) lock on instance
         process.set( instance.get().process.get() );
         
-        if (!process.isPresent()) {
-            // start instance
-            StartProcessOperation op = new StartProcessOperation();
-            op.instance.set( instance.get() );
-                    
-            op.execute( null, null );
-            process.set( op.process.get() );
-        }
+        // XXX make sure that OS process is not running
+        
+        assert !process.isPresent();
+
+        // start instance
+        StartProcessOperation op = new StartProcessOperation();
+        op.vmUow.set( vmUow() );
+        op.instance.set( instance.get() );
+        op.execute( null, null );
+        process.set( op.process.get() );
         
         targetUri.set( new URIBuilder().setScheme( "http" )
                 .setHost( instance.get().host.get().inetAddress.get() )
