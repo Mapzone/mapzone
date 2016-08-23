@@ -31,14 +31,13 @@ import org.polymap.model2.Defaults;
 import org.polymap.model2.ManyAssociation;
 import org.polymap.model2.Property;
 import org.polymap.model2.runtime.ValueInitializer;
-import org.polymap.model2.runtime.locking.OneReaderPessimisticLocking;
 
 /**
  * 
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-@Concerns( OneReaderPessimisticLocking.class )
+@Concerns( NestedOneReaderPessimisticLocking.class )
 public class HostRecord
         extends VmEntity {
 

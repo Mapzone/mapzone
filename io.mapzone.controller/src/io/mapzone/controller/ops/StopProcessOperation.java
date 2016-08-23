@@ -3,13 +3,11 @@ package io.mapzone.controller.ops;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-
 import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.Mandatory;
+
+import org.polymap.model2.runtime.UnitOfWork;
 
 import io.mapzone.controller.vm.repository.ProcessRecord;
 import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
@@ -22,11 +20,13 @@ import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
 public class StopProcessOperation
         extends VmOperation {
 
-    private static Log log = LogFactory.getLog( StopProcessOperation.class );
+    private static final Log log = LogFactory.getLog( StopProcessOperation.class );
 
+    /** Inbound: */
     @Mandatory
     public Config<ProcessRecord>    process;
     
+    private ProjectInstanceRecord   origInstance;
     
     public StopProcessOperation() {
         super( "Stop instance" );
@@ -34,20 +34,39 @@ public class StopProcessOperation
 
 
     @Override
-    public IStatus doExecute( IProgressMonitor monitor, IAdaptable info ) throws Exception {
-        ProjectInstanceRecord instance = process.get().instance.get();
+    protected void doWithException( IProgressMonitor monitor, UnitOfWork uow ) throws Exception {
+        origInstance = process.get().instance.get();
+
+        ProcessRecord _process = uow.entity( process.get() );
+        ProjectInstanceRecord _instance = _process.instance.get();
         
         // stop OS process
-        instance.executeLauncher( launcher -> launcher.stop( instance, monitor ) );
+        _instance.executeLauncher( launcher -> launcher.stop( _instance, monitor ) );
         
         // clear associations
-        instance.homePath.get();  // force (pessimistic) lock of instance
-        process.get().instance.set( null );
-        assert instance.process.get() == null;
+        _instance.homePath.get();  // force (pessimistic) lock of instance
+        _process.instance.set( null );
+        assert _instance.process.get() == null;
         
         // remove entity
-        vmUow.get().removeEntity( process.get() );
-        return Status.OK_STATUS;
+        uow.removeEntity( _process );
     }
 
+
+    @Override
+    protected void onSuccess( IProgressMonitor monitor, UnitOfWork uow ) throws Exception {
+        super.onSuccess( monitor, uow );
+
+        // Entity is actually deleted?
+        assert vmUow.get().entity( ProcessRecord.class, process.get().id() ) == null;
+        // Association removed?
+        assert origInstance.process.get() == null;
+    }
+
+
+    @Override
+    protected void onError( IProgressMonitor monitor, Throwable e ) throws Exception {
+        super.onError( monitor, e );
+    }
+    
 }

@@ -23,14 +23,12 @@ import io.mapzone.controller.vm.repository.ProcessRecord;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-
 import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.Immutable;
 import org.polymap.core.runtime.config.Mandatory;
+
+import org.polymap.model2.runtime.UnitOfWork;
 
 /**
  * Starts a {@link ProcessRecord process} for a {@link ProjectInstanceRecord project
@@ -51,6 +49,8 @@ public class StartProcessOperation
     /** Outbound: The started process. */
     public Config<ProcessRecord>            process;
     
+    protected ProcessRecord                 newProcess;
+    
     
     public StartProcessOperation() {
         super( "Start instance" );
@@ -58,31 +58,51 @@ public class StartProcessOperation
 
 
     @Override
-    public IStatus doExecute( IProgressMonitor monitor, IAdaptable info ) throws Exception {
+    protected void doWithException( IProgressMonitor monitor, UnitOfWork uow ) throws Exception {
         assert !process.isPresent();
         
+        // the instance of the nested uow
+        ProjectInstanceRecord _instance = uow.entity( instance.get() );
+        
         // find host and free port
-        HostRecord host = instance.get().host.get();
+        HostRecord host = _instance.host.get();
         int port = host.runtime.get().findFreePort();
         int jmxPort = host.runtime.get().findFreePort();
-        
+
         // create process record
-        process.set( instance.get().uow().createEntity( ProcessRecord.class, null, (ProcessRecord proto) -> {
-            proto.instance.set( instance.get() );
+        newProcess = uow.createEntity( ProcessRecord.class, null, (ProcessRecord proto) -> {
+            proto.instance.set( _instance );
             proto.port.set( port );
             proto.jmxPort.set( jmxPort );
             proto.started.set( new Date() );
             return proto;
-        }));
-        
+        });
+
         // start instance
-        instance.get().executeLauncher( launcher -> launcher.start( instance.get(), monitor ) );
+        _instance.executeLauncher( launcher -> launcher.start( _instance, monitor ) );
+    }
+
+
+    @Override
+    protected void onSuccess( IProgressMonitor monitor, UnitOfWork uow ) throws Exception {
+        super.onSuccess( monitor, uow );
         
+        process.set( vmUow.get().entity( newProcess ) );
+
         // sanity check
         assert process.get().instance.get() == instance.get();
         assert instance.get().process.get() == process.get();
+    }
+
+
+    @Override
+    protected void onError( IProgressMonitor monitor, Throwable e ) throws Exception {
+        // in case of start timeout: make sure that there is no OS process
+        instance.get().executeLauncher( launcher -> launcher.stop( instance.get(), monitor ) );
+
+        process.set( null );
         
-        return Status.OK_STATUS;
+        super.onError( monitor, e );
     }
 
 }

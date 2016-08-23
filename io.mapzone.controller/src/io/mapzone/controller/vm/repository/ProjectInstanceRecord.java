@@ -23,8 +23,6 @@ import org.polymap.model2.Immutable;
 import org.polymap.model2.Nullable;
 import org.polymap.model2.Property;
 import org.polymap.model2.Queryable;
-import org.polymap.model2.runtime.locking.OneReaderPessimisticLocking;
-
 import io.mapzone.controller.um.launcher.ProjectLauncher;
 import io.mapzone.controller.um.repository.Organization;
 import io.mapzone.controller.um.repository.Project;
@@ -45,19 +43,19 @@ public class ProjectInstanceRecord
     /** Name of the {@link Organization}. */
     @Queryable
     @Immutable
-    @Concerns( OneReaderPessimisticLocking.class )
+    @Concerns( NestedOneReaderPessimisticLocking.class )
     public Property<String>                 organisation;
     
     /** Name of the {@link Project}. */
     @Queryable
     @Immutable
-    @Concerns( OneReaderPessimisticLocking.class )
+    @Concerns( NestedOneReaderPessimisticLocking.class )
     public Property<String>                 project;
     
     @Nullable
     @Queryable
     @Immutable
-    @Concerns( OneReaderPessimisticLocking.class )
+    @Concerns( NestedOneReaderPessimisticLocking.class )
     public Property<String>                 version;
     
     @Nullable  // XXX
@@ -69,7 +67,7 @@ public class ProjectInstanceRecord
     public Association<ProcessRecord>       process;
     
     @Immutable
-    @Concerns( OneReaderPessimisticLocking.class )
+    @Concerns( NestedOneReaderPessimisticLocking.class )
     public Property<String>                 homePath;
 
     /**

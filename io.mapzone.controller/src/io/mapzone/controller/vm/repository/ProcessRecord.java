@@ -9,7 +9,6 @@ import org.polymap.model2.Defaults;
 import org.polymap.model2.Immutable;
 import org.polymap.model2.Nullable;
 import org.polymap.model2.Property;
-import org.polymap.model2.runtime.locking.OneReaderPessimisticLocking;
 
 /**
  * Represents a started/running process of a {@link ProjectInstanceRecord}.
@@ -28,19 +27,19 @@ public class ProcessRecord
     
     @Nullable
     @Immutable
-    @Concerns( OneReaderPessimisticLocking.class )
+    @Concerns( NestedOneReaderPessimisticLocking.class )
     public Property<Integer>            pid;
     
     @Immutable
-    @Concerns( OneReaderPessimisticLocking.class )
+    @Concerns( NestedOneReaderPessimisticLocking.class )
     public Property<Integer>            port;
     
     @Immutable
-    @Concerns( OneReaderPessimisticLocking.class )
+    @Concerns( NestedOneReaderPessimisticLocking.class )
     public Property<Integer>            jmxPort;
     
     @Defaults
-    @Concerns( OneReaderPessimisticLocking.class )
+    @Concerns( NestedOneReaderPessimisticLocking.class )
     public Property<Date>               started;
     
 }
