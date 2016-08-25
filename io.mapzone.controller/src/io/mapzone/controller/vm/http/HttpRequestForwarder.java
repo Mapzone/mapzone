@@ -25,6 +25,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -34,15 +35,12 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.AbortableHttpRequest;
-import org.apache.http.client.params.ClientPNames;
-import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.impl.client.SystemDefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicHttpRequest;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
 
 import org.polymap.core.runtime.config.Config2;
 import org.polymap.core.runtime.config.DefaultBoolean;
@@ -68,7 +66,44 @@ import org.polymap.core.runtime.config.Mandatory;
 public class HttpRequestForwarder
         extends HttpForwarder {
 
-    private static Log log = LogFactory.getLog( HttpRequestForwarder.class );
+    static Log log = LogFactory.getLog( HttpRequestForwarder.class );
+    
+    /** Set to {@link PoolingHttpClientConnectionManager#setDefaultMaxPerRoute(int)}. */
+    public static final int             MAX_CONNECTIONS_PER_ROUTE = 6;
+    
+    /** Set to {@link PoolingHttpClientConnectionManager#setMaxTotal(int)}. */
+    public static final int             MAX_CONNECTIONS = 100;
+    
+    protected static HttpClient         proxyClient;
+    
+    protected static ThreadLocal<HttpRequestForwarder>  active = new ThreadLocal();
+
+    static {
+        InterceptableHttpClientConnectionFactory factory = new InterceptableHttpClientConnectionFactory() {
+            @Override
+            protected void onRequestSubmitted( HttpRequest request ) {
+                active.get().onRequestSubmitted( request );
+            }
+        };
+        
+        PoolingHttpClientConnectionManager manager = new PoolingHttpClientConnectionManager( factory );
+        manager.setDefaultMaxPerRoute( MAX_CONNECTIONS_PER_ROUTE );
+        manager.setMaxTotal( MAX_CONNECTIONS );
+        
+        proxyClient = HttpClientBuilder.create()
+                .disableCookieManagement()
+                .setConnectionManagerShared( true )
+                .setConnectionManager( manager ).build();
+        
+//        // as of HttpComponents v4.2, this class is better since it uses System Properties:
+//      HttpParams hcParams = new BasicHttpParams();
+//      hcParams.setParameter( ClientPNames.COOKIE_POLICY, CookiePolicy.IGNORE_COOKIES );
+//      hcParams.setParameter( ClientPNames.HANDLE_REDIRECTS, Boolean.TRUE );
+//      return new SystemDefaultHttpClient( hcParams );
+        
+    }
+    
+    // instance *******************************************
     
     @DefaultBoolean( false )
     public Config2<HttpRequestForwarder,Boolean> doForwardIP;
@@ -82,6 +117,7 @@ public class HttpRequestForwarder
     
     // These next 3 are cached here, and should only be referred to in initialization
     // logic. See the
+    
     /**  */
     @Mandatory
     public Config2<HttpRequestForwarder,String>  targetUri;
@@ -90,52 +126,19 @@ public class HttpRequestForwarder
 
     protected HttpHost            targetHost;    // URIUtils.extractHost(targetUriObj);
 
-    protected HttpClient          proxyClient;
-
     protected HttpResponse        proxyResponse;
 
     protected HttpRequest         proxyRequest;
 
-
-    public HttpRequestForwarder() {
-        HttpParams hcParams = new BasicHttpParams();
-        hcParams.setParameter( ClientPNames.COOKIE_POLICY, CookiePolicy.IGNORE_COOKIES );
-        hcParams.setParameter( ClientPNames.HANDLE_REDIRECTS, Boolean.TRUE );
-        proxyClient = createHttpClient( hcParams );
-    }
-
-
+    
     /**
-     * Called from {@link #init(javax.servlet.ServletConfig)}. HttpClient offers many
-     * opportunities for customization. By default, <a href=
-     * "http://hc.apache.org/httpcomponents-client-ga/httpclient/apidocs/org/apache/http/impl/client/SystemDefaultHttpClient.html"
-     * > SystemDefaultHttpClient</a> is used if available, otherwise it falls back
-     * to:
-     * 
-     * <pre>
-     * new DefaultHttpClient( new ThreadSafeClientConnManager(), hcParams )
-     * </pre>
-     * 
-     * SystemDefaultHttpClient uses PoolingClientConnectionManager. In any case, it
-     * should be thread-safe.
+     * Executed when the request is send - before start waiting on response. See
+     * {@link InterceptableHttpClientConnectionFactory} for detail.
      */
-    @SuppressWarnings({ "unchecked" })
-    protected HttpClient createHttpClient( HttpParams hcParams ) {
-        // as of HttpComponents v4.2, this class is better since it uses System Properties:
-        return new SystemDefaultHttpClient( hcParams );
+    protected void onRequestSubmitted( HttpRequest request ) {
     }
 
-
-    /**
-     * The http client used.
-     * 
-     * @see #createHttpClient(HttpParams)
-     */
-    protected HttpClient getProxyClient() {
-        return proxyClient;
-    }
-
-
+    
     public void service( HttpServletRequest servletRequest, HttpServletResponse servletResponse )
             throws ServletException, IOException, URISyntaxException {
         targetUriObj = new URI( targetUri.get() );
@@ -167,9 +170,13 @@ public class HttpRequestForwarder
 
         setXForwardedForHeader( servletRequest );
 
+        // Execute the request
         try {
-            // Execute the request
-            log.info( "REQUEST " + method + ": " + servletRequest.getRequestURI() + " -- " + proxyRequest.getRequestLine().getUri() );
+            active.set( this );
+            
+            log.info( "REQUEST "
+                    + "[" + StringUtils.right( Thread.currentThread().getName(), 2 ) + "] " 
+                    + method + ": " + servletRequest.getRequestURI() + " -- " + proxyRequest.getRequestLine().getUri() );
             proxyResponse = proxyClient.execute( targetHost, proxyRequest );
         }
         catch (Exception e) {
@@ -189,7 +196,9 @@ public class HttpRequestForwarder
                 throw (IOException)e;
             }
             throw new RuntimeException( e );
-
+        }
+        finally {
+            active.set( null );
         }
         // Note: Don't need to close servlet outputStream:
         // http://stackoverflow.com/questions/1159168/should-one-call-close-on-httpservletresponse-getoutputstream-getwriter

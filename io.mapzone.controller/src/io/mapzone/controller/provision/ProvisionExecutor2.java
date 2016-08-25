@@ -75,7 +75,9 @@ public class ProvisionExecutor2
             }
 
             // try target
-            log.warn( prefix( level ) + "Execute: " + target.getClass().getSimpleName() + " ..." );
+            log.warn( prefix( level ) + "Attempt: " 
+                    + "[" + StringUtils.right( Thread.currentThread().getName(), 2 ) + "] " 
+                    + target.getClass().getSimpleName() + " ..." );
             targetStatus = executeProvision( target );
             if (targetStatus.severity( Severity.OK )) {
                 // ok -> return

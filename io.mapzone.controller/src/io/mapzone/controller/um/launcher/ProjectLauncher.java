@@ -41,17 +41,17 @@ public abstract class ProjectLauncher
     /**
      * 
      *
-     * @param newInstance
+     * @param instance
      * @param monitor
      * @throws ExecutionException If a {@link Script} did not execute sucessfully.
      * @throws Exception
      */
-    public abstract void install( ProjectInstanceRecord newInstance, IProgressMonitor monitor ) throws Exception;
+    public abstract void install( ProjectInstanceRecord instance, IProgressMonitor monitor ) throws Exception;
     
-    public abstract void uninstall( ProjectInstanceRecord newInstance, IProgressMonitor monitor ) throws Exception;
+    public abstract void uninstall( ProjectInstanceRecord instance, IProgressMonitor monitor ) throws Exception;
     
-    public abstract void start( ProjectInstanceRecord newInstance, IProgressMonitor monitor ) throws Exception;
+    public abstract void start( ProjectInstanceRecord instance, IProgressMonitor monitor ) throws Exception;
     
-    public abstract void stop( ProjectInstanceRecord newInstance, IProgressMonitor monitor ) throws Exception;
+    public abstract void stop( ProjectInstanceRecord instance, boolean kill, IProgressMonitor monitor ) throws Exception;
 
 }

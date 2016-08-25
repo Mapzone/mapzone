@@ -13,6 +13,8 @@
  */
 package io.mapzone.controller.vm.http;
 
+import static com.google.common.base.Throwables.propagate;
+import static com.google.common.base.Throwables.propagateIfPossible;
 import static io.mapzone.controller.provision.Provision.Status.Severity.OK;
 import static org.apache.commons.lang3.StringUtils.substringAfter;
 
@@ -29,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpRequest;
 import org.apache.http.client.methods.CloseableHttpResponse;
 
 import com.google.common.base.Joiner;
@@ -42,9 +45,9 @@ import io.mapzone.controller.provision.ProvisionExecutor;
 import io.mapzone.controller.provision.ProvisionExecutor2;
 import io.mapzone.controller.provision.ProvisionRuntimeException;
 import io.mapzone.controller.um.repository.Project;
-import io.mapzone.controller.vm.provisions.MaxProcesses;
-import io.mapzone.controller.vm.provisions.ProcessRunning;
-import io.mapzone.controller.vm.provisions.ProcessStarted;
+import io.mapzone.controller.vm.provisions.MaxStartedProcesses;
+import io.mapzone.controller.vm.provisions.ProjectURICache;
+import io.mapzone.controller.vm.provisions.ReStartProcess;
 
 /**
  * The proxy servlet takes request targeting a project instance and forwards it via
@@ -61,9 +64,9 @@ public class ProxyServlet
     private static final Class[]    forwardRequestProvisions = {
             LoginProvision.class,
             ServiceAuthProvision.class,
-            ProcessStarted.class, 
-            ProcessRunning.class, 
-            MaxProcesses.class };
+            ProjectURICache.class, 
+            MaxStartedProcesses.class,
+            ReStartProcess.class };
 
     /** The provisions to be handled before {@link ForwardResponse} back to the sender. */
     private static final Class[]    forwardResponseProvisions = {};
@@ -117,7 +120,7 @@ public class ProxyServlet
     
     @Override
     public void init() throws ServletException {
-        log.info( "Started." );
+        log.info( "Initialized." );
     }
 
 
@@ -130,13 +133,17 @@ public class ProxyServlet
             ForwardRequest forwardRequest = executor.newProvision( ForwardRequest.class );
             forwardRequest.request.set( req );
             forwardRequest.response.set( resp );
-            try {
-                Status status = executor.execute( forwardRequest );
-                assert status.severity( OK ) : "No success forwarding request: ...";
 
+            // commit on sent or discard
+            forwardRequest.onRequestSend.set( (HttpRequest request) -> {
+                // InterceptableHttpClientConnectionFactory
                 if (forwardRequest.vmUow.isPresent()) {
                     forwardRequest.vmUow.get().commit();
                 }
+            });
+            try {
+                Status status = executor.execute( forwardRequest );
+                assert status.severity( OK ) : "No success forwarding request: ...";
             }
             catch (HttpProvisionRuntimeException e) {
                 ProvisionErrorResponse.send( resp, e.statusCode, e.message );
@@ -151,7 +158,7 @@ public class ProxyServlet
                 Throwables.propagateIfPossible( e );
             }
             finally {
-                forwardRequest.vmUow.ifPresent( vmRepo -> vmRepo.close() );
+                forwardRequest.vmUow.ifPresent( uow -> uow.close() );
             }
 
             // response
@@ -174,7 +181,9 @@ public class ProxyServlet
         }
         catch (Exception e) {
             // programming error
-            Throwables.propagateIfPossible( e );
+            propagateIfPossible( e, ServletException.class );
+            propagateIfPossible( e, IOException.class );
+            throw propagate( e );
         }
     }
 

@@ -4,12 +4,12 @@ import java.net.URI;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.utils.URIBuilder;
 
 import org.polymap.core.runtime.cache.Cache;
 import org.polymap.core.runtime.cache.CacheConfig;
 
 import io.mapzone.controller.ops.StartProcessOperation;
+import io.mapzone.controller.ops.StopProcessOperation;
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
 import io.mapzone.controller.vm.http.ForwardRequest;
@@ -25,43 +25,31 @@ import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
  * its {@link ProcessRecord} for the org and project name in the request. Puts both
  * into the provision {@link Context}.
  * 
- * @deprecated Don't use, just for reference.
  * @author Falko Bräutigam
  */
-public class ProcessStarted
+public class ReStartProcess
         extends HttpProxyProvision {
 
-    private static Log log = LogFactory.getLog( ProcessStarted.class );
+    private static Log log = LogFactory.getLog( ReStartProcess.class );
 
     public static final String              NO_HOST = "_no_host_";
 
     static Cache<ProjectInstanceIdentifier,URI> targetUris = CacheConfig.defaults().createCache();
 
-    private Context<URI>                    targetUri;
+    private Context<URI>                    projectUri;
 
     private Context<ProjectInstanceRecord>  instance;
 
     private Context<ProcessRecord>          process;
     
-    private Status                          cause;
-
+    private Context<ReStartProcess>         checked;
+    
     
     @Override
-    public boolean init( Provision failed, @SuppressWarnings("hiding") Status cause ) {
-        this.cause = cause;
-        
-        // check cached targetUri
-        ProjectInstanceIdentifier pid = new ProjectInstanceIdentifier( request.get() );
-        URI cached = targetUris.get( pid );
-        if (cached != null) {
-            targetUri.set( cached );
-        }
-        
+    public boolean init( Provision failed, Status cause ) {
         return failed instanceof ForwardRequest
-                && !targetUri.isPresent()  // FAST-FORWARD!
-                && !process.isPresent()
-                && cause == null
-                /*&& cause.getCause().equals( OkToForwardRequest.NO_PROCESS )*/;
+                && cause != null            // ForwardRequest failed
+                && !checked.isPresent();    // start ones per request
     }
 
     
@@ -73,27 +61,37 @@ public class ProcessStarted
                 .orElseThrow( () -> new HttpProvisionRuntimeException( 404, "No such project: " + pid ) ) );
 
         instance.get().homePath.get();  // force (pessimistic) lock on instance
+        
+//        if (!process.get().id().equals( instance.get().process.get().id() )) {
+//            
+//        }
+        
         process.set( instance.get().process.get() );
-        
-        // XXX make sure that OS process is not running
-        
-        assert !process.isPresent();
+
+        // OS process is not running
+        if (instance.get().process.isPresent()) {
+            log.info( "    Stopping process: " + instance.get().project.get() + " -- started at " + process.get().started.get() );
+            StopProcessOperation op = new StopProcessOperation();
+            op.kill.set( true );
+            op.process.set( process.get() );
+            op.vmUow.set( vmUow() );
+            op.execute( null, null );
+            
+            assert !instance.get().process.isPresent();
+        }
 
         // start instance
         StartProcessOperation op = new StartProcessOperation();
         op.vmUow.set( vmUow() );
         op.instance.set( instance.get() );
         op.execute( null, null );
-        process.set( op.process.get() );
-        
-        targetUri.set( new URIBuilder().setScheme( "http" )
-                .setHost( instance.get().host.get().inetAddress.get() )
-                .setPort( process.get().port.get() )
-                .build() );
-        
-        //
-        targetUris.putIfAbsent( pid, targetUri.get() );
+        process.set( op.process.get() );      
 
+        // XXX check? set projectUri
+        projectUri.set( instance.get().uri() );
+
+        checked.set( this );
+        
         return OK_STATUS;
     }
     

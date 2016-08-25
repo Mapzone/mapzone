@@ -14,6 +14,11 @@
  */
 package io.mapzone.controller.vm.repository;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.apache.http.client.utils.URIBuilder;
+
 import org.polymap.core.runtime.collect.Consumer;
 
 import org.polymap.model2.Association;
@@ -23,6 +28,7 @@ import org.polymap.model2.Immutable;
 import org.polymap.model2.Nullable;
 import org.polymap.model2.Property;
 import org.polymap.model2.Queryable;
+
 import io.mapzone.controller.um.launcher.ProjectLauncher;
 import io.mapzone.controller.um.repository.Organization;
 import io.mapzone.controller.um.repository.Project;
@@ -70,6 +76,7 @@ public class ProjectInstanceRecord
     @Concerns( NestedOneReaderPessimisticLocking.class )
     public Property<String>                 homePath;
 
+
     /**
      * 
      *
@@ -86,4 +93,17 @@ public class ProjectInstanceRecord
         }
     }
     
+    
+    /**
+     * The {@link URI} to access the running {@link #process} on {@link #host}. Fails
+     * if there is no process running currently.
+     *
+     * @throws URISyntaxException
+     */
+    public URI uri() throws URISyntaxException {
+        return new URIBuilder().setScheme( "http" )
+                .setHost( host.get().inetAddress.get() )
+                .setPort( process.get().port.get() )
+                .build();
+    }
 }

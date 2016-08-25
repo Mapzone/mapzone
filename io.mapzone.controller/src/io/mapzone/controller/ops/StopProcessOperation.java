@@ -26,6 +26,10 @@ public class StopProcessOperation
     @Mandatory
     public Config<ProcessRecord>    process;
     
+    /** Inbound: */
+    @Mandatory
+    public Config<Boolean>          kill;
+    
     private ProjectInstanceRecord   origInstance;
     
     public StopProcessOperation() {
@@ -41,7 +45,7 @@ public class StopProcessOperation
         ProjectInstanceRecord _instance = _process.instance.get();
         
         // stop OS process
-        _instance.executeLauncher( launcher -> launcher.stop( _instance, monitor ) );
+        _instance.executeLauncher( launcher -> launcher.stop( _instance, kill.get(), monitor ) );
         
         // clear associations
         _instance.homePath.get();  // force (pessimistic) lock of instance

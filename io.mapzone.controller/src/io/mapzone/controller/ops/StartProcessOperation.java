@@ -98,7 +98,7 @@ public class StartProcessOperation
     @Override
     protected void onError( IProgressMonitor monitor, Throwable e ) throws Exception {
         // in case of start timeout: make sure that there is no OS process
-        instance.get().executeLauncher( launcher -> launcher.stop( instance.get(), monitor ) );
+//        instance.get().executeLauncher( launcher -> launcher.stop( instance.get(), true, monitor ) );
 
         process.set( null );
         

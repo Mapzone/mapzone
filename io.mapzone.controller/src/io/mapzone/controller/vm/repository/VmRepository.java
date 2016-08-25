@@ -88,9 +88,9 @@ public class VmRepository {
             UnitOfWork _uow = repo.newUnitOfWork()
         ){
             if (_uow.query( HostRecord.class ).execute().size() == 0) {
-                _uow.createEntity( HostRecord.class, "local", (HostRecord proto) -> {
+                _uow.createEntity( HostRecord.class, "localhost", (HostRecord proto) -> {
                     proto.hostType.set( HostType.JCLOUDS );
-                    proto.hostId.set( "local" );
+                    proto.hostId.set( "localhost" );
                     proto.inetAddress.set( "localhost" );
                     proto.statistics.createValue( HostStatistics.defaults );
                     return HostRecord.defaults.initialize( proto );

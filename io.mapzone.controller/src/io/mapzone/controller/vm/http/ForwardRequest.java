@@ -1,19 +1,23 @@
 package io.mapzone.controller.vm.http;
 
-import io.mapzone.controller.provision.Context;
-import io.mapzone.controller.provision.Provision;
-import io.mapzone.controller.provision.Provision.Status.Severity;
-
 import static org.apache.commons.lang3.StringUtils.substringAfter;
+
+import java.util.function.Consumer;
 
 import java.io.IOException;
 import java.net.URI;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpRequest;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+
+import org.polymap.core.runtime.config.Config;
+import org.polymap.core.runtime.config.ConfigurationFactory;
+
+import io.mapzone.controller.provision.Context;
+import io.mapzone.controller.provision.Provision;
+import io.mapzone.controller.provision.Provision.Status.Severity;
 
 /**
  * 
@@ -27,24 +31,38 @@ public class ForwardRequest
 
     public static final String              BAD_RESPONSE = "_bad_response_";
     public static final String              IO_ERROR = "_io_error_";
+    public static final String              NO_URI = "_no_uri_";
 
-    public static CloseableHttpClient       httpclient = HttpClients.createDefault();
-
+    /**
+     * Executed when the request is send - before start waiting on response. See
+     * {@link InterceptableHttpClientConnectionFactory} for detail.
+     */
+    public Config<Consumer<HttpRequest>>    onRequestSend;
+    
     private Context<URI>                    targetUri;
     
     private Context<HttpRequestForwarder>   forwarder;
     
-    
+
+    public ForwardRequest() {
+        ConfigurationFactory.inject( this );
+    }
+
+
     @Override
     public boolean init( Provision failed, Status cause ) {
-        return targetUri.isPresent();
+        // always run -> execute() fails if no targetUri present
+        // -> allow ReStartProcess to kick in
+        return true;
     }
 
 
     @Override
     public Status execute() throws Exception {
-        assert targetUri.isPresent();
-        
+        if (!targetUri.isPresent()) {
+            return new Status( Severity.FAILED, NO_URI );                
+        }
+
         try {
             forwardRequest( targetUri.get() );
             return OK_STATUS;
@@ -76,6 +94,10 @@ public class ForwardRequest
             protected String rewritePath( String path ) {
                 // /org/name/servletAlias
                 return "/" + substringAfter( substringAfter( substringAfter( path, "/" ), "/" ), "/" );
+            }
+            @Override
+            protected void onRequestSubmitted( HttpRequest _request ) {
+                onRequestSend.get().accept( _request );
             }
         };
 

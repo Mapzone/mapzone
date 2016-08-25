@@ -266,7 +266,7 @@ public class JvmProjectLauncher
 
     
     @Override
-    public void stop( ProjectInstanceRecord instance, IProgressMonitor monitor ) throws Exception {
+    public void stop( ProjectInstanceRecord instance, boolean kill, IProgressMonitor monitor ) throws Exception {
         String pidFile = pidFile( instance );
         
         HostRecord host = instance.host.get();

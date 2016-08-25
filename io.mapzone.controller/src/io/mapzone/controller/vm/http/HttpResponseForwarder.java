@@ -17,7 +17,6 @@ package io.mapzone.controller.vm.http;
 
 import java.util.List;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpCookie;
@@ -68,20 +67,6 @@ public class HttpResponseForwarder
 
     @Override
     public void close() {
-        // As of HttpComponents v4.3, clients implement closeable
-        if (requestForwarder.proxyClient instanceof Closeable) {// TODO AutoCloseable in Java 1.6
-            try {
-                ((Closeable)requestForwarder.proxyClient).close();
-            }
-            catch (IOException e) {
-                log.warn( "While destroying servlet, shutting down HttpClient: " + e, e );
-            }
-        }
-        else {
-            // Older releases require we do this:
-            if (requestForwarder.proxyClient != null)
-                requestForwarder.proxyClient.getConnectionManager().shutdown();
-        }
     }
 
 

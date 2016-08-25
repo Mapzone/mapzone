@@ -37,7 +37,6 @@ import org.polymap.model2.runtime.ValueInitializer;
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
-@Concerns( NestedOneReaderPessimisticLocking.class )
 public class HostRecord
         extends VmEntity {
 
@@ -45,7 +44,7 @@ public class HostRecord
     
     public static ValueInitializer<HostRecord> defaults = (HostRecord proto) -> {
         proto.hostType.set( HostType.JCLOUDS );
-        proto.hostId.set( "local" );
+        proto.hostId.set( "localhost" );
         proto.inetAddress.set( "localhost" );
         proto.updateStatistics();
         return proto;
@@ -75,6 +74,7 @@ public class HostRecord
      * XXX This prevents multiple {@link StartProcessOperation}s run in parallel.
      */
     @DefaultValue( "32768" )
+    @Concerns( NestedOneReaderPessimisticLocking.class )
     public Property<Integer>                    portCount;
     
     /**
@@ -85,8 +85,10 @@ public class HostRecord
      */
     @Defaults
     @Computed( ComputedBidiManyAssocation.class )
+    @Concerns( NestedOneReaderPessimisticLocking.class )
     public ManyAssociation<ProjectInstanceRecord> instances;
     
+    @Concerns( NestedOneReaderPessimisticLocking.class )
     public Property<HostStatistics>             statistics;
     
     public Lazy<HostRuntime>                    runtime = new LockedLazyInit( () -> HostRuntime.forHost( this ) ); 

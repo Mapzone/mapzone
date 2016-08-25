@@ -20,6 +20,7 @@ import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
 /**
  * After {@link ForwardRequest} failed: stop/start
  * 
+ * @deprecated Don't use, just for reference.
  * @author Falko Bräutigam
  */
 public class ProcessRunning
