@@ -16,6 +16,9 @@ package io.mapzone.controller.um.repository;
 
 import java.util.Optional;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import org.polymap.core.runtime.UIJob;
@@ -38,6 +41,8 @@ import io.mapzone.controller.vm.http.ProxyServlet;
 abstract class ProjectCatalogSynchronizer
         extends UIJob {
 
+    private static Log log = LogFactory.getLog( ProjectCatalogSynchronizer.class );
+    
     protected Project               project;
 
     protected UnitOfWork            uow;
@@ -136,8 +141,13 @@ abstract class ProjectCatalogSynchronizer
 
         @Override
         protected void doWithUnitOfWork() {
-            update( findEntry()
-                    .orElseThrow( () -> new IllegalStateException( "No entry for: " + project.catalogId.get() ) ) );
+            Optional<CatalogEntry> entry = findEntry();
+            if (entry.isPresent()) {
+                update( entry.get() );
+            }
+            else {
+                log.warn( "No entry for: " + project.catalogId.get() );
+            }
         }
     }
     
@@ -154,8 +164,13 @@ abstract class ProjectCatalogSynchronizer
 
         @Override
         protected void doWithUnitOfWork() {
-            uow.removeEntity( findEntry()
-                    .orElseThrow( () -> new IllegalStateException( "No entry for: " + project.catalogId.get() ) ) );
+            Optional<CatalogEntry> entry = findEntry();
+            if (entry.isPresent()) {
+                uow.removeEntity( entry.get() );
+            }
+            else {
+                log.warn( "No entry for: " + project.catalogId.get() );
+            }
         }
     }
 

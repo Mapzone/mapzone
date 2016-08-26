@@ -115,7 +115,8 @@ public abstract class ArchiveLauncher
         
         // pack/remove
         host.runtime.get().execute( new Script()
-                .add( "tar -c -z --remove-files -f /tmp/mapzone-last-removed.tgz " + instance.homePath.get() )
+                //.add( "tar -c -z --remove-files -f /tmp/mapzone-last-removed.tgz " + instance.homePath.get() )
+                .add( "rm -r " + instance.homePath.get() )
                 .blockOnComplete.put( true )
                 .exceptionOnFail.put( false ) );  // don't fail if dir is removed already
         monitor.done();

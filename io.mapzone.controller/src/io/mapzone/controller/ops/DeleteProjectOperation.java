@@ -68,7 +68,7 @@ public class DeleteProjectOperation
         assert project.get().belongsTo( umUow.get() );
 
         monitor.beginTask( getLabel(), 10 );
-
+        
         // find instance on host
         ProjectInstanceRecord instance = vmUow.get().findInstance( new ProjectInstanceIdentifier( project.get() ) )
                 .orElseThrow( () -> new RuntimeException( "No project instance found for: " + project.get() ) );
@@ -78,6 +78,7 @@ public class DeleteProjectOperation
         ProcessRecord process = instance.process.get();
         if (process != null) {
             StopProcessOperation op = new StopProcessOperation();
+            op.kill.set( true );
             op.process.set( process );
             op.vmUow.set( vmUow.get() );
             op.execute( null, null );

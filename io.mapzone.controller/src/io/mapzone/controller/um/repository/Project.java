@@ -32,6 +32,7 @@ import org.polymap.model2.Nullable;
 import org.polymap.model2.Property;
 import org.polymap.model2.Queryable;
 import org.polymap.model2.runtime.ValueInitializer;
+import org.polymap.model2.runtime.EntityRuntimeContext.EntityStatus;
 
 import io.mapzone.controller.um.launcher.ProjectLauncher;
 
@@ -133,7 +134,7 @@ public class Project
         super.onLifecycleChange( state );
         
         if (state.equals( State.BEFORE_PREPARE )) {
-            if (catalogId.get() == null) {
+            if (catalogId.get() == null && status().status < EntityStatus.REMOVED.status) {
                 catalogId.set( UUID.randomUUID().toString() );
             }
         }
