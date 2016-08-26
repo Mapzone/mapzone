@@ -85,15 +85,28 @@ public class ArenaLauncher
             String localHttpPort = ControllerPlugin.instance().httpPort();
             
             ArenaConfigMBean arenaConfig = JMX.newMBeanProxy( conn, ArenaConfigMBean.NAME.get(), ArenaConfigMBean.class );
-            arenaConfig.setAppTitle( instance.project.get() );
-            arenaConfig.setCatalogServerUrl( "http://localhost:" + localHttpPort + "/csw" );
-            arenaConfig.setProxyUrl( ProxyServlet.projectUrlBase( project() ) );
-            arenaConfig.setProjectCatalogId( project().catalogId.get() );
+            checked( () -> arenaConfig.setAppTitle( instance.project.get() ) );
+            checked( () -> arenaConfig.setCatalogServerUrl( "http://localhost:" + localHttpPort + "/csw" ) );
+            checked( () -> arenaConfig.setProxyUrl( ProxyServlet.projectUrlBase( project() ) ) );
+            checked( () -> arenaConfig.setProjectCatalogId( project().catalogId.get() ) );
             
             log.info( "Instance process configured." );
         }
-        catch (Exception e) {
-            log.warn( "", e );
+        catch (Throwable e) {
+            log.warn( "Error while configuring instance.", e );
+        }        
+    }
+    
+    
+    /**
+     * Allow one single JMX call to fail without breaking entire config.
+     */
+    protected void checked( Runnable task ) {
+        try {
+            task.run();
+        }
+        catch (Throwable e) {
+            log.warn( "Error while JMX call.", e );
         }        
     }
     

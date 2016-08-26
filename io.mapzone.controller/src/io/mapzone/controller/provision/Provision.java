@@ -54,11 +54,16 @@ public interface Provision {
      */
     public boolean init( Provision failed, Status cause );
  
+    
     /**
-     * 
+     * Execute this provision.
+     * <p/>
+     * Success or failure is specified by the *return value*. An *exception* breaks
+     * the entire provisioning run.
      *
      * @return {@link #OK_STATUS}, or a status that describes why the run failed.
-     * @throws Exception
+     * @throws Exception Programming error or real 'exception' which canot be handled
+     *         by other provisions.
      */
     public Status execute() throws Exception;
 

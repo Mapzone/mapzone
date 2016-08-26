@@ -271,7 +271,7 @@ public class JvmProjectLauncher
         
         HostRecord host = instance.host.get();
         host.runtime.get().execute( new Script()
-                .add( "kill -- `cat " + pidFile + "`" )
+                .add( "kill " + (kill ? "-n 9" : "") + " -- `cat " + pidFile + "`" )
                 .add( "rm " + pidFile )
                 .blockOnComplete.put( true )
                 .exceptionOnFail.put( false ) );

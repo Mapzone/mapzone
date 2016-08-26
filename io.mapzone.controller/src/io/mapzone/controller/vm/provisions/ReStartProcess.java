@@ -12,6 +12,7 @@ import io.mapzone.controller.ops.StartProcessOperation;
 import io.mapzone.controller.ops.StopProcessOperation;
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
+import io.mapzone.controller.provision.Provision.Status.Severity;
 import io.mapzone.controller.vm.http.ForwardRequest;
 import io.mapzone.controller.vm.http.HttpProvisionRuntimeException;
 import io.mapzone.controller.vm.http.HttpProxyProvision;
@@ -62,13 +63,9 @@ public class ReStartProcess
 
         instance.get().homePath.get();  // force (pessimistic) lock on instance
         
-//        if (!process.get().id().equals( instance.get().process.get().id() )) {
-//            
-//        }
-        
         process.set( instance.get().process.get() );
 
-        // OS process is not running
+        // stop pending process that did not properly responde to failed ForwardRequest
         if (instance.get().process.isPresent()) {
             log.info( "    Stopping process: " + instance.get().project.get() + " -- started at " + process.get().started.get() );
             StopProcessOperation op = new StopProcessOperation();
@@ -80,19 +77,23 @@ public class ReStartProcess
             assert !instance.get().process.isPresent();
         }
 
-        // start instance
+        // try starting process
         StartProcessOperation op = new StartProcessOperation();
         op.vmUow.set( vmUow() );
         op.instance.set( instance.get() );
         op.execute( null, null );
-        process.set( op.process.get() );      
 
-        // XXX check? set projectUri
-        projectUri.set( instance.get().uri() );
+        checked.set( this );            
 
-        checked.set( this );
-        
-        return OK_STATUS;
+        // actually started?
+        if (op.process.isPresent()) {
+            process.set( op.process.get() );
+            projectUri.set( instance.get().uri() );
+            return OK_STATUS;
+        }
+        else {
+            return new Status( Severity.FAILED, "Unable to start process." );
+        }
     }
-    
+
 }

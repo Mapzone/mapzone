@@ -46,7 +46,7 @@ public class StartProcessOperation
     @Mandatory
     public Config<ProjectInstanceRecord>    instance;
 
-    /** Outbound: The started process. */
+    /** Outbound: The started process, or empty if unable to start. */
     public Config<ProcessRecord>            process;
     
     protected ProcessRecord                 newProcess;
@@ -97,12 +97,18 @@ public class StartProcessOperation
 
     @Override
     protected void onError( IProgressMonitor monitor, Throwable e ) throws Exception {
-        // in case of start timeout: make sure that there is no OS process
-//        instance.get().executeLauncher( launcher -> launcher.stop( instance.get(), true, monitor ) );
-
         process.set( null );
         
-        super.onError( monitor, e );
+        // launcher failed: make sure that there is no OS process
+        if (newProcess != null) {
+            log.info( "    Error while starting process. Killing." );
+            instance.get().executeLauncher( launcher -> launcher.stop( instance.get(), true, monitor ) );
+            // no Exception allow provision to handle
+        }
+        // else is illegal state
+        else {
+            super.onError( monitor, e );
+        }
     }
 
 }

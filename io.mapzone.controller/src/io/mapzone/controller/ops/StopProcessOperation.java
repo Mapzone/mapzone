@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.polymap.core.runtime.config.Config;
+import org.polymap.core.runtime.config.DefaultBoolean;
 import org.polymap.core.runtime.config.Mandatory;
 
 import org.polymap.model2.runtime.UnitOfWork;
@@ -28,9 +29,11 @@ public class StopProcessOperation
     
     /** Inbound: */
     @Mandatory
+    @DefaultBoolean( false )
     public Config<Boolean>          kill;
     
     private ProjectInstanceRecord   origInstance;
+    
     
     public StopProcessOperation() {
         super( "Stop instance" );

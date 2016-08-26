@@ -136,14 +136,17 @@ public class ProxyServlet
 
             // commit on sent or discard
             forwardRequest.onRequestSend.set( (HttpRequest request) -> {
-                // InterceptableHttpClientConnectionFactory
+                // see InterceptableHttpClientConnectionFactory
                 if (forwardRequest.vmUow.isPresent()) {
                     forwardRequest.vmUow.get().commit();
                 }
             });
             try {
                 Status status = executor.execute( forwardRequest );
-                assert status.severity( OK ) : "No success forwarding request: ...";
+                if (!status.severity( OK )) {
+                    // no successful provisioning found 
+                    throw new HttpProvisionRuntimeException( 503, "Sorry. Project is currently not available." );
+                }
             }
             catch (HttpProvisionRuntimeException e) {
                 ProvisionErrorResponse.send( resp, e.statusCode, e.message );
