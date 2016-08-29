@@ -21,6 +21,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import com.google.common.collect.Lists;
 import com.vividsolutions.jts.geom.Envelope;
 
+import org.eclipse.swt.graphics.Point;
+
 import org.polymap.core.project.ILayer;
 import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.Configurable;
@@ -36,7 +38,9 @@ public class ShareContext
         extends Configurable {
 
     public Config<Envelope>                  boundingBox;
-
+    
+    public Config<Point>                     displaySize;
+    
     public Config<Float>                     resolution;
 
     public Config<List<SelectionDescriptor>> selectionDescriptors;

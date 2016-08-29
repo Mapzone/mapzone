@@ -12,15 +12,28 @@
  */
 package io.mapzone.arena.share.ui;
 
+import static org.eclipse.ui.forms.widgets.ExpandableComposite.TREE_NODE;
+
+import java.util.Optional;
+
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
+import org.eclipse.ui.forms.widgets.Section;
+
 import org.polymap.core.runtime.config.Mandatory;
+import org.polymap.core.ui.ColumnLayoutFactory;
+import org.polymap.core.ui.UIUtils;
 
 import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.Scope;
 
 import org.polymap.p4.P4Panel;
+
+import io.mapzone.arena.share.Sharelet;
+import io.mapzone.arena.share.content.ShareableContentBuilder;
+import io.mapzone.arena.share.content.ShareableContentBuilders;
 
 /**
  * A Panel to show the content of a sharelet.
@@ -48,7 +61,20 @@ public class ShareletPanel
 
 
     @Override
-    public void createContents( Composite panelBody ) {
-        shareletPanelContext.get().sharelet.get().createContents( panelBody );
+    public void createContents( Composite parent ) {
+        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).margins( 0 ).spacing( 15 ).create() );
+        Sharelet sharelet = shareletPanelContext.get().sharelet.get();
+        for (String type : sharelet.supportedContentTypes()) {
+            Optional<ShareableContentBuilder> contentBuilder = ShareableContentBuilders.instance().get( type, shareletPanelContext.get().shareContext.get() );
+            if (contentBuilder.isPresent()) {
+                Section section = tk().createSection( parent, "", TREE_NODE, Section.SHORT_TITLE_BAR, Section.FOCUS_TITLE, SWT.BORDER );
+                section.setExpanded( false );
+                section.setBackground( UIUtils.getColor( 235, 235, 235 ) );
+                Composite panel = (Composite)section.getClient();
+                panel.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).margins( 1 ).spacing( 10 ).create() );
+                String title = sharelet.createContent( panel, type, contentBuilder.get() );
+                section.setText( title );
+            }
+        }
     }
 }

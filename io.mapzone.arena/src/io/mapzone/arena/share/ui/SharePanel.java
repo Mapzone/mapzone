@@ -89,6 +89,9 @@ public class SharePanel
         if (!shareContext.get().boundingBox.isPresent()) {
             shareContext.get().boundingBox.set( mapViewer.mapExtent.get() );
         }
+        if (!shareContext.get().displaySize.isPresent()) {
+            shareContext.get().displaySize.set( mapViewer.getControl().getSize() );
+        }
         if (!shareContext.get().crs.isPresent()) {
             shareContext.get().crs.set( mapViewer.maxExtent.get().getCoordinateReferenceSystem() );
         }

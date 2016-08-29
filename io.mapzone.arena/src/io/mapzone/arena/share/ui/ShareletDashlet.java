@@ -31,6 +31,7 @@ import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.dashboard.DashletSite;
 import org.polymap.rhei.batik.dashboard.DefaultDashlet;
 import org.polymap.rhei.batik.toolkit.IPanelToolkit;
+import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 
 import io.mapzone.arena.share.Sharelet;
 
@@ -64,6 +65,7 @@ public class ShareletDashlet
         site.isExpandable.set( false );
         site.border.set( true );
         site.title.set( sharelet.site().title.get() );
+        site.constraints.get().add( new PriorityConstraint( sharelet.site().priority.get() ) );
         // FIXME, doesnt work correctly
         // site.constraints.get().add( new MinWidthConstraint( 15, 100 ) );
         // site.constraints.get().add( new MaxWidthConstraint( 250, 1 ) );

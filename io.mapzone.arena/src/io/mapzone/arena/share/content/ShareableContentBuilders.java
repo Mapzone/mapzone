@@ -31,6 +31,7 @@ public class ShareableContentBuilders
     @SuppressWarnings( "unchecked" )
     private static List<Class<? extends ShareableContentBuilder>> contentBuilders = Lists.newArrayList( 
             ArenaContentBuilder.class, 
+            ImagePngContentBuilder.class,
             OpenLayersContentBuilder.class, 
             WMSUrlBuilder.class );
 

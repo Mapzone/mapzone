@@ -12,9 +12,12 @@
  */
 package io.mapzone.arena.share;
 
+import java.util.List;
 import org.eclipse.swt.widgets.Composite;
 
 import org.polymap.rhei.batik.toolkit.IPanelToolkit;
+
+import io.mapzone.arena.share.content.ShareableContentBuilder;
 
 /**
  * Base class for all sharelets.
@@ -36,7 +39,7 @@ public abstract class Sharelet {
     }
 
 
-    public abstract void createContents( Composite parent );
+//    public abstract void createContents( Composite parent );
 
 
     protected IPanelToolkit tk() {
@@ -53,4 +56,18 @@ public abstract class Sharelet {
     public boolean share() {
         return false;
     }
+
+
+    public abstract List<String> supportedContentTypes();
+
+
+    /**
+     * returns a title for this content section
+     *
+     * @param parent
+     * @param type
+     * @param contentBuilder
+     * @return
+     */
+    public abstract String createContent( Composite parent, String type, ShareableContentBuilder contentBuilder );
 }
