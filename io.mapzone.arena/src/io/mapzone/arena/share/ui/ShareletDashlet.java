@@ -64,7 +64,6 @@ public class ShareletDashlet
         site.isExpandable.set( false );
         site.border.set( true );
         site.title.set( sharelet.site().title.get() );
-        // site.constraints.get().add( new PriorityConstraint( 100 ) );
         // FIXME, doesnt work correctly
         // site.constraints.get().add( new MinWidthConstraint( 15, 100 ) );
         // site.constraints.get().add( new MaxWidthConstraint( 250, 1 ) );
@@ -76,7 +75,7 @@ public class ShareletDashlet
     public final void createContents( Composite parent ) {
         parent.addMouseListener( this );
 
-        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).margins( 10, 0, 0, 0 ).create() );
+        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).margins( 10, 0, 10, 0 ).create() );
         Label title = getSite().toolkit().createLabel( parent, "", SWT.NONE );
         title.setImage( sharelet.site().image.get() );
         title.addMouseListener( this );
@@ -84,7 +83,7 @@ public class ShareletDashlet
         Label description = getSite().toolkit().createLabel( parent, sharelet.site().description.get(), SWT.WRAP );
         description.addMouseListener( this );
 
-        ColumnDataFactory.on( title ).widthHint( 48 ).heightHint( 48 ).horizAlign( Alignment.CENTER );
+        ColumnDataFactory.on( title ).widthHint( 52 ).heightHint( 52 ).horizAlign( Alignment.CENTER );
         ColumnDataFactory.on( description ).widthHint( 150 ).heightHint( 50 ).horizAlign( Alignment.CENTER );
     }
 

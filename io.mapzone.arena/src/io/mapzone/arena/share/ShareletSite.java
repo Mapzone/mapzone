@@ -17,6 +17,7 @@ import org.eclipse.swt.graphics.Image;
 import org.polymap.core.runtime.config.Concern;
 import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.Configurable;
+import org.polymap.core.runtime.config.DefaultInt;
 import org.polymap.core.runtime.config.Mandatory;
 import org.polymap.core.runtime.config.PropertyChangeSupport;
 
@@ -55,4 +56,8 @@ public class ShareletSite
 
     @Mandatory
     public Config<Integer>       preferredWidth;
+
+    @Mandatory
+    @DefaultInt(value=100)
+    public Config<Integer>       priority;
 }

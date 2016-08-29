@@ -32,14 +32,12 @@ import org.polymap.core.ui.ColumnDataFactory;
 import org.polymap.core.ui.ColumnDataFactory.Alignment;
 import org.polymap.core.ui.ColumnLayoutFactory;
 
-import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
-
 import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.Messages;
+import io.mapzone.arena.share.content.ArenaContentBuilder.ArenaContent;
 import io.mapzone.arena.share.content.ShareableContentBuilder;
 import io.mapzone.arena.share.content.ShareableContentBuilders;
-import io.mapzone.arena.share.content.ArenaContentBuilder.ArenaContent;
 import io.mapzone.arena.share.ui.ShareletPanel;
 
 /**
@@ -59,8 +57,8 @@ public class FacebookSharelet
     public void init( ShareletSite site ) {
         site.title.set( i18n.get( "title" ) );
         site.description.set( i18n.get( "description" ) );
-        //
-        site.image.set( ArenaPlugin.images().svgImage( "facebook.svg", SvgImageRegistryHelper.NORMAL48 ) );
+        site.priority.set( 600 );
+        site.image.set( ArenaPlugin.images().image( "resources/icons/facebook48.png" ) );
         super.init( site );
     }
 
