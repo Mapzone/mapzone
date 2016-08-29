@@ -32,10 +32,10 @@ import io.mapzone.arena.share.ui.ShareContext.SelectionDescriptor;
  *
  * @author Steffen Stundzig
  */
-public class ArenaContentBuilder
-        implements ShareableContentBuilder {
+public class ArenaContentProvider
+        implements ShareableContentProvider {
 
-    public class ArenaContent {
+    public class ArenaContent implements ShareableContent {
 
         public String arena;
 
@@ -49,7 +49,7 @@ public class ArenaContentBuilder
 
 
     @Override
-    public ArenaContent content() {
+    public ArenaContent get() {
         StringJoiner layers = new StringJoiner( "," );
         for (SelectionDescriptor selection : context.selectionDescriptors.get()) {
             layers.add( selection.layer.get().label.get() );

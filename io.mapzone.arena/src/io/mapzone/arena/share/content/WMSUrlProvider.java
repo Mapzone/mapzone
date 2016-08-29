@@ -26,18 +26,29 @@ import io.mapzone.arena.share.ui.ShareContext;
  *
  * @author Steffen Stundzig
  */
-public class WMSUrlBuilder
-        implements ShareableContentBuilder {
+public class WMSUrlProvider
+        implements ShareableContentProvider {
 
-    private static Log         log      = LogFactory.getLog( WMSUrlBuilder.class );
+    
+    public class WMSUrlContent implements ShareableContent {
+
+        public URL url;
+
+        public WMSUrlContent( URL url ) {
+            this.url = url;
+        }
+    }
+
+
+    private static Log         log      = LogFactory.getLog( WMSUrlProvider.class );
 
     public final static String MIMETYPE = "application/wms";
 
 
     @Override
-    public URL content() {
+    public WMSUrlContent get() {
         try {
-            return new URL( ArenaPlugin.instance().config().getProxyUrl() + "/ows" );
+            return new WMSUrlContent(new URL( ArenaPlugin.instance().config().getProxyUrl() + "/ows" ));
         }
         catch (MalformedURLException e) {
             throw new RuntimeException( e );

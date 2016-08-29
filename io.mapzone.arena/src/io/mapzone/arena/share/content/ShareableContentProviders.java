@@ -21,24 +21,24 @@ import org.polymap.core.runtime.session.SessionSingleton;
 
 import io.mapzone.arena.share.ui.ShareContext;
 
-public class ShareableContentBuilders
+public class ShareableContentProviders
         extends SessionSingleton {
 
-    public final static ShareableContentBuilders instance() {
-        return instance( ShareableContentBuilders.class );
+    public final static ShareableContentProviders instance() {
+        return instance( ShareableContentProviders.class );
     }
 
     @SuppressWarnings( "unchecked" )
-    private static List<Class<? extends ShareableContentBuilder>> contentBuilders = Lists.newArrayList( 
-            ArenaContentBuilder.class, 
-            ImagePngContentBuilder.class,
-            OpenLayersContentBuilder.class, 
-            WMSUrlBuilder.class );
+    private static List<Class<? extends ShareableContentProvider>> contentProviders = Lists.newArrayList( 
+            ArenaContentProvider.class, 
+            ImagePngContentProvider.class,
+            OpenLayersContentProvider.class, 
+            WMSUrlProvider.class );
 
 
-    public Optional<ShareableContentBuilder> get( final String mimeType, final ShareContext context ) {
-        for (Class<? extends ShareableContentBuilder> builderClass : contentBuilders) {
-            ShareableContentBuilder builder;
+    public Optional<ShareableContentProvider> get( final String mimeType, final ShareContext context ) {
+        for (Class<? extends ShareableContentProvider> builderClass : contentProviders) {
+            ShareableContentProvider builder;
             try {
                 builder = builderClass.newInstance();
             }

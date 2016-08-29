@@ -33,10 +33,10 @@ import io.mapzone.arena.share.ui.ShareContext.SelectionDescriptor;
  *
  * @author Steffen Stundzig
  */
-public class ImagePngContentBuilder
-        implements ShareableContentBuilder {
+public class ImagePngContentProvider
+        implements ShareableContentProvider {
 
-    public class ImagePngContent {
+    public class ImagePngContent implements ShareableContent {
 
         public String imgResource;
 
@@ -51,7 +51,7 @@ public class ImagePngContentBuilder
         public int    previewHeight;
     }
 
-    private static Log         log      = LogFactory.getLog( ImagePngContentBuilder.class );
+    private static Log         log      = LogFactory.getLog( ImagePngContentProvider.class );
 
     public final static String MIMETYPE = "image/png";
 
@@ -59,7 +59,7 @@ public class ImagePngContentBuilder
 
 
     @Override
-    public ImagePngContent content() {
+    public ImagePngContent get() {
         ImagePngContent content = new ImagePngContent();
         try {
 

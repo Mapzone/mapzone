@@ -20,6 +20,10 @@ import org.apache.commons.logging.LogFactory;
 
 import com.google.common.collect.Lists;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 import org.eclipse.rap.rwt.RWT;
@@ -27,11 +31,14 @@ import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 
 import org.polymap.core.runtime.i18n.IMessages;
+import org.polymap.core.ui.ColumnDataFactory;
+import org.polymap.core.ui.ColumnDataFactory.Alignment;
+
 import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.Messages;
-import io.mapzone.arena.share.content.ArenaContentBuilder.ArenaContent;
-import io.mapzone.arena.share.content.ShareableContentBuilder;
-import io.mapzone.arena.share.content.ShareableContentBuilders;
+import io.mapzone.arena.share.content.ArenaContentProvider.ArenaContent;
+import io.mapzone.arena.share.content.ShareableContentProvider;
+import io.mapzone.arena.share.content.ShareableContentProviders;
 import io.mapzone.arena.share.ui.ShareletPanel;
 
 /**
@@ -56,33 +63,6 @@ public class FacebookSharelet
         super.init( site );
     }
 
-//
-//    @Override
-//    public void createContents( Composite parent ) {
-//        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).margins( 0 ).spacing( 15 ).create() );
-//        Optional<ShareableContentBuilder> arenaBuilder = ShareableContentBuilders.instance().get( "application/arena", site().context.get() );
-//        if (arenaBuilder.isPresent()) {
-//            IPanelSection panel = tk().createPanelSection( parent, i18n.get( "map_title" ), SWT.BORDER );
-//            panel.getBody().setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).margins( 1 ).spacing( 10 ).create() );
-//
-//            ArenaContent content = (ArenaContent)arenaBuilder.get().content();
-//
-//            Button button = tk().createButton( panel.getBody(), i18n.get( "map_button" ), SWT.NONE );
-//            // button.setImage( ArenaPlugin.images().svgImage( "facebook.svg",
-//            // P4Plugin.HEADER_ICON_CONFIG ) );
-//            button.setToolTipText( i18n.get( "map_tooltip" ) );
-//            button.addSelectionListener( new SelectionAdapter() {
-//
-//                @Override
-//                public void widgetSelected( SelectionEvent e ) {
-//                    shareButtonClicked( content );
-//                }
-//            } );
-//            ColumnDataFactory.on( button ).widthHint( 96 ).heightHint( 48 ).horizAlign( Alignment.RIGHT );
-//        }
-//    }
-
-
     protected void shareButtonClicked( final ArenaContent content ) {
         // UrlLauncher launcher = RWT.getClient().getService(
         // UrlLauncher.class );
@@ -103,22 +83,54 @@ public class FacebookSharelet
 
     @Override
     public boolean share() {
-        Optional<ShareableContentBuilder> arenaBuilder = ShareableContentBuilders.instance().get( "application/arena", site().context.get() );
-        if (arenaBuilder.isPresent()) {
-            ArenaContent content = (ArenaContent)arenaBuilder.get().content();
+        Optional<ShareableContentProvider> provider = ShareableContentProviders.instance().get( "application/arena", site().context.get() );
+        if (provider.isPresent()) {
+            ArenaContent content = (ArenaContent)provider.get().get();
             shareButtonClicked( content );
             return true;
         }
         return super.share();
     }
 
-    @Override
-    public List<String> supportedContentTypes() {
-        return Lists.newArrayList("application/arena");
-    }
 
     @Override
-    public String createContent( Composite parent, String type, ShareableContentBuilder contentBuilder ) {
-        throw new RuntimeException( "must not be called, since the the sharing is done in share" );
+    public List<ShareletSectionProvider> sections() {
+        return Lists.newArrayList( arena() );
+    }
+
+
+    private ShareletSectionProvider arena() {
+        return new ShareletSectionProvider() {
+
+            @Override
+            public String title() {
+                return i18n.get( "map_title" );
+            }
+
+
+            @Override
+            public String supportedType() {
+                return "application/arena";
+            }
+
+
+            @Override
+            public void createContents( Composite parent, ShareableContentProvider contentProvider ) {
+                ArenaContent content = (ArenaContent)contentProvider.get();
+
+                Button button = tk().createButton( parent, i18n.get( "map_button" ), SWT.NONE );
+                // button.setImage( ArenaPlugin.images().svgImage( "facebook.svg",
+                // P4Plugin.HEADER_ICON_CONFIG ) );
+                button.setToolTipText( i18n.get( "map_tooltip" ) );
+                button.addSelectionListener( new SelectionAdapter() {
+
+                    @Override
+                    public void widgetSelected( SelectionEvent e ) {
+                        shareButtonClicked( content );
+                    }
+                } );
+                ColumnDataFactory.on( button ).widthHint( 96 ).heightHint( 48 ).horizAlign( Alignment.RIGHT );
+            }
+        };
     }
 }

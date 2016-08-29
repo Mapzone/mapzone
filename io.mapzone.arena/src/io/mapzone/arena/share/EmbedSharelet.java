@@ -37,10 +37,10 @@ import org.polymap.rap.updownload.download.DownloadService.ContentProvider;
 import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.Messages;
 import io.mapzone.arena.jmx.ArenaConfig;
-import io.mapzone.arena.share.content.ArenaContentBuilder.ArenaContent;
-import io.mapzone.arena.share.content.ImagePngContentBuilder.ImagePngContent;
-import io.mapzone.arena.share.content.OpenLayersContentBuilder.OpenLayersContent;
-import io.mapzone.arena.share.content.ShareableContentBuilder;
+import io.mapzone.arena.share.content.ArenaContentProvider.ArenaContent;
+import io.mapzone.arena.share.content.ImagePngContentProvider.ImagePngContent;
+import io.mapzone.arena.share.content.OpenLayersContentProvider.OpenLayersContent;
+import io.mapzone.arena.share.content.ShareableContentProvider;
 import io.mapzone.arena.share.ui.JsFiddleButton;
 
 /**
@@ -68,107 +68,147 @@ public class EmbedSharelet
     }
 
 
-    @Override
-    public String createContent( Composite parent, String type, ShareableContentBuilder contentBuilder ) {
-        if ("application/openlayers".equals( type )) {
-            return createOpenlayersContent( parent, contentBuilder );
-        }
-        if ("application/arena".equals( type )) {
-            return createArenaContent( parent, contentBuilder );
-        }
-        if ("image/png".equals( type )) {
-            return createImageContent( parent, contentBuilder );
-        }
-        throw new RuntimeException( "Unsupported type " + type );
-    }
-
-
-    private String createOpenlayersContent( Composite panel, ShareableContentBuilder contentBuilder ) {
-
-        OpenLayersContent content = (OpenLayersContent)contentBuilder.content();
-
-        ColumnDataFactory.on( tk().createLabel( panel, i18n.get( "openlayers_head" ), SWT.WRAP ) ).widthHint( site().preferredWidth.get() ).heightHint( 40 );
-
-        Text head = tk().createText( panel, content.cssressource + "\n"
-                + content.jsressource, SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
-        ColumnDataFactory.on( head ).widthHint( site().preferredWidth.get() ).heightHint( 40 );
-
-        ColumnDataFactory.on( tk().createLabel( panel, i18n.get( "openlayers_body" ), SWT.WRAP ) ).widthHint( site().preferredWidth.get() ).heightHint( 40 );
-
-        Text body = tk().createText( panel, content.body, SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
-        ColumnDataFactory.on( body ).widthHint( site().preferredWidth.get() ).heightHint( 20 );
-
-        ColumnDataFactory.on( tk().createLabel( panel, i18n.get( "openlayers_complete" ), SWT.WRAP ) ).widthHint( site().preferredWidth.get() ).heightHint( 40 );
-
-        Text text = tk().createText( panel, content.complete, SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
-        ColumnDataFactory.on( text ).widthHint( site().preferredWidth.get() ).heightHint( 180 );
-
-        JsFiddleButton jsFiddle = new JsFiddleButton( panel, tk(), content.body, content.js, content.jsressource, content.cssressource );
-        ColumnDataFactory.on( jsFiddle.control() ).widthHint( 36 ).heightHint( 36 ).horizAlign( Alignment.RIGHT );
-
-        return i18n.get( "openlayers_title" );
-
-    }
-
-
-    private String createArenaContent( Composite parent, ShareableContentBuilder contentBuilder ) {
-        ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "iframe" ), SWT.WRAP ) ).widthHint( site().preferredWidth.get() ).heightHint( 40 );
-
-        StringBuffer iframe = new StringBuffer( "<iframe width='100%' height='640' src='" );
-        iframe.append( ((ArenaContent)contentBuilder.content()).arena );
-        iframe.append( "' frameborder='0' allowfullscreen='allowfullscreen'></iframe>" );
-        Text text = tk().createText( parent, iframe.toString(), SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
-        ColumnDataFactory.on( text ).widthHint( site().preferredWidth.get() ).heightHint( 80 );
-
-        return i18n.get( "iframe_title" );
-    }
-
-
-    private String createImageContent( Composite parent, ShareableContentBuilder contentBuilder ) {
-        ImagePngContent content = (ImagePngContent)contentBuilder.content();
-
-        ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "image" ), SWT.WRAP ) ).widthHint( site().preferredWidth.get() ).heightHint( 40 );
-
-        StringBuffer image = new StringBuffer( "<img width='" ).append( content.imgWidth ).append( "' height='" ).append( content.imgHeight ).append( "' src='" );
-        image.append( content.imgResource );
-        image.append( "' alt='" ).append( ArenaConfig.getAppTitle() ).append( "'/>" );
-
-        Text text = tk().createText( parent, image.toString(), SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
-        ColumnDataFactory.on( text ).widthHint( site().preferredWidth.get() ).heightHint( 80 );
-
-        ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "image_preview" ), SWT.WRAP ) ).widthHint( site().preferredWidth.get() ).heightHint( 20 );
-
-        StringBuffer oreview = new StringBuffer( "<img width='" ).append( content.previewWidth ).append( "' height='" ).append( content.previewHeight ).append( "' src='" );
-        oreview.append( ((ImagePngContent)contentBuilder.content()).previewResource );
-        oreview.append( "'/>" );
-
-        Label l = tk().createLabel( parent, oreview.toString() );
-        l.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
-        // l.setText( "<i>This</i> <ins>is</ins> <b>markup!</b>" );
-        l.addMouseListener( new MouseListener() {
+    private ShareletSectionProvider javascript() {
+        return new ShareletSectionProvider() {
 
             @Override
-            public void mouseUp( MouseEvent e ) {
-                UrlLauncher launcher = RWT.getClient().getService( UrlLauncher.class );
-                launcher.openURL( ((ImagePngContent)contentBuilder.content()).imgResource );
+            public String title() {
+                return i18n.get( "openlayers_title" );
             }
 
 
             @Override
-            public void mouseDown( MouseEvent e ) {
+            public String supportedType() {
+                return "application/openlayers";
             }
 
 
             @Override
-            public void mouseDoubleClick( MouseEvent e ) {
+            public void createContents( Composite parent, ShareableContentProvider contentBuilder ) {
+                OpenLayersContent content = (OpenLayersContent)contentBuilder.get();
+
+                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "openlayers_head" ), SWT.WRAP ) ).widthHint( preferredWidth( parent ) ).heightHint( 60 );
+
+                Text head = tk().createText( parent, content.cssressource + "\n"
+                        + content.jsressource, SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
+                ColumnDataFactory.on( head ).widthHint( preferredWidth( parent ) ).heightHint( 40 );
+
+                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "openlayers_body" ), SWT.WRAP ) ).widthHint( preferredWidth( parent ) ).heightHint( 40 );
+
+                Text body = tk().createText( parent, content.body, SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
+                ColumnDataFactory.on( body ).widthHint( preferredWidth( parent ) ).heightHint( 20 );
+
+                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "openlayers_complete" ), SWT.WRAP ) ).widthHint( preferredWidth( parent ) ).heightHint( 60 );
+
+                Text text = tk().createText( parent, content.complete, SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
+                ColumnDataFactory.on( text ).widthHint( preferredWidth( parent ) ).heightHint( 180 );
+
+                JsFiddleButton jsFiddle = new JsFiddleButton( parent, tk(), content.body, content.js, content.jsressource, content.cssressource );
+                ColumnDataFactory.on( jsFiddle.control() ).widthHint( 36 ).heightHint( 36 ).horizAlign( Alignment.RIGHT );
             }
-        } );
-        return i18n.get( "image_title" );
+        };
     }
 
 
-    @Override
-    public List<String> supportedContentTypes() {
-        return Lists.newArrayList( "application/openlayers", "application/arena", "image/png" );
+    private ShareletSectionProvider iframe() {
+        return new ShareletSectionProvider() {
+
+            @Override
+            public String title() {
+                return i18n.get( "iframe_title" );
+            }
+
+
+            @Override
+            public String supportedType() {
+                return "application/arena";
+            }
+
+
+            @Override
+            public void createContents( Composite parent, ShareableContentProvider contentBuilder ) {
+                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "iframe" ), SWT.WRAP ) ).widthHint( preferredWidth( parent ) ).heightHint( 60 );
+
+                StringBuffer iframe = new StringBuffer( "<iframe width='100%' height='640' src='" );
+                iframe.append( ((ArenaContent)contentBuilder.get()).arena );
+                iframe.append( "' frameborder='0' allowfullscreen='allowfullscreen'></iframe>" );
+                Text text = tk().createText( parent, iframe.toString(), SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
+                ColumnDataFactory.on( text ).widthHint( preferredWidth( parent ) ).heightHint( 80 );
+            }
+
+        };
     }
+
+
+    private int preferredWidth( Composite parent ) {
+        return Math.min( parent.getDisplay().getClientArea().width, site().preferredWidth.get() ) - 40;
+    }
+
+
+    private ShareletSectionProvider screenshot() {
+        return new ShareletSectionProvider() {
+
+            @Override
+            public String title() {
+                return i18n.get( "image_title" );
+            }
+
+
+            @Override
+            public String supportedType() {
+                return "image/png";
+            }
+
+
+            @Override
+            public void createContents( Composite parent, ShareableContentProvider contentBuilder ) {
+                ImagePngContent content = (ImagePngContent)contentBuilder.get();
+                int width = preferredWidth( parent );
+
+                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "image" ), SWT.WRAP ) ).widthHint( width ).heightHint( 40 );
+
+                StringBuffer image = new StringBuffer( "<img width='" ).append( content.imgWidth ).append( "' height='" ).append( content.imgHeight ).append( "' src='" );
+                image.append( content.imgResource );
+                image.append( "' alt='" ).append( ArenaConfig.getAppTitle() ).append( "'/>" );
+
+                Text text = tk().createText( parent, image.toString(), SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
+                ColumnDataFactory.on( text ).widthHint( width ).heightHint( 120 );
+
+                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "image_preview" ), SWT.WRAP ) ).widthHint( width ).heightHint( 20 );
+
+                StringBuffer oreview = new StringBuffer( "<img width='" ).append( content.previewWidth ).append( "' height='" ).append( content.previewHeight ).append( "' src='" );
+                oreview.append( content.previewResource );
+                oreview.append( "'/>" );
+
+                Label l = tk().createLabel( parent, oreview.toString(), SWT.BORDER );
+                l.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
+                // l.setText( "<i>This</i> <ins>is</ins> <b>markup!</b>" );
+                ColumnDataFactory.on( l ).widthHint( Math.min( width, content.previewWidth ) ).heightHint( content.previewHeight );
+                l.addMouseListener( new MouseListener() {
+
+                    @Override
+                    public void mouseUp( MouseEvent e ) {
+                        UrlLauncher launcher = RWT.getClient().getService( UrlLauncher.class );
+                        launcher.openURL( ((ImagePngContent)contentBuilder.get()).imgResource );
+                    }
+
+
+                    @Override
+                    public void mouseDown( MouseEvent e ) {
+                    }
+
+
+                    @Override
+                    public void mouseDoubleClick( MouseEvent e ) {
+                    }
+                } );
+            }
+        };
+    }
+
+
+    public List<ShareletSectionProvider> sections() {
+        return Lists.newArrayList( javascript(), iframe(), screenshot() );
+    }
+
 }

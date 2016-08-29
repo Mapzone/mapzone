@@ -19,6 +19,8 @@ import java.util.Optional;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
+import org.eclipse.ui.forms.events.ExpansionAdapter;
+import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.Section;
 
 import org.polymap.core.runtime.config.Mandatory;
@@ -32,8 +34,9 @@ import org.polymap.rhei.batik.Scope;
 import org.polymap.p4.P4Panel;
 
 import io.mapzone.arena.share.Sharelet;
-import io.mapzone.arena.share.content.ShareableContentBuilder;
-import io.mapzone.arena.share.content.ShareableContentBuilders;
+import io.mapzone.arena.share.ShareletSectionProvider;
+import io.mapzone.arena.share.content.ShareableContentProvider;
+import io.mapzone.arena.share.content.ShareableContentProviders;
 
 /**
  * A Panel to show the content of a sharelet.
@@ -55,25 +58,35 @@ public class ShareletPanel
     @Override
     public void init() {
         site().minWidth.set( shareletPanelContext.get().sharelet.get().site().preferredWidth.get() );
-        site().preferredWidth.set( 500 );
+        site().preferredWidth.set( 350 );
         site().title.set( shareletPanelContext.get().sharelet.get().site().title.get() );
     }
 
 
     @Override
     public void createContents( Composite parent ) {
-        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).margins( 0 ).spacing( 15 ).create() );
+        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).margins( 10, 0, 0, 0 ).spacing( 10 ).create() );
         Sharelet sharelet = shareletPanelContext.get().sharelet.get();
-        for (String type : sharelet.supportedContentTypes()) {
-            Optional<ShareableContentBuilder> contentBuilder = ShareableContentBuilders.instance().get( type, shareletPanelContext.get().shareContext.get() );
+        for (ShareletSectionProvider provider : sharelet.sections()) {
+            Optional<ShareableContentProvider> contentBuilder = ShareableContentProviders.instance().get( provider.supportedType(), shareletPanelContext.get().shareContext.get() );
             if (contentBuilder.isPresent()) {
-                Section section = tk().createSection( parent, "", TREE_NODE, Section.SHORT_TITLE_BAR, Section.FOCUS_TITLE, SWT.BORDER );
+                Section section = tk().createSection( parent, provider.title(), TREE_NODE, Section.SHORT_TITLE_BAR, Section.FOCUS_TITLE, SWT.BORDER );
                 section.setExpanded( false );
                 section.setBackground( UIUtils.getColor( 235, 235, 235 ) );
                 Composite panel = (Composite)section.getClient();
                 panel.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).margins( 1 ).spacing( 10 ).create() );
-                String title = sharelet.createContent( panel, type, contentBuilder.get() );
-                section.setText( title );
+                section.addExpansionListener( new ExpansionAdapter() {
+                    boolean firstExpansion = true;
+                    
+                    @Override
+                    public void expansionStateChanging( ExpansionEvent e ) {
+                        if (firstExpansion && e.getState()) {
+                            provider.createContents( panel, contentBuilder.get() );
+                            panel.layout();
+                            firstExpansion = false;
+                        }
+                    }
+                } );
             }
         }
     }

@@ -30,11 +30,11 @@ import io.mapzone.arena.share.ui.ShareContext.SelectionDescriptor;
  *
  * @author Steffen Stundzig
  */
-public class OpenLayersContentBuilder
-        implements ShareableContentBuilder {
+public class OpenLayersContentProvider
+        implements ShareableContentProvider {
 
     
-    public class OpenLayersContent {
+    public class OpenLayersContent implements ShareableContent {
 
         public String jsressource;
         public String cssressource;
@@ -43,7 +43,7 @@ public class OpenLayersContentBuilder
         public String complete;
 
     }
-    private static Log         log      = LogFactory.getLog( OpenLayersContentBuilder.class );
+    private static Log         log      = LogFactory.getLog( OpenLayersContentProvider.class );
 
     public final static String MIMETYPE = "application/openlayers";
 
@@ -51,7 +51,7 @@ public class OpenLayersContentBuilder
 
 
     @Override
-    public OpenLayersContent content() {
+    public OpenLayersContent get() {
 
         OpenLayersContent content = new OpenLayersContent();
         content.jsressource = JSRESOURCE;
