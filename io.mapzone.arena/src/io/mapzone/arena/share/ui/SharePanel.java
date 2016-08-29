@@ -16,7 +16,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.swt.widgets.Composite;
-
 import org.polymap.core.mapeditor.MapViewer;
 import org.polymap.core.project.ILayer;
 import org.polymap.core.runtime.i18n.IMessages;
@@ -113,7 +112,7 @@ public class SharePanel
             ShareletSite site = new ShareletSite();
             site.tk.set( site().toolkit() );
             site.context.set( shareContext.get() );
-            site.preferredWidth.set( 350 );
+            site.preferredWidth.set( Math.min( parent.getDisplay().getClientArea().width, 350 ) );
             sharelet.init( site );
             sourcesDashboard.addDashlet( new ShareletDashlet( sharelet ) );
         }

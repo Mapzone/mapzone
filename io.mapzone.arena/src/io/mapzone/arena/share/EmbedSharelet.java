@@ -141,7 +141,7 @@ public class EmbedSharelet
 
 
     private int preferredWidth( Composite parent ) {
-        return Math.min( parent.getDisplay().getClientArea().width, site().preferredWidth.get() ) - 40;
+        return Math.min( parent.getDisplay().getClientArea().width, site().preferredWidth.get() ) - 50;
     }
 
 

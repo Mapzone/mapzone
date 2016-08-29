@@ -18,7 +18,6 @@ import java.util.Optional;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.Section;
@@ -58,7 +57,7 @@ public class ShareletPanel
     @Override
     public void init() {
         site().minWidth.set( shareletPanelContext.get().sharelet.get().site().preferredWidth.get() );
-        site().preferredWidth.set( 350 );
+        site().preferredWidth.set( shareletPanelContext.get().sharelet.get().site().preferredWidth.get() );
         site().title.set( shareletPanelContext.get().sharelet.get().site().title.get() );
     }
 
@@ -76,8 +75,10 @@ public class ShareletPanel
                 Composite panel = (Composite)section.getClient();
                 panel.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).margins( 1 ).spacing( 10 ).create() );
                 section.addExpansionListener( new ExpansionAdapter() {
+
                     boolean firstExpansion = true;
-                    
+
+
                     @Override
                     public void expansionStateChanging( ExpansionEvent e ) {
                         if (firstExpansion && e.getState()) {
