@@ -89,6 +89,7 @@ public class ArenaLauncher
             checked( () -> arenaConfig.setCatalogServerUrl( "http://localhost:" + localHttpPort + "/csw" ) );
             checked( () -> arenaConfig.setProxyUrl( ProxyServlet.projectUrlBase( project() ) ) );
             checked( () -> arenaConfig.setProjectCatalogId( project().catalogId.get() ) );
+            checked( () -> arenaConfig.setServiceAuthToken( project().serviceAuthToken.get() ));
             
             log.info( "Instance process configured." );
         }
