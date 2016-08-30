@@ -153,22 +153,36 @@ public class VmRepository {
 
         public void commit() throws ModelRuntimeException {
             log.info( "COMMIT provision: ..." );
-            delegate().commit();
+            super.commit();
             close();
         }
 
 
         public void rollback() throws ModelRuntimeException {
             log.info( "ROLLBACK provision: ..." );
-            delegate().rollback();
+            super.rollback();
             close();
         }
 
 
         public void close() {
-            delegate().close();
-            PessimisticLocking.notifyClosed( delegate() );
+            try {
+                super.close();
+            }
+            finally {
+                PessimisticLocking.notifyClosed( delegate() );
+            }
         }
+
+
+        @Override
+        protected void finalize() throws Throwable {
+            if (isOpen()) {
+                log.warn( "FINALIZE: VmUnitOfWork is still open!" );
+                close();
+            }
+        }
+        
     }
     
 }

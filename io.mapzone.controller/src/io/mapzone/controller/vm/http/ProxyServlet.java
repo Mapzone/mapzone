@@ -35,8 +35,6 @@ import org.apache.http.HttpRequest;
 import org.apache.http.client.methods.CloseableHttpResponse;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Throwables;
-
 import org.polymap.core.runtime.Closer;
 
 import io.mapzone.controller.ControllerPlugin;
@@ -157,8 +155,9 @@ public class ProxyServlet
                 return;
             }
             catch (Throwable e) {
-                // error while provisioning or upstream process
-                Throwables.propagateIfPossible( e );
+                log.error( "Error while provisioning or upstream process.", e );
+                ProvisionErrorResponse.send( resp, 503, "Sorry. Project is currently not available." );
+                return;
             }
             finally {
                 forwardRequest.vmUow.ifPresent( uow -> uow.close() );
