@@ -2,15 +2,17 @@ package io.mapzone.controller.vm.runtime;
 
 import java.util.Properties;
 
+import org.jclouds.Constants;
 import org.jclouds.ContextBuilder;
 import org.jclouds.byon.BYONApiMetadata;
 import org.jclouds.compute.ComputeService;
 import org.jclouds.compute.ComputeServiceContext;
+import org.jclouds.compute.config.ComputeServiceProperties;
 import org.jclouds.compute.domain.NodeMetadata;
 import org.jclouds.compute.domain.OsFamily;
 import org.jclouds.logging.slf4j.config.SLF4JLoggingModule;
 import org.jclouds.ssh.SshClient;
-import org.jclouds.ssh.jsch.config.JschSshClientModule;
+import org.jclouds.sshj.config.SshjSshClientModule;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -55,9 +57,13 @@ public class JCloudsRuntime {
         nodes.append( "      credential_url: file://" ).append( System.getProperty( "user.home" ) ).append( "/.ssh/id_rsa" ).append( "\n" );
 
         contextProperties.setProperty( "byon.nodes", nodes.toString() );
+        contextProperties.setProperty( Constants.PROPERTY_CONNECTION_TIMEOUT, "10000" );
+        //contextProperties.setProperty( ComputeServiceProperties.TIMEOUT_NODE_RUNNING, "5000" );
+        contextProperties.setProperty( ComputeServiceProperties.TIMEOUT_PORT_OPEN, "5000" );
+        
         context = ContextBuilder.newBuilder( new BYONApiMetadata() )
                 .overrides( contextProperties )
-                .modules( ImmutableSet.of( new JschSshClientModule(), new SLF4JLoggingModule() ) )
+                .modules( ImmutableSet.of( new SshjSshClientModule(), new SLF4JLoggingModule() ) )
                 .build( ComputeServiceContext.class );
     }
 
