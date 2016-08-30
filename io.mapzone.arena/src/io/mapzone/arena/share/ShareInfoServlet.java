@@ -19,7 +19,6 @@ import java.io.OutputStreamWriter;
 import java.net.URLEncoder;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,8 +27,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
-
-import org.polymap.core.runtime.event.EventManager;
 
 import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.GeoServerStarter;
@@ -67,12 +64,13 @@ public class ShareInfoServlet
     protected void doGet( HttpServletRequest req, HttpServletResponse resp ) throws ServletException, IOException {
         try {
 
+            log.info( "QueryString: " + req.getQueryString() );
             Enumeration<String> headerNames = req.getHeaderNames();
             while (headerNames.hasMoreElements()) {
                 String header = headerNames.nextElement();
                 log.info( "HEADER '" + header + "': '" + req.getHeader( header ) + "'" );
             }
-            EventManager.instance().publish( new ServletRequestEvent( getServletContext(), req ) );
+            //EventManager.instance().publish( new ServletRequestEvent( getServletContext(), req ) );
 
             if (req.getParameterMap().isEmpty() || StringUtils.isBlank( req.getParameter( PARAMETER_LAYERS ) )
                     || StringUtils.isBlank( req.getParameter( PARAMETER_BBOX ) )) {
@@ -101,6 +99,7 @@ public class ShareInfoServlet
                 imageUrl.append( "&authToken=" ).append( URLEncoder.encode( authToken, "utf-8" ) );
             }
 
+            log.info( "IMGURL" + imageUrl.toString() );
             // convert addresses to result json
             OutputStreamWriter writer = new OutputStreamWriter( resp.getOutputStream() );
             writer.write( "<html>\n");
@@ -134,7 +133,7 @@ public class ShareInfoServlet
             writer.write( "  <meta property='og:url' content='" + arenaUrl + "' />\n");
 
             // perform a redirect
-            writer.write( "  <script type='text/javascript'>window.setTimeout(function(){window.location.href = '" + arenaUrl + "'; },10000);</script>\n");
+            //writer.write( "  <script type='text/javascript'>window.setTimeout(function(){window.location.href = '" + arenaUrl + "'; },10000);</script>\n");
             writer.write( " </head>\n");
             writer.write( " <body>\n");
             // writer.write( " <iframe src='" + arenaUrl
