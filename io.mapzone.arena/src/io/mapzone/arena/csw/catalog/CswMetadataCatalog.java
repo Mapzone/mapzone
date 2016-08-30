@@ -43,6 +43,8 @@ import io.mapzone.arena.csw.GetRecordByIdRequest;
 import io.mapzone.arena.csw.GetRecordsRequest;
 import io.mapzone.arena.csw.InsertRecordRequest;
 import io.mapzone.arena.csw.UpdateRecordRequest;
+import net.opengis.cat.csw.v_2_0_2.ElementSetType;
+import net.opengis.cat.csw.v_2_0_2.RecordType;
 import net.opengis.cat.csw.v_2_0_2.SummaryRecordType;
 
 /**
@@ -81,17 +83,18 @@ public class CswMetadataCatalog
         return new MetadataQuery() {
             @Override
             public ResultSet execute() throws Exception {
-                GetRecordsRequest getRecords = new GetRecordsRequest()
+                GetRecordsRequest<RecordType> getRecords = new GetRecordsRequest<RecordType>()
+                        .elementSet.put( ElementSetType.FULL )
                         .constraint.put( query )
                         .baseUrl.put( baseUrl.get().get() );
 
-                GetRecordsRequest.ResultSet rs = getRecords.execute( monitor );
+                GetRecordsRequest.ResultSet<RecordType> rs = getRecords.execute( monitor );
 
                 return new ResultSet() {
                     @Override
                     public Iterator<IMetadata> iterator() {
-                        Iterator<SummaryRecordType> result = rs.iterator();
-                        return Iterators.transform( result, record -> new CswMetadata( record ) );
+                        Iterator<RecordType> result = rs.iterator();
+                        return Iterators.transform( result, record -> new CswMetadataDCMI( record ) );
                     }
                     @Override
                     public int size() {
@@ -118,7 +121,7 @@ public class CswMetadataCatalog
                 .baseUrl.put( baseUrl.get().get() );
         
         return request.execute( monitor )
-                .map( record -> new CswMetadata( record ) );
+                .map( record -> new CswMetadataSummary( record ) );
     }
 
     
@@ -130,7 +133,7 @@ public class CswMetadataCatalog
             @Override
             public void newEntry( Consumer<IUpdateableMetadata> initializer ) {
                 SummaryRecordType record = new SummaryRecordType();
-                CswMetadata md = new CswMetadata( record );
+                CswMetadataSummary md = new CswMetadataSummary( record );
                 initializer.accept( md );
                 requests.add( new InsertRecordRequest( record )
                         .baseUrl.put( baseUrl.get().get() ) );
@@ -139,7 +142,7 @@ public class CswMetadataCatalog
             @Override
             public void updateEntry( String identifier, Consumer<IUpdateableMetadata> updater ) {
                 SummaryRecordType record = new SummaryRecordType();
-                CswMetadata md = new CswMetadata( record );
+                CswMetadataSummary md = new CswMetadataSummary( record );
                 md.setIdentifier( identifier );
                 updater.accept( md );
                 requests.add( new UpdateRecordRequest( record )

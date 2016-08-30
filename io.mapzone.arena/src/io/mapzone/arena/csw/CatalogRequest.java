@@ -20,7 +20,7 @@ import org.polymap.core.runtime.config.Configurable;
 
 /**
  * 
- *
+ * @param <R> The result type of this request.
  * @author Falko Bräutigam
  */
 public abstract class CatalogRequest<R>
