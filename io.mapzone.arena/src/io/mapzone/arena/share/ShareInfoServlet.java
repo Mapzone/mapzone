@@ -117,7 +117,7 @@ public class ShareInfoServlet
             writer.write( "  <meta property='og:latitude' content='51.32794'/>\n");
             writer.write( "  <meta property='og:longitude' content='12.33126'/>\n");
             writer.write( "  <meta property='og:image:url' content='" + imageUrl.toString() + "' />\n");
-            // writer.write( " <meta property='og:image:type' content='image/png' />\n");
+            writer.write( " <meta property='og:image:type' content='image/png' />\n");
             writer.write( "  <meta property='og:image:width' content='1200' />\n");
             writer.write( "  <meta property='og:image:height' content='630' />\n");
             writer.write( "  <meta property='og:type' content='article' />\n");
@@ -130,10 +130,10 @@ public class ShareInfoServlet
             writer.write( "  <meta property='article:publisher' content='https://www.facebook.com/mapzoneio-1401853630109662' />\n");
             writer.write( "  <meta property='article:author' content='https://www.facebook.com/stundzig' />\n");
 
-            writer.write( "  <meta property='og:url' content='" + arenaUrl + "' />\n");
+            //writer.write( "  <meta property='og:url' content='" + arenaUrl + "' />\n");
 
             // perform a redirect
-            //writer.write( "  <script type='text/javascript'>window.setTimeout(function(){window.location.href = '" + arenaUrl + "'; },10000);</script>\n");
+            writer.write( "  <script type='text/javascript'>window.setTimeout(function(){window.location.href = '" + arenaUrl + "'; },10000);</script>\n");
             writer.write( " </head>\n");
             writer.write( " <body>\n");
             // writer.write( " <iframe src='" + arenaUrl
