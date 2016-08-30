@@ -12,13 +12,12 @@
  */
 package io.mapzone.arena.share;
 
-import java.util.Enumeration;
-
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.URLEncoder;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +26,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
+
+import org.polymap.core.runtime.event.EventManager;
 
 import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.GeoServerStarter;
@@ -53,24 +54,16 @@ public class ShareInfoServlet
 
     public final static String PARAMETER_AUTHTOKEN = "authToken";
 
-
-    public ShareInfoServlet() {
-    }
-
-
-    // http://localhost:8080/shareinfo?layers=OSM-WMS%2CAV&bbox=-3225406%2C5087116%2C5995406%2C8282883
-
     @Override
     protected void doGet( HttpServletRequest req, HttpServletResponse resp ) throws ServletException, IOException {
         try {
-
-            log.info( "QueryString: " + req.getQueryString() );
-            Enumeration<String> headerNames = req.getHeaderNames();
-            while (headerNames.hasMoreElements()) {
-                String header = headerNames.nextElement();
-                log.info( "HEADER '" + header + "': '" + req.getHeader( header ) + "'" );
-            }
-            //EventManager.instance().publish( new ServletRequestEvent( getServletContext(), req ) );
+            // log.info( "QueryString: " + req.getQueryString() );
+            // Enumeration<String> headerNames = req.getHeaderNames();
+            // while (headerNames.hasMoreElements()) {
+            // String header = headerNames.nextElement();
+            // log.info( "HEADER '" + header + "': '" + req.getHeader( header ) + "'"
+            // );
+            // }
 
             if (req.getParameterMap().isEmpty() || StringUtils.isBlank( req.getParameter( PARAMETER_LAYERS ) )
                     || StringUtils.isBlank( req.getParameter( PARAMETER_BBOX ) )) {
@@ -99,50 +92,54 @@ public class ShareInfoServlet
                 imageUrl.append( "&authToken=" ).append( URLEncoder.encode( authToken, "utf-8" ) );
             }
 
-            log.info( "IMGURL" + imageUrl.toString() );
+//            log.info( "IMGURL" + imageUrl.toString() );
             // convert addresses to result json
             OutputStreamWriter writer = new OutputStreamWriter( resp.getOutputStream() );
-            writer.write( "<html>\n");
-            writer.write( " <head>\n");
-            writer.write( "  <title>mapzone - " + projectName + "</title>\n");
-            writer.write( "  <meta name='author' content='mapzone' />\n");
-            writer.write( "  <meta name='description' content='" + description + "' />\n");
-            writer.write( "  <meta name='keywords' content='location, geo, web, osm, map, maps, styling, wms, csv, xls, georeference, geofence, geocode' />\n");
-            writer.write( "  <meta name='robots' content='index,follow' />\n");
-            writer.write( "  <meta name='audience' content='all' />\n");
+            writer.write( "<html>\n" );
+            writer.write( " <head>\n" );
+            writer.write( "  <title>mapzone - " + projectName + "</title>\n" );
+            writer.write( "  <meta name='author' content='mapzone' />\n" );
+            writer.write( "  <meta name='description' content='" + description + "' />\n" );
+            writer.write( "  <meta name='keywords' content='location, geo, web, osm, map, maps, styling, wms, csv, xls, georeference, geofence, geocode' />\n" );
+            writer.write( "  <meta name='robots' content='index,follow' />\n" );
+            writer.write( "  <meta name='audience' content='all' />\n" );
             // writer.write( " <meta name='revisit-after' content='5 days' />\n");
             // facebook/opengraph
-            writer.write( "  <meta property='og:locality' content='Leipzig'/>\n");
-            writer.write( "  <meta property='og:country-name' content='Germany'/>\n");
-            writer.write( "  <meta property='og:latitude' content='51.32794'/>\n");
-            writer.write( "  <meta property='og:longitude' content='12.33126'/>\n");
-            writer.write( "  <meta property='og:image:url' content='" + imageUrl.toString() + "' />\n");
-            writer.write( " <meta property='og:image:type' content='image/png' />\n");
-            writer.write( "  <meta property='og:image:width' content='1200' />\n");
-            writer.write( "  <meta property='og:image:height' content='630' />\n");
-            writer.write( "  <meta property='og:type' content='article' />\n");
-            writer.write( "  <meta property='og:site_name' content='mapzone - " + projectName + "' />\n");
+            writer.write( "  <meta property='og:locality' content='Leipzig'/>\n" );
+            writer.write( "  <meta property='og:country-name' content='Germany'/>\n" );
+            writer.write( "  <meta property='og:latitude' content='51.32794'/>\n" );
+            writer.write( "  <meta property='og:longitude' content='12.33126'/>\n" );
+            writer.write( "  <meta property='og:image:url' content='" + imageUrl.toString() + "' />\n" );
+            writer.write( "  <meta property='og:image:type' content='image/png' />\n" );
+            writer.write( "  <meta property='og:image:width' content='1200' />\n" );
+            writer.write( "  <meta property='og:image:height' content='630' />\n" );
+            writer.write( "  <meta property='og:type' content='article' />\n" );
+            writer.write( "  <meta property='og:site_name' content='mapzone - " + projectName + "' />\n" );
             // wird grad nicht von Facebook unterstützt
             // writer.write( " <meta property='fb:app_id' content='1754931524765083'
             // />\n");
             // writer.write( " <meta property='fb:admins' content='739545402735248'
             // />\n");
-            writer.write( "  <meta property='article:publisher' content='https://www.facebook.com/mapzoneio-1401853630109662' />\n");
-            writer.write( "  <meta property='article:author' content='https://www.facebook.com/stundzig' />\n");
+            writer.write( "  <meta property='article:publisher' content='https://www.facebook.com/mapzoneio-1401853630109662' />\n" );
+            writer.write( "  <meta property='article:author' content='https://www.facebook.com/stundzig' />\n" );
 
-            //writer.write( "  <meta property='og:url' content='" + arenaUrl + "' />\n");
+            // writer.write( " <meta property='og:url' content='" + arenaUrl + "'
+            // />\n");
 
-            // perform a redirect
-            writer.write( "  <script type='text/javascript'>window.setTimeout(function(){window.location.href = '" + arenaUrl + "'; },10000);</script>\n");
-            writer.write( " </head>\n");
-            writer.write( " <body>\n");
+            // perform a redirect after 10ms
+            writer.write( "  <script type='text/javascript'>window.setTimeout(function(){window.location.href = '"
+                    + arenaUrl + "'; },10);</script>\n" );
+            writer.write( " </head>\n" );
+            writer.write( " <body>\n" );
             // writer.write( " <iframe src='" + arenaUrl
             // + "' width='100%' height='520' frameborder='0'
             // allowfullscreen='allowfullscreen'></iframe>\n");
-            writer.write( " </body>\n");
-            writer.write( "<head>\n");
+            writer.write( " </body>\n" );
+            writer.write( "<head>\n" );
             writer.flush();
             writer.close();
+
+            EventManager.instance().publish( new ServletRequestEvent( getServletContext(), req ) );
         }
         catch (Exception e) {
             e.printStackTrace();
