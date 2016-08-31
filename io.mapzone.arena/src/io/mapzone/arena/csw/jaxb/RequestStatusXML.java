@@ -12,24 +12,24 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-package io.mapzone.arena.csw;
+package io.mapzone.arena.csw.jaxb;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-
-import org.polymap.core.runtime.config.Configurable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  * 
- * @param <R> The result type of this request.
+ *
  * @author Falko Bräutigam
  */
-public abstract class CatalogRequest<R>
-        extends Configurable {
+@XmlAccessorType( XmlAccessType.FIELD )
+public class RequestStatusXML {
 
-    /**
-     * 
-     * @throws Exception 
-     */
-    public abstract R execute( IProgressMonitor monitor ) throws Exception;
+    @XmlAttribute
+    @XmlSchemaType( name="dateTime" )
+    public XMLGregorianCalendar     timestamp;
     
 }

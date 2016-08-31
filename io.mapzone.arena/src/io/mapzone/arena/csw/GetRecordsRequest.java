@@ -22,14 +22,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import java.io.InputStream;
-import java.nio.charset.Charset;
-
-import javax.xml.bind.JAXBElement;
-
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.filter.v1_1.OGCConfiguration;
-import org.geotools.xml.Configuration;
-import org.opengis.filter.FilterFactory2;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,31 +29,29 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
+import org.polymap.core.catalog.IMetadata;
 import org.polymap.core.runtime.config.Config2;
 import org.polymap.core.runtime.config.DefaultString;
 import org.polymap.core.runtime.config.Mandatory;
 
-import net.opengis.cat.csw.v_2_0_2.AbstractRecordType;
-import net.opengis.cat.csw.v_2_0_2.GetRecordsResponseType;
-import net.opengis.cat.csw.v_2_0_2.SearchResultsType;
-import net.opengis.cat.csw.v_2_0_2.SummaryRecordType;
+import io.mapzone.arena.csw.catalog.CswMetadataDCMI;
+import io.mapzone.arena.csw.jaxb.AbstractRecordXML;
+import io.mapzone.arena.csw.jaxb.ElementSetXML;
+import io.mapzone.arena.csw.jaxb.GetRecordsResponseXML;
+import io.mapzone.arena.csw.jaxb.RecordXML;
+import io.mapzone.arena.csw.jaxb.SearchResultsXML;
 
 /**
  * 
- *
+ * @param <T> The record type to be returned by this request specified by
+ *        {@link #elementSet}.
  * @author Falko Bräutigam
  */
-public class GetRecordsRequest
-        extends CswRequest<GetRecordsRequest.ResultSet<SummaryRecordType>> {
+public class GetRecordsRequest<T extends AbstractRecordXML>
+        extends CswRequest<GetRecordsRequest.ResultSet<T>> {
 
     private static final Log log = LogFactory.getLog( GetRecordsRequest.class );
     
-    private static final Configuration  CONFIGURATION = new OGCConfiguration();
-
-    public static final Charset         ENCODE_CHARSET = Charset.forName( "UTF-8" );
-    
-    public static final FilterFactory2  ff = CommonFactoryFinder.getFilterFactory2();
-
     /**
      * 
      */
@@ -82,18 +72,9 @@ public class GetRecordsRequest
      * Inbound: 
      */
     @Mandatory
-    @RequestParam( "typeNames" )
-    @RequestAttr( "typeNames" )
-    @DefaultString( "csw:Record" )
-    public Config2<GetRecordsRequest,String>    typeName;
-
-    /**
-     * Inbound: 
-     */
-    @Mandatory
     @RequestParam( "ConstraintLanguage" )
     @DefaultString( "CQL_TEXT" )
-    public Config2<GetRecordsRequest,String>    constraintLang;
+    public Config2<GetRecordsRequest<T>,String> constraintLang;
     
     /**
      * Inbound: 
@@ -102,7 +83,7 @@ public class GetRecordsRequest
     @RequestParam( "constraint_language_version" )
     @RequestAttr( "version" )
     @DefaultString( "1.1.0" )
-    public Config2<GetRecordsRequest,String>    constraintLangVersion;
+    public Config2<GetRecordsRequest<T>,String> constraintLangVersion;
     
     /**
      * Inbound: 
@@ -111,20 +92,18 @@ public class GetRecordsRequest
      */
     @Mandatory
     @RequestParam( "Constraint" )
-    public Config2<GetRecordsRequest,String>    constraint;
+    public Config2<GetRecordsRequest<T>,String> constraint;
 
     /**
-     * Inbound: 
+     * Inbound: defaults to {@link ElementSetType#SUMMARY}
      */
     @Mandatory
-    @RequestParam( "resultType" )
-    @RequestAttr( "resultType" )
-    @DefaultString( "results" )
-    public Config2<GetRecordsRequest,String>    resultType;
+    public Config2<GetRecordsRequest<T>,ElementSetXML> elementSet;
             
     
     public GetRecordsRequest() {
         request.set( "GetRecords" );
+        elementSet.set( ElementSetXML.SUMMARY );
     }
 
 
@@ -133,17 +112,18 @@ public class GetRecordsRequest
         //String url = baseUrl.get() + encodeRequestParams( assembleParams() );
         //GetRecordsResponseType response = read( GetRecordsResponseType.class, url );
         
-        writeAttributes( resultType );
+        out().writeAttribute( "resultType" , "results" );
         out().writeAttribute( "maxRecords" , "50" );
         out().writeAttribute( "startPosition" , "1" );
         out().writeAttribute( "outputFormat" , "application/xml" );
-        //out().writeAttribute( "outputSchema" , "SummaryRecord" );
+        out().writeAttribute( "outputSchema" , "csw:Record" );
+
         
         writeElement( CSW, "Query", () -> {
             //<ElementSetName typeNames="csw:IsoRecord">full</ElementSetName>
             writeElement( CSW, "ElementSetName", () -> {
-                writeAttributes( typeName );
-                out().writeCharacters( "summary" );
+                //writeAttributes( typeName );
+                out().writeCharacters( elementSet.get().value() );
             });
             
             writeElement( CSW, "Constraint", () -> {
@@ -164,30 +144,30 @@ public class GetRecordsRequest
     
     
     @Override
-    protected ResultSet<SummaryRecordType> handleResponse( InputStream in, IProgressMonitor monitor ) throws Exception {
-        GetRecordsResponseType response = readObject( in, GetRecordsResponseType.class );
+    protected ResultSet<T> handleResponse( InputStream in, IProgressMonitor monitor ) throws Exception {
+        GetRecordsResponseXML response = readObject( in, GetRecordsResponseXML.class );
         
-        return new ResultSet<SummaryRecordType>() {
-            SearchResultsType results = response.getSearchResults();
-            Iterator<JAXBElement<? extends AbstractRecordType>> it = results.getAbstractRecord().iterator();
+        return new ResultSet<T>() {
+            SearchResultsXML results = response.searchResults;
+            Iterator<? extends AbstractRecordXML> it = results.records.iterator();
 
             @Override
-            public Iterator<SummaryRecordType> iterator() {
-                return new Iterator<SummaryRecordType>() {
+            public Iterator<T> iterator() {
+                return new Iterator<T>() {
                     @Override
                     public boolean hasNext() {
                         return it.hasNext();
                     }
                     @Override
-                    public SummaryRecordType next() {
-                        return (SummaryRecordType)it.next().getValue();
+                    public T next() {
+                        return (T)it.next();
                     }
                 };
             }
 
             @Override
             public int size() {
-                return results.getNumberOfRecordsReturned().intValue();
+                return results.numberOfRecordsReturned.intValue();
             }
 
             @Override
@@ -202,27 +182,55 @@ public class GetRecordsRequest
      * Test.
      */
     public static final void main( String[] args ) throws Exception {
-//        GetRecordsRequest getRecords = new GetRecordsRequest()
-//              .constraint.put( "AnyText Like '%Landschaftsschutzgebiete%'" )
-//              .constraint.put( "*Landschaftsschutzgebiete*" )
+//        GetRecordsRequest<RecordXML> getRecords = new GetRecordsRequest<RecordXML>()
+//                .elementSet.put( ElementSetType.FULL )
+//                //.constraint.put( "AnyText Like '%Landschaftsschutzgebiete%'" )
+//                .constraint.put( "*Landschaftsschutzgebiete*" )
 //                .baseUrl.put( "http://www.geokatalog-mittelsachsen.de/geonetwork2.10/srv/eng/csw" );
 
-        GetRecordsRequest getRecords = new GetRecordsRequest()
-                .constraint.put( "*Test*" )
+        GetRecordsRequest<RecordXML> getRecords = new GetRecordsRequest<RecordXML>()
+                .elementSet.put( ElementSetXML.FULL )
+                .constraint.put( "ahnung" )
                 .baseUrl.put( "http://localhost:8090/csw" );
 
-        ResultSet<SummaryRecordType> rs = getRecords.execute( new NullProgressMonitor() );
+        ResultSet<RecordXML> rs = getRecords.execute( new NullProgressMonitor() );
         System.out.println( "Results:" + rs.size() );
-        rs.stream().forEach( record -> print( record ) );
+        rs.stream().forEach( record -> printFull( record ) );
     }
 
     
-    protected static void print( SummaryRecordType record ) {
+    protected static void printFull( RecordXML record ) {
         System.out.println( "-----------------------------------");
-        System.out.println( record.getIdentifier().get( 0 ).getValue().getContent() );
-        System.out.println( record.getTitle().get( 0 ).getValue().getContent() );
-        //System.out.println( record.getSubject().get( 0 ).getContent() );
-        //System.out.println( record.getAbstract().get( 0 ).getContent() );
+        System.out.println( record.modified );
+        System.out.println( record.subject );
+        System.out.println( record.rights );
+        System.out.println( record.identifier );
+        System.out.println( record.URI );
+        
+        CswMetadataDCMI md = new CswMetadataDCMI( record );
+        System.out.println( md.getIdentifier() );
+        System.out.println( md.getTitle() );
+        System.out.println( md.getDescription().orElse( null ) );
+        System.out.println( md.getKeywords() );
+        System.out.println( md.getFormats() );
+        System.out.println( md.getType().get() );
+        System.out.println( "modified: " + md.getModified().orElse( null ) );
+        System.out.println( "created: " + md.getCreated().orElse( null ) );
+        System.out.println( md.getLanguages() );
+        System.out.println( md.getDescription( IMetadata.Field.Creator ).orElse( null ) );
+        System.out.println( md.getDescription( IMetadata.Field.Rights ).orElse( null ) );
+        System.out.println( md.getDescription( IMetadata.Field.Publisher ).orElse( null ) );
+        System.out.println( md.getDescription( IMetadata.Field.AccessRights ).orElse( null ) );
+        System.out.println( md.getConnectionParams() );
     }
+
+    
+//    protected static void printSummary( SummaryRecordType record ) {
+//        System.out.println( "-----------------------------------");
+//        System.out.println( record.getIdentifier().get( 0 ).getValue().getContent() );
+//        System.out.println( record.getTitle().get( 0 ).getValue().getContent() );
+//        //System.out.println( record.getSubject().get( 0 ).getContent() );
+//        //System.out.println( record.getAbstract().get( 0 ).getContent() );
+//    }
 
 }

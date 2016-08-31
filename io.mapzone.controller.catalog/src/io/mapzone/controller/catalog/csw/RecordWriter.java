@@ -26,41 +26,41 @@ import org.apache.commons.logging.LogFactory;
 
 import org.polymap.model2.Composite;
 
+import io.mapzone.controller.catalog.model.CatalogEntry;
+import io.mapzone.controller.catalog.model.CatalogEntry.ConnectionParam;
+
 /**
  * 
  *
  * @author Falko Bräutigam
  */
-public class SummaryRecordWriter
+public class RecordWriter
         extends AnnotatedCompositeWriter {
 
-    private static Log log = LogFactory.getLog( SummaryRecordWriter.class );
+    private static Log log = LogFactory.getLog( RecordWriter.class );
 
-    public SummaryRecordWriter( XMLStreamWriter out ) {
+    public RecordWriter( XMLStreamWriter out ) {
         super( out, DC, DCT );
     }
 
     
     @Override
     public void process( Composite composite ) throws XMLStreamException {
-        out().writeStartElement( CSW, "SummaryRecord" );
+        out().writeStartElement( CSW, "Record" );
         super.process( composite );
+        
+        // connectionParams
+        for (ConnectionParam param : ((CatalogEntry)composite).connectionParams) {
+            out().writeStartElement( Namespaces.DC, "URI" );
+            out().writeAttribute( "name", param.name.get() );
+            if (param.description.opt().isPresent()) {
+                out().writeAttribute( "description", param.description.get() );
+            }
+            out().writeCharacters( param.value.get() );
+            out().writeEndElement();        
+        }
+        
         out().writeEndElement();
-    }
-
-
-    /**
-     * Tweak namespaces and fields for SummaryRecord.
-     */
-    @Override
-    protected void writeElement( String ns, String name, String value ) throws XMLStreamException {
-        if (name.equals( "description" )) {
-            //super.writeElement( ns, name, value );
-            super.writeElement( Namespaces.DCT, "abstract", value );
-        }
-        else {
-            super.writeElement( ns, name, value );
-        }
     }
     
 }

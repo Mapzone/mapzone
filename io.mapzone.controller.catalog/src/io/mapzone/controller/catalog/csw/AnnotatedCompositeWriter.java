@@ -36,10 +36,10 @@ import io.mapzone.controller.catalog.model.XML;
  *
  * @author Falko Bräutigam
  */
-public abstract class CompositeWriter
+public abstract class AnnotatedCompositeWriter
         extends CompositeStateVisitor<XMLStreamException> {
 
-    private static Log log = LogFactory.getLog( CompositeWriter.class );
+    private static Log log = LogFactory.getLog( AnnotatedCompositeWriter.class );
 
     private XMLStreamWriter         out;
     
@@ -47,7 +47,7 @@ public abstract class CompositeWriter
     private Set<String>             namespaces;
     
     
-    public CompositeWriter( XMLStreamWriter out, String... namespaces ) {
+    public AnnotatedCompositeWriter( XMLStreamWriter out, String... namespaces ) {
         this.out = out;
         this.namespaces = Sets.newHashSet( namespaces );
     }
@@ -57,15 +57,13 @@ public abstract class CompositeWriter
         return out;
     }
 
-    
+
     @Override
     protected void visitProperty( Property prop ) throws XMLStreamException {
         XML xml = (XML)prop.info().getAnnotation( XML.class );
         if (xml != null && namespaces.contains( xml.namespace() )) {
             String name = xml.value().equals( XML.DEFAULT ) ? prop.info().getName() : xml.value();
-            out().writeStartElement( xml.namespace(), name );
-            out().writeCharacters( encodedValue( prop.get() ) );
-            out().writeEndElement();
+            writeElement( xml.namespace(), name, encodedValue( prop.get() ) );
         }
     }
     
@@ -76,14 +74,18 @@ public abstract class CompositeWriter
         if (xml != null && namespaces.contains( xml.namespace() )) {
             String name = xml.value().equals( XML.DEFAULT ) ? prop.info().getName() : xml.value();
             for (Object value : prop) {
-                out().writeStartElement( xml.namespace(), name );
-                out().writeCharacters( encodedValue( value ) );
-                out().writeEndElement();
+                writeElement( xml.namespace(), name, encodedValue( value ) );
             }
         }
     }
 
-
+    protected void writeElement( String ns, String name, String value ) throws XMLStreamException {
+        out().writeStartElement( ns, name );
+        out().writeCharacters( encodedValue( value ) );
+        out().writeEndElement();        
+    }
+    
+    
     protected String encodedValue( Object value ) {
         if (value == null) {
             return "";

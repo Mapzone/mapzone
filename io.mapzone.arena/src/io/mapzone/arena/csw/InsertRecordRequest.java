@@ -19,15 +19,19 @@ import static io.mapzone.arena.csw.Namespaces.CSW;
 import java.util.UUID;
 
 import java.io.InputStream;
+
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
-import io.mapzone.arena.csw.catalog.CswMetadata;
-import net.opengis.cat.csw.v_2_0_2.SummaryRecordType;
-import net.opengis.cat.csw.v_2_0_2.TransactionResponseType;
+import io.mapzone.arena.csw.catalog.CswMetadataDCMI;
+import io.mapzone.arena.csw.jaxb.RecordXML;
+import io.mapzone.arena.csw.jaxb.TransactionResponseXML;
 
 /**
  * 
@@ -35,14 +39,14 @@ import net.opengis.cat.csw.v_2_0_2.TransactionResponseType;
  * @author Falko Bräutigam
  */
 public class InsertRecordRequest
-        extends CswRequest<TransactionResponseType> {
+        extends CswRequest<TransactionResponseXML> {
 
     private final static Log log = LogFactory.getLog( InsertRecordRequest.class );
     
-    private SummaryRecordType           record;
+    private RecordXML               record;
     
 
-    public InsertRecordRequest( SummaryRecordType record ) {
+    public InsertRecordRequest( RecordXML record ) {
         this.record = record;
         this.request.set( "Transaction" );
     }
@@ -51,15 +55,15 @@ public class InsertRecordRequest
     @Override
     protected void prepare( IProgressMonitor monitor ) throws Exception {
         writeElement( CSW, "Insert", () -> {
-            writeObject( JAXBF.createSummaryRecord( record ) );
+            QName name = new QName( Namespaces.CSW, "Record" );
+            writeObject( new JAXBElement( name, RecordXML.class, null, record ) );
         });
     }
     
         
     @Override
-    protected TransactionResponseType handleResponse( InputStream in, IProgressMonitor monitor ) throws Exception {
-        // FIXME
-        return null;
+    protected TransactionResponseXML handleResponse( InputStream in, IProgressMonitor monitor ) throws Exception {
+        return readObject( in, TransactionResponseXML.class );
     }
 
     
@@ -67,8 +71,8 @@ public class InsertRecordRequest
      * Test.
      */
     public static final void main( String[] args ) throws Exception {
-        SummaryRecordType record = new SummaryRecordType();
-        CswMetadata md = new CswMetadata( record );
+        RecordXML record = new RecordXML();
+        CswMetadataDCMI md = new CswMetadataDCMI( record );
         md.setIdentifier( UUID.randomUUID().toString() );
         md.setTitle( "Test" );
         md.setDescription( "HashCode: " + md.hashCode() );

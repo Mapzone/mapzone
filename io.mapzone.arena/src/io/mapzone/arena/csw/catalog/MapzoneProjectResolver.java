@@ -54,7 +54,7 @@ public class MapzoneProjectResolver
 
     private static final Log log = LogFactory.getLog( MapzoneProjectResolver.class );
 
-    public static final String      CONNECTION_TYPE = "Mapzone Project Service";
+    public static final String      CONNECTION_TYPE = ArenaConfigMBean.MAPZONE_SERVICE_TYPE;
 
     
     @Override

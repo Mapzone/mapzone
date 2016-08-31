@@ -24,6 +24,7 @@ import org.polymap.model2.runtime.UnitOfWork;
 import io.mapzone.controller.catalog.CatalogPlugin;
 import io.mapzone.controller.catalog.CatalogRepositoryContext;
 import io.mapzone.controller.catalog.model.CatalogEntry;
+import net.opengis.cat.csw.v_2_0_2.ElementSetType;
 import net.opengis.cat.csw.v_2_0_2.GetRecordsType;
 import net.opengis.cat.csw.v_2_0_2.QueryType;
 
@@ -48,6 +49,7 @@ public class GetRecordsResponse
         ){
             // query
             Query<CatalogEntry> query = uow.query( CatalogEntry.class );
+            ElementSetType elementSet = ElementSetType.SUMMARY;
 
             // GET
             if (!request().parameters().isEmpty()) {
@@ -62,12 +64,17 @@ public class GetRecordsResponse
                 if (body.getStartPosition() != null ) {
                     query.firstResult( body.getStartPosition().intValue() );
                 }
-                //            if (!"application/xml".equalsIgnoreCase( body.getOutputFormat() )) {
-                //                throw new UnsupportedOperationException( "OutputFormat: supported format: application/xml" );
-                //            }
+                if (!Namespaces.CSW.equals( body.getOutputSchema() ) 
+                        && !"csw:Record".equals( body.getOutputSchema() )) {
+                    throw new UnsupportedOperationException( "Only supported schema: Dublin Core (csw:Record, http://www.opengis.net/cat/csw/2.0.2) : " + body.getOutputSchema() );
+                }
 
                 QueryType queryBody = (QueryType)body.getAbstractQuery().getValue();
                 query.where( new FilterParser( queryBody.getConstraint(), catalog.index() ).parse() );
+                
+                if (queryBody.getElementSetName() != null) {
+                    elementSet = queryBody.getElementSetName().getValue();
+                }
             }
 
             ResultSet<CatalogEntry> rs = query.execute();
@@ -85,12 +92,20 @@ public class GetRecordsResponse
             out().writeAttribute( "numberOfRecordsMatched", resultSize );
             out().writeAttribute( "numberOfRecordsReturned", resultSize );
             out().writeAttribute( "nextRecord", "0" );
-            out().writeAttribute( "recordSchema", Namespaces.CSW );  // ?
-            out().writeAttribute( "elementSet", "full" );  // ?
+            out().writeAttribute( "recordSchema", Namespaces.CSW );
+            out().writeAttribute( "elementSet", elementSet.value() );
 
             // records
             for (CatalogEntry entry : rs) {
-                new SummaryRecordWriter( out() ).process( entry );
+                if (ElementSetType.SUMMARY.equals( elementSet )) {
+                    new SummaryRecordWriter( out() ).process( entry );
+                }
+                else if (ElementSetType.FULL.equals( elementSet )) {
+                    new RecordWriter( out() ).process( entry );
+                }
+                else {
+                    throw new UnsupportedOperationException( "Unknown element set type: " + elementSet );
+                }
             }
 
             out().writeEndElement();

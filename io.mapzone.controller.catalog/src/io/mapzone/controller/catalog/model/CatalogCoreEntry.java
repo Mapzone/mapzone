@@ -18,12 +18,18 @@ import static io.mapzone.controller.catalog.csw.Namespaces.DC;
 import static io.mapzone.controller.catalog.csw.Namespaces.DCT;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterators;
+
 import org.polymap.model2.CollectionProperty;
+import org.polymap.model2.CollectionPropertyConcernAdapter;
+import org.polymap.model2.Concerns;
 import org.polymap.model2.DefaultValue;
 import org.polymap.model2.Entity;
 import org.polymap.model2.MinOccurs;
@@ -50,7 +56,9 @@ public class CatalogCoreEntry
     
     public static final ValueInitializer<CatalogCoreEntry> defaults = (CatalogCoreEntry proto) -> {
         proto.identifier.set( UUID.randomUUID().toString() );
-        proto.modified.set( new Date() );
+        Date now = new Date();
+        proto.modified.set( now );
+        proto.created.set( now );
         return proto;
     };
 
@@ -93,7 +101,8 @@ public class CatalogCoreEntry
      */
     @Nullable
     @Queryable
-    @XML( namespace=DCT, value="abstract" )
+    // description is copied to DCT:abstract in the RecordWriters
+    @XML( namespace=DC, value="description" )
     @OGCQueryable( "Abstract" )
     public Property<String>         description;
     
@@ -103,8 +112,9 @@ public class CatalogCoreEntry
      */
     @Nullable
     @Queryable
+    @XML( namespace=DC )
     public Property<String>         publisher;
-    
+
     /**
      * An entity responsible for making contributions to the content of the resource.
      */
@@ -126,8 +136,9 @@ public class CatalogCoreEntry
      */
     @Nullable
     @Queryable
+    @XML( namespace=DC )
     public Property<Date>           created;
-    
+
     /**
      * The nature or genre of the content of the resource.
      */
@@ -135,8 +146,41 @@ public class CatalogCoreEntry
     @Queryable
     @XML( namespace=DC )
     @OGCQueryable( "Type" )
-    @DefaultValue( "Service" )
+    @DefaultValue( "Mapzone service" )
     public Property<String>         type;
+    
+    /**
+     * The physical or digital manifestation of the resource.
+     * <p/>
+     * Default: WMS, WFS
+     */
+    @Queryable
+    @XML( namespace=DC )
+    @OGCQueryable( "Format" )
+    @Concerns( DefaultFormatConcern.class )
+    public CollectionProperty<String> format;
+    
+    /**
+     * Default: WMS, WFS
+     */
+    public static final class DefaultFormatConcern
+            extends CollectionPropertyConcernAdapter {
+        @Override
+        public Iterator iterator() {
+            Iterator it = _delegate().iterator();
+            return !it.hasNext()
+                    ? ImmutableList.of( "WMS", "WFS" ).iterator()
+                    : it;
+        }
+        @Override
+        public int size() {
+            return Iterators.size( iterator() );
+        }
+        @Override
+        public boolean isEmpty() {
+            return size() == 0;
+        }
+    }
     
     /**
      * Spatial characteristics of the resource.
@@ -146,14 +190,6 @@ public class CatalogCoreEntry
     @XML( namespace=DCT )
     @OGCQueryable( "Spatial" )
     public CollectionProperty<String> spatial;
-    
-    /**
-     * The physical or digital manifestation of the resource.
-     */
-    @Nullable
-    @Queryable
-    @OGCQueryable( "Format" )
-    public Property<String>         format;
     
     /**
      * URI: A reference to the full metadata from which the present resource is derived.

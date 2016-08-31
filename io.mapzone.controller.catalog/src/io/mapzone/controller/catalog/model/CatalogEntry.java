@@ -14,6 +14,8 @@
  */
 package io.mapzone.controller.catalog.model;
 
+import org.polymap.model2.CollectionProperty;
+import org.polymap.model2.Composite;
 import org.polymap.model2.Property;
 import org.polymap.model2.runtime.ValueInitializer;
 
@@ -25,13 +27,13 @@ import org.polymap.model2.runtime.ValueInitializer;
 public class CatalogEntry
         extends CatalogCoreEntry {
 
+    public static CatalogEntry              TYPE;
+
     @SuppressWarnings( "hiding" )
     public static final ValueInitializer<CatalogEntry> defaults = (CatalogEntry proto) -> {
         CatalogCoreEntry.defaults.initialize( proto );
         return proto;
     };
-
-    public static CatalogEntry              TYPE;
 
     // instance *******************************************
     
@@ -40,10 +42,17 @@ public class CatalogEntry
      */
     public Property<String>                 onlineResource;
     
-//    /**
-//     * Keywords, tags.
-//     */
-//    @Queryable
-//    public CollectionProperty<String>       tags;
+    public CollectionProperty<ConnectionParam> connectionParams;
+    
+    
+    public static class ConnectionParam
+            extends Composite {
+        
+        public Property<String>     name;
+        
+        public Property<String>     value;
+
+        public Property<String>     description;
+    }
     
 }

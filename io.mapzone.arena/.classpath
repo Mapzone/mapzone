@@ -7,10 +7,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons-codec-1.9.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/httpclient-4.5.2.jar" sourcepath="lib/sources/httpclient-4.5.2-sources.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/httpcore-4.4.4.jar" sourcepath="lib/sources/httpcore-4.4.4-sources.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/csw-v_2_0_2-schema-1.1.0.jar" sourcepath="lib/sources/csw-v_2_0_2-schema-1.1.0-sources.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/filter-v_1_1_0-schema-1.1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gml-v_3_1_1-schema-1.1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/ows-v_1_0_0-schema-1.1.0.jar" sourcepath="lib/sources/ows-v_1_0_0-schema-1.1.0-sources.zip"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>

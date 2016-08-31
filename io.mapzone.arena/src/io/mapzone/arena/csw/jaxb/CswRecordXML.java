@@ -12,24 +12,28 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-package io.mapzone.arena.csw;
+package io.mapzone.arena.csw.jaxb;
 
-import org.eclipse.core.runtime.IProgressMonitor;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
-import org.polymap.core.runtime.config.Configurable;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * 
- * @param <R> The result type of this request.
+ *
  * @author Falko Bräutigam
  */
-public abstract class CatalogRequest<R>
-        extends Configurable {
+@XmlType( namespace="csw", name="Record" )
+public class CswRecordXML {
 
-    /**
-     * 
-     * @throws Exception 
-     */
-    public abstract R execute( IProgressMonitor monitor ) throws Exception;
+    private static Log log = LogFactory.getLog( CswRecordXML.class );
+    
+    @XmlElement( namespace="dc", required=true )
+    protected String        identifier;
+
+    @XmlElement( namespace="dc", required=true )
+    protected String        title;
     
 }

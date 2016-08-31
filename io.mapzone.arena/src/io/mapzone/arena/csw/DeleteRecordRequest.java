@@ -29,7 +29,7 @@ import org.polymap.core.runtime.config.Config2;
 import org.polymap.core.runtime.config.DefaultString;
 import org.polymap.core.runtime.config.Mandatory;
 
-import net.opengis.cat.csw.v_2_0_2.TransactionResponseType;
+import io.mapzone.arena.csw.jaxb.TransactionResponseXML;
 
 /**
  * 
@@ -37,7 +37,7 @@ import net.opengis.cat.csw.v_2_0_2.TransactionResponseType;
  * @author Falko Bräutigam
  */
 public class DeleteRecordRequest
-        extends CswRequest<TransactionResponseType> {
+        extends CswRequest<TransactionResponseXML> {
 
     private final static Log log = LogFactory.getLog( DeleteRecordRequest.class );
     
@@ -79,9 +79,8 @@ public class DeleteRecordRequest
     
         
     @Override
-    protected TransactionResponseType handleResponse( InputStream in, IProgressMonitor monitor ) throws Exception {
-        // FIXME
-        return null;
+    protected TransactionResponseXML handleResponse( InputStream in, IProgressMonitor monitor ) throws Exception {
+        return readObject( in, TransactionResponseXML.class );
     }
     
 }

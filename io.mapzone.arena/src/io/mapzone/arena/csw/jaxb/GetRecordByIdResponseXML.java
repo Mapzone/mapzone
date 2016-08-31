@@ -12,24 +12,25 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-package io.mapzone.arena.csw;
+package io.mapzone.arena.csw.jaxb;
 
-import org.eclipse.core.runtime.IProgressMonitor;
+import java.util.List;
 
-import org.polymap.core.runtime.config.Configurable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * 
- * @param <R> The result type of this request.
+ *
  * @author Falko Bräutigam
  */
-public abstract class CatalogRequest<R>
-        extends Configurable {
+@XmlRootElement( name="GetRecordByIdResponse" )
+@XmlAccessorType( XmlAccessType.FIELD )
+public class GetRecordByIdResponseXML {
 
-    /**
-     * 
-     * @throws Exception 
-     */
-    public abstract R execute( IProgressMonitor monitor ) throws Exception;
-    
+    @XmlElementRef( type=AbstractRecordXML.class )
+    public List<? extends AbstractRecordXML> records;
+
 }

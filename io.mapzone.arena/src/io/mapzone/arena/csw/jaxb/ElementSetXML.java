@@ -12,24 +12,37 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  */
-package io.mapzone.arena.csw;
+package io.mapzone.arena.csw.jaxb;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-
-import org.polymap.core.runtime.config.Configurable;
+import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlEnumValue;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * 
- * @param <R> The result type of this request.
+ *
  * @author Falko Bräutigam
  */
-public abstract class CatalogRequest<R>
-        extends Configurable {
+@XmlEnum
+@XmlType( name="ElementSet" )
+public enum ElementSetXML {
 
-    /**
-     * 
-     * @throws Exception 
-     */
-    public abstract R execute( IProgressMonitor monitor ) throws Exception;
+    @XmlEnumValue("brief")
+    BRIEF("brief"),
+ 
+    @XmlEnumValue("summary")
+    SUMMARY("summary"),
     
+    @XmlEnumValue("full")
+    FULL("full");
+    
+    private final String value;
+
+    ElementSetXML(String v) {
+        value = v;
+    }
+
+    public String value() {
+        return value;
+    }
 }

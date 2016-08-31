@@ -83,12 +83,22 @@ abstract class ProjectCatalogSynchronizer
     protected void update( CatalogEntry entry ) {
         String serviceUrl = ProxyServlet.projectUrlBase( project ) + ArenaConfigMBean.GEOSERVER_ALIAS;
 
-        entry.spatial.clear();
-        entry.spatial.add( "_type_=Mapzone Project Service" );  // see io.mapzone.arena.csw.catalog.MapzoneProjectResolver
-        entry.spatial.add( "_url_=" + serviceUrl );
+        entry.connectionParams.clear();
+        entry.connectionParams.createElement( uri -> {
+            uri.description.set( ArenaConfigMBean.CONNECTION_PARAM_NAME );
+            // org.polymap.core.catalog.resolve.IMetadataResourceResolver
+            uri.name.set( "_type_" );
+            uri.value.set( ArenaConfigMBean.MAPZONE_SERVICE_TYPE );
+            return uri;
+        });
+        entry.connectionParams.createElement( uri -> {
+            uri.description.set( ArenaConfigMBean.CONNECTION_PARAM_NAME );
+            uri.name.set( "_url_" );
+            uri.value.set( serviceUrl );
+            return uri;
+        });
         
-        entry.type.set( "Service" );
-        entry.format.set( "application/vnd.ogc.wms_xml" );
+        // standard type and formats
         entry.onlineResource.set( serviceUrl );
         entry.title.set( project.name.get() );
         entry.description.set( project.description.get() );
@@ -146,7 +156,10 @@ abstract class ProjectCatalogSynchronizer
                 update( entry.get() );
             }
             else {
-                log.warn( "No entry for: " + project.catalogId.get() );
+                log.warn( "No catalog entry for id: " + project.catalogId.get() );
+                CreateCatalogEntry create = new CreateCatalogEntry( project );
+                create.uow = uow;
+                create.doWithUnitOfWork();
             }
         }
     }
