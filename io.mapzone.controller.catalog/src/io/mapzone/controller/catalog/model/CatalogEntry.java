@@ -27,13 +27,13 @@ import org.polymap.model2.runtime.ValueInitializer;
 public class CatalogEntry
         extends CatalogCoreEntry {
 
+    public static CatalogEntry              TYPE;
+
     @SuppressWarnings( "hiding" )
     public static final ValueInitializer<CatalogEntry> defaults = (CatalogEntry proto) -> {
         CatalogCoreEntry.defaults.initialize( proto );
         return proto;
     };
-
-    public static CatalogEntry              TYPE;
 
     // instance *******************************************
     

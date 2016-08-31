@@ -71,7 +71,7 @@ public abstract class CswMetadataBase
 
     @Override
     public Optional<String> getType() {
-        return Optional.ofNullable( record().title );
+        return Optional.ofNullable( record().type );
     }
 
     @Override

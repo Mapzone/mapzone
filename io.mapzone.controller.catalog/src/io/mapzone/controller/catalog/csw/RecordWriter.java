@@ -49,7 +49,7 @@ public class RecordWriter
         out().writeStartElement( CSW, "Record" );
         super.process( composite );
         
-        // ConnectionParams
+        // connectionParams
         for (ConnectionParam param : ((CatalogEntry)composite).connectionParams) {
             out().writeStartElement( Namespaces.DC, "URI" );
             out().writeAttribute( "name", param.name.get() );

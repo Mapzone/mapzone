@@ -101,7 +101,8 @@ public class CswMetadataDCMI
 
     @Override
     public Optional<Date> getCreated() {
-        return Optional.empty();
+        return Optional.ofNullable( record().modified )
+                .map( v -> v.toGregorianCalendar().getTime() );
     }
 
     @Override

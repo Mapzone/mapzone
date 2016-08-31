@@ -98,8 +98,7 @@ abstract class ProjectCatalogSynchronizer
             return uri;
         });
         
-        entry.type.set( "Service" );
-        entry.format.set( "application/vnd.ogc.wms_xml" );
+        // standard type and formats
         entry.onlineResource.set( serviceUrl );
         entry.title.set( project.name.get() );
         entry.description.set( project.description.get() );

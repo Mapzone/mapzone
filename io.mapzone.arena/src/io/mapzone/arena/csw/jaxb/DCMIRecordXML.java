@@ -42,6 +42,10 @@ public class DCMIRecordXML
     public String                   description;
 
     @XmlElement( namespace=Namespaces.DC )
+    @XmlSchemaType( name="dateTime" )
+    public XMLGregorianCalendar     created;
+
+    @XmlElement( namespace=Namespaces.DC )
     public Set<String>              creator = new TreeSet();
 
     @XmlElement( namespace=Namespaces.DC )

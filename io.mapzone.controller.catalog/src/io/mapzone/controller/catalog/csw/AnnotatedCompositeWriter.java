@@ -57,7 +57,7 @@ public abstract class AnnotatedCompositeWriter
         return out;
     }
 
-    
+
     @Override
     protected void visitProperty( Property prop ) throws XMLStreamException {
         XML xml = (XML)prop.info().getAnnotation( XML.class );

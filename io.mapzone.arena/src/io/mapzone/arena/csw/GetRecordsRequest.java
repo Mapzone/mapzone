@@ -214,7 +214,8 @@ public class GetRecordsRequest<T extends AbstractRecordXML>
         System.out.println( md.getKeywords() );
         System.out.println( md.getFormats() );
         System.out.println( md.getType().get() );
-        System.out.println( md.getModified().orElse( null ) );
+        System.out.println( "modified: " + md.getModified().orElse( null ) );
+        System.out.println( "created: " + md.getCreated().orElse( null ) );
         System.out.println( md.getLanguages() );
         System.out.println( md.getDescription( IMetadata.Field.Creator ).orElse( null ) );
         System.out.println( md.getDescription( IMetadata.Field.Rights ).orElse( null ) );
