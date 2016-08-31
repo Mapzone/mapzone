@@ -138,13 +138,7 @@ public abstract class ProjectForm
                 .tooltip.put( "An entity primarily responsible for making the resource." )
                 .create().setLayoutData( ColumnDataFactory.defaults().heightHint( TEXT_HEIGHT ).create() );
         
-        // publisher
-        site.newFormField( new PropertyAdapter( project.publisher ) )
-                .field.put( new TextFormField() )
-                .tooltip.put( "An entity responsible for making the resource available." )
-                .create().setLayoutData( ColumnDataFactory.defaults().heightHint( TEXT_HEIGHT ).create() );
-        
-        //
+        // rights
         site.newFormField( new PropertyAdapter( project.rights ) )
                 .field.put( new TextFormField() )
                 .tooltip.put( "Information about rights held in and over the resource. Typically, rights\n"
@@ -152,7 +146,13 @@ public abstract class ProjectForm
                         + "the resource, including intellectual property rights." )
                 .create().setLayoutData( ColumnDataFactory.defaults().heightHint( TEXT_HEIGHT ).create() );
         
-        //
+        // publisher
+        site.newFormField( new PropertyAdapter( project.publisher ) )
+                .field.put( new TextFormField() )
+                .tooltip.put( "An entity responsible for making the resource available." )
+                .create().setLayoutData( ColumnDataFactory.defaults().heightHint( TEXT_HEIGHT ).create() );
+        
+        // accessRights
         site.newFormField( new PropertyAdapter( project.accessRights ) )
                 .fieldEnabled.put( false )
                 .label.put( "Access rights" )
