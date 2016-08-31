@@ -43,9 +43,8 @@ import io.mapzone.arena.csw.GetRecordByIdRequest;
 import io.mapzone.arena.csw.GetRecordsRequest;
 import io.mapzone.arena.csw.InsertRecordRequest;
 import io.mapzone.arena.csw.UpdateRecordRequest;
-import net.opengis.cat.csw.v_2_0_2.ElementSetType;
-import net.opengis.cat.csw.v_2_0_2.RecordType;
-import net.opengis.cat.csw.v_2_0_2.SummaryRecordType;
+import io.mapzone.arena.csw.jaxb.ElementSetXML;
+import io.mapzone.arena.csw.jaxb.RecordXML;
 
 /**
  * 
@@ -83,17 +82,17 @@ public class CswMetadataCatalog
         return new MetadataQuery() {
             @Override
             public ResultSet execute() throws Exception {
-                GetRecordsRequest<RecordType> getRecords = new GetRecordsRequest<RecordType>()
-                        .elementSet.put( ElementSetType.FULL )
+                GetRecordsRequest<RecordXML> getRecords = new GetRecordsRequest<RecordXML>()
+                        .elementSet.put( ElementSetXML.FULL )
                         .constraint.put( query )
                         .baseUrl.put( baseUrl.get().get() );
 
-                GetRecordsRequest.ResultSet<RecordType> rs = getRecords.execute( monitor );
+                GetRecordsRequest.ResultSet<RecordXML> rs = getRecords.execute( monitor );
 
                 return new ResultSet() {
                     @Override
                     public Iterator<IMetadata> iterator() {
-                        Iterator<RecordType> result = rs.iterator();
+                        Iterator<RecordXML> result = rs.iterator();
                         return Iterators.transform( result, record -> new CswMetadataDCMI( record ) );
                     }
                     @Override
@@ -116,12 +115,13 @@ public class CswMetadataCatalog
     
     @Override
     public Optional<? extends IMetadata> entry( String identifier, IProgressMonitor monitor ) throws Exception {
-        GetRecordByIdRequest request = new GetRecordByIdRequest()
+        GetRecordByIdRequest<RecordXML> request = new GetRecordByIdRequest<RecordXML>()
+                //.elementSet.put( ElementSetType.FULL )
                 .identifier.put( identifier )
                 .baseUrl.put( baseUrl.get().get() );
         
         return request.execute( monitor )
-                .map( record -> new CswMetadataSummary( record ) );
+                .map( record -> new CswMetadataDCMI( record ) );
     }
 
     
@@ -132,8 +132,8 @@ public class CswMetadataCatalog
             
             @Override
             public void newEntry( Consumer<IUpdateableMetadata> initializer ) {
-                SummaryRecordType record = new SummaryRecordType();
-                CswMetadataSummary md = new CswMetadataSummary( record );
+                RecordXML record = new RecordXML();
+                CswMetadataDCMI md = new CswMetadataDCMI( record );
                 initializer.accept( md );
                 requests.add( new InsertRecordRequest( record )
                         .baseUrl.put( baseUrl.get().get() ) );
@@ -141,8 +141,8 @@ public class CswMetadataCatalog
 
             @Override
             public void updateEntry( String identifier, Consumer<IUpdateableMetadata> updater ) {
-                SummaryRecordType record = new SummaryRecordType();
-                CswMetadataSummary md = new CswMetadataSummary( record );
+                RecordXML record = new RecordXML();
+                CswMetadataDCMI md = new CswMetadataDCMI( record );
                 md.setIdentifier( identifier );
                 updater.accept( md );
                 requests.add( new UpdateRecordRequest( record )

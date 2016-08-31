@@ -19,16 +19,20 @@ import static io.mapzone.arena.csw.Namespaces.OGC;
 
 import java.io.InputStream;
 
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+
 import org.polymap.core.runtime.config.Config2;
 import org.polymap.core.runtime.config.DefaultString;
 import org.polymap.core.runtime.config.Mandatory;
 
-import net.opengis.cat.csw.v_2_0_2.SummaryRecordType;
-import net.opengis.cat.csw.v_2_0_2.TransactionResponseType;
+import io.mapzone.arena.csw.jaxb.RecordXML;
+import io.mapzone.arena.csw.jaxb.TransactionResponseXML;
 
 /**
  * 
@@ -36,7 +40,7 @@ import net.opengis.cat.csw.v_2_0_2.TransactionResponseType;
  * @author Falko Bräutigam
  */
 public class UpdateRecordRequest
-        extends CswRequest<TransactionResponseType> {
+        extends CswRequest<TransactionResponseXML> {
 
     private final static Log log = LogFactory.getLog( UpdateRecordRequest.class );
     
@@ -49,14 +53,14 @@ public class UpdateRecordRequest
     @DefaultString( "1.1.0" )
     public Config2<GetRecordsRequest,String>    constraintLangVersion;
     
-    private SummaryRecordType                   record;
+    private RecordXML                           record;
     
     private String                              identifier;
     
 
-    public UpdateRecordRequest( SummaryRecordType record ) {
+    public UpdateRecordRequest( RecordXML record ) {
         this.record = record;
-        this.identifier = record.getIdentifier().get( 0 ).getValue().getContent().get( 0 );
+        this.identifier = record.identifier;
         this.request.set( "Transaction" );
     }
 
@@ -65,7 +69,8 @@ public class UpdateRecordRequest
     protected void prepare( IProgressMonitor monitor ) throws Exception {
         writeElement( CSW, "Update", () -> {
             // record
-            writeObject( JAXBF.createSummaryRecord( record ) );
+            QName name = new QName( Namespaces.CSW, "Record" );
+            writeObject( new JAXBElement( name, RecordXML.class, null, record ) );
             
             // constraint
             writeElement( CSW, "Constraint", () -> {
@@ -83,9 +88,8 @@ public class UpdateRecordRequest
     
         
     @Override
-    protected TransactionResponseType handleResponse( InputStream in, IProgressMonitor monitor ) throws Exception {
-        // FIXME
-        return null;
+    protected TransactionResponseXML handleResponse( InputStream in, IProgressMonitor monitor ) throws Exception {
+        return readObject( in, TransactionResponseXML.class );
     }
 
 }

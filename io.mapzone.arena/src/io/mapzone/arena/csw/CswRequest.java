@@ -60,8 +60,8 @@ import org.polymap.core.runtime.config.DefaultString;
 import org.polymap.core.runtime.config.Immutable;
 import org.polymap.core.runtime.config.Mandatory;
 
+import io.mapzone.arena.csw.jaxb.GetRecordsResponseXML;
 import javanet.staxutils.IndentingXMLStreamWriter;
-import net.opengis.cat.csw.v_2_0_2.ObjectFactory;
 
 /**
  * 
@@ -74,10 +74,6 @@ public abstract class CswRequest<R>
         extends CatalogRequest<R> {
 
     private static final Log log = LogFactory.getLog( CswRequest.class );
-
-    public static final ObjectFactory       JAXBF = new ObjectFactory();
-    
-    public static final String              CSW_JAXB_CONTEXT_PATH = "net.opengis.cat.csw.v_2_0_2";
 
     public static final String              DEFAULT_XML_ENCODING = "UTF-8";
 
@@ -93,7 +89,8 @@ public abstract class CswRequest<R>
         });
         jaxbContext = new CachedLazyInit( () -> {
             try {
-                return JAXBContext.newInstance( CSW_JAXB_CONTEXT_PATH/*, CswRequest.class.getClassLoader()*/ );
+                //return JAXBContext.newInstance( CSW_JAXB_CONTEXT_PATH, CswRequest.class.getClassLoader() );
+                return JAXBContext.newInstance( GetRecordsResponseXML.class );
             }
             catch (Exception e) {
                 throw new RuntimeException( e );
@@ -266,6 +263,9 @@ public abstract class CswRequest<R>
 ////            return (T)doc.getFirstChild();
     
     
+    /**
+     * Unmarshall the given object type from the given stream.
+     */
     protected <T> T readObject( InputStream in, Class<T> type ) throws JAXBException {
         Unmarshaller unmarshaller = jaxbContext.get().createUnmarshaller();
         JAXBElement<T> elm = unmarshaller.unmarshal( new StreamSource( in ), type );

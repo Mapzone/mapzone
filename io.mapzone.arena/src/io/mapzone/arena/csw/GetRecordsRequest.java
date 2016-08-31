@@ -22,7 +22,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import java.io.InputStream;
-import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,12 +35,11 @@ import org.polymap.core.runtime.config.DefaultString;
 import org.polymap.core.runtime.config.Mandatory;
 
 import io.mapzone.arena.csw.catalog.CswMetadataDCMI;
-import net.opengis.cat.csw.v_2_0_2.AbstractRecordType;
-import net.opengis.cat.csw.v_2_0_2.ElementSetType;
-import net.opengis.cat.csw.v_2_0_2.GetRecordsResponseType;
-import net.opengis.cat.csw.v_2_0_2.RecordType;
-import net.opengis.cat.csw.v_2_0_2.SearchResultsType;
-import net.opengis.cat.csw.v_2_0_2.SummaryRecordType;
+import io.mapzone.arena.csw.jaxb.AbstractRecordXML;
+import io.mapzone.arena.csw.jaxb.ElementSetXML;
+import io.mapzone.arena.csw.jaxb.GetRecordsResponseXML;
+import io.mapzone.arena.csw.jaxb.RecordXML;
+import io.mapzone.arena.csw.jaxb.SearchResultsXML;
 
 /**
  * 
@@ -49,7 +47,7 @@ import net.opengis.cat.csw.v_2_0_2.SummaryRecordType;
  *        {@link #elementSet}.
  * @author Falko Bräutigam
  */
-public class GetRecordsRequest<T extends AbstractRecordType>
+public class GetRecordsRequest<T extends AbstractRecordXML>
         extends CswRequest<GetRecordsRequest.ResultSet<T>> {
 
     private static final Log log = LogFactory.getLog( GetRecordsRequest.class );
@@ -76,7 +74,7 @@ public class GetRecordsRequest<T extends AbstractRecordType>
     @Mandatory
     @RequestParam( "ConstraintLanguage" )
     @DefaultString( "CQL_TEXT" )
-    public Config2<GetRecordsRequest,String>    constraintLang;
+    public Config2<GetRecordsRequest<T>,String> constraintLang;
     
     /**
      * Inbound: 
@@ -85,7 +83,7 @@ public class GetRecordsRequest<T extends AbstractRecordType>
     @RequestParam( "constraint_language_version" )
     @RequestAttr( "version" )
     @DefaultString( "1.1.0" )
-    public Config2<GetRecordsRequest,String>    constraintLangVersion;
+    public Config2<GetRecordsRequest<T>,String> constraintLangVersion;
     
     /**
      * Inbound: 
@@ -100,12 +98,12 @@ public class GetRecordsRequest<T extends AbstractRecordType>
      * Inbound: defaults to {@link ElementSetType#SUMMARY}
      */
     @Mandatory
-    public Config2<GetRecordsRequest<T>,ElementSetType> elementSet;
+    public Config2<GetRecordsRequest<T>,ElementSetXML> elementSet;
             
     
     public GetRecordsRequest() {
         request.set( "GetRecords" );
-        elementSet.set( ElementSetType.SUMMARY );
+        elementSet.set( ElementSetXML.SUMMARY );
     }
 
 
@@ -147,12 +145,11 @@ public class GetRecordsRequest<T extends AbstractRecordType>
     
     @Override
     protected ResultSet<T> handleResponse( InputStream in, IProgressMonitor monitor ) throws Exception {
-        GetRecordsResponseType response = readObject( in, GetRecordsResponseType.class );
-        log.info( "" + response );
+        GetRecordsResponseXML response = readObject( in, GetRecordsResponseXML.class );
         
         return new ResultSet<T>() {
-            SearchResultsType results = response.getSearchResults();
-            Iterator<JAXBElement<? extends AbstractRecordType>> it = results.getAbstractRecord().iterator();
+            SearchResultsXML results = response.searchResults;
+            Iterator<? extends AbstractRecordXML> it = results.records.iterator();
 
             @Override
             public Iterator<T> iterator() {
@@ -163,14 +160,14 @@ public class GetRecordsRequest<T extends AbstractRecordType>
                     }
                     @Override
                     public T next() {
-                        return (T)it.next().getValue();
+                        return (T)it.next();
                     }
                 };
             }
 
             @Override
             public int size() {
-                return results.getNumberOfRecordsReturned().intValue();
+                return results.numberOfRecordsReturned.intValue();
             }
 
             @Override
@@ -185,25 +182,31 @@ public class GetRecordsRequest<T extends AbstractRecordType>
      * Test.
      */
     public static final void main( String[] args ) throws Exception {
-        GetRecordsRequest<RecordType> getRecords = new GetRecordsRequest<RecordType>()
-                .elementSet.put( ElementSetType.FULL )
-                //.constraint.put( "AnyText Like '%Landschaftsschutzgebiete%'" )
-                .constraint.put( "*Landschaftsschutzgebiete*" )
-                .baseUrl.put( "http://www.geokatalog-mittelsachsen.de/geonetwork2.10/srv/eng/csw" );
-
-//        GetRecordsRequest<RecordType> getRecords = new GetRecordsRequest<RecordType>()
+//        GetRecordsRequest<RecordXML> getRecords = new GetRecordsRequest<RecordXML>()
 //                .elementSet.put( ElementSetType.FULL )
-//                .constraint.put( "ahnung" )
-//                .baseUrl.put( "http://localhost:8090/csw" );
+//                //.constraint.put( "AnyText Like '%Landschaftsschutzgebiete%'" )
+//                .constraint.put( "*Landschaftsschutzgebiete*" )
+//                .baseUrl.put( "http://www.geokatalog-mittelsachsen.de/geonetwork2.10/srv/eng/csw" );
 
-        ResultSet<RecordType> rs = getRecords.execute( new NullProgressMonitor() );
+        GetRecordsRequest<RecordXML> getRecords = new GetRecordsRequest<RecordXML>()
+                .elementSet.put( ElementSetXML.FULL )
+                .constraint.put( "ahnung" )
+                .baseUrl.put( "http://localhost:8090/csw" );
+
+        ResultSet<RecordXML> rs = getRecords.execute( new NullProgressMonitor() );
         System.out.println( "Results:" + rs.size() );
         rs.stream().forEach( record -> printFull( record ) );
     }
 
     
-    protected static void printFull( RecordType record ) {
+    protected static void printFull( RecordXML record ) {
         System.out.println( "-----------------------------------");
+        System.out.println( record.modified );
+        System.out.println( record.subject );
+        System.out.println( record.rights );
+        System.out.println( record.identifier );
+        System.out.println( record.URI );
+        
         CswMetadataDCMI md = new CswMetadataDCMI( record );
         System.out.println( md.getIdentifier() );
         System.out.println( md.getTitle() );
@@ -221,12 +224,12 @@ public class GetRecordsRequest<T extends AbstractRecordType>
     }
 
     
-    protected static void printSummary( SummaryRecordType record ) {
-        System.out.println( "-----------------------------------");
-        System.out.println( record.getIdentifier().get( 0 ).getValue().getContent() );
-        System.out.println( record.getTitle().get( 0 ).getValue().getContent() );
-        //System.out.println( record.getSubject().get( 0 ).getContent() );
-        //System.out.println( record.getAbstract().get( 0 ).getContent() );
-    }
+//    protected static void printSummary( SummaryRecordType record ) {
+//        System.out.println( "-----------------------------------");
+//        System.out.println( record.getIdentifier().get( 0 ).getValue().getContent() );
+//        System.out.println( record.getTitle().get( 0 ).getValue().getContent() );
+//        //System.out.println( record.getSubject().get( 0 ).getContent() );
+//        //System.out.println( record.getAbstract().get( 0 ).getContent() );
+//    }
 
 }

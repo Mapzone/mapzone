@@ -34,6 +34,20 @@ public interface ArenaConfigMBean {
     public static final String              REQUEST_PARAM_USER = "_user$!._";
 
     /**
+     * The magic string used in metadata records to signal a connection param.
+     * These params are used by io.mapzone.arena.csw.catalog.MapzoneProjectResolver
+     * to create a WMS/WFS service.
+     */
+    public static final String              CONNECTION_PARAM_NAME = "Mapzone connection parameter"; 
+
+    /**
+     * The magic string used in metadata records to signal a connection param.
+     * These params are used by io.mapzone.arena.csw.catalog.MapzoneProjectResolver
+     * to create a WMS/WFS service.
+     */
+    public static final String              MAPZONE_SERVICE_TYPE = "Mapzone project service"; 
+
+    /**
      * The servlet alias used by {@link GeoServerStarter GeoServer} to provide OWS
      * services.
      */
@@ -46,7 +60,7 @@ public interface ArenaConfigMBean {
         catch (Exception e) {
             throw new RuntimeException( e );
         }
-    }); 
+    });
 
     // interface ******************************************
     
