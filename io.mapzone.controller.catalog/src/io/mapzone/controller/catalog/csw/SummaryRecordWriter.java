@@ -32,7 +32,7 @@ import org.polymap.model2.Composite;
  * @author Falko Bräutigam
  */
 public class SummaryRecordWriter
-        extends CompositeWriter {
+        extends AnnotatedCompositeWriter {
 
     private static Log log = LogFactory.getLog( SummaryRecordWriter.class );
 
@@ -46,6 +46,21 @@ public class SummaryRecordWriter
         out().writeStartElement( CSW, "SummaryRecord" );
         super.process( composite );
         out().writeEndElement();
+    }
+
+
+    /**
+     * Tweak namespaces and fields for SummaryRecord.
+     */
+    @Override
+    protected void writeElement( String ns, String name, String value ) throws XMLStreamException {
+        if (name.equals( "description" )) {
+            //super.writeElement( ns, name, value );
+            super.writeElement( Namespaces.DCT, "abstract", value );
+        }
+        else {
+            super.writeElement( ns, name, value );
+        }
     }
     
 }

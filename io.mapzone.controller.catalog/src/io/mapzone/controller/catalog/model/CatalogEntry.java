@@ -14,6 +14,8 @@
  */
 package io.mapzone.controller.catalog.model;
 
+import org.polymap.model2.CollectionProperty;
+import org.polymap.model2.Composite;
 import org.polymap.model2.Property;
 import org.polymap.model2.runtime.ValueInitializer;
 
@@ -40,10 +42,17 @@ public class CatalogEntry
      */
     public Property<String>                 onlineResource;
     
-//    /**
-//     * Keywords, tags.
-//     */
-//    @Queryable
-//    public CollectionProperty<String>       tags;
+    public CollectionProperty<ConnectionParam> connectionParams;
+    
+    
+    public static class ConnectionParam
+            extends Composite {
+        
+        public Property<String>     name;
+        
+        public Property<String>     value;
+
+        public Property<String>     description;
+    }
     
 }

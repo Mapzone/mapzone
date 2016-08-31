@@ -144,10 +144,16 @@ public class TransactionResponse
         record.getSubject().stream()
                 .map( l -> l.getContent().get( 0 ) )
                 .forEach( s -> entry.subject.add( s ) );
+        
         entry.spatial.clear();
         record.getSpatial().stream()
                 .map( l -> l.getContent().get( 0 ) )
                 .forEach( s -> entry.spatial.add( s ) );
+
+//        entry.connectionParams.clear();
+//        record.UR().stream()
+//                .map( l -> l.getContent().get( 0 ) )
+//                .forEach( s -> entry.spatial.add( s ) );
     }
     
 }

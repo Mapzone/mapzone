@@ -93,7 +93,8 @@ public class CatalogCoreEntry
      */
     @Nullable
     @Queryable
-    @XML( namespace=DCT, value="abstract" )
+    // description is copied to DCT:abstract in the RecordWriters
+    @XML( namespace=DC, value="description" )
     @OGCQueryable( "Abstract" )
     public Property<String>         description;
     
@@ -103,8 +104,9 @@ public class CatalogCoreEntry
      */
     @Nullable
     @Queryable
+    @XML( namespace=DC )
     public Property<String>         publisher;
-    
+
     /**
      * An entity responsible for making contributions to the content of the resource.
      */
@@ -126,6 +128,7 @@ public class CatalogCoreEntry
      */
     @Nullable
     @Queryable
+    @XML( namespace=DCT, value="created" )
     public Property<Date>           created;
     
     /**
