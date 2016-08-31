@@ -68,7 +68,7 @@ public class GetRecordByIdResponse
 
             // records
             for (CatalogEntry entry : rs) {
-                new SummaryRecordWriter( out() ).process( entry );
+                new RecordWriter( out() ).process( entry );
             }
 
             out().writeEndElement();
