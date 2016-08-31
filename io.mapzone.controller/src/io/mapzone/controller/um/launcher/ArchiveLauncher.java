@@ -69,8 +69,10 @@ public abstract class ArchiveLauncher
                 URLEncoder.encode( project().name.get(), "UTF8" )
                 /*, instance.version.get()*/ );
 
-        
-        instance.homePath.set( INSTANCES_BASE_DIR + basename );
+        // allow re-install
+        if (!instance.homePath.opt().isPresent()) {
+            instance.homePath.set( INSTANCES_BASE_DIR + basename );
+        }
 
         // XXX check free space on disk
 
@@ -79,9 +81,10 @@ public abstract class ArchiveLauncher
         HostRecord host = instance.host.get();
         host.runtime.get().execute( new Script()
                 .add( "mkdir -p " + instance.homePath.get() )
-                .add( "mkdir " + logPath( instance ) )
-                .add( "mkdir " + binPath( instance ) )
-                .add( "mkdir " + dataPath( instance ) )
+                .add( "mkdir -p " + logPath( instance ) )
+                .add( "rm -rf " + binPath( instance ) )
+                .add( "mkdir -p " + binPath( instance ) )
+                .add( "mkdir -p " + dataPath( instance ) )
                 .blockOnComplete.put( true )
                 .exceptionOnFail.put( true ) );
         monitor.worked( 1 );

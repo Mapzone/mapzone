@@ -37,11 +37,13 @@ import org.polymap.rhei.batik.toolkit.ConstraintData;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
+import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
 import org.polymap.rhei.form.batik.BatikFormContainer;
 
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.ops.DeleteProjectOperation;
 import io.mapzone.controller.ops.UpdateProjectOperation;
+import io.mapzone.controller.ops.UpdateProjectSoftwareOperation;
 import io.mapzone.controller.ui.CtrlPanel;
 import io.mapzone.controller.um.repository.AuthToken;
 import io.mapzone.controller.um.repository.Project;
@@ -189,6 +191,27 @@ public class ProjectInfoPanel
         // delete project
         IPanelSection section = tk().createPanelSection( parent, "Danger zone" );
         section.addConstraint( new PriorityConstraint( 0 ), new MinWidthConstraint( 350, 1 ) );
+
+        Button updateBtn = tk().createButton( section.getBody(), "Update", SWT.PUSH, SWT.FLAT );
+        updateBtn.setToolTipText( "Update software version" );
+        updateBtn.addSelectionListener( new SelectionAdapter() {
+            @Override
+            public void widgetSelected( SelectionEvent ev ) {
+                UpdateProjectSoftwareOperation uop = new UpdateProjectSoftwareOperation();
+                uop.project.set( selected.get() );
+
+                // execute sync as long as there is no progress indicator
+                OperationSupport.instance().execute2( uop, false, false, ev2 -> asyncFast( () -> {
+                    if (ev2.getResult().isOK()) {
+                        tk().createSnackbar( Appearance.FadeIn, "Updated" );
+                    }
+                    else {
+                        StatusDispatcher.handleError( "Unable to update project.", ev2.getResult().getException() );
+                    }
+                }));
+            }
+        });
+
         
         Button deleteBtn = tk().createButton( section.getBody(), "Destroy this project", SWT.PUSH, SWT.FLAT );
         deleteBtn.setImage( BatikPlugin.images().svgImage( "delete-circle.svg", SvgImageRegistryHelper.DISABLED24 ) );
