@@ -58,7 +58,7 @@ public class FacebookSharelet
     public void init( ShareletSite site ) {
         site.title.set( i18n.get( "title" ) );
         site.description.set( i18n.get( "description" ) );
-        site.priority.set( 600 );
+        site.priority.set( 200 );
         site.image.set( ArenaPlugin.images().image( "resources/icons/facebook48.png" ) );
         super.init( site );
     }
@@ -109,14 +109,14 @@ public class FacebookSharelet
 
 
             @Override
-            public String supportedType() {
-                return "application/arena";
+            public String[] supportedTypes() {
+                return new String[]{"application/arena"};
             }
 
 
             @Override
-            public void createContents( Composite parent, ShareableContentProvider contentProvider ) {
-                ArenaContent content = (ArenaContent)contentProvider.get();
+            public void createContents( Composite parent, ShareableContentProvider... contentProviders ) {
+                ArenaContent content = (ArenaContent)contentProviders[0].get();
 
                 Button button = tk().createButton( parent, i18n.get( "map_button" ), SWT.NONE );
                 // button.setImage( ArenaPlugin.images().svgImage( "facebook.svg",

@@ -31,7 +31,8 @@ public class Sharelets
 
     @SuppressWarnings( "unchecked" )
     private final static List<Class<? extends Sharelet>> shareletClasses = Lists.newArrayList( 
-            FacebookSharelet.class, 
+            FacebookSharelet.class,
+            EMailSharelet.class,
             EmbedSharelet.class );
 
 

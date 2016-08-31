@@ -26,5 +26,7 @@ Bundle-ClassPath: lib/csw-v_2_0_2-schema-1.1.0.jar,
  lib/httpcore-4.4.4.jar,
  lib/stax-utils-20070216.jar,
  lib/jaxb2-basics-runtime-0.6.0.jar,
- .
+ .,
+ lib/activation-1.1.jar,
+ lib/javax.mail-1.5.6.jar
 

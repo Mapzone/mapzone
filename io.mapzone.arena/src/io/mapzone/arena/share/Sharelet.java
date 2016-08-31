@@ -13,7 +13,8 @@
 package io.mapzone.arena.share;
 
 import java.util.List;
-import org.polymap.rhei.batik.toolkit.IPanelToolkit;
+
+import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
 /**
  * Base class for all sharelets.
@@ -35,8 +36,8 @@ public abstract class Sharelet {
     }
 
 
-    protected IPanelToolkit tk() {
-        return site().tk.get();
+    protected MdToolkit tk() {
+        return (MdToolkit)site().tk.get();
     }
 
 

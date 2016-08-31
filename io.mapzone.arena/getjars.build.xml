@@ -64,6 +64,7 @@
 		    <dependency groupId="com.bea.xml" artifactId="jsr173-ri" version="1" scope="provided" />
             <dependency groupId="org.apache.httpcomponents" artifactId="httpclient" version="4.5.2" />
             <dependency groupId="org.jvnet.ogc" artifactId="csw-v_2_0_2-schema" version="1.1.0"/>
+            <dependency groupId="com.sun.mail" artifactId="javax.mail" version="1.5.6"/>
         </artifact:dependencies>
     </target>
 

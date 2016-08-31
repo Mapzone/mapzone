@@ -62,7 +62,7 @@ public class EmbedSharelet
     public void init( ShareletSite site ) {
         site.title.set( i18n.get( "title" ) );
         site.description.set( i18n.get( "description" ) );
-        site.priority.set( 500 );
+        site.priority.set( 210 );
         site.image.set( ArenaPlugin.images().svgImage( "embed.svg", SvgImageRegistryHelper.NORMAL48 ) );
         super.init( site );
     }
@@ -78,27 +78,27 @@ public class EmbedSharelet
 
 
             @Override
-            public String supportedType() {
-                return "application/openlayers";
+            public String[] supportedTypes() {
+                return new String[] { "application/openlayers" };
             }
 
 
             @Override
-            public void createContents( Composite parent, ShareableContentProvider contentBuilder ) {
-                OpenLayersContent content = (OpenLayersContent)contentBuilder.get();
+            public void createContents( Composite parent, ShareableContentProvider... contentBuilders ) {
+                OpenLayersContent content = (OpenLayersContent)contentBuilders[0].get();
 
-                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "openlayers_head" ), SWT.WRAP ) ).widthHint( preferredWidth( parent ) ).heightHint( 60 );
+                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "openlayers_head" ), SWT.WRAP ) ).widthHint( preferredWidth( parent ) );//.heightHint( 60 );
 
                 Text head = tk().createText( parent, content.cssressource + "\n"
                         + content.jsressource, SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
                 ColumnDataFactory.on( head ).widthHint( preferredWidth( parent ) ).heightHint( 40 );
 
-                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "openlayers_body" ), SWT.WRAP ) ).widthHint( preferredWidth( parent ) ).heightHint( 40 );
+                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "openlayers_body" ), SWT.WRAP ) ).widthHint( preferredWidth( parent ) );//.heightHint( 40 );
 
                 Text body = tk().createText( parent, content.body, SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
                 ColumnDataFactory.on( body ).widthHint( preferredWidth( parent ) ).heightHint( 20 );
 
-                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "openlayers_complete" ), SWT.WRAP ) ).widthHint( preferredWidth( parent ) ).heightHint( 60 );
+                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "openlayers_complete" ), SWT.WRAP ) ).widthHint( preferredWidth( parent ) );//.heightHint( 60 );
 
                 Text text = tk().createText( parent, content.complete, SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
                 ColumnDataFactory.on( text ).widthHint( preferredWidth( parent ) ).heightHint( 180 );
@@ -120,17 +120,17 @@ public class EmbedSharelet
 
 
             @Override
-            public String supportedType() {
-                return "application/arena";
+            public String[] supportedTypes() {
+                return new String[] { "application/arena" };
             }
 
 
             @Override
-            public void createContents( Composite parent, ShareableContentProvider contentBuilder ) {
-                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "iframe" ), SWT.WRAP ) ).widthHint( preferredWidth( parent ) ).heightHint( 60 );
+            public void createContents( Composite parent, ShareableContentProvider... contentBuilders ) {
+                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "iframe" ), SWT.WRAP ) ).widthHint( preferredWidth( parent ) );//.heightHint( 60 );
 
                 StringBuffer iframe = new StringBuffer( "<iframe width='100%' height='640' src='" );
-                iframe.append( ((ArenaContent)contentBuilder.get()).arena );
+                iframe.append( ((ArenaContent)contentBuilders[0].get()).arena );
                 iframe.append( "' frameborder='0' allowfullscreen='allowfullscreen'></iframe>" );
                 Text text = tk().createText( parent, iframe.toString(), SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
                 ColumnDataFactory.on( text ).widthHint( preferredWidth( parent ) ).heightHint( 80 );
@@ -155,17 +155,17 @@ public class EmbedSharelet
 
 
             @Override
-            public String supportedType() {
-                return "image/png";
+            public String[] supportedTypes() {
+                return new String[] { "image/png" };
             }
 
 
             @Override
-            public void createContents( Composite parent, ShareableContentProvider contentBuilder ) {
-                ImagePngContent content = (ImagePngContent)contentBuilder.get();
+            public void createContents( final Composite parent, final ShareableContentProvider... contentBuilders ) {
+                ImagePngContent content = (ImagePngContent)contentBuilders[0].get();
                 int width = preferredWidth( parent );
 
-                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "image" ), SWT.WRAP ) ).widthHint( width ).heightHint( 40 );
+                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "image" ), SWT.WRAP ) ).widthHint( width );//.heightHint( 40 );
 
                 StringBuffer image = new StringBuffer( "<img width='" ).append( content.imgWidth ).append( "' height='" ).append( content.imgHeight ).append( "' src='" );
                 image.append( content.imgResource );
@@ -174,7 +174,7 @@ public class EmbedSharelet
                 Text text = tk().createText( parent, image.toString(), SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
                 ColumnDataFactory.on( text ).widthHint( width ).heightHint( 120 );
 
-                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "image_preview" ), SWT.WRAP ) ).widthHint( width ).heightHint( 20 );
+                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "image_preview" ), SWT.WRAP ) ).widthHint( width );//.heightHint( 20 );
 
                 StringBuffer oreview = new StringBuffer( "<img width='" ).append( content.previewWidth ).append( "' height='" ).append( content.previewHeight ).append( "' src='" );
                 oreview.append( content.previewResource );
@@ -189,7 +189,7 @@ public class EmbedSharelet
                     @Override
                     public void mouseUp( MouseEvent e ) {
                         UrlLauncher launcher = RWT.getClient().getService( UrlLauncher.class );
-                        launcher.openURL( ((ImagePngContent)contentBuilder.get()).imgResource );
+                        launcher.openURL( ((ImagePngContent)contentBuilders[0].get()).imgResource );
                     }
 
 

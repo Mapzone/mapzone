@@ -14,10 +14,14 @@ package io.mapzone.arena.share.ui;
 
 import static org.eclipse.ui.forms.widgets.ExpandableComposite.TREE_NODE;
 
+import java.util.List;
 import java.util.Optional;
+
+import com.google.common.collect.Lists;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.Section;
@@ -34,6 +38,7 @@ import org.polymap.p4.P4Panel;
 
 import io.mapzone.arena.share.Sharelet;
 import io.mapzone.arena.share.ShareletSectionProvider;
+import io.mapzone.arena.share.ShareletSite;
 import io.mapzone.arena.share.content.ShareableContentProvider;
 import io.mapzone.arena.share.content.ShareableContentProviders;
 
@@ -56,9 +61,10 @@ public class ShareletPanel
 
     @Override
     public void init() {
-        site().minWidth.set( shareletPanelContext.get().sharelet.get().site().preferredWidth.get() );
-        site().preferredWidth.set( shareletPanelContext.get().sharelet.get().site().preferredWidth.get() );
-        site().title.set( shareletPanelContext.get().sharelet.get().site().title.get() );
+        ShareletSite sharelet = shareletPanelContext.get().sharelet.get().site();
+        site().minWidth.set( sharelet.preferredWidth.get() );
+        site().preferredWidth.set( sharelet.preferredWidth.get() );
+        site().title.set( sharelet.title.get() );
     }
 
 
@@ -66,28 +72,46 @@ public class ShareletPanel
     public void createContents( Composite parent ) {
         parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).margins( 10, 0, 0, 0 ).spacing( 10 ).create() );
         Sharelet sharelet = shareletPanelContext.get().sharelet.get();
+        sharelet.site().tk.set( tk() );
         for (ShareletSectionProvider provider : sharelet.sections()) {
-            Optional<ShareableContentProvider> contentBuilder = ShareableContentProviders.instance().get( provider.supportedType(), shareletPanelContext.get().shareContext.get() );
-            if (contentBuilder.isPresent()) {
+            final List<ShareableContentProvider> contentProviders = Lists.newArrayList();
+            for (String supportedType : provider.supportedTypes()) {
+                Optional<ShareableContentProvider> contentBuilder = ShareableContentProviders.instance().get( supportedType, shareletPanelContext.get().shareContext.get() );
+                if (contentBuilder.isPresent()) {
+                    contentProviders.add( contentBuilder.get() );
+                }
+                else {
+                    // something missing, so clear all
+                    contentProviders.clear();
+                    break;
+                }
+            }
+            if (!contentProviders.isEmpty()) {
                 Section section = tk().createSection( parent, provider.title(), TREE_NODE, Section.SHORT_TITLE_BAR, Section.FOCUS_TITLE, SWT.BORDER );
-                section.setExpanded( false );
                 section.setBackground( UIUtils.getColor( 235, 235, 235 ) );
                 Composite panel = (Composite)section.getClient();
                 panel.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).margins( 1 ).spacing( 10 ).create() );
-                section.addExpansionListener( new ExpansionAdapter() {
+                if (sharelet.sections().size() == 1) {
+                    section.setExpanded( true );
+                    provider.createContents( panel, contentProviders.stream().toArray( ShareableContentProvider[]::new ) );
+                }
+                else {
+                    section.setExpanded( false );
+                    section.addExpansionListener( new ExpansionAdapter() {
 
-                    boolean firstExpansion = true;
+                        boolean firstExpansion = true;
 
 
-                    @Override
-                    public void expansionStateChanging( ExpansionEvent e ) {
-                        if (firstExpansion && e.getState()) {
-                            provider.createContents( panel, contentBuilder.get() );
-                            panel.layout();
-                            firstExpansion = false;
+                        @Override
+                        public void expansionStateChanging( ExpansionEvent e ) {
+                            if (firstExpansion && e.getState()) {
+                                provider.createContents( panel, contentProviders.stream().toArray( ShareableContentProvider[]::new ) );
+                                panel.layout();
+                                firstExpansion = false;
+                            }
                         }
-                    }
-                } );
+                    } );
+                }
             }
         }
     }

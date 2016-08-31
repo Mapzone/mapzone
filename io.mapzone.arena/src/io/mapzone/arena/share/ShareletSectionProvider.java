@@ -28,8 +28,8 @@ public interface ShareletSectionProvider {
     String title();
 
 
-    void createContents( Composite parent, ShareableContentProvider contentBuilder );
+    void createContents( Composite parent, ShareableContentProvider... contentBuilder );
 
 
-    String supportedType();
+    String[] supportedTypes();
 }

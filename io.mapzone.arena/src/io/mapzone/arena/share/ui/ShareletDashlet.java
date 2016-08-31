@@ -19,6 +19,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
 import org.polymap.core.ui.ColumnDataFactory;
@@ -76,14 +77,17 @@ public class ShareletDashlet
     @Override
     public final void createContents( Composite parent ) {
         parent.addMouseListener( this );
-
+        parent.setCursor( Display.getCurrent().getSystemCursor( SWT.CURSOR_HAND ) );
         parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).margins( 10, 0, 10, 0 ).create() );
+
         Label title = getSite().toolkit().createLabel( parent, "", SWT.NONE );
         title.setImage( sharelet.site().image.get() );
         title.addMouseListener( this );
+        title.setCursor( Display.getCurrent().getSystemCursor( SWT.CURSOR_HAND ) );
 
         Label description = getSite().toolkit().createLabel( parent, sharelet.site().description.get(), SWT.WRAP );
         description.addMouseListener( this );
+        description.setCursor( Display.getCurrent().getSystemCursor( SWT.CURSOR_HAND ) );
 
         ColumnDataFactory.on( title ).widthHint( 52 ).heightHint( 52 ).horizAlign( Alignment.CENTER );
         ColumnDataFactory.on( description ).widthHint( 150 ).heightHint( 50 ).horizAlign( Alignment.CENTER );
