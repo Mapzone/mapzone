@@ -14,6 +14,7 @@
  */
 package io.mapzone.arena.csw.jaxb;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,6 +32,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class GetRecordByIdResponseXML {
 
     @XmlElementRef( type=AbstractRecordXML.class )
-    public List<? extends AbstractRecordXML> records;
+    public List<? extends AbstractRecordXML> records = new LinkedList();
 
 }

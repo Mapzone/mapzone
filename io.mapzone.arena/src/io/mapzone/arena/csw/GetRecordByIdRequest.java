@@ -20,21 +20,18 @@ import java.util.Optional;
 
 import java.io.InputStream;
 
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.filter.v1_1.OGCConfiguration;
-import org.geotools.xml.Configuration;
-import org.opengis.filter.FilterFactory2;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 
 import org.polymap.core.runtime.config.Config2;
 import org.polymap.core.runtime.config.Mandatory;
 
 import io.mapzone.arena.csw.jaxb.AbstractRecordXML;
 import io.mapzone.arena.csw.jaxb.GetRecordByIdResponseXML;
+import io.mapzone.arena.csw.jaxb.RecordXML;
 
 /**
  * 
@@ -46,10 +43,6 @@ public class GetRecordByIdRequest<T extends AbstractRecordXML>
 
     private static final Log log = LogFactory.getLog( GetRecordByIdRequest.class );
     
-    private static final Configuration  CONFIGURATION = new OGCConfiguration();
-
-    public static final FilterFactory2  ff = CommonFactoryFinder.getFilterFactory2();
-
     /**
      * Inbound: The identifier to search for.
      */
@@ -80,25 +73,24 @@ public class GetRecordByIdRequest<T extends AbstractRecordXML>
     }
 
     
-//    // test ***********************************************
-//
-//    /**
-//     * Test.
-//     */
-//    public static final void main( String[] args ) throws Exception {
-////        GetRecordsRequest getRecords = new GetRecordsRequest()
-////              .constraint.put( "AnyText Like '%Landschaftsschutzgebiete%'" )
-////              .constraint.put( "*Landschaftsschutzgebiete*" )
-////                .baseUrl.put( "http://www.geokatalog-mittelsachsen.de/geonetwork2.10/srv/eng/csw" );
-//
-//        GetRecordById getRecords = new GetRecordById()
-//                .identifier.put( "e2d17537-1cf3-4406-9980-572e41c027d2" )
-//                .baseUrl.put( "http://localhost:8090/csw" );
-//
-//        SummaryRecordType record = getRecords.execute( new NullProgressMonitor() );
-//        System.out.println( "-----------------------------------");
-//        System.out.println( record.getIdentifier().get( 0 ).getValue().getContent() );
-//        System.out.println( record.getTitle().get( 0 ).getValue().getContent() );
-//    }
+    // test ***********************************************
+
+    /**
+     * Test.
+     */
+    public static final void main( String[] args ) throws Exception {
+//        GetRecordsRequest getRecords = new GetRecordsRequest()
+//              .constraint.put( "AnyText Like '%Landschaftsschutzgebiete%'" )
+//              .constraint.put( "*Landschaftsschutzgebiete*" )
+//                .baseUrl.put( "http://www.geokatalog-mittelsachsen.de/geonetwork2.10/srv/eng/csw" );
+
+        GetRecordByIdRequest<RecordXML> getRecord = new GetRecordByIdRequest<RecordXML>()
+                .identifier.put( "e2d17537-1cf3-4406-9980-572e41c027d2" )
+                .baseUrl.put( "http://localhost:8090/csw" );
+
+        Optional<RecordXML> record = getRecord.execute( new NullProgressMonitor() );
+        System.out.println( "-----------------------------------");
+        System.out.println( record.get().identifier );
+    }
 
 }

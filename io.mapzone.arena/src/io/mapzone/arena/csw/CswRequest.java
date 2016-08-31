@@ -60,6 +60,7 @@ import org.polymap.core.runtime.config.DefaultString;
 import org.polymap.core.runtime.config.Immutable;
 import org.polymap.core.runtime.config.Mandatory;
 
+import io.mapzone.arena.csw.jaxb.GetRecordByIdResponseXML;
 import io.mapzone.arena.csw.jaxb.GetRecordsResponseXML;
 import javanet.staxutils.IndentingXMLStreamWriter;
 
@@ -90,7 +91,7 @@ public abstract class CswRequest<R>
         jaxbContext = new CachedLazyInit( () -> {
             try {
                 //return JAXBContext.newInstance( CSW_JAXB_CONTEXT_PATH, CswRequest.class.getClassLoader() );
-                return JAXBContext.newInstance( GetRecordsResponseXML.class );
+                return JAXBContext.newInstance( GetRecordsResponseXML.class, GetRecordByIdResponseXML.class );
             }
             catch (Exception e) {
                 throw new RuntimeException( e );
