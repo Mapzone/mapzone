@@ -15,6 +15,7 @@ import org.polymap.core.data.feature.AddFeaturesRequest;
 import org.polymap.core.data.feature.FeaturesProducer;
 import org.polymap.core.data.feature.GetFeatureTypeRequest;
 import org.polymap.core.data.feature.GetFeatureTypeResponse;
+import org.polymap.core.data.feature.GetFeaturesBoundsRequest;
 import org.polymap.core.data.feature.GetFeaturesRequest;
 import org.polymap.core.data.feature.GetFeaturesResponse;
 import org.polymap.core.data.feature.GetFeaturesSizeRequest;
@@ -96,7 +97,13 @@ public class GraphGeometryProcessor
         throw new RuntimeException( "not yet implemented." );
     }
 
+    
+    @Override
+    public void getFeatureBoundsRequest( GetFeaturesBoundsRequest request, ProcessorContext context ) throws Exception {
+        throw new RuntimeException( "not yet implemented." );
+    }
 
+    
     @Override
     public void setTransactionRequest( TransactionRequest request, ProcessorContext context ) throws Exception {
         throw new RuntimeException( "not yet implemented." );
