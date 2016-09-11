@@ -2,6 +2,8 @@ package io.mapzone.controller.ui.project;
 
 import static org.polymap.core.runtime.UIThreadExecutor.asyncFast;
 import static org.polymap.core.ui.FormDataFactory.on;
+import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.ACTION24;
+import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.COLOR_DANGER;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -12,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -25,6 +28,7 @@ import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.ui.FormLayoutFactory;
 import org.polymap.core.ui.StatusDispatcher;
+import org.polymap.core.ui.UIUtils;
 
 import org.polymap.rhei.batik.BatikPlugin;
 import org.polymap.rhei.batik.Context;
@@ -32,7 +36,6 @@ import org.polymap.rhei.batik.Mandatory;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PanelPath;
 import org.polymap.rhei.batik.Scope;
-import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.toolkit.ConstraintData;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
@@ -188,33 +191,14 @@ public class ProjectInfoPanel
 
 
     protected void createDeleteSection( Composite parent ) {
-        // delete project
         IPanelSection section = tk().createPanelSection( parent, "Danger zone" );
         section.addConstraint( new PriorityConstraint( 0 ), new MinWidthConstraint( 350, 1 ) );
+        section.getTitleControl().setForeground( UIUtils.getColor( COLOR_DANGER ) );
+        section.getBody().setLayout( new FillLayout( SWT.HORIZONTAL ) );
 
-        Button updateBtn = tk().createButton( section.getBody(), "Update", SWT.PUSH, SWT.FLAT );
-        updateBtn.setToolTipText( "Update software version" );
-        updateBtn.addSelectionListener( new SelectionAdapter() {
-            @Override
-            public void widgetSelected( SelectionEvent ev ) {
-                UpdateProjectSoftwareOperation uop = new UpdateProjectSoftwareOperation();
-                uop.project.set( selected.get() );
-
-                // execute sync as long as there is no progress indicator
-                OperationSupport.instance().execute2( uop, false, false, ev2 -> asyncFast( () -> {
-                    if (ev2.getResult().isOK()) {
-                        tk().createSnackbar( Appearance.FadeIn, "Updated" );
-                    }
-                    else {
-                        StatusDispatcher.handleError( "Unable to update project.", ev2.getResult().getException() );
-                    }
-                }));
-            }
-        });
-
-        
+        // delete project
         Button deleteBtn = tk().createButton( section.getBody(), "Destroy this project", SWT.PUSH, SWT.FLAT );
-        deleteBtn.setImage( BatikPlugin.images().svgImage( "delete-circle.svg", SvgImageRegistryHelper.DISABLED24 ) );
+        deleteBtn.setImage( BatikPlugin.images().svgImage( "delete-circle.svg", ACTION24 ) );
         deleteBtn.setToolTipText( "Delete everything!<br/><b>There is no way to get the data back!</b>" );
         deleteBtn.addSelectionListener( new SelectionAdapter() {
             @Override
@@ -232,6 +216,27 @@ public class ProjectInfoPanel
                     }
                     else {
                         StatusDispatcher.handleError( "Unable to delete project.", ev2.getResult().getException() );
+                    }
+                }));
+            }
+        });
+
+        // update project binaries
+        Button updateBtn = tk().createButton( section.getBody(), "Update", SWT.PUSH, SWT.FLAT );
+        updateBtn.setToolTipText( "Update software version" );
+        updateBtn.addSelectionListener( new SelectionAdapter() {
+            @Override
+            public void widgetSelected( SelectionEvent ev ) {
+                UpdateProjectSoftwareOperation uop = new UpdateProjectSoftwareOperation();
+                uop.project.set( selected.get() );
+
+                // execute sync as long as there is no progress indicator
+                OperationSupport.instance().execute2( uop, false, false, ev2 -> asyncFast( () -> {
+                    if (ev2.getResult().isOK()) {
+                        tk().createSnackbar( Appearance.FadeIn, "Updated" );
+                    }
+                    else {
+                        StatusDispatcher.handleError( "Unable to update project.", ev2.getResult().getException() );
                     }
                 }));
             }
