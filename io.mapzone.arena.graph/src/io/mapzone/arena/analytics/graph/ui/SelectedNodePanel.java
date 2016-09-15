@@ -147,8 +147,9 @@ public class SelectedNodePanel
                     on( label ).top( 2 );
                 }
 
-                FeatureTableViewer table = new FeatureTableViewer( parent, SWT.H_SCROLL | SWT.V_SCROLL
-                        | SWT.FULL_SELECTION );
+                FeatureTableViewer table = new FeatureTableViewer( parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION );
+                table.setContentProvider( new CollectionContentProvider() );
+
                 DefaultFeatureTableColumn first = null;
                 for (PropertyDescriptor prop : relatedSource.getSchema().getDescriptors()) {
                     if (!Geometry.class.isAssignableFrom( prop.getType().getBinding() )) {
@@ -158,7 +159,7 @@ public class SelectedNodePanel
                     }
                 }
                 first.sort( SWT.DOWN );
-                table.setContent( new CollectionContentProvider( relatedFeatures.get( relatedSource ) ) );
+                
                 table.setInput( relatedFeatures.get( relatedSource ) );
                 on( table.getControl() ).fill().top( label, 5 ).height( 300 );
                 top = (Composite)table.getControl();
