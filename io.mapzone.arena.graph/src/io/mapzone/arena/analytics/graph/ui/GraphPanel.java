@@ -173,7 +173,7 @@ public class GraphPanel
     @Override
     public void createContents( final Composite parent ) {
         try {
-            if (!featureSelection.isPresent()) {
+            if (!featureLayer.isPresent()) {
                 tk().createFlowText( parent, i18n.get("noFeatures") );
                 return;
             }
@@ -263,7 +263,7 @@ public class GraphPanel
         // must be global, because its used as eventlistener
         // ImageLayerProvider and VectorLayerProvider are supported
 
-        graphLayerProvider = new ImageLayerProvider( tk(), mapViewer, featureSelection.get().layer(), id -> {
+        graphLayerProvider = new ImageLayerProvider( tk(), mapViewer, featureLayer.get().layer(), id -> {
             try {
                 // xxx add a filter for all features with a distance of 1 to the
                 // current feature

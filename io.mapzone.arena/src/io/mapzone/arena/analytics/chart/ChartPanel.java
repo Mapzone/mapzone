@@ -170,17 +170,17 @@ public class ChartPanel
 
     @Override
     public void createContents( @SuppressWarnings("hiding") Composite parent ) {
-        if (!featureSelection.isPresent()) {
+        if (!featureLayer.isPresent()) {
             tk().createFlowText( parent, "Select a layer to by **active** first." );
             return;
         }
-        this.layer = featureSelection.get().layer();
+        this.layer = featureLayer.get().layer();
         this.parent = parent;
         parent.setLayout( FormLayoutFactory.defaults().spacing( 5 ).margins( 0, 5 ).create() );
         
         try {
             // availableAttributes
-            FeatureStore fs = featureSelection.get().waitForFs().get();
+            FeatureStore fs = featureLayer.get().featureSource();
             SimpleFeatureType schema = (SimpleFeatureType)fs.getSchema();
             availableAttributes = new ArrayList();
             for (AttributeDescriptor prop : schema.getAttributeDescriptors()) {

@@ -12,7 +12,7 @@
  */
 package io.mapzone.arena.analytics.graph.ui;
 
-import static org.polymap.p4.layer.FeatureSelection.ff;
+import static org.polymap.p4.layer.FeatureLayer.ff;
 
 import java.util.HashMap;
 import java.util.List;
