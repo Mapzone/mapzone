@@ -26,6 +26,8 @@ import org.apache.commons.logging.LogFactory;
 import com.google.common.collect.Lists;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -48,6 +50,7 @@ import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.LayoutSupplier;
 import org.polymap.cms.ContentProvider;
 
+import io.mapzone.controller.ui.user.RegisterPanel;
 import io.mapzone.controller.um.repository.LoginCookie;
 import io.mapzone.controller.um.repository.User;
 
@@ -76,9 +79,9 @@ public class StartPanel
     public void createContents( @SuppressWarnings("hiding") Composite parent ) {
         this.parent = parent;
         site().maxWidth.set( Integer.MAX_VALUE );
-        site().preferredWidth.set( 650 );
-        site().minWidth.set( SIDE_PANEL_WIDTH );
-        site().title.set( "Welcome to mapzone" );
+        site().preferredWidth.set( 550 );
+        site().minWidth.set( SIDE_PANEL_WIDTH2 );
+        site().title.set( "mapzone" );
         
         // login cookie -> dashboard
         Optional<LoginCookie> loginCookie = LoginCookie.access().findAndUpdate();
@@ -109,20 +112,29 @@ public class StartPanel
         List<String> specials = Lists.newArrayList( "1welcome", "99bottom" );
         
         // banner
-        Composite banner = on( tk().createComposite( parent ) ).fill().noBottom().height( 220 ).control();
+        Composite banner = on( tk().createComposite( parent ) )
+                .fill().noBottom().height( 220 ).control();
         banner.setLayout( FormLayoutFactory.defaults().margins( 0, 0 ).create() );
-        on( tk().createFlowText( banner, cp.findContent( "frontpage/1welcome.md" ).content() ) ).fill().left( 10 ).right( 60 );
         
-        Composite btnContainer = on( tk().createComposite( banner ) ).fill().left( 60 ).right( 90 ).control();
+        Control welcome = on( tk().createFlowText( banner, cp.findContent( "frontpage/1welcome.md" ).content() ) )
+                .fill().left( 10 ).right( 60 ).control();
+        
+        // btn
+        Composite btnContainer = on( tk().createComposite( banner ) )
+                .fill().left( 60 ).right( 100 ).control();
         btnContainer.setLayout( FormLayoutFactory.defaults().create() );
-        Control filled = on( tk().createComposite( btnContainer )).fill().control();
-        Button btn = on( tk().createButton( btnContainer, "Projekt starten..." ) )
-                .top( filled, 0, Alignment.CENTER )
-                .right( 90 ).height( 45 ).width( 200 ).control();
-        btn.setToolTipText( "Ein Datenprojekt anlegen zum Testen und Probieren<br/>Es ist kein Login notwendig. Die Daten werden nicht dauerhaft gespeichert." );
+        Control filled = on( tk().createComposite( btnContainer ) ).fill().control();
+        Button btn = on( tk().createButton( btnContainer, "Try it ...", SWT.PUSH ) )
+                .top( filled, 0, Alignment.CENTER ).left( 10 ).height( 45 ).width( 135 ).control();
+        btn.setToolTipText( "Test drive mapzone for free" );
         btn.moveAbove( null );
-        
-        //on( tk().createFlowText( btnContainer, "Nutzungsbedingungen..." ) ).top( btn );
+        btn.addSelectionListener( new SelectionAdapter() {
+            @Override
+            public void widgetSelected( SelectionEvent ev ) {
+                getContext().openPanel( site().path(), RegisterPanel.ID );
+            }
+        });
+        welcome.moveAbove( null );
         
         // article grid
         Composite grid = on( tk().createComposite( parent ) ).fill().top( banner ).bottom( 100, -80 ).control();
@@ -141,7 +153,7 @@ public class StartPanel
                         content = content.substring( title.length() + 2 );
                     }
 
-                    IPanelSection article = tk().createPanelSection( grid, title, SWT.BORDER );
+                    IPanelSection article = tk().createPanelSection( grid, title, SWT.NONE );
                     article.getControl().setLayoutData( ColumnDataFactory.defaults().heightHint( 300 ).widthHint( 380 ).create() );
                     tk().createFlowText( article.getBody(), content );
                 });
