@@ -153,7 +153,7 @@ public class StartPanel
                         content = content.substring( title.length() + 2 );
                     }
 
-                    IPanelSection article = tk().createPanelSection( grid, title, SWT.NONE );
+                    IPanelSection article = tk().createPanelSection( grid, title, SWT.BORDER );
                     article.getControl().setLayoutData( ColumnDataFactory.defaults().heightHint( 300 ).widthHint( 380 ).create() );
                     tk().createFlowText( article.getBody(), content );
                 });
