@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import com.google.common.collect.Lists;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
@@ -41,14 +42,15 @@ import org.polymap.core.ui.ColumnDataFactory;
 import org.polymap.core.ui.ColumnLayoutFactory;
 import org.polymap.core.ui.FormDataFactory.Alignment;
 import org.polymap.core.ui.FormLayoutFactory;
-
 import org.polymap.rhei.batik.BatikApplication;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PropertyAccessEvent;
 import org.polymap.rhei.batik.toolkit.ConstraintLayout;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.LayoutSupplier;
+
 import org.polymap.cms.ContentProvider;
+import org.polymap.cms.ContentProvider.ContentObject;
 
 import io.mapzone.controller.ui.user.RegisterPanel;
 import io.mapzone.controller.um.repository.LoginCookie;
@@ -145,18 +147,7 @@ public class StartPanel
                 .filter( co -> co.contentType().startsWith( "text" ) )
                 .filter( co -> !specials.contains( co.name() ) )
                 .sorted( (co1,co2) -> co1.name().compareToIgnoreCase( co2.name() ) )
-                .forEach( co -> {
-                    String content = co.content();
-                    String title = co.title();
-                    if (content.startsWith( "#" )) {
-                        title = substringBefore( content, "\n" ).substring( 1 );
-                        content = content.substring( title.length() + 2 );
-                    }
-
-                    IPanelSection article = tk().createPanelSection( grid, title, SWT.BORDER );
-                    article.getControl().setLayoutData( ColumnDataFactory.defaults().heightHint( 300 ).widthHint( 380 ).create() );
-                    tk().createFlowText( article.getBody(), content );
-                });
+                .forEach( co -> createArticleSection( grid, co ) );
         
         // bottom links
         Composite bottom = on( tk().createComposite( parent ) ).fill().top( 100, -40 ).control();
@@ -167,6 +158,32 @@ public class StartPanel
                 .control().moveAbove( null );
     }
 
+    
+    protected void createArticleSection( Composite grid, ContentObject co ) {
+        String content = co.content();
+        String title = co.title();
+        if (content.startsWith( "#" )) {
+            title = substringBefore( content, "\n" ).substring( 1 );
+            content = content.substring( title.length() + 2 );
+        }
+
+        IPanelSection section = tk().createPanelSection( grid, title, SWT.BORDER );
+        section.getControl().setLayoutData( ColumnDataFactory.defaults().heightHint( 300 ).widthHint( 380 ).create() );
+        
+        section.getBody().setLayout( FormLayoutFactory.defaults().create() );
+//        on( tk().createLabel( section.getBody(), content ) ).fill().height( 400 ).width( 380 );
+
+        // this generates an iFrame with proper size; this allows to load
+        // scripts/CSS in content *and* is better than a Label which always has
+        // its own idea of its size depending on fonts in content
+        Browser b = new Browser( section.getBody(), SWT.NONE );
+        
+        // XXX moved <head> elements in a <p> which generates a margin on top
+        String html = tk().markdownToHtml( content, b );
+        b.setText( html );
+        on( b ).fill().width( 380 );
+    }
+    
     
     /**
      * Page layout: 800px width    
