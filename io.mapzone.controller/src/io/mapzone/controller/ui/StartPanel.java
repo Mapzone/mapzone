@@ -177,11 +177,11 @@ public class StartPanel
         // scripts/CSS in content *and* is better than a Label which always has
         // its own idea of its size depending on fonts in content
         Browser b = new Browser( section.getBody(), SWT.NONE );
+        on( b ).fill().width( 380 );
         
         // XXX moved <head> elements in a <p> which generates a margin on top
         String html = tk().markdownToHtml( content, b );
         b.setText( html );
-        on( b ).fill().width( 380 );
     }
     
     
