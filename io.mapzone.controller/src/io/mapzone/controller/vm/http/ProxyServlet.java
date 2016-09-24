@@ -35,7 +35,9 @@ import org.apache.http.HttpRequest;
 import org.apache.http.client.methods.CloseableHttpResponse;
 
 import com.google.common.base.Joiner;
+
 import org.polymap.core.runtime.Closer;
+import org.polymap.core.runtime.Timer;
 
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.provision.Provision.Status;
@@ -56,7 +58,7 @@ import io.mapzone.controller.vm.provisions.ReStartProcess;
 public class ProxyServlet
         extends HttpServlet {
 
-    private static Log log = LogFactory.getLog( ProxyServlet.class );
+    private static final Log log = LogFactory.getLog( ProxyServlet.class );
     
     /** The provisions to be handled before {@link ForwardRequest} to the instance. */
     private static final Class[]    forwardRequestProvisions = {
@@ -125,6 +127,8 @@ public class ProxyServlet
     @Override
     protected void service( HttpServletRequest req, HttpServletResponse resp ) throws ServletException, IOException {
         try {
+            Timer timer = new Timer();
+            
             // request
             // XXX job/thread to make it cancelable or timeout?
             ProvisionExecutor executor = new ProvisionExecutor2( forwardRequestProvisions );
@@ -138,6 +142,7 @@ public class ProxyServlet
                 if (forwardRequest.vmUow.isPresent()) {
                     forwardRequest.vmUow.get().commit();
                 }
+                log.info( "Provisioning: " + timer.elapsedTime() + "ms" );
             });
             try {
                 Status status = executor.execute( forwardRequest );
