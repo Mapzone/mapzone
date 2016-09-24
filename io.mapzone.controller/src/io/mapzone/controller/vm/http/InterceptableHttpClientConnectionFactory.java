@@ -102,13 +102,13 @@ class InterceptableHttpClientConnectionFactory
 
             @Override
             protected void onResponseReceived( HttpResponse response ) {
-                log.info( "RECEIVED: " + response );
+                log.debug( "RECEIVED: " + response );
                 InterceptableHttpClientConnectionFactory.this.onResponseReceived( response );
             }
 
             @Override
             protected void onRequestSubmitted( HttpRequest request ) {
-                log.info( "SUBMITTED: " 
+                log.debug( "SUBMITTED: " 
                         + "[" + StringUtils.right( Thread.currentThread().getName(), 2 ) + "] " 
                         + request );
                 InterceptableHttpClientConnectionFactory.this.onRequestSubmitted( request );

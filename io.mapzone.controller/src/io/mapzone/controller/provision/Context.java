@@ -43,7 +43,7 @@ public interface Context<T> {
     
     /**
      * If a value {@link #isPresent()} then return this value, otherwise calls the
-     * given supplier, set the value and returns thies newly set value.
+     * given supplier, set the value and returns this newly set value.
      */
     public T get( Supplier<T> supplier ); 
     

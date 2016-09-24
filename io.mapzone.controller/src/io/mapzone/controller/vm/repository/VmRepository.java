@@ -47,8 +47,8 @@ import org.polymap.recordstore.lucene.LuceneRecordStore;
 /**
  * The registry of all currently active/running Hosts, VMs, processes.
  * <p/>
- * There is one global {@link #instance()}. In order to synchronize concurrent
- * access it exposes the {@link #lock()} method. 
+ * There is one global {@link #instance()}. Concurrent access is synchronized on
+ * {@link Entity} level using {@link NestedOneReaderPessimisticLocking}. 
  * <p/>
  * XXX {@link Entity} is not for concurrent modifications. Is this a problem? 
  *

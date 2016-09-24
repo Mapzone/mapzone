@@ -39,11 +39,11 @@ import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
 public class ProjectURICache
         extends HttpProxyProvision {
 
-    private static Log log = LogFactory.getLog( ProjectURICache.class );
+    private static final Log log = LogFactory.getLog( ProjectURICache.class );
 
     public static final String              NO_HOST = "_no_host_";
 
-    static Cache<ProjectInstanceIdentifier,Object> projectInstanceIds = CacheConfig.defaults().createCache();
+    private static Cache<ProjectInstanceIdentifier,Object> projectInstanceIds = CacheConfig.defaults().createCache();
 
     // instance *******************************************
     
@@ -75,19 +75,18 @@ public class ProjectURICache
             return vmUow().findInstance( pid )
                     .orElseThrow( () -> new HttpProvisionRuntimeException( 404, "No such project: " + pid ) )
                     .id();
-            
         });
         instance.set( vmUow().entity( ProjectInstanceRecord.class, id ) );
 
-        // keeps instance and proces stable
+        // keep instance and process stable
         instance.get().homePath.get();  // force (pessimistic) lock
         if (instance.get().process.isPresent()) {
+            log.info( "PROCESS is present! URI: " + instance.get().uri() );
             process.set( instance.get().process.get() );
             projectUri.set( instance.get().uri() );
         }
         
         checked.set( this );
-
         return OK_STATUS;
     }
     

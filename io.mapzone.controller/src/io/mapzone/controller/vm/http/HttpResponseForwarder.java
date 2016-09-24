@@ -55,7 +55,7 @@ public class HttpResponseForwarder
         extends HttpForwarder 
         implements AutoCloseable {
 
-    private static Log log = LogFactory.getLog( HttpResponseForwarder.class );
+    private static final Log log = LogFactory.getLog( HttpResponseForwarder.class );
     
     private HttpRequestForwarder        requestForwarder;
 
@@ -77,7 +77,7 @@ public class HttpResponseForwarder
         try {
             // Process the response
             int statusCode = proxyResponse.getStatusLine().getStatusCode();
-            log.info( "RESPONSE: " + statusCode );
+            log.debug( "RESPONSE: " + statusCode );
 
             // copying response headers to make sure SESSIONID or other Cookie which
             // comes from remote server

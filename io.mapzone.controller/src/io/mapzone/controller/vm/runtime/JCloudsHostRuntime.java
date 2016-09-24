@@ -36,7 +36,7 @@ import org.polymap.core.runtime.Timer;
 public class JCloudsHostRuntime
         extends HostRuntime {
 
-    static Log log = LogFactory.getLog( JCloudsHostRuntime.class );
+    private static final Log log = LogFactory.getLog( JCloudsHostRuntime.class );
 
     public static final Pattern     NO_FILENAME_CHAR = Pattern.compile( "[^a-zA-Z0-9_-]" );
 
@@ -111,8 +111,8 @@ public class JCloudsHostRuntime
 
 
     protected ScriptExecutionResult executionResult( ExecResponse response ) {
-        log.info( "RESPONSE: " + response.getError() );
-        log.info( "RESPONSE: " + response.getExitStatus() );
+        log.debug( "RESPONSE: " + response.getError() );
+        log.debug( "RESPONSE: " + response.getExitStatus() );
         log.info( "RESPONSE: " + response.getOutput() );
 
         ScriptExecutionResult result = new ScriptExecutionResult();

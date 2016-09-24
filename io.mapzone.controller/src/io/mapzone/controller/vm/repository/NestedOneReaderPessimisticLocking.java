@@ -41,23 +41,18 @@ public class NestedOneReaderPessimisticLocking
             extends OneReaderEntityLock {
 
         protected NestedOneReaderEntityLock() {
-            this.isAquired = uow -> {
-                if (reader == null) {
-                    return false;
-                }
-                return isCompatible( reader.get(), uow );
-            };
+            this.isAquired = uow -> reader != null ? isCompatible( reader.get(), uow ) : false;
         }
 
         protected boolean isCompatible( UnitOfWork uow1, UnitOfWork uow2 ) {
             // uow2 parent of uow1 ?
-            for (UnitOfWork parent=uow1; parent!=null; parent=parent.parent().orElse( null )) {
+            for (UnitOfWork parent = uow1; parent != null; parent = parent.parent().orElse( null )) {
                 if (parent == uow2) {
                     return true;
                 }
             }
             // uow1 parent of uow2 ?
-            for (UnitOfWork parent=uow2; parent!=null; parent=parent.parent().orElse( null )) {
+            for (UnitOfWork parent = uow2; parent != null; parent = parent.parent().orElse( null )) {
                 if (parent == uow1) {
                     return true;
                 }
