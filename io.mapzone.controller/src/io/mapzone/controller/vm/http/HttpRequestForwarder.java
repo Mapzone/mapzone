@@ -1,5 +1,6 @@
 /**
  * Copyright MITRE
+ * Copyright (C) 2016, Falko Bräutigam. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +70,7 @@ public class HttpRequestForwarder
     static Log log = LogFactory.getLog( HttpRequestForwarder.class );
     
     /** Set to {@link PoolingHttpClientConnectionManager#setDefaultMaxPerRoute(int)}. */
-    public static final int             MAX_CONNECTIONS_PER_ROUTE = 6;
+    public static final int             MAX_CONNECTIONS_PER_ROUTE = 12;
     
     /** Set to {@link PoolingHttpClientConnectionManager#setMaxTotal(int)}. */
     public static final int             MAX_CONNECTIONS = 100;

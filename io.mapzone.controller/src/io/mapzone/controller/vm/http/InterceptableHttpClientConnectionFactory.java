@@ -39,11 +39,11 @@ import org.apache.http.impl.io.DefaultHttpRequestWriterFactory;
 import org.polymap.core.runtime.config.ConfigurationFactory;
 
 /**
- * This allows to intercept processing of an {@link HttpRequest} to an upsream
+ * This allows to intercept processing of an {@link HttpRequest} to an upstream
  * project instance *right after* request was send - *before* start waiting on
  * response. A bit rough way to really split the execution of the REQUEST and
- * RESPONSE provision. {@link HttpClient} does not provide a more natural way
- * to do this.
+ * RESPONSE provision. {@link HttpClient} does not provide a more natural way to do
+ * this.
  *
  * @author Falko Bräutigam
  */
