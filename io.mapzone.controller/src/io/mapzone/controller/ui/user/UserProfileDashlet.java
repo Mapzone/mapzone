@@ -14,8 +14,7 @@
  */
 package io.mapzone.controller.ui.user;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -40,6 +39,7 @@ import org.polymap.core.security.UserPrincipal;
 
 import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.Scope;
+import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.dashboard.DashletSite;
 import org.polymap.rhei.batik.dashboard.DefaultDashlet;
 import org.polymap.rhei.batik.toolkit.ConstraintData;
@@ -106,7 +106,7 @@ public class UserProfileDashlet
     protected String createUserText() {
         DateFormat df = SimpleDateFormat.getDateInstance( SimpleDateFormat.MEDIUM, RWT.getLocale() );
         return Joiner.on( "\n" ).join(
-                "## " + user.fullname.get(),
+                "**" + user.fullname.get() + "**  \n",
                 createLine( "account-multiple-outline.svg", user.company.get(), null ),
                 createLine( "email-outline.svg", user.email.get(), "mailto:" + user.email.get() ),
                 createLine( "link-variant.svg", user.website.get(), "http://" + user.website.get() ),
@@ -118,16 +118,17 @@ public class UserProfileDashlet
     
     protected String createOrgsText() {
         return Joiner.on( "\n" ).join(
-                "## Organizations",
+                "**Organizations**  \n",
                 "No organizations yet.",
                 "<br/>" );
     }
 
     
     protected String createLine( String svg, String text, String link ) {
+        text = isBlank( text ) ? "-" : text;
         return Joiner.on( "" ).join( 
-                "* <span style=\"vertical-align:middle\">![", svg, "](#", svg, "@normal12)</span> ",
-                (!isEmpty( link ) && !isEmpty( text )
+                "<span style=\"vertical-align:middle\">![", svg, "](#", svg, "@", SvgImageRegistryHelper.DISABLED12, ")</span> ",
+                (!isBlank( link ) && !isBlank( text )
                         ? Joiner.on( "" ).join( "[", text, "](", link, ")" )
                         : text),
                 "<br/>" );
