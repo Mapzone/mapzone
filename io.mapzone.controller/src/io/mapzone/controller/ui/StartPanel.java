@@ -126,7 +126,7 @@ public class StartPanel
                 .fill().left( 60 ).right( 100 ).control();
         btnContainer.setLayout( FormLayoutFactory.defaults().create() );
         Control filled = on( tk().createComposite( btnContainer ) ).fill().control();
-        Button btn = on( tk().createButton( btnContainer, "Start ...", SWT.PUSH ) )
+        Button btn = on( tk().createButton( btnContainer, "Start...", SWT.PUSH ) )
                 .top( filled, 0, Alignment.CENTER ).left( 10 ).height( 45 ).width( 135 ).control();
         btn.setToolTipText( "Test drive mapzone for free" );
         btn.moveAbove( null );
