@@ -73,6 +73,8 @@ public class ControllerPlugin extends AbstractUIPlugin {
 		
 		// allow SVG images in markdown
 		DefaultToolkit.registerMarkdownRenderer( () -> new SvgImageRenderer() );
+		images.putConfig( "frontpage", new SvgImageRegistryHelper.ReplaceBlackSvgConfiguration( 
+		        SvgImageRegistryHelper.COLOR_ACTION, 128 ) );
 		
 		// JAAS config: no dialog; let LoginPanel create UI
         SecurityContext.registerConfiguration( () -> new StandardConfiguration() {
