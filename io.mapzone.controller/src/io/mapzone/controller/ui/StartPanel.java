@@ -115,7 +115,7 @@ public class StartPanel
         
         // banner
         Composite banner = on( tk().createComposite( parent ) )
-                .fill().noBottom().height( 220 ).control();
+                .fill().noBottom().height( 200 ).control();
         banner.setLayout( FormLayoutFactory.defaults().margins( 0, 0 ).create() );
         
         Control welcome = on( tk().createFlowText( banner, cp.findContent( "frontpage/1welcome.md" ).content() ) )
@@ -126,7 +126,7 @@ public class StartPanel
                 .fill().left( 60 ).right( 100 ).control();
         btnContainer.setLayout( FormLayoutFactory.defaults().create() );
         Control filled = on( tk().createComposite( btnContainer ) ).fill().control();
-        Button btn = on( tk().createButton( btnContainer, "Try it ...", SWT.PUSH ) )
+        Button btn = on( tk().createButton( btnContainer, "Start ...", SWT.PUSH ) )
                 .top( filled, 0, Alignment.CENTER ).left( 10 ).height( 45 ).width( 135 ).control();
         btn.setToolTipText( "Test drive mapzone for free" );
         btn.moveAbove( null );
@@ -168,7 +168,7 @@ public class StartPanel
         }
 
         IPanelSection section = tk().createPanelSection( grid, title, SWT.BORDER );
-        section.getControl().setLayoutData( ColumnDataFactory.defaults().heightHint( 300 ).widthHint( 380 ).create() );
+        section.getControl().setLayoutData( ColumnDataFactory.defaults().heightHint( 300 ).widthHint( 350 ).create() );
         
         section.getBody().setLayout( FormLayoutFactory.defaults().create() );
 //        on( tk().createLabel( section.getBody(), content ) ).fill().height( 400 ).width( 380 );
