@@ -7,13 +7,14 @@ import org.osgi.framework.BundleContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.eclipse.swt.graphics.RGB;
+
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import org.polymap.core.CorePlugin;
 import org.polymap.core.security.SecurityContext;
 import org.polymap.core.security.StandardConfiguration;
 import org.polymap.core.ui.StatusDispatcher;
-
 import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.toolkit.BatikDialogStatusAdapter;
 import org.polymap.rhei.batik.toolkit.DefaultToolkit;
@@ -73,8 +74,10 @@ public class ControllerPlugin extends AbstractUIPlugin {
 		
 		// allow SVG images in markdown
 		DefaultToolkit.registerMarkdownRenderer( () -> new SvgImageRenderer() );
-		images.putConfig( "frontpage", new SvgImageRegistryHelper.ReplaceBlackSvgConfiguration( 
-		        SvgImageRegistryHelper.COLOR_ACTION, 128 ) );
+        //RGB rgb = new RGB( 128, 128, 128 );
+        RGB rgb = SvgImageRegistryHelper.COLOR_NORMAL;
+        images.putConfig( "frontpage", new SvgImageRegistryHelper.ReplaceBlackSvgConfiguration( rgb, 164 ) );
+        images.putConfig( "frontpage2", new SvgImageRegistryHelper.ReplaceBlackSvgConfiguration( rgb, 200 ) );
 		
 		// JAAS config: no dialog; let LoginPanel create UI
         SecurityContext.registerConfiguration( () -> new StandardConfiguration() {

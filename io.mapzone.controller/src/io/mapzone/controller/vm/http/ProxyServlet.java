@@ -148,7 +148,7 @@ public class ProxyServlet
                 Status status = executor.execute( forwardRequest );
                 if (!status.severity( OK )) {
                     // no successful provisioning found 
-                    throw new HttpProvisionRuntimeException( 503, "Sorry. Project is currently not available." );
+                    throw new HttpProvisionRuntimeException( 503, "Sorry. Project is not available currently." );
                 }
             }
             catch (HttpProvisionRuntimeException e) {
