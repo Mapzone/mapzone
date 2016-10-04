@@ -14,12 +14,12 @@
  */
 package io.mapzone.controller.ui.project;
 
-import static io.mapzone.controller.ControllerPlugin.OK_ICON_CONFIG;
 import static org.polymap.core.runtime.event.TypeEventFilter.ifType;
 import static org.polymap.core.ui.ColumnDataFactory.Alignment.CENTER;
 import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL24;
 
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -33,9 +33,6 @@ import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.ViewerCell;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.client.service.UrlLauncher;
-
 import org.polymap.core.runtime.event.EventHandler;
 import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.ui.ColumnDataFactory;
@@ -46,9 +43,11 @@ import org.polymap.core.ui.SelectionAdapter;
 import org.polymap.core.ui.UIUtils;
 
 import org.polymap.rhei.batik.BatikApplication;
+import org.polymap.rhei.batik.BatikPlugin;
 import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.Mandatory;
 import org.polymap.rhei.batik.Scope;
+import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.dashboard.DashletSite;
 import org.polymap.rhei.batik.dashboard.DefaultDashlet;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
@@ -64,7 +63,6 @@ import io.mapzone.controller.ui.project.ProjectLabelProvider.Type;
 import io.mapzone.controller.um.repository.EntityChangedEvent;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.User;
-import io.mapzone.controller.vm.http.ProxyServlet;
 
 /**
  * 
@@ -187,14 +185,12 @@ public class ProjectsDashlet
         viewer.firstSecondaryActionProvider.set( new ActionProvider() {
             @Override
             public void update( ViewerCell cell ) {
-                cell.setImage( ControllerPlugin.images().svgImage( "rocket.svg", OK_ICON_CONFIG ) );
+                cell.setImage( BatikPlugin.images().svgImage( "chevron-right.svg", SvgImageRegistryHelper.DISABLED24 ) );
             }
             @Override
             public void perform( @SuppressWarnings("hiding") MdListViewer viewer, Object elm ) {
-                Project project = (Project)elm;
-                String projectUrl = ProxyServlet.relativeClientUrl( project );
-                UrlLauncher launcher = RWT.getClient().getService( UrlLauncher.class );
-                launcher.openURL( projectUrl );
+                selected.set( (Project)elm );
+                BatikApplication.instance().getContext().openPanel( getSite().panelSite().getPath(), ProjectInfoPanel.ID );                        
             }
         });
         

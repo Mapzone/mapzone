@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
@@ -21,8 +22,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.client.service.UrlLauncher;
 
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.UIThreadExecutor;
@@ -38,6 +37,7 @@ import org.polymap.rhei.batik.PanelPath;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.toolkit.ConstraintData;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
+import org.polymap.rhei.batik.toolkit.MinHeightConstraint;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
@@ -131,18 +131,28 @@ public class ProjectInfoPanel
 
     
     protected void createLaunchSection( Composite parent ) {
-        Button btn = tk().createButton( parent, "Launch", SWT.PUSH, SWT.FLAT );
-        btn.setLayoutData( new ConstraintData( new PriorityConstraint( 100 ) ) );
+        String projectUrl = ProxyServlet.relativeClientUrl( selected.get() );
+        
+        CLabel btn = new CLabel( parent, SWT.CENTER );
+        tk().adapt( btn, false, false );
+        btn.setText( "<a target=\"_blanc\" href=\"" + projectUrl + "\" "
+                + "style=\"font-size: 20px;\""
+                + ">Launch...</a>" );
         btn.setImage( ControllerPlugin.images().svgImage( "rocket.svg", ControllerPlugin.OK_ICON_CONFIG ) );
+        btn.setAlignment( SWT.CENTER );
+        btn.setBackground( parent.getBackground() );
+                
+//        Button btn = tk().createButton( parent, "Launch", SWT.PUSH, SWT.FLAT );
+//        btn.addSelectionListener( new SelectionAdapter() {
+//            @Override
+//            public void widgetSelected( SelectionEvent ev ) {
+//                UrlLauncher launcher = RWT.getClient().getService( UrlLauncher.class );
+//                launcher.openURL( projectUrl );
+//            }
+//        });
+        
+        btn.setLayoutData( new ConstraintData( new PriorityConstraint( 100 ), new MinHeightConstraint( 35, 1 ) ) );
         btn.setToolTipText( "Launch this project in another browser tab" );
-        btn.addSelectionListener( new SelectionAdapter() {
-            @Override
-            public void widgetSelected( SelectionEvent ev ) {
-                String projectUrl = ProxyServlet.relativeClientUrl( selected.get() );
-                UrlLauncher launcher = RWT.getClient().getService( UrlLauncher.class );
-                launcher.openURL( projectUrl );
-            }
-        });
     }
 
 
