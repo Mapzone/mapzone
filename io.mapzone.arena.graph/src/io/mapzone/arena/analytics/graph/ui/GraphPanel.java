@@ -69,7 +69,6 @@ import io.mapzone.arena.analytics.graph.GraphFunction;
 import io.mapzone.arena.analytics.graph.GraphPlugin;
 import io.mapzone.arena.analytics.graph.Messages;
 import io.mapzone.arena.analytics.graph.Node;
-import io.mapzone.arena.analytics.graph.OrganisationPersonGraphFunction;
 import io.mapzone.arena.analytics.graph.SingleSourceNodeGraphFunction;
 import io.mapzone.arena.analytics.graph.algo.GephiGraph;
 
@@ -81,22 +80,22 @@ import io.mapzone.arena.analytics.graph.algo.GephiGraph;
 public class GraphPanel
         extends P4Panel {
 
-//    
-//    public class LayerInput {
-//
-//        private static Log log = LogFactory.getLog( LayerInput.class );
-//    }
+    private static final Log            log = LogFactory.getLog( GraphPanel.class );
+
+    public static final PanelIdentifier ID = PanelIdentifier.parse( "graph" );
+
+    private static final IMessages      i18n = Messages.forPrefix( "GraphPanel" );
+
+    // XXX replace with extension point
+    public static final Class<GraphFunction>[] AVAILABLE_FUNCTIONS = new Class[] {
+            // HiddenOrganisationPersonGraphFunction.class, 
+            // OrganisationPersonGraphFunction.class,
+            SingleSourceNodeGraphFunction.class };
 
 
     private static final String         NODE_STYLE_IDENTIFIER = "nodeStyleIdentifier";
 
     private static final String         EDGE_STYLE_IDENTIFIER = "edgeStyleIdentifier";
-
-    private static Log                  log                   = LogFactory.getLog( GraphPanel.class );
-
-    private static final IMessages      i18n                  = Messages.forPrefix( "GraphPanel" );
-
-    public static final PanelIdentifier ID                    = PanelIdentifier.parse( "graph" );
 
     // instance *******************************************
 
@@ -164,12 +163,7 @@ public class GraphPanel
         }
     }
 
-    // XXX replace with extension point
-    public static final Class<GraphFunction>[] availableFunctions = new Class[] {
-            /* HiddenOrganisationPersonGraphFunction.class, */ OrganisationPersonGraphFunction.class,
-            SingleSourceNodeGraphFunction.class };
-
-
+    
     @Override
     public void createContents( final Composite parent ) {
         try {
@@ -185,7 +179,7 @@ public class GraphPanel
             new EdgeStylerItem( toolbar );
 
             final TreeMap<String,GraphFunction> functions = Maps.newTreeMap();
-            for (Class<GraphFunction> cl : availableFunctions) {
+            for (Class<GraphFunction> cl : AVAILABLE_FUNCTIONS) {
                 try {
                     GraphFunction function = cl.newInstance();
                     functions.put( function.title(), function );
@@ -197,8 +191,7 @@ public class GraphPanel
 
             final Composite functionContainer = tk().createComposite( parent, SWT.NONE );
 
-            final ComboViewer combo = new ComboViewer( parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN
-                    | SWT.READ_ONLY );
+            final ComboViewer combo = new ComboViewer( parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN | SWT.READ_ONLY );
             combo.setContentProvider( new ArrayContentProvider() );
             combo.setInput( functions.keySet() );
             combo.addSelectionChangedListener( ev -> {
@@ -235,7 +228,7 @@ public class GraphPanel
 
             //
             // mapContainer
-            mapContainer = tk().createComposite( parent, SWT.BORDER );
+            mapContainer = tk().createComposite( parent, SWT.NONE );
             mapContainer.setLayout( new FillLayout() );
             if (mapViewer != null) {
                 mapViewer.dispose();
@@ -243,7 +236,7 @@ public class GraphPanel
             createMapViewer();
 
             // layout
-            on( toolbar.getControl() ).left( 0, 3 ).right( 100, -3 ).top( 0 );
+            on( toolbar.getControl() ).left( 0, 3 ).right( 100, -3 ).top( 0, 5 );
             
             final Label selectLabel = tk().createLabel( parent, i18n.get( "selectFunction" ), SWT.NONE );
             on( selectLabel ).top( toolbar.getControl(), 8 ).left( 1 );
@@ -285,6 +278,7 @@ public class GraphPanel
         // mapViewer.addMapControl( new ScaleLineControl() );
 
         mapViewer.setInput( graphLayerProvider.layers() );
+        mapViewer.getControl().setBackground( UIUtils.getColor( 0xff, 0xff, 0xff ) );
         mapContainer.layout();
 
         graph = new GephiGraph( graphLayerProvider.graphUi() );
