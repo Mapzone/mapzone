@@ -54,6 +54,14 @@
                   href="batikres/css/md/flowtext.css"
                   rel="stylesheet">
             </link>
+            <meta
+                  content="%description"
+                  name="description">
+            </meta>
+            <meta
+                  content="%keywords"
+                  name="keywords">
+            </meta>
          </additionalHeaders>
       </branding>
    </extension>

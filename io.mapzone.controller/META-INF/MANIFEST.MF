@@ -5,6 +5,7 @@ Bundle-SymbolicName: io.mapzone.controller;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: io.mapzone.controller.ControllerPlugin
 Bundle-Vendor: mapzone.io
+Bundle-Localization: plugin
 Require-Bundle: org.eclipse.equinox.http.registry;bundle-version="1.1.300",
  org.eclipse.equinox.security;bundle-version="1.0.200",
  org.eclipse.rap.ui;bundle-version="2.3.1",
