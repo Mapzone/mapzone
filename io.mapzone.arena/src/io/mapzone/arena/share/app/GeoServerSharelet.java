@@ -86,14 +86,16 @@ public class GeoServerSharelet
             String authToken = ArenaPlugin.instance().config().getServiceAuthToken();
             String url = content.url.toExternalForm() + (authToken != null ? "?authToken=" + authToken + "&" : "?");
             String wms = url + "SERVICE=WMS&REQUEST=GetCapabilities";
-            createField( tk(), parent, "<a href=\"" + wms + "\" target=\"_blank\">Web Map Service (WMS)</a>", field -> {
+            createField( tk(), parent, "Web Map Service (WMS)", field -> {
                 adaptLayout( tk().createText( field, wms, SWT.READ_ONLY ) );
+                adaptLayout( tk().createLabel( field, "<a href=\"" + wms + "\" target=\"_blank\">Test...</a>" ) );
             });
 
             // WFS
             String wfs = url + "SERVICE=WFS&REQUEST=GetCapabilities";
-            createField( tk(), parent, "<a href=\"" + wfs + "\" target=\"_blank\">Web Feature Service (WFS)</a>", field -> {
+            createField( tk(), parent, "Web Feature Service (WFS)", field -> {
                 adaptLayout( tk().createText( field, wfs, SWT.READ_ONLY ) );
+                adaptLayout( tk().createLabel( field, "<a href=\"" + wfs + "\" target=\"_blank\">Test...</a>" ) );
             });
         }
 
