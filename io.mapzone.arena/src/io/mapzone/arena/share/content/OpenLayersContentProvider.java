@@ -15,9 +15,6 @@ package io.mapzone.arena.share.content;
 import java.util.StringJoiner;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.vividsolutions.jts.geom.Coordinate;
 
 import io.mapzone.arena.ArenaPlugin;
@@ -33,20 +30,25 @@ import io.mapzone.arena.share.ui.ShareContext.SelectionDescriptor;
 public class OpenLayersContentProvider
         implements ShareableContentProvider {
 
+    public final static String MIMETYPE = "application/openlayers";
     
-    public class OpenLayersContent implements ShareableContent {
+    public class OpenLayersContent 
+            implements ShareableContent {
 
         public String jsressource;
+
         public String cssressource;
+
         public String body;
+
         public String js;
+
         public String complete;
-
     }
-    private static Log         log      = LogFactory.getLog( OpenLayersContentProvider.class );
 
-    public final static String MIMETYPE = "application/openlayers";
-
+    
+    // instance *******************************************
+    
     private ShareContext  context;
 
 

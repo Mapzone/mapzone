@@ -12,6 +12,8 @@
  */
 package io.mapzone.arena.share.app;
 
+import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL48;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -62,7 +64,8 @@ public class FacebookSharelet
         site.title.set( i18n.get( "title" ) );
         site.description.set( i18n.get( "description" ) );
         site.priority.set( 200 );
-        site.image.set( ArenaPlugin.images().image( "resources/icons/facebook48.png" ) );
+        site.image.set( ArenaPlugin.images().svgImage( "facebook-box.svg", NORMAL48 ) );
+        //site.image.set( ArenaPlugin.images().image( "resources/icons/facebook48.png" ) );
         super.init( site );
     }
 

@@ -12,6 +12,8 @@
  */
 package io.mapzone.arena.share.app;
 
+import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL48;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -53,8 +55,6 @@ import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.ui.ColumnDataFactory;
 
-import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
-
 import org.polymap.rap.updownload.download.DownloadService.ContentProvider;
 
 import io.mapzone.arena.ArenaPlugin;
@@ -87,7 +87,7 @@ public class EMailSharelet
         site.title.set( i18n.get( "title" ) );
         site.description.set( i18n.get( "description" ) );
         site.priority.set( 211 );
-        site.image.set( ArenaPlugin.images().svgImage( "email-outline.svg", SvgImageRegistryHelper.NORMAL48 ) );
+        site.image.set( ArenaPlugin.images().svgImage( "email-outline.svg", NORMAL48 ) );
         super.init( site );
     }
 
