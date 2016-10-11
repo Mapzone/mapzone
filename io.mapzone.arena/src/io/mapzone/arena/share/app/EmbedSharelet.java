@@ -12,6 +12,8 @@
  */
 package io.mapzone.arena.share.app;
 
+import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL48;
+
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -29,8 +31,6 @@ import org.eclipse.rap.rwt.client.service.UrlLauncher;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.ui.ColumnDataFactory;
 import org.polymap.core.ui.ColumnDataFactory.Alignment;
-
-import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 
 import org.polymap.rap.updownload.download.DownloadService.ContentProvider;
 
@@ -66,7 +66,7 @@ public class EmbedSharelet
         site.title.set( i18n.get( "title" ) );
         site.description.set( i18n.get( "description" ) );
         site.priority.set( 210 );
-        site.image.set( ArenaPlugin.images().svgImage( "embed.svg", SvgImageRegistryHelper.NORMAL48 ) );
+        site.image.set( ArenaPlugin.images().svgImage( "format-float-left.svg", NORMAL48 ) );
         super.init( site );
     }
 
