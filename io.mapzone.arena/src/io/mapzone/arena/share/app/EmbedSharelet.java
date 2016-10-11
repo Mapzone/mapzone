@@ -13,6 +13,7 @@
 package io.mapzone.arena.share.app;
 
 import java.util.List;
+
 import com.google.common.collect.Lists;
 
 import org.eclipse.swt.SWT;
@@ -28,18 +29,21 @@ import org.eclipse.rap.rwt.client.service.UrlLauncher;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.ui.ColumnDataFactory;
 import org.polymap.core.ui.ColumnDataFactory.Alignment;
+
 import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
+
 import org.polymap.rap.updownload.download.DownloadService.ContentProvider;
 
 import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.Messages;
 import io.mapzone.arena.jmx.ArenaConfig;
-import io.mapzone.arena.share.content.ArenaContentProvider.ArenaContent;
-import io.mapzone.arena.share.content.ImagePngContentProvider.ImagePngContent;
-import io.mapzone.arena.share.content.OpenLayersContentProvider.OpenLayersContent;
+import io.mapzone.arena.share.DefaultSectionProvider;
 import io.mapzone.arena.share.Sharelet;
 import io.mapzone.arena.share.ShareletSectionProvider;
 import io.mapzone.arena.share.ShareletSite;
+import io.mapzone.arena.share.content.ArenaContentProvider.ArenaContent;
+import io.mapzone.arena.share.content.ImagePngContentProvider.ImagePngContent;
+import io.mapzone.arena.share.content.OpenLayersContentProvider.OpenLayersContent;
 import io.mapzone.arena.share.content.ShareableContentProvider;
 import io.mapzone.arena.share.ui.JsFiddleButton;
 
@@ -47,6 +51,7 @@ import io.mapzone.arena.share.ui.JsFiddleButton;
  * Sharelet to embed e.g. javascript, image or JS in a blog or website.
  *
  * @author Steffen Stundzig
+ * @author Falko Bräutigam
  */
 public class EmbedSharelet
         extends Sharelet {
@@ -66,45 +71,48 @@ public class EmbedSharelet
     }
 
 
-    private ShareletSectionProvider javascript() {
-        return new ShareletSectionProvider() {
+    /**
+     * 
+     */
+    protected class JavascriptSectionProvider
+            extends DefaultSectionProvider {
 
-            @Override
-            public String title() {
-                return i18n.get( "openlayers_title" );
-            }
+        @Override
+        public String title() {
+            return i18n.get( "openlayers_title" );
+        }
 
+        @Override
+        public String[] supportedTypes() {
+            return new String[] { "application/openlayers" };
+        }
 
-            @Override
-            public String[] supportedTypes() {
-                return new String[] { "application/openlayers" };
-            }
+        @Override
+        public void createContents( Composite parent, ShareableContentProvider... contentBuilders ) {
+            OpenLayersContent content = (OpenLayersContent)contentBuilders[0].get();
 
+            adaptLayout( tk().createLabel( parent, i18n.get( "openlayers_head" ), SWT.WRAP ) )
+                    .setEnabled( false );
 
-            @Override
-            public void createContents( Composite parent, ShareableContentProvider... contentBuilders ) {
-                OpenLayersContent content = (OpenLayersContent)contentBuilders[0].get();
+            createField( tk(), parent, "&lt;html&gt;&lt;head&gt;", field -> {
+                ColumnDataFactory.on( tk().createText( field, content.cssressource + "\n" + content.jsressource, 
+                        SWT.BORDER, SWT.WRAP, SWT.READ_ONLY ) )
+                        .widthHint( width() ).heightHint( 35 );                
+            });
 
-                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "openlayers_head" ), SWT.WRAP ) ).widthHint( preferredWidth( parent ) );//.heightHint( 60 );
+            createField( tk(), parent, i18n.get( "openlayers_body" ), field -> {
+                adaptLayout( tk().createText( field, content.body, SWT.BORDER, SWT.READ_ONLY ) );
+            });
 
-                Text head = tk().createText( parent, content.cssressource + "\n"
-                        + content.jsressource, SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
-                ColumnDataFactory.on( head ).widthHint( preferredWidth( parent ) ).heightHint( 40 );
+            createField( tk(), parent, i18n.get( "openlayers_complete" ), field -> {
+                ColumnDataFactory.on( tk().createText( field, content.complete, 
+                        SWT.BORDER, SWT.WRAP, SWT.READ_ONLY ) )
+                        .widthHint( width() ).heightHint( 180 );
+            });
 
-                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "openlayers_body" ), SWT.WRAP ) ).widthHint( preferredWidth( parent ) );//.heightHint( 40 );
-
-                Text body = tk().createText( parent, content.body, SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
-                ColumnDataFactory.on( body ).widthHint( preferredWidth( parent ) ).heightHint( 20 );
-
-                ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "openlayers_complete" ), SWT.WRAP ) ).widthHint( preferredWidth( parent ) );//.heightHint( 60 );
-
-                Text text = tk().createText( parent, content.complete, SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
-                ColumnDataFactory.on( text ).widthHint( preferredWidth( parent ) ).heightHint( 180 );
-
-                JsFiddleButton jsFiddle = new JsFiddleButton( parent, tk(), content.body, content.js, content.jsressource, content.cssressource );
-                ColumnDataFactory.on( jsFiddle.control() ).widthHint( 36 ).heightHint( 36 ).horizAlign( Alignment.RIGHT );
-            }
-        };
+            JsFiddleButton jsFiddle = new JsFiddleButton( parent, tk(), content.body, content.js, content.jsressource, content.cssressource );
+            ColumnDataFactory.on( jsFiddle.control() ).heightHint( 36 ).horizAlign( Alignment.CENTER );
+        }
     }
 
 
@@ -151,12 +159,10 @@ public class EmbedSharelet
                 return i18n.get( "image_title" );
             }
 
-
             @Override
             public String[] supportedTypes() {
                 return new String[] { "image/png" };
             }
-
 
             @Override
             public void createContents( final Composite parent, final ShareableContentProvider... contentBuilders ) {
@@ -179,8 +185,6 @@ public class EmbedSharelet
                 oreview.append( "'/>" );
 
                 Label l = tk().createLabel( parent, oreview.toString(), SWT.BORDER );
-                l.setData( RWT.MARKUP_ENABLED, Boolean.TRUE );
-                // l.setText( "<i>This</i> <ins>is</ins> <b>markup!</b>" );
                 ColumnDataFactory.on( l ).widthHint( Math.min( width, content.previewWidth ) ).heightHint( content.previewHeight );
                 l.addMouseListener( new MouseListener() {
 
@@ -206,7 +210,7 @@ public class EmbedSharelet
 
 
     public List<ShareletSectionProvider> sections() {
-        return Lists.newArrayList( javascript(), iframe(), screenshot() );
+        return Lists.newArrayList( new JavascriptSectionProvider(), iframe(), screenshot() );
     }
 
 }

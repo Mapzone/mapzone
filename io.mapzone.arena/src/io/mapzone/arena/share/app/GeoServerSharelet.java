@@ -85,13 +85,13 @@ public class GeoServerSharelet
             WmsUrlContent content = (WmsUrlContent)contentBuilders[0].get();
             String url = content.url.toExternalForm() + "?";
             String wms = url + "SERVICE=WMS&REQUEST=GetCapabilities";
-            createField( tk(), parent, "<a href=\"" + wms + "\" target=\"_blanc\">Web Map Service (WMS)</a>", field -> {
+            createField( tk(), parent, "<a href=\"" + wms + "\" target=\"_blank\">Web Map Service (WMS)</a>", field -> {
                 adaptLayout( tk().createText( field, wms, SWT.READ_ONLY ) );
             });
 
             // WFS
             String wfs = url + "SERVICE=WFS&REQUEST=GetCapabilities";
-            createField( tk(), parent, "<a href=\"" + wfs + "\" target=\"_blanc\">Web Feature Service (WFS)</a>", field -> {
+            createField( tk(), parent, "<a href=\"" + wfs + "\" target=\"_blank\">Web Feature Service (WFS)</a>", field -> {
                 adaptLayout( tk().createText( field, wfs, SWT.READ_ONLY ) );
             });
         }

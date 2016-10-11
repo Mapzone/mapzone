@@ -45,7 +45,7 @@ public class JsFiddleButton {
     public JsFiddleButton( Composite parent, IPanelToolkit tk, String htmlCode, String jsCode, String... resources ) {
         button = tk.createButton( parent, "", SWT.NONE );
         button.setImage( ArenaPlugin.images().svgImage( "jsfiddle.svg", P4Plugin.HEADER_ICON_CONFIG ) );
-        button.setToolTipText( "jsfiddle.net" );
+        button.setToolTipText( "Try it on jsfiddle.net" );
         button.addSelectionListener( new SelectionAdapter() {
 
             @Override
