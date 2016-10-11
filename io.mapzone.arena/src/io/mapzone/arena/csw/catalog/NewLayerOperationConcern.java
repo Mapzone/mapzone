@@ -46,7 +46,8 @@ import org.polymap.p4.layer.NewLayerOperation;
 import io.mapzone.arena.csw.catalog.MapzoneProjectResolver.MapzoneProjectResourceInfo;
 
 /**
- * If {@link MapzoneProjectResourceInfo} then provide UI chooser for WMS/WFS/Clone.
+ * If resource is a {@link MapzoneProjectResourceInfo} then provide UI chooser for
+ * WMS/WFS/Clone.
  *
  * @author Falko Bräutigam
  */

@@ -10,12 +10,9 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  */
-package io.mapzone.arena.share;
+package io.mapzone.arena.share.app;
 
 import java.util.List;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.google.common.collect.Lists;
 
 import org.eclipse.swt.SWT;
@@ -40,6 +37,9 @@ import io.mapzone.arena.jmx.ArenaConfig;
 import io.mapzone.arena.share.content.ArenaContentProvider.ArenaContent;
 import io.mapzone.arena.share.content.ImagePngContentProvider.ImagePngContent;
 import io.mapzone.arena.share.content.OpenLayersContentProvider.OpenLayersContent;
+import io.mapzone.arena.share.Sharelet;
+import io.mapzone.arena.share.ShareletSectionProvider;
+import io.mapzone.arena.share.ShareletSite;
 import io.mapzone.arena.share.content.ShareableContentProvider;
 import io.mapzone.arena.share.ui.JsFiddleButton;
 
@@ -50,8 +50,6 @@ import io.mapzone.arena.share.ui.JsFiddleButton;
  */
 public class EmbedSharelet
         extends Sharelet {
-
-    private static Log             log  = LogFactory.getLog( EmbedSharelet.class );
 
     private static final IMessages i18n = Messages.forPrefix( "EmbedSharelet" );
 

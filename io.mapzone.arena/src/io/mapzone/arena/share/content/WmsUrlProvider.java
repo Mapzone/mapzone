@@ -22,33 +22,35 @@ import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.share.ui.ShareContext;
 
 /**
- * Creates an url to the ows.
+ * Creates an URL of the ows.
  *
  * @author Steffen Stundzig
  */
-public class WMSUrlProvider
+public class WmsUrlProvider
         implements ShareableContentProvider {
 
     
-    public class WMSUrlContent implements ShareableContent {
+    private static final Log log = LogFactory.getLog( WmsUrlProvider.class );
+
+    public final static String MIMETYPE = "application/wms";
+
+    /**
+     * 
+     */
+    public class WmsUrlContent implements ShareableContent {
 
         public URL url;
 
-        public WMSUrlContent( URL url ) {
+        public WmsUrlContent( URL url ) {
             this.url = url;
         }
     }
 
 
-    private static Log         log      = LogFactory.getLog( WMSUrlProvider.class );
-
-    public final static String MIMETYPE = "application/wms";
-
-
     @Override
-    public WMSUrlContent get() {
+    public WmsUrlContent get() {
         try {
-            return new WMSUrlContent(new URL( ArenaPlugin.instance().config().getProxyUrl() + "/ows" ));
+            return new WmsUrlContent(new URL( ArenaPlugin.instance().config().getProxyUrl() + "/ows" ));
         }
         catch (MalformedURLException e) {
             throw new RuntimeException( e );

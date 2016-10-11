@@ -12,9 +12,6 @@
  */
 package io.mapzone.arena.share.ui;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -45,10 +42,6 @@ import io.mapzone.arena.share.Sharelet;
 public class ShareletDashlet
         extends DefaultDashlet
         implements MouseListener {
-
-    private static final long               serialVersionUID = 1L;
-
-    private static Log                      log              = LogFactory.getLog( ShareletDashlet.class );
 
     private Sharelet                        sharelet;
 
@@ -89,8 +82,8 @@ public class ShareletDashlet
         description.addMouseListener( this );
         description.setCursor( Display.getCurrent().getSystemCursor( SWT.CURSOR_HAND ) );
 
-        ColumnDataFactory.on( title ).widthHint( 52 ).heightHint( 52 ).horizAlign( Alignment.CENTER );
-        ColumnDataFactory.on( description ).widthHint( 150 ).heightHint( 50 ).horizAlign( Alignment.CENTER );
+        ColumnDataFactory.on( title ).heightHint( 60 ).horizAlign( Alignment.CENTER );
+        ColumnDataFactory.on( description ).widthHint( 160 ).heightHint( 35 ).horizAlign( Alignment.CENTER );
     }
 
 

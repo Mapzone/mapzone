@@ -14,22 +14,30 @@ package io.mapzone.arena.share;
 
 import org.eclipse.swt.widgets.Composite;
 
+import org.eclipse.ui.forms.widgets.ColumnLayout;
+
 import io.mapzone.arena.share.content.ShareableContentProvider;
 
 /**
- * If a sharelet contains different sections, than for each section a new provider
- * should be implemented.
+ * Provides a section of a {@link Sharelet}.
  * 
- *
  * @author Steffen Stundzig
+ * @author Falko Bräutigam
  */
 public interface ShareletSectionProvider {
 
-    String title();
+    public String title();
 
+    /**
+     * <p/>
+     * The given parent has a default {@link ColumnLayout} set. This might be chnaged
+     * if necessary.
+     *
+     * @param parent The parent Composite with default {@link ColumnLayout} set.
+     * @param contentBuilder
+     */
+    public void createContents( Composite parent, ShareableContentProvider... contentBuilder );
 
-    void createContents( Composite parent, ShareableContentProvider... contentBuilder );
-
-
-    String[] supportedTypes();
+    public String[] supportedTypes();
+    
 }

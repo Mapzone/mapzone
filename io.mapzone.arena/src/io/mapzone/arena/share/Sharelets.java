@@ -17,6 +17,11 @@ import com.google.common.collect.Lists;
 
 import org.polymap.core.runtime.session.SessionSingleton;
 
+import io.mapzone.arena.share.app.EMailSharelet;
+import io.mapzone.arena.share.app.EmbedSharelet;
+import io.mapzone.arena.share.app.FacebookSharelet;
+import io.mapzone.arena.share.app.GeoServerSharelet;
+
 /**
  * Extension point to add more sharelet classes.
  *
@@ -25,20 +30,23 @@ import org.polymap.core.runtime.session.SessionSingleton;
 public class Sharelets
         extends SessionSingleton {
 
+    private final static List<Class<? extends Sharelet>> available = Lists.newArrayList( 
+            FacebookSharelet.class,
+            EMailSharelet.class,
+            EmbedSharelet.class, 
+            GeoServerSharelet.class );
+
+    
+    // instance *******************************************
+    
     public final static Sharelets instance() {
         return instance( Sharelets.class );
     }
 
-    @SuppressWarnings( "unchecked" )
-    private final static List<Class<? extends Sharelet>> shareletClasses = Lists.newArrayList( 
-            FacebookSharelet.class,
-            EMailSharelet.class,
-            EmbedSharelet.class );
-
 
     public List<Sharelet> get() {
         List<Sharelet> sharelets = Lists.newArrayList();
-        for (Class<? extends Sharelet> clazz : shareletClasses) {
+        for (Class<? extends Sharelet> clazz : available) {
             Sharelet instance;
             try {
                 instance = clazz.newInstance();

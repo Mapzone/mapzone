@@ -23,11 +23,12 @@ import org.polymap.core.runtime.config.PropertyChangeSupport;
 
 import org.polymap.rhei.batik.toolkit.IPanelToolkit;
 
+import org.polymap.p4.P4Panel;
+
 import io.mapzone.arena.share.ui.ShareContext;
 
 /**
  * All necessary informations to configure and run a sharelet.
- * 
  *
  * @author Steffen Stundzig
  */
@@ -55,9 +56,10 @@ public class ShareletSite
     public Config<IPanelToolkit> tk;
 
     @Mandatory
+    @DefaultInt( P4Panel.SIDE_PANEL_WIDTH )
     public Config<Integer>       preferredWidth;
 
     @Mandatory
-    @DefaultInt(value=100)
+    @DefaultInt( value=100 )
     public Config<Integer>       priority;
 }

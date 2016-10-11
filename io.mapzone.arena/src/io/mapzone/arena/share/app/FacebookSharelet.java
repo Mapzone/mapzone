@@ -10,7 +10,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  */
-package io.mapzone.arena.share;
+package io.mapzone.arena.share.app;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +37,9 @@ import org.polymap.core.ui.ColumnDataFactory.Alignment;
 import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.Messages;
 import io.mapzone.arena.share.content.ArenaContentProvider.ArenaContent;
+import io.mapzone.arena.share.Sharelet;
+import io.mapzone.arena.share.ShareletSectionProvider;
+import io.mapzone.arena.share.ShareletSite;
 import io.mapzone.arena.share.content.ShareableContentProvider;
 import io.mapzone.arena.share.content.ShareableContentProviders;
 import io.mapzone.arena.share.ui.ShareletPanel;

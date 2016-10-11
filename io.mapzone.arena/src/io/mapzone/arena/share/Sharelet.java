@@ -14,6 +14,7 @@ package io.mapzone.arena.share;
 
 import java.util.List;
 
+import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
 /**
@@ -23,6 +24,9 @@ import org.polymap.rhei.batik.toolkit.md.MdToolkit;
  */
 public abstract class Sharelet {
 
+    /** The default config for SVG icons to be used for {@link ShareletSite#image}. */
+    public static final String ICON_CONFIG = SvgImageRegistryHelper.NORMAL48;
+    
     private ShareletSite      site;
 
 

@@ -12,9 +12,6 @@
  */
 package io.mapzone.arena.share.ui;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.eclipse.swt.widgets.Composite;
 import org.polymap.core.mapeditor.MapViewer;
 import org.polymap.core.project.ILayer;
@@ -44,15 +41,13 @@ import io.mapzone.arena.share.Sharelets;
 public class SharePanel
         extends P4Panel {
 
-    private static Log                  log                   = LogFactory.getLog( SharePanel.class );
+    public static final String          SCOPE = "share";
 
-    public static final String          SCOPE                 = "share";
+    public static final PanelIdentifier ID = PanelIdentifier.parse( SCOPE );
 
-    public static final PanelIdentifier ID                    = PanelIdentifier.parse( SCOPE );
+    private static final IMessages      i18n = Messages.forPrefix( "SharePanel" );
 
-    private static final IMessages      i18n                  = Messages.forPrefix( "SharePanel" );
-
-    private static final String         SOURCES_ID            = "sourcesDashboard";
+    private static final String         SOURCES_ID = "sourcesDashboard";
 
     private Dashboard                   sourcesDashboard;
 
@@ -76,6 +71,7 @@ public class SharePanel
 
     @Override
     public void init() {
+        super.init();
         site().title.set( i18n.get( "title" ) );
         site().setSize( SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH2, Integer.MAX_VALUE );
 
@@ -112,7 +108,6 @@ public class SharePanel
             ShareletSite site = new ShareletSite();
             site.tk.set( site().toolkit() );
             site.context.set( shareContext.get() );
-            site.preferredWidth.set( Math.min( parent.getDisplay().getClientArea().width, 350 ) );
             sharelet.init( site );
             sourcesDashboard.addDashlet( new ShareletDashlet( sharelet ) );
         }

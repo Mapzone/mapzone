@@ -33,7 +33,7 @@ public class ShareableContentProviders
             ArenaContentProvider.class, 
             ImagePngContentProvider.class,
             OpenLayersContentProvider.class, 
-            WMSUrlProvider.class );
+            WmsUrlProvider.class );
 
 
     public Optional<ShareableContentProvider> get( final String mimeType, final ShareContext context ) {

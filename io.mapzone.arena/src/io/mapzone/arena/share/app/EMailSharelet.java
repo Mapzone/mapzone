@@ -10,7 +10,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
  */
-package io.mapzone.arena.share;
+package io.mapzone.arena.share.app;
 
 import java.util.Date;
 import java.util.List;
@@ -67,6 +67,9 @@ import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.Messages;
 import io.mapzone.arena.share.content.ArenaContentProvider.ArenaContent;
 import io.mapzone.arena.share.content.ImagePngContentProvider.ImagePngContent;
+import io.mapzone.arena.share.Sharelet;
+import io.mapzone.arena.share.ShareletSectionProvider;
+import io.mapzone.arena.share.ShareletSite;
 import io.mapzone.arena.share.content.ShareableContentProvider;
 
 /**
