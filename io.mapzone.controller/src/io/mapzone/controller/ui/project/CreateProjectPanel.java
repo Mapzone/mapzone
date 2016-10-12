@@ -5,7 +5,6 @@ import static org.polymap.rhei.batik.toolkit.md.dp.dp;
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.ops.CreateProjectOperation;
 import io.mapzone.controller.ui.CtrlPanel;
-import io.mapzone.controller.ui.DashboardPanel;
 import io.mapzone.controller.um.repository.Project;
 
 import org.apache.commons.logging.Log;
@@ -65,11 +64,11 @@ public class CreateProjectPanel
     
     @Override
     public boolean wantsToBeShown() {
-        if (parentPanel().get() instanceof DashboardPanel) {
-            site().title.set( "" );
-            site().icon.set( icon );
-            return true;
-        }
+//        if (parentPanel().get() instanceof DashboardPanel) {
+//            site().title.set( "" );
+//            site().icon.set( icon );
+//            return true;
+//        }
         return false;
     }
 

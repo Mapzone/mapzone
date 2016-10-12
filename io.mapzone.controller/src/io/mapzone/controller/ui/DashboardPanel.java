@@ -27,8 +27,9 @@ import org.polymap.rhei.batik.contribution.ContributionManager;
 import org.polymap.rhei.batik.dashboard.Dashboard;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 
+import org.polymap.cms.ArticlePanel;
+
 import io.mapzone.controller.ui.project.ProjectsDashlet;
-import io.mapzone.controller.ui.user.UserProfileDashlet;
 import io.mapzone.controller.um.repository.LoginCookie;
 import io.mapzone.controller.um.repository.ProjectRepository;
 
@@ -80,11 +81,14 @@ public class DashboardPanel
         dashboard = new Dashboard( getSite(), DASHBOARD_ID );
         dashboard.addDashlet( new ProjectsDashlet().addConstraint( new PriorityConstraint( 5 ) ) );
 //        dashboard.addDashlet( new ActivitiesDashlet().addConstraint( new PriorityConstraint( 10 ) ) );
-        dashboard.addDashlet( new UserProfileDashlet() );
+//        dashboard.addDashlet( new UserProfileDashlet() );
         
         if (user.get().projects().isEmpty()) {
-            dashboard.addDashlet( new WelcomeDashlet( "ui/dashboard-welcome.md")
-                    .addConstraint( new PriorityConstraint( 10 ) ) );
+            getContext().openPanel( site().path(), ArticlePanel.ID )
+                    .ifPresent( panel -> ((ArticlePanel)panel).setArticle( "ui/dashboard-welcome.md" ) ); 
+
+//            dashboard.addDashlet( new WelcomeDashlet( "ui/dashboard-welcome.md")
+//                    .addConstraint( new PriorityConstraint( 10 ) ) );
         }
         
         dashboard.createContents( parent );

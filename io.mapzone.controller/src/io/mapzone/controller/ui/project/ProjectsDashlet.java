@@ -37,8 +37,6 @@ import org.polymap.core.runtime.event.EventHandler;
 import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.ui.ColumnDataFactory;
 import org.polymap.core.ui.ColumnLayoutFactory;
-import org.polymap.core.ui.FormDataFactory;
-import org.polymap.core.ui.FormLayoutFactory;
 import org.polymap.core.ui.SelectionAdapter;
 import org.polymap.core.ui.UIUtils;
 
@@ -85,12 +83,14 @@ public class ProjectsDashlet
 
     private Composite                       parent;
 
+    private MdToolkit                       tk;
+
     
     @Override
     public void init( DashletSite site ) {
         super.init( site );
         site.title.set( "Projects" );
-        site.constraints.get().add( new MinWidthConstraint( 350, 10 ) );
+        site.constraints.get().add( new MinWidthConstraint( 1350, 10 ) );
 //        site.constraints.get().add( new MinHeightConstraint( dp(72)*3 , 10 ) );
         
         EventManager.instance().subscribe( this, ifType( EntityChangedEvent.class, ev -> 
@@ -139,23 +139,20 @@ public class ProjectsDashlet
     @Override
     public void createContents( @SuppressWarnings("hiding") Composite parent ) {
         this.parent = parent;
+        this.tk = (MdToolkit)getSite().toolkit();
+
+        // margin: shadows
+        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( 5 ).margins( 0, 3 ).create() );
+        
         if (user.get().projects().isEmpty()) {
             createWelcomeContents();
         }
         else {
             createListContents();            
         }
-    }
-
-    
-    protected void createWelcomeContents() {
-        // margin: shadows
-        parent.setLayout( ColumnLayoutFactory.defaults().columns( 1, 1 ).spacing( 5 ).margins( 0, 3 ).create() );
         
-        MdToolkit tk = (MdToolkit)getSite().toolkit(); 
-        tk.createFlowText( parent, ContentProvider.instance().findContent( "ui/projects-welcome.md").content() );
-        
-        Button btn = tk.createButton( parent, "Create a project", SWT.PUSH );
+        Button btn = tk.createButton( parent, "New project...", SWT.PUSH );
+        btn.setImage( ControllerPlugin.images().svgImage( "plus-circle.svg", SvgImageRegistryHelper.WHITE24 ) );
         btn.setLayoutData( ColumnDataFactory.defaults().widthHint( 200 ).horizAlign( CENTER ).create() );
         btn.addSelectionListener( new org.eclipse.swt.events.SelectionAdapter() {
             @Override
@@ -165,12 +162,14 @@ public class ProjectsDashlet
             }
         });
     }
+
+    
+    protected void createWelcomeContents() {
+        tk.createFlowText( parent, ContentProvider.instance().findContent( "ui/projects-welcome.md").content() );
+    }
     
     
     protected void createListContents() {
-        parent.setLayout( FormLayoutFactory.defaults().create() );
-        
-        MdToolkit tk = (MdToolkit)getSite().toolkit(); 
         viewer = tk.createListViewer( parent, SWT.FULL_SELECTION );
         viewer.setContentProvider( new ListTreeContentProvider() );
         
@@ -205,7 +204,7 @@ public class ProjectsDashlet
         } );
         viewer.setInput( user.get().projects() );
         
-        viewer.getControl().setLayoutData( FormDataFactory.filled()/*.height( dp(72)*2  )*/.create() );
+        //viewer.getControl().setLayoutData( FormDataFactory.filled()/*.height( dp(72)*2  )*/.create() );
     }
     
 }
