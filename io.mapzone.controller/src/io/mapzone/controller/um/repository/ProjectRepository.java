@@ -1,8 +1,6 @@
 package io.mapzone.controller.um.repository;
 
 import static org.polymap.model2.query.Expressions.eq;
-import static org.polymap.model2.query.Expressions.or;
-
 import io.mapzone.controller.um.launcher.ArenaLauncher;
 import io.mapzone.controller.um.launcher.EclipseProjectLauncher;
 import io.mapzone.controller.um.launcher.JvmProjectLauncher;
@@ -15,6 +13,7 @@ import java.util.Set;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -148,13 +147,22 @@ public class ProjectRepository {
         }
 
 
-        public Optional<User> findUser( String usernameOrEmail ) {
+        public Optional<User> findUser( String username ) {
+            assert !StringUtils.isBlank( username );
             ResultSet<User> rs = delegate().query( User.class )
-                    .where( or( 
-                            eq( User.TYPE.name, usernameOrEmail ),
-                            eq( User.TYPE.email, usernameOrEmail ) ) )
+                    .where( eq( User.TYPE.name, username ) )
                     .execute();
-            assert rs.size() <= 1;
+            assert rs.size() <= 1 : "Username found: " + rs.size() + " times: " + username;
+            return rs.stream().findAny();
+        }
+
+        
+        public Optional<User> findUserForEmail( String email ) {
+            assert !StringUtils.isBlank( email );
+            ResultSet<User> rs = delegate().query( User.class )
+                    .where( eq( User.TYPE.email, email ) )
+                    .execute();
+            assert rs.size() <= 1 : "EMail found: " + rs.size() + " times: " + email;
             return rs.stream().findAny();
         }
 

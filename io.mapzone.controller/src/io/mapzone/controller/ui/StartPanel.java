@@ -222,6 +222,9 @@ public class StartPanel
     }
 
 
+    /** 
+     * Triggered by {@link StartPanel} and {@link RegisterPanel}.
+     */
     @EventHandler( display=true )
     protected void userLogedIn( PropertyAccessEvent ev ) {
         openDashboard();    

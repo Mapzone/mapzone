@@ -2,8 +2,6 @@ package io.mapzone.controller.ui.user;
 
 import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL24;
 
-import java.util.Optional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,10 +12,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-
 import org.polymap.core.operation.OperationSupport;
+import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.security.SecurityContext;
 import org.polymap.core.ui.ColumnLayoutFactory;
@@ -46,9 +42,9 @@ import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.Messages;
 import io.mapzone.controller.ops.CreateUserOperation;
 import io.mapzone.controller.ui.CtrlPanel;
-import io.mapzone.controller.ui.DashboardPanel;
 import io.mapzone.controller.ui.StartPanel;
 import io.mapzone.controller.ui.util.PropertyAdapter;
+import io.mapzone.controller.um.repository.LoginCookie;
 
 /**
  * 
@@ -141,40 +137,42 @@ public class RegisterPanel
 
         // btn
         okBtn = tk().createButton( form.getContents(), i18n.get( "okBtn" ), SWT.PUSH );
-        //okBtn.setBackground( UIUtils.getColor( SvgImageRegistryHelper.COLOR_OK ) );
         okBtn.setEnabled( false );
         okBtn.addSelectionListener( new SelectionAdapter() {
             public void widgetSelected( SelectionEvent ev ) {
-                try {
-                    form.submit( null );
-                }
-                catch (Exception e ) {
-                    site().toolkit().createSnackbar( Appearance.FadeIn, i18n.get( "errorText", e.getMessage() ) );
-                    return;
-                }
-
-                OperationSupport.instance().execute( op, true, false, new JobChangeAdapter() {
-                    @Override
-                    public void done( IJobChangeEvent ev2 ) {
-                        if (ev2.getResult().isOK()) {
-                            String username = op.user.get().name.get();
-                            userPrincipal.set( SecurityContext.instance().loginTrusted( username ) );
-                            
-                            //getSite().setStatus( new Status( IStatus.OK, ControllerPlugin.ID, i18n.get( "okText" ) ) );
-                            getContext().closePanel( site().path() );
-                            getContext().openPanel( site().path(), DashboardPanel.ID );                        
-                        }
-                        else {
-                            site().toolkit().createSnackbar( Appearance.FadeIn, i18n.get( "errorText", ev2.getResult().getMessage() ) );                                
-                        }
-                    }
-                });                    
+                submit();
             }
         });
         
         form.addFieldListener( this );
     }
 
+    
+    protected void submit() {
+        try {
+            form.submit( null );
+        }
+        catch (Exception e ) {
+            site().toolkit().createSnackbar( Appearance.FadeIn, i18n.get( "errorText", e.getMessage() ) );
+            return;
+        }
+
+        OperationSupport.instance().execute2( op, true, false, ev2 -> {
+            UIThreadExecutor.async( () -> {
+                if (ev2.getResult().isOK()) {
+                    String username = op.user.get().name.get();
+                    // triggers StartPanel#userLoggedIn() call openDashboard() now
+                    userPrincipal.set( SecurityContext.instance().loginTrusted( username ) );
+                    // XXX keep us logged in, even if user has not confirmed
+                    LoginCookie.access().create( username );
+                }
+                else {
+                    site().toolkit().createSnackbar( Appearance.FadeIn, i18n.get( "errorText", ev2.getResult().getMessage() ) );                                
+                }
+            });
+        });                    
+    }
+    
     
     @Override
     public void fieldChange( FormFieldEvent ev ) {
@@ -224,8 +222,14 @@ public class RegisterPanel
                     .validator.put( new NotEmptyValidator() {
                         @Override
                         public String validate( Object fieldValue ) {
-                            return Optional.ofNullable( super.validate( fieldValue ) )
-                                    .orElse( op.umUow.get().findUser( (String)fieldValue ).isPresent() ? "Username is already taken" : null );
+                            String isEmpty = super.validate( fieldValue );
+                            if (isEmpty != null) {
+                                return isEmpty;
+                            }
+                            else if (op.umUow.get().findUser( (String)fieldValue ).isPresent()) {
+                                return "Username is already taken";                                
+                            }
+                            return null;
                         }
                     }).create();
             
@@ -248,7 +252,7 @@ public class RegisterPanel
                             if (invalidSyntax != null) {// valid syntax
                                 return invalidSyntax; 
                             }
-                            else if (op.umUow.get().findUser( (String)fieldValue ).isPresent() ) {
+                            else if (op.umUow.get().findUserForEmail( (String)fieldValue ).isPresent() ) {
                                 return "EMail is already taken";
                             }
                             return null;
