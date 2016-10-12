@@ -1,15 +1,10 @@
 package io.mapzone.controller.ui.user;
 
 import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL24;
-import io.mapzone.controller.ControllerPlugin;
-import io.mapzone.controller.Messages;
-import io.mapzone.controller.ops.CreateUserOperation;
-import io.mapzone.controller.ui.CtrlPanel;
-import io.mapzone.controller.ui.DashboardPanel;
-import io.mapzone.controller.ui.StartPanel;
-import io.mapzone.controller.ui.util.PropertyAdapter;
+
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -26,7 +21,6 @@ import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.security.SecurityContext;
 import org.polymap.core.ui.ColumnLayoutFactory;
-
 import org.polymap.rhei.batik.BatikPlugin;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
@@ -47,6 +41,14 @@ import org.polymap.rhei.form.IFormPageSite;
 import org.polymap.rhei.form.batik.BatikFormContainer;
 
 import org.polymap.cms.ContentProvider;
+
+import io.mapzone.controller.ControllerPlugin;
+import io.mapzone.controller.Messages;
+import io.mapzone.controller.ops.CreateUserOperation;
+import io.mapzone.controller.ui.CtrlPanel;
+import io.mapzone.controller.ui.DashboardPanel;
+import io.mapzone.controller.ui.StartPanel;
+import io.mapzone.controller.ui.util.PropertyAdapter;
 
 /**
  * 
@@ -139,6 +141,7 @@ public class RegisterPanel
 
         // btn
         okBtn = tk().createButton( form.getContents(), i18n.get( "okBtn" ), SWT.PUSH );
+        //okBtn.setBackground( UIUtils.getColor( SvgImageRegistryHelper.COLOR_OK ) );
         okBtn.setEnabled( false );
         okBtn.addSelectionListener( new SelectionAdapter() {
             public void widgetSelected( SelectionEvent ev ) {
@@ -180,8 +183,7 @@ public class RegisterPanel
             okBtn.setEnabled( false );            
 
             if (ev.getFieldName().equals( "password" )) {
-                String password = (String)ev.getNewModelValue().orElse( null );
-                op.password.set( password );
+                ev.getNewModelValue().ifPresent( password -> op.password.set( (String)password ) );
             }
             
             okBtn.setEnabled( form.isValid() );
@@ -227,21 +229,31 @@ public class RegisterPanel
                         }
                     }).create();
             
-            site.newFormField( new PropertyAdapter( op.user.get().email ) )
-                    .validator.put( Validators.AND( new NotEmptyValidator(), new EMailAddressValidator() {
-                        @Override
-                        public String validate( Object fieldValue ) {
-                            return Optional.ofNullable( super.validate( fieldValue ) )
-                                    .orElse( op.umUow.get().findUser( (String)fieldValue ).isPresent() ? "EMail is already taken" : null );
-                        }
-                    }))
-                    .create();
-            
             site.newFormField( new PlainValuePropertyAdapter( "password", "" ) )
                     .field.put( new StringFormField( Style.PASSWORD ) )
                     .label.put( "Password" )
-                    .tooltip.put( "Minimum 7 chars containing at least one lower case, one upper case, one digit. " )
-                    .validator.put( new PasswordValidator().minLength.put( 7 ) )
+                    .tooltip.put( "At least 7 chars, one uppercase letter, one numeral." )
+                    .validator.put( new PasswordValidator().minLength.put( 7 ).oneDigit.put( true ).oneUpperCase.put( true ) )
+                    .create();
+            
+            site.newFormField( new PropertyAdapter( op.user.get().email ) )
+                    .tooltip.put( "Valid email allows to reset password if lost" )
+                    .validator.put( Validators.AND( /*new NotEmptyValidator(),*/ new EMailAddressValidator() {
+                        @Override
+                        public String validate( Object fieldValue ) {
+                            if (StringUtils.isBlank( (CharSequence)fieldValue )) {   // empty is ok
+                                return null;
+                            }
+                            String invalidSyntax = super.validate( fieldValue );
+                            if (invalidSyntax != null) {// valid syntax
+                                return invalidSyntax; 
+                            }
+                            else if (op.umUow.get().findUser( (String)fieldValue ).isPresent() ) {
+                                return "EMail is already taken";
+                            }
+                            return null;
+                        }
+                    }))
                     .create();
         }
         
