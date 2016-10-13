@@ -77,7 +77,7 @@ public class RegisterPanel
     @Override
     public boolean wantsToBeShown() {
         if (parentPanel().get() instanceof StartPanel) {
-            getSite().setTitle( "" ).setTooltip( "Sign up" );
+            getSite().setTitle( "" ).setTooltip( i18n.get( "title" ) );
             getSite().setIcon( ControllerPlugin.images().svgImage( "account-plus.svg", ControllerPlugin.HEADER_ICON_CONFIG ) ); 
             return true;
         }
@@ -88,7 +88,7 @@ public class RegisterPanel
     @Override
     public void init() {
         super.init();
-        site().setSize( SIDE_PANEL_WIDTH2, SIDE_PANEL_WIDTH2+50, SIDE_PANEL_WIDTH2+50 );
+        site().setSize( SIDE_PANEL_WIDTH2, SIDE_PANEL_WIDTH2+30, SIDE_PANEL_WIDTH2+30 );
         op = new CreateUserOperation();
         op.createEntity();
     }
