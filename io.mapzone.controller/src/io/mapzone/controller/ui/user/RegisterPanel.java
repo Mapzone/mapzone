@@ -88,7 +88,7 @@ public class RegisterPanel
     @Override
     public void init() {
         super.init();
-        site().setSize( SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH2, SIDE_PANEL_WIDTH2 );
+        site().setSize( SIDE_PANEL_WIDTH2, SIDE_PANEL_WIDTH2+50, SIDE_PANEL_WIDTH2+50 );
         op = new CreateUserOperation();
         op.createEntity();
     }
@@ -125,11 +125,12 @@ public class RegisterPanel
 
         // welcome section
         welcomeSection = tk().createPanelSection( parent, i18n.get( "title" ) );
-        welcomeSection.addConstraint( new PriorityConstraint( 10 ), new MinWidthConstraint( 450, 0 ) );
+        welcomeSection.addConstraint( new PriorityConstraint( 10 ), 
+                new MinWidthConstraint( site().preferredWidth.get(), 0 ) );
         tk().createFlowText( welcomeSection.getBody(), ContentProvider.instance().findContent( "ui/register-welcome.md").content() );
 
         // form section
-        formSection = tk().createPanelSection( parent, "Personal account settings", SWT.BORDER );
+        formSection = tk().createPanelSection( parent, "Create your personal account", SWT.BORDER );
         formSection.getBody().setLayout( ColumnLayoutFactory.defaults().spacing( 8 ).margins( 0, 0 ).create() );
         
         form = new BatikFormContainer( new NamePasswordForm() );
