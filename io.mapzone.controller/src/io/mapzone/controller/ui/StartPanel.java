@@ -29,10 +29,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 
 import org.polymap.core.runtime.StreamIterable;
 import org.polymap.core.runtime.UIThreadExecutor;
@@ -80,9 +82,7 @@ public class StartPanel
     @Override
     public void createContents( @SuppressWarnings("hiding") Composite parent ) {
         this.parent = parent;
-        site().maxWidth.set( Integer.MAX_VALUE );
-        site().preferredWidth.set( 550 );
-        site().minWidth.set( SIDE_PANEL_WIDTH2 );
+        site().setSize( SIDE_PANEL_WIDTH2, 550, Integer.MAX_VALUE );
         site().title.set( "mapzone" );
         
         // login cookie -> dashboard
@@ -115,11 +115,27 @@ public class StartPanel
         
         // banner
         Composite banner = on( tk().createComposite( parent ) )
-                .fill().noBottom().height( 200 ).control();
+                .fill().noBottom()/*.height( 200 )*/.control();
         banner.setLayout( FormLayoutFactory.defaults().margins( 0, 0 ).create() );
         
-        Control welcome = on( tk().createFlowText( banner, cp.findContent( "frontpage/1welcome.md" ).content() ) )
-                .fill().left( 10 ).right( 60 ).control();
+        Label welcome = new Label( banner, SWT.WRAP ) {
+            @Override
+            public Point computeSize( int wHint, int hHint, boolean changed ) {
+                // suppress default text size computation in order to avoid flickering
+                // caused by client side font size determination
+                double area = 596 * 222;
+                int height = Math.max( Math.min( (int)(area / wHint), 280 ), 160 );
+                Point result = new Point( wHint, height );
+                log.info( "" + result );
+                return result;
+            }
+        };
+        tk().adapt( welcome, false, false );
+        welcome.setText( tk().markdownToHtml( cp.findContent( "frontpage/1welcome.md" ).content(), welcome ) );
+        on( welcome ).fill().left( 10 ).right( 60 );
+        
+//        Control welcome = on( tk().createFlowText( banner, cp.findContent( "frontpage/1welcome.md" ).content() ) )
+//                .fill().left( 10 ).right( 60 ).control();
         
         // btn
         Composite btnContainer = on( tk().createComposite( banner ) )
