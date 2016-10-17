@@ -126,7 +126,7 @@ public class StartPanel
                 double area = 596 * 222;
                 int height = Math.max( Math.min( (int)(area / wHint), 280 ), 160 );
                 Point result = new Point( wHint, height );
-                log.info( "" + result );
+                //log.info( "" + result );
                 return result;
             }
         };
