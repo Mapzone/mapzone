@@ -33,6 +33,8 @@ import org.polymap.rhei.form.DefaultFormPage;
 import org.polymap.rhei.form.IFormPageSite;
 import org.polymap.rhei.form.batik.BatikFormContainer;
 
+import org.polymap.cms.ContentProvider;
+
 /**
  * 
  *
@@ -97,8 +99,10 @@ public class CreateProjectPanel
         
         // welcome
         IPanelSection welcomeSection = tk.createPanelSection( parent, "Set up a new project" );
-        welcomeSection.addConstraint( new PriorityConstraint( 100 ), new MinWidthConstraint( 350, 1 ) );
-        tk.createFlowText( welcomeSection.getBody(), "Choose an Organization your are member of. Or you choose to create a personal project. Personal projects can be asigned to an Organization later." );
+        welcomeSection.addConstraint( new PriorityConstraint( 100 ), new MinWidthConstraint( 1000, 1 ) );
+        tk.createFlowText( welcomeSection.getBody(), 
+                ContentProvider.instance().findContent( "ui/createProject-welcome.md" ).content() )
+                .setEnabled( false );
 
         // Project
         IPanelSection projectSection = tk.createPanelSection( parent, "Project", SWT.BORDER );
