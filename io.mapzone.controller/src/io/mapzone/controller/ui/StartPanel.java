@@ -36,17 +36,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
-import org.polymap.core.runtime.StreamIterable;
 import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.runtime.event.EventHandler;
 import org.polymap.core.security.SecurityContext;
-import org.polymap.core.ui.ColumnDataFactory;
-import org.polymap.core.ui.ColumnLayoutFactory;
 import org.polymap.core.ui.FormDataFactory.Alignment;
 import org.polymap.core.ui.FormLayoutFactory;
 import org.polymap.rhei.batik.BatikApplication;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PropertyAccessEvent;
+import org.polymap.rhei.batik.toolkit.ConstraintData;
 import org.polymap.rhei.batik.toolkit.ConstraintLayout;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.LayoutSupplier;
@@ -134,9 +132,6 @@ public class StartPanel
         welcome.setText( tk().markdownToHtml( cp.findContent( "frontpage/1welcome.md" ).content(), welcome ) );
         on( welcome ).fill().left( 10 ).right( 60 );
         
-//        Control welcome = on( tk().createFlowText( banner, cp.findContent( "frontpage/1welcome.md" ).content() ) )
-//                .fill().left( 10 ).right( 60 ).control();
-        
         // btn
         Composite btnContainer = on( tk().createComposite( banner ) )
                 .fill().left( 60 ).right( 100 ).control();
@@ -156,14 +151,14 @@ public class StartPanel
         
         // article grid
         Composite grid = on( tk().createComposite( parent ) ).fill().top( banner ).bottom( 100, -80 ).control();
-        grid.setLayout( ColumnLayoutFactory.defaults().columns( 1, 3 ).spacing( 20 ).margins( 3, 3 ).create() );
+        LayoutSupplier layoutPrefs = BatikApplication.instance().getAppDesign().getPanelLayoutPreferences();
+        grid.setLayout( new ConstraintLayout( layoutPrefs ).setMaxColumns( 3 ) );
 
-        // articles
-        StreamIterable.of( cp.listContent( "frontpage" ) ).stream()
-                .filter( co -> co.contentType().startsWith( "text" ) )
-                .filter( co -> !specials.contains( co.name() ) )
-                .sorted( (co1,co2) -> co1.name().compareToIgnoreCase( co2.name() ) )
-                .forEach( co -> createArticleSection( grid, co ) );
+        for (ContentObject co : cp.listContent( "frontpage" ) ) {
+            if (co.contentType().startsWith( "text" ) && !specials.contains( co.name() ) ) {
+                createArticleSection( grid, co );
+            }
+        }
         
         // bottom links
         Composite bottom = on( tk().createComposite( parent ) ).fill().top( 100, -40 ).control();
@@ -184,10 +179,13 @@ public class StartPanel
         }
 
         IPanelSection section = tk().createPanelSection( grid, title, SWT.BORDER );
-        section.getControl().setLayoutData( ColumnDataFactory.defaults().heightHint( 300 ).widthHint( 350 ).create() );
+        
+        int priority = 100 - Integer.parseInt( co.name().substring( 0, 2 ) );
+        section.getControl().setLayoutData( new ConstraintData()
+                .prio( priority ).minHeight( 300 ).minWidth( 350 ) ); //.maxWidth( 450 ) );
+                //ColumnDataFactory.defaults().heightHint( 300 ).widthHint( 350 ).create() );
         
         section.getBody().setLayout( FormLayoutFactory.defaults().create() );
-//        on( tk().createLabel( section.getBody(), content ) ).fill().height( 400 ).width( 380 );
 
         // this generates an iFrame with proper size; this allows to load
         // scripts/CSS in content *and* is better than a Label which always has
