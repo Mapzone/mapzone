@@ -39,6 +39,7 @@ import org.polymap.rhei.form.FieldBuilder;
 import org.polymap.rhei.form.IFormPageSite;
 
 import io.mapzone.controller.ui.util.PropertyAdapter;
+import io.mapzone.controller.um.repository.Named;
 import io.mapzone.controller.um.repository.Organization;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository.ProjectUnitOfWork;
@@ -89,10 +90,13 @@ public abstract class ProjectForm
         Map<String,Organization> orgs = user.organizations.stream()
                 .map( role -> role.organization.get() )
                 .collect( toMap( org -> org.name.get(), org -> org ) );
-        site.newFormField( new PlainValuePropertyAdapter( "organizationOrUser", project.organization.get() ) )
-                .label.put( "Organization or User" )
+        Named defaultOwner = project.organization.isPresent() 
+                ? project.organization.get() 
+                : orgs.values().stream().findAny().get(); 
+        site.newFormField( new PlainValuePropertyAdapter( "organizationOrUser", defaultOwner ) )
+                .label.put( "Owner" )
                 .field.put( new PicklistFormField( orgs ) )
-                .tooltip.put( "" )
+                .tooltip.put( "The owner of this project" )
                 .fieldEnabled.put( creation.get() )
                 .create();
         
