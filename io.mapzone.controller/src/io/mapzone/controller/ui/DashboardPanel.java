@@ -22,6 +22,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 
+import org.polymap.core.ui.UIUtils;
+
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.contribution.ContributionManager;
 import org.polymap.rhei.batik.dashboard.Dashboard;
@@ -74,7 +76,7 @@ public class DashboardPanel
 
     @Override
     public void createContents( Composite parent ) {
-        site().title.set( "Dashboard" );
+        site().title.set( "Dashboard of " + userPrincipal.get().getName() );
         site().setSize( SIDE_PANEL_WIDTH, 650, Integer.MAX_VALUE );
         ContributionManager.instance().contributeTo( this, this );
         
@@ -84,11 +86,12 @@ public class DashboardPanel
 //        dashboard.addDashlet( new UserProfileDashlet() );
         
         if (user.get().projects().isEmpty()) {
-            getContext().openPanel( site().path(), ArticlePanel.ID )
-                    .ifPresent( panel -> ((ArticlePanel)panel).setArticle( "ui/dashboard-welcome.md" ) ); 
-
-//            dashboard.addDashlet( new WelcomeDashlet( "ui/dashboard-welcome.md")
-//                    .addConstraint( new PriorityConstraint( 10 ) ) );
+            // let the animation of the DashboardPanel complete
+            // and make a nice effect :)
+            UIUtils.sessionDisplay().timerExec( 2500, () -> {
+                getContext().openPanel( site().path(), ArticlePanel.ID )
+                        .ifPresent( panel -> ((ArticlePanel)panel).setArticle( "ui/dashboard-welcome.md" ) );
+            });
         }
         
         dashboard.createContents( parent );
