@@ -110,6 +110,8 @@ public abstract class ProjectForm
                     String result = super.validate( fieldValue );
                     if (result == null) {
                         if (project.organization.isPresent()) {
+                            // this is a tricky check; because project.organization is set this checks
+                            // also the newly created project (which has name==null until submit)
                             if (uow.findProject( project.organization.get().name.get(), (String)fieldValue ).isPresent()) { 
                                 result = "Project name is already taken";
                             }

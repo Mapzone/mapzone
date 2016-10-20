@@ -7,6 +7,7 @@ import io.mapzone.controller.um.launcher.JvmProjectLauncher;
 import io.mapzone.controller.um.repository.LifecycleEvent.Type;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -136,13 +137,25 @@ public class ProjectRepository {
         }
 
 
+        /**
+         * Finds any Project for the given name of the given organization.
+         * <p/> 
+         * Since {@link Organization#projects} is a computed association this method
+         * checks <b>any</b> Project with {@link Project#organization} set! 
+         *
+         * @param organization The name of the organization. Must not be null.
+         * @param project
+         */
         public Optional<Project> findProject( String organization, String project ) {
+            assert organization != null;
             Organization org = delegate().query( Organization.class )
                     .where( eq( Organization.TYPE.name, organization ) )
                     .execute().stream().findAny().get();
 
             return org.projects.stream()
-                    .filter( p -> p.name.get().equals( project ) )
+                    // newly created projects have no name set
+                    // searching for null name is be possible
+                    .filter( p -> Objects.equals( project, p.name.opt().orElse( null ) ) )
                     .findAny();
         }
 
