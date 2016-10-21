@@ -65,7 +65,7 @@ class CrackStationEncryptor
         // The following constants may be changed without breaking existing hashes.
         public static final int SALT_BYTE_SIZE = 24;
         public static final int HASH_BYTE_SIZE = 24;
-        public static final int PBKDF2_ITERATIONS = 10000;
+        public static final int PBKDF2_ITERATIONS = 100000;
 
         public static final int ITERATION_INDEX = 0;
         public static final int SALT_INDEX = 1;
@@ -127,6 +127,7 @@ class CrackStationEncryptor
          * @return true if the password is correct, false if not
          */
         public static boolean validatePassword( char[] password, String correctHash ) {
+            Timer timer = new Timer();
             try {
                 // Decode the hash into its parameters
                 String[] params = correctHash.split( ":" );
@@ -142,6 +143,9 @@ class CrackStationEncryptor
             }
             catch (Exception e) {
                 throw new RuntimeException( e );
+            }
+            finally {
+                log.info( "Password validated in " + timer.elapsedTime() + "ms" );
             }
         }
 
