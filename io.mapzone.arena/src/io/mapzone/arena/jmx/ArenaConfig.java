@@ -73,6 +73,7 @@ public class ArenaConfig
     public void setAppTitle( String title ) {
         log.info( "setAppTitle(): " + title );
         P4AppDesign.appTitle = title;
+        GeoServerPlugin.instance().baseName.set( title );
     }
     
     public static String getAppTitle() {
