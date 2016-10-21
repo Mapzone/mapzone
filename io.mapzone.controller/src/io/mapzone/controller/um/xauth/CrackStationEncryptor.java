@@ -65,7 +65,7 @@ class CrackStationEncryptor
         // The following constants may be changed without breaking existing hashes.
         public static final int SALT_BYTE_SIZE = 24;
         public static final int HASH_BYTE_SIZE = 24;
-        public static final int PBKDF2_ITERATIONS = 100000;
+        public static final int PBKDF2_ITERATIONS = 300000;
 
         public static final int ITERATION_INDEX = 0;
         public static final int SALT_INDEX = 1;
