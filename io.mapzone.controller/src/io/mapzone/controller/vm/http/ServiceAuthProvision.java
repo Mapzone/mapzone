@@ -14,9 +14,9 @@
  */
 package io.mapzone.controller.vm.http;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -28,6 +28,7 @@ import org.polymap.core.runtime.cache.CacheConfig;
 import io.mapzone.arena.jmx.ArenaConfigMBean;
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
+import io.mapzone.controller.um.repository.AuthToken;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.vm.repository.ProjectInstanceIdentifier;
 
@@ -102,25 +103,34 @@ public class ServiceAuthProvision
      *
      */
     protected boolean checkAuthToken() {
-        // find request token
-        String requestToken = request.get().getParameter( REQUEST_PARAM_TOKEN );
+        // find request token; ignore parameter char case
+        String requestToken = null;
+        for (String name : Collections.list( request.get().getParameterNames() )) {
+            if (name.equalsIgnoreCase( REQUEST_PARAM_TOKEN )) {
+                requestToken = request.get().getParameter( name );
+                break;
+            }
+        }
         if (requestToken == null) {
             return false;
         }
+        else {
+            // check token
+            ProjectInstanceIdentifier pid = new ProjectInstanceIdentifier( request.get() );
+            CacheKey key = new CacheKey( requestToken, pid );
+            String _requestToken = requestToken;
+            Boolean valid = loggedIn.get( key, _key -> {
+                Project project = projectUow().findProject( pid.organization(), pid.project() )
+                        .orElseThrow( () -> new HttpProvisionRuntimeException( 404, "No such project: " + pid ) );
+                Optional<AuthToken> projectToken = project.serviceAuthToken();
+                return projectToken.isPresent() ? projectToken.get().isValid( _requestToken ) : false;
+            });
 
-        // check token
-        ProjectInstanceIdentifier pid = new ProjectInstanceIdentifier( request.get() );
-        CacheKey key = new CacheKey( requestToken, pid );
-        Boolean valid = loggedIn.get( key, _key -> {
-            Project project = projectUow().findProject( pid.organization(), pid.project() )
-                    .orElseThrow( () -> new HttpProvisionRuntimeException( 404, "No such project: " + pid ) );
-            return project.serviceAuthToken().map( t -> t.isValid( requestToken ) ).orElse( false );
-        });
-        
-        if (!valid) {
-            throw new HttpProvisionRuntimeException( 401, "Given auth token is not valid for this project." );
+            if (!valid) {
+                throw new HttpProvisionRuntimeException( 401, "Given auth token is not valid for this project." );
+            }
+            return true;
         }
-        return true;
     }
 
     
