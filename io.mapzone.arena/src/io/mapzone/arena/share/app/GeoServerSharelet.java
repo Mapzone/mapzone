@@ -83,8 +83,7 @@ public class GeoServerSharelet
           
             // WMS
             WmsUrlContent content = (WmsUrlContent)contentBuilders[0].get();
-            String authToken = ArenaPlugin.instance().config().getServiceAuthToken();
-            String url = content.url.toExternalForm() + (authToken != null ? "?authToken=" + authToken + "&" : "?");
+            String url = content.url.toExternalForm() + "?";  // authToken is in URL
             String wms = url + "SERVICE=WMS&REQUEST=GetCapabilities";
             createField( tk(), parent, "Web Map Service (WMS)", field -> {
                 adaptLayout( tk().createText( field, wms, SWT.READ_ONLY ) );

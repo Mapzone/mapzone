@@ -86,10 +86,10 @@ public class ArenaLauncher
             
             ArenaConfigMBean arenaConfig = JMX.newMBeanProxy( conn, ArenaConfigMBean.NAME.get(), ArenaConfigMBean.class );
             checked( () -> arenaConfig.setAppTitle( instance.project.get() ) );
+            checked( () -> arenaConfig.setServiceAuthToken( project().serviceAuthToken.get() )); // send before URLs!!!
             checked( () -> arenaConfig.setCatalogServerUrl( "http://localhost:" + localHttpPort + "/csw" ) );
             checked( () -> arenaConfig.setProxyUrl( ProxyServlet.projectUrlBase( project() ) ) );
             checked( () -> arenaConfig.setProjectCatalogId( project().catalogId.get() ) );
-            checked( () -> arenaConfig.setServiceAuthToken( project().serviceAuthToken.get() ));
             
             log.info( "Instance process configured." );
         }

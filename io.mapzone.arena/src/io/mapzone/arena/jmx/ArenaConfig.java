@@ -83,7 +83,8 @@ public class ArenaConfig
     @Override
     public void setProxyUrl( String proxyUrl ) {
         log.info( "setProxyUrl(): " +  proxyUrl );
-        GeoServerPlugin.instance().baseUrl.set( proxyUrl );
+        assert authToken != null;
+        GeoServerPlugin.instance().baseUrl.set( proxyUrl + GEOSERVER_ALIAS + "/" + authToken );
     }
 
     @Override

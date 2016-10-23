@@ -14,12 +14,13 @@
  */
 package io.mapzone.controller.vm.http;
 
-import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Optional;
 import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import com.google.common.collect.Sets;
 
 import org.polymap.core.runtime.cache.Cache;
@@ -89,9 +90,8 @@ public class ServiceAuthProvision
      * clients.
      */
     protected boolean checkUser() {
-        // geotools's WebMapServer automatically changes all params to upper case
-        String user = request.get().getParameter( REQUEST_PARAM_USER.toUpperCase() );
-        if (user == null) {
+        Optional<String> user = requestParameter( REQUEST_PARAM_USER );
+        if (!user.isPresent()) {
             return false;
         }
         log.warn( "***NOT CHECKED*** User param found: " + user + "." );
@@ -103,36 +103,57 @@ public class ServiceAuthProvision
      *
      */
     protected boolean checkAuthToken() {
-        // find request token; ignore parameter char case
-        String requestToken = null;
-        for (String name : Collections.list( request.get().getParameterNames() )) {
-            if (name.equalsIgnoreCase( REQUEST_PARAM_TOKEN )) {
-                requestToken = request.get().getParameter( name );
-                break;
-            }
-        }
-        if (requestToken == null) {
-            return false;
-        }
-        else {
-            // check token
-            ProjectInstanceIdentifier pid = new ProjectInstanceIdentifier( request.get() );
-            CacheKey key = new CacheKey( requestToken, pid );
-            String _requestToken = requestToken;
-            Boolean valid = loggedIn.get( key, _key -> {
-                Project project = projectUow().findProject( pid.organization(), pid.project() )
-                        .orElseThrow( () -> new HttpProvisionRuntimeException( 404, "No such project: " + pid ) );
-                Optional<AuthToken> projectToken = project.serviceAuthToken();
-                return projectToken.isPresent() ? projectToken.get().isValid( _requestToken ) : false;
-            });
-
-            if (!valid) {
+        ProjectInstanceIdentifier pid = new ProjectInstanceIdentifier( request.get() );
+        
+        // check param token; ignore parameter char case
+        Optional<String> requestToken = requestParameter( REQUEST_PARAM_TOKEN );
+        if (requestToken.isPresent()) {
+            if (!isValidToken( requestToken.get(), pid )) {
                 throw new HttpProvisionRuntimeException( 401, "Given auth token is not valid for this project." );
             }
             return true;
         }
+        
+        // check path parts
+        String path = StringUtils.defaultString( request.get().getPathInfo() );
+        for (String part : StringUtils.split( path, '/' )) {
+            if (isValidToken( part, pid )) {
+                return true;
+            }
+        }
+        return false;
     }
 
+    
+    protected Boolean isValidToken( String token, ProjectInstanceIdentifier pid ) {
+        CacheKey key = new CacheKey( token, pid );
+        return loggedIn.get( key, _key -> {
+            Project project = projectUow().findProject( pid.organization(), pid.project() )
+                    .orElseThrow( () -> new HttpProvisionRuntimeException( 404, "No such project: " + pid ) );
+            Optional<AuthToken> projectToken = project.serviceAuthToken();
+            return projectToken.isPresent() ? projectToken.get().isValid( token ) : false;
+        });    
+    }
+
+    
+    /**
+     * Case insensive param search. geotools's WebMapServer automatically changes all
+     * params to upper case.
+     *
+     * @param name
+     * @return
+     */
+    protected Optional<String> requestParameter( String name ) {
+        Enumeration<String> paramNames = request.get().getParameterNames();
+        while (paramNames.hasMoreElements()) {
+            String paramName = paramNames.nextElement();
+            if (paramName.equalsIgnoreCase( name )) {
+                return Optional.ofNullable( request.get().getParameter( name ) );
+            }
+        }
+        return Optional.empty();
+    }
+    
     
     /**
      * 
