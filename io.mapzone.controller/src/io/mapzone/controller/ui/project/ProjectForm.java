@@ -135,8 +135,8 @@ public abstract class ProjectForm
         site.newFormField( new PropertyAdapter( project.keywords ) )
                 .label.put( "Keywords" )
                 .validator.put( new KeywordsValidator() )
-                .field.put( new TextFormField() )
-                .create().setLayoutData( ColumnDataFactory.defaults().heightHint( TEXT_HEIGHT ).create() );
+                .field.put( new StringFormField() )
+                .create(); //.setLayoutData( ColumnDataFactory.defaults().heightHint( TEXT_HEIGHT ).create() );
         
         // creator
         site.newFormField( new PropertyAdapter( project.creator ) )

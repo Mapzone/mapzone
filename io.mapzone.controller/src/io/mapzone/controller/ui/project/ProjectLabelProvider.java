@@ -60,7 +60,7 @@ public class ProjectLabelProvider
             }
             case Description: {
                 DateFormat df = SimpleDateFormat.getDateInstance( SimpleDateFormat.MEDIUM, RWT.getLocale() );
-                cell.setText( Joiner.on( " - " ).join( 
+                cell.setText( Joiner.on( " - " ).skipNulls().join( 
                         project.description.get(), 
                         "Last modified: " + project.modified.opt().map( v -> df.format( v ) ).orElse( "???" ) ) );
                 break;
