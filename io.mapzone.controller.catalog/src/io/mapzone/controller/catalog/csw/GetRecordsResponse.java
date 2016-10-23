@@ -62,7 +62,7 @@ public class GetRecordsResponse
                     query.maxResults( body.getMaxRecords().intValue() );
                 }
                 if (body.getStartPosition() != null ) {
-                    query.firstResult( body.getStartPosition().intValue() );
+                    query.firstResult( body.getStartPosition().intValue()-1 );
                 }
                 if (!Namespaces.CSW.equals( body.getOutputSchema() ) 
                         && !"csw:Record".equals( body.getOutputSchema() )) {

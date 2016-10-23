@@ -86,14 +86,14 @@ public class GeoServerSharelet
             String url = content.url.toExternalForm() + "?";  // authToken is in URL
             String wms = url + "SERVICE=WMS&REQUEST=GetCapabilities";
             createField( tk(), parent, "Web Map Service (WMS)", field -> {
-                adaptLayout( tk().createText( field, wms, SWT.READ_ONLY ) );
+                adaptLayout( tk().createText( field, wms, SWT.READ_ONLY ) ).setToolTipText( wms );
                 adaptLayout( tk().createLabel( field, "<a href=\"" + wms + "\" target=\"_blank\">Test...</a>" ) );
             });
 
             // WFS
             String wfs = url + "SERVICE=WFS&REQUEST=GetCapabilities";
             createField( tk(), parent, "Web Feature Service (WFS)", field -> {
-                adaptLayout( tk().createText( field, wfs, SWT.READ_ONLY ) );
+                adaptLayout( tk().createText( field, wfs, SWT.READ_ONLY ) ).setToolTipText( wfs );
                 adaptLayout( tk().createLabel( field, "<a href=\"" + wfs + "\" target=\"_blank\">Test...</a>" ) );
             });
         }

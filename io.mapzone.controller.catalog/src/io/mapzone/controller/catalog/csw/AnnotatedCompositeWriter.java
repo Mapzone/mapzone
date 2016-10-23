@@ -87,18 +87,21 @@ public abstract class AnnotatedCompositeWriter
     
     
     protected String encodedValue( Object value ) {
+        String result = null;
         if (value == null) {
-            return "";
+            result = "";
         }
         else if (value instanceof String) {
-            return (String)value;
+            result = (String)value;
         }
         else if (value instanceof Date) {
-            return CswResponse.DF.format( value );
+            result = CswResponse.DF.format( value );
         }
         else {
             throw new UnsupportedOperationException( "Unknown value type: " + value );
         }
+        return result;
+        //return StringEscapeUtils.escapeXml10( result );
     }
     
 }
