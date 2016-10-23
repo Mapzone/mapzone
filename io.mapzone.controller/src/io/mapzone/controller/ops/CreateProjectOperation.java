@@ -22,6 +22,7 @@ import org.polymap.model2.Property;
 
 import io.mapzone.controller.Messages;
 import io.mapzone.controller.um.launcher.ArenaLauncher;
+import io.mapzone.controller.um.repository.AuthToken;
 import io.mapzone.controller.um.repository.Organization;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
@@ -116,7 +117,7 @@ public class CreateProjectOperation
         monitor.beginTask( getLabel(), 10 );
         
         // default authToken
-        project.get().newServiceAuthToken( monitor );
+        project.get().serviceAuthToken.set( AuthToken.create().toString() );
 
         // find host to use
         List<HostRecord> hosts = vmUow.get().allHosts();

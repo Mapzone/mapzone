@@ -22,8 +22,6 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.polymap.model2.Association;
 import org.polymap.model2.CollectionProperty;
 import org.polymap.model2.DefaultValue;
@@ -121,12 +119,12 @@ public class Project
     }
     
     
-    public AuthToken newServiceAuthToken( IProgressMonitor monitor ) {
-        AuthToken authToken = AuthToken.create();
-        // XXX encrypt?
-        serviceAuthToken.set( authToken.toString() );
-        return authToken;
-    }
+//    public AuthToken newServiceAuthToken( IProgressMonitor monitor ) {
+//        AuthToken authToken = AuthToken.create();
+////        // XXX encrypt?
+////        serviceAuthToken.set( authToken.toString() );
+//        return authToken;
+//    }
 
     
     @Override

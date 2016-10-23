@@ -53,6 +53,17 @@ public class ServiceAuthProvision
     
     private static Cache<CacheKey,Boolean>  loggedIn = CacheConfig.defaults().createCache();
     
+    public static void revoke( String token ) {
+        for (CacheKey key : loggedIn.keySet()) {
+            if (key.token.equals( token )) {
+                loggedIn.remove( key );
+                break;
+            }
+        }
+    }
+    
+    // instance *******************************************
+    
     private Context<ServiceAuthProvision>   checked;
 
     

@@ -5,7 +5,6 @@ import static org.polymap.core.ui.FormDataFactory.on;
 import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.ACTION24;
 import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.COLOR_DANGER;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.logging.Log;
@@ -20,8 +19,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.core.runtime.NullProgressMonitor;
 
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.UIThreadExecutor;
@@ -51,6 +48,7 @@ import io.mapzone.controller.ui.CtrlPanel;
 import io.mapzone.controller.um.repository.AuthToken;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.vm.http.ProxyServlet;
+import io.mapzone.controller.vm.http.ServiceAuthProvision;
 
 /**
  * 
@@ -76,6 +74,8 @@ public class ProjectInfoPanel
     private BatikFormContainer          form;
 
     private Button                      fab;
+    
+    private AuthToken                   newToken;
 
     
     @Override
@@ -112,6 +112,10 @@ public class ProjectInfoPanel
         // submit form
         try {
             form.submit( null );
+            
+            if (newToken != null) {
+                op.project.get().serviceAuthToken.set( newToken.toString() );
+            }
         }
         catch (Exception e) {
             StatusDispatcher.handleError( "Unable to create project.", e );
@@ -176,7 +180,10 @@ public class ProjectInfoPanel
         section.addConstraint( new PriorityConstraint( 1 ), new MinWidthConstraint( 350, 1 ) );
         section.getBody().setLayout( FormLayoutFactory.defaults().margins( 3 ).spacing( 5 ).create() );
         
-        Label msg = tk().createLabel( section.getBody(), "This token ..." );
+        Label msg = tk().createFlowText( section.getBody(), 
+                "This token authenticates access to services of this project.<br/>Creating a new token **revokes** the current token and makes it invalid!",
+                SWT.WRAP );
+        msg.setEnabled( false );
         
         Optional<AuthToken> authToken = op.project.get().serviceAuthToken();
         Text text = tk().createText( section.getBody(), "<No auth token>", SWT.BORDER, SWT.READ_ONLY );
@@ -184,11 +191,13 @@ public class ProjectInfoPanel
         //text.setBackground( text.getParent().getBackground() );
         
         Button createBtn = tk().createButton( section.getBody(), "New token" );
-        createBtn.setToolTipText( "Creates a new token and <b>discards</b> the old one.<br/>Update/save project afterwards to <b>activate</b> the new token." );
+        createBtn.setToolTipText( "Creates a new token. This <b>revokes</b> the old one!<br/>Update/save project afterwards to <b>activate</b> the new token." );
         createBtn.addSelectionListener( new SelectionAdapter() {
             @Override
             public void widgetSelected( SelectionEvent ev ) {
-                AuthToken newToken = op.project.get().newServiceAuthToken( new NullProgressMonitor() );
+                op.project.get().serviceAuthToken.opt().ifPresent( current -> ServiceAuthProvision.revoke( current ) );
+
+                newToken = AuthToken.create();
                 text.setText( newToken.toString() );
                 updateEnabled();
             }
@@ -257,7 +266,7 @@ public class ProjectInfoPanel
     protected void updateEnabled() {
         fab.setVisible( 
                 form.isDirty() && form.isValid() ||
-                !Objects.equals( selected.get().serviceAuthToken.get(), op.project.get().serviceAuthToken.get() ) );
+                newToken != null );
     }
     
     
