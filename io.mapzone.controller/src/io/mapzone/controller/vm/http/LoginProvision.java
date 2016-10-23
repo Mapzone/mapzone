@@ -49,7 +49,7 @@ import io.mapzone.controller.um.repository.User;
 public class LoginProvision
         extends HttpProxyProvision {
 
-    private static Log log = LogFactory.getLog( LoginProvision.class );
+    private static final Log log = LogFactory.getLog( LoginProvision.class );
 
     public static final String          COOKIE_NAME = "lp";
     public static final String          COOKIE_PATH = ProxyServlet.SERVLET_ALIAS;
@@ -88,7 +88,6 @@ public class LoginProvision
         if (cookie.isPresent()) {
             String userId = loggedIn.get( cookie.get().getValue() );
             if (userId != null) {
-                log.info( "User: " + userId );
                 return OK_STATUS;
             }
         }
@@ -96,7 +95,6 @@ public class LoginProvision
         // check /dashboard login
         Optional<LoginCookie> loginCookie = LoginCookie.access( request.get(), response.get() ).findAndUpdate();
         if (loginCookie.isPresent()) {
-            log.info( "Login cookie found: " + loginCookie.get().user.get() );
             registerUser( loginCookie.get().user.get(), response.get() );
             return OK_STATUS;            
         }
@@ -108,7 +106,6 @@ public class LoginProvision
                 "?", request.get().getQueryString() );
         String handlerId = LoginAppDesign.registerHandler( user -> {
             try {
-                log.info( "Logged in: " + user );
                 registerUser( user, RWT.getResponse() );
                 UIUtils.exec( "window.location=\"", requestUrl, "\";" );
             }
