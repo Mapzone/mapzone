@@ -139,7 +139,7 @@ public class ProjectInfoPanel
         
         CLabel btn = new CLabel( parent, SWT.CENTER );
         tk().adapt( btn, false, false );
-        btn.setText( "<a target=\"_blanc\" href=\"" + projectUrl + "\" "
+        btn.setText( "<a target=\"_blank\" href=\"" + projectUrl + "\" "
                 + "style=\"font-size: 20px;\""
                 + ">Launch...</a>" );
         btn.setImage( ControllerPlugin.images().svgImage( "rocket.svg", ControllerPlugin.OK_ICON_CONFIG ) );
