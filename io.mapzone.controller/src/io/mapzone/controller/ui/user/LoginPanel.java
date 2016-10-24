@@ -69,7 +69,7 @@ public class LoginPanel
     @Override
     public boolean wantsToBeShown() {
         if (parentPanel().get() instanceof StartPanel) {
-            getSite().setTitle( "" ).setTooltip( "Sign in" );
+            getSite().setTitle( "" ).setTooltip( i18n.get( "title" ) );
             getSite().setIcon( ControllerPlugin.images().svgImage( "account-key.svg", ControllerPlugin.HEADER_ICON_CONFIG ) ); 
 
 //            getSite().setIcon( ControllerPlugin.images().svgOverlayedImage( 
@@ -86,13 +86,13 @@ public class LoginPanel
     public void init() {
         super.init();
         site().setSize( SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH2, SIDE_PANEL_WIDTH2 );
-        site().title.set( "Sign in" );
+        site().title.set( i18n.get( "title" ) );
     }
     
     
     @Override
     public void createContents( Composite parent ) {
-        IPanelSection section = getSite().toolkit().createPanelSection( parent, "Sign in", SWT.BORDER );
+        IPanelSection section = getSite().toolkit().createPanelSection( parent, i18n.get( "title" ), SWT.BORDER );
         
         LoginForm loginForm = new LoginForm() {
             @Override
@@ -104,7 +104,7 @@ public class LoginPanel
                     return true;
                 }
                 else {
-                    getSite().toolkit().createSnackbar( Appearance.FadeIn, "Username or password is not correct." );
+                    getSite().toolkit().createSnackbar( Appearance.FadeIn, i18n.get( "notCorrect" ) );
                     return false;
                 }
             }
