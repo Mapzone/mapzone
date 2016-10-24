@@ -90,6 +90,9 @@ public class ArenaPlugin
         super.start( context );
         instance = this;
         
+        System.setProperty( "http.agent", "mapzone.io (http://mapzone.io/)" );
+        System.setProperty( "https.agent", "mapzone.io (http://mapzone.io/)" );
+
         testMBeanConnection();
 
         // register GeoServer
