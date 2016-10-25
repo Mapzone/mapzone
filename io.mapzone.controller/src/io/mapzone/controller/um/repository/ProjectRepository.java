@@ -45,7 +45,12 @@ public class ProjectRepository {
 
     public static void init( File basedir ) throws IOException {
         File dir  = new File( basedir, "um" );
-        LuceneRecordStore store = new LuceneRecordStore( dir, false );
+        LuceneRecordStore store = LuceneRecordStore.newConfiguration()
+                .indexDir.put( dir )
+                .clean.put( false )
+                .executor.put( null )
+                .create();
+        
         repo = EntityRepository.newConfiguration()
                 .entities.set( new Class[] {
                         User.class,
