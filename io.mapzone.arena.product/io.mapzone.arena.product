@@ -73,6 +73,7 @@
       <plugin id="org.polymap.core"/>
       <plugin id="org.polymap.core.catalog"/>
       <plugin id="org.polymap.core.data"/>
+      <plugin id="org.polymap.core.data.raster"/>
       <plugin id="org.polymap.core.data.refine"/>
       <plugin id="org.polymap.core.data.rs"/>
       <plugin id="org.polymap.core.data.shapefile"/>
