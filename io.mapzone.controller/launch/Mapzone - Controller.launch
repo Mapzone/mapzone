@@ -35,7 +35,7 @@
 <intAttribute key="org.eclipse.rap.launch.port" value="8090"/>
 <stringAttribute key="org.eclipse.rap.launch.servletName" value="batik"/>
 <stringAttribute key="org.eclipse.rap.launch.servletPath" value="/rap"/>
-<intAttribute key="org.eclipse.rap.launch.sessionTimeout" value="3600"/>
+<intAttribute key="org.eclipse.rap.launch.sessionTimeout" value="60"/>
 <booleanAttribute key="org.eclipse.rap.launch.terminatePrevious" value="true"/>
 <booleanAttribute key="org.eclipse.rap.launch.useDefaultDataLocation" value="false"/>
 <booleanAttribute key="org.eclipse.rap.launch.useManualContextPath" value="false"/>
