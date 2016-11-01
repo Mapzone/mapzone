@@ -11,7 +11,6 @@ Require-Bundle: org.eclipse.equinox.http.registry;bundle-version="1.1.300",
  org.eclipse.rap.ui;bundle-version="2.3.1",
  org.polymap.rap.updownload;bundle-version="2.0.0",
  org.polymap.core;bundle-version="4.0.0",
- org.polymap.core.data,
  org.polymap.model2;bundle-version="3.0.0",
  org.polymap.model2.store.recordstore;bundle-version="3.0.0",
  org.polymap.rhei.batik;bundle-version="4.0.0",
@@ -21,8 +20,7 @@ Require-Bundle: org.eclipse.equinox.http.registry;bundle-version="1.1.300",
  io.mapzone.controller.catalog;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: lib/commons-codec-1.9.jar,
- lib/httpclient-4.5.jar,
+Bundle-ClassPath: lib/httpclient-4.5.jar,
  lib/httpcore-4.4.1.jar,
  lib/aopalliance-1.0.jar,
  lib/byon-1.9.1.jar,
@@ -63,4 +61,9 @@ Bundle-ClassPath: lib/commons-codec-1.9.jar,
  lib/jsch-0.1.49.jar,
  lib/byte-buddy-0.6.14.jar,
  lib/mockito-core-2.0.31-beta.jar,
- lib/objenesis-2.1.jar
+ lib/objenesis-2.1.jar,
+ lib/commons-codec-1.9.jar
+Import-Package: org.geotools.feature,
+ org.geotools.feature.type,
+ org.opengis.feature,
+ org.opengis.feature.type

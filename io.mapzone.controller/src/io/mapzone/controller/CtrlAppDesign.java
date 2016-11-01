@@ -4,8 +4,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import org.polymap.core.ui.UIUtils;
-
 import org.polymap.rhei.batik.toolkit.md.MdAppDesign;
 
 /**
@@ -22,7 +20,7 @@ public class CtrlAppDesign
         super.createMainWindow( display );
         
         // FIXME
-        UIUtils.activateCallback( "cms-fix-links" );
+        //UIUtils.activateCallback( "cms-fix-links" );
         
         return mainWindow;
     }
