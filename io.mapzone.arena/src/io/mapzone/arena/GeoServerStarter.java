@@ -43,7 +43,6 @@ import org.polymap.core.runtime.event.Event.Scope;
 import org.polymap.core.runtime.event.EventHandler;
 import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.style.model.FeatureStyleCommitedEvent;
-
 import org.polymap.service.geoserver.GeoServerServlet;
 import org.polymap.service.geoserver.OnDemandServlet;
 
@@ -150,7 +149,7 @@ public class GeoServerStarter
                     String styleId = layer.styleIdentifier.get();
                     return styleId != null
                             ? P4Plugin.styleRepo().serializedFeatureStyle( styleId, Style.class ).get()
-                            : new DefaultStyles().createAllStyle();
+                            : DefaultStyles.createAllStyle();
                 };
 
                 // create pipeline for it
@@ -161,9 +160,10 @@ public class GeoServerStarter
             @Override
             public String createSLD( ILayer layer ) {
                 String styleId = layer.styleIdentifier.get();
+
                 return styleId != null
                         ? P4Plugin.styleRepo().serializedFeatureStyle( styleId, String.class ).get()
-                        : null; //new DefaultStyles().createAllStyle();
+                        : DefaultStyles.serialize( DefaultStyles.createAllStyle() );
             }
         };
     }
