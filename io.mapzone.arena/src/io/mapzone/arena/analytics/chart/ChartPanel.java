@@ -55,7 +55,7 @@ import org.polymap.core.data.feature.FeatureRenderProcessor2;
 import org.polymap.core.data.feature.FeaturesProducer;
 import org.polymap.core.data.feature.GetFeatureTypeRequest;
 import org.polymap.core.data.feature.GetFeatureTypeResponse;
-import org.polymap.core.data.feature.GetFeaturesBoundsRequest;
+import org.polymap.core.data.feature.GetBoundsRequest;
 import org.polymap.core.data.feature.GetFeaturesRequest;
 import org.polymap.core.data.feature.GetFeaturesResponse;
 import org.polymap.core.data.feature.GetFeaturesSizeRequest;
@@ -370,7 +370,7 @@ public class ChartPanel
         }
 
         @Override
-        public void getFeatureBoundsRequest( GetFeaturesBoundsRequest request, ProcessorContext context ) throws Exception {
+        public void getFeatureBoundsRequest( GetBoundsRequest request, ProcessorContext context ) throws Exception {
             throw new RuntimeException( "not yet implemented." );
         }
 
