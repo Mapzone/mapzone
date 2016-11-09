@@ -84,6 +84,8 @@ public class ArenaConfig
     public void setProxyUrl( String proxyUrl ) {
         log.info( "setProxyUrl(): " +  proxyUrl );
         assert authToken != null;
+        // XXX adding ALIAS right to the proxy URL is bad; better: remove authToken
+        // from URL
         GeoServerPlugin.instance().baseUrl.set( proxyUrl + GEOSERVER_ALIAS + "/" + authToken );
     }
 
