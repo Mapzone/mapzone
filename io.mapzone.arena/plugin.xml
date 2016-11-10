@@ -13,6 +13,7 @@
    <extension
          point="org.eclipse.rap.ui.branding">
       <branding
+            body="resources/html/body.html"
             id="io.mapzone.arena.branding"
             themeId="org.polymap.rhei.batik.materialDesign"
             title="Arena">

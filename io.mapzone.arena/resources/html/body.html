@@ -1,8 +1,27 @@
-<div style="background:#f3f3f3; height:60px; ">
-  <!-- img style="float:left; margin: 10px 40px 0 10px" src="../mapstartres/images/logo-gku.png"-->
-  <div>
-    <p style="font: 30px Helvetica, sans-serif; color:#4a4a4a; font-weight:300; margin: 0; padding: 12px 0 0 100px;">
-      <b>Mapzone - Arena</b>
-    </p>
-  </div>
+<div id="loadingDiv" style="position:absolute; margin:auto; width:150px; height: 100px; top:0; left:0; bottom:0; right:0; color:#c0c0c0; font: normal 20px Roboto, Helvetica, sans-serif;">
+  <!--center><img src="../batikres/icons/loading24.gif" /></center-->
+  <span id="loading">Launching</span>
 </div>
+
+<script type="text/javascript">
+var i = 0, j = 0;
+function f() {
+    if (i <= 4) {
+        var text = document.getElementById( 'loading' ).innerHTML;
+        document.getElementById( 'loading' ).innerHTML = text + ".";
+    }
+    i++;
+    if (i == 4) {
+        document.getElementById( 'loading' ).innerHTML = "Launching";
+        i=0;
+    }
+    if (j++ < 22) {
+        setTimeout( f, 750 );
+    }
+    else {
+        var div = document.getElementById( 'loadingDiv' );
+        div.parentElement.removeChild( div );
+    }
+}
+f();
+</script>
