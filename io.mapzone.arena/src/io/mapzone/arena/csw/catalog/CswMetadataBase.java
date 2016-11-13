@@ -21,6 +21,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.polymap.core.catalog.IMetadataCatalog;
 import org.polymap.core.catalog.IUpdateableMetadata;
 
 import io.mapzone.arena.csw.jaxb.AbstractRecordXML;
@@ -33,13 +34,14 @@ import io.mapzone.arena.csw.jaxb.AbstractRecordXML;
 public abstract class CswMetadataBase
         implements IUpdateableMetadata {
 
-    private static Log log = LogFactory.getLog( CswMetadataBase.class );
+    private static final Log log = LogFactory.getLog( CswMetadataBase.class );
+    
+    private IMetadataCatalog        catalog;
     
     private AbstractRecordXML       record;
     
-    
-    public CswMetadataBase( AbstractRecordXML record ) {
-        super();
+    public CswMetadataBase( CswMetadataCatalog catalog, AbstractRecordXML record ) {
+        this.catalog = catalog;
         this.record = record;
     }
 
@@ -47,6 +49,16 @@ public abstract class CswMetadataBase
         return record;
     }
     
+    CswMetadataBase setCatalog( IMetadataCatalog catalog ) {
+        this.catalog = catalog;
+        return this;
+    }
+
+    @Override
+    public IMetadataCatalog getCatalog() {
+        return catalog;
+    }
+
     @Override
     public String getIdentifier() {
         return record().identifier;

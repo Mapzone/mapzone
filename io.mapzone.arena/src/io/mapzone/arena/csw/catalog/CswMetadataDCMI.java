@@ -39,11 +39,11 @@ import io.mapzone.arena.jmx.ArenaConfigMBean;
 public class CswMetadataDCMI
         extends CswMetadataBase {
 
-    private static Log log = LogFactory.getLog( CswMetadataDCMI.class );
+    private static final Log log = LogFactory.getLog( CswMetadataDCMI.class );
     
     
-    public CswMetadataDCMI( RecordXML record ) {
-        super( record );
+    public CswMetadataDCMI( CswMetadataCatalog catalog, RecordXML record ) {
+        super( catalog, record );
     }
 
     @Override

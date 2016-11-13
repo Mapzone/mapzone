@@ -72,7 +72,7 @@ public class InsertRecordRequest
      */
     public static final void main( String[] args ) throws Exception {
         RecordXML record = new RecordXML();
-        CswMetadataDCMI md = new CswMetadataDCMI( record );
+        CswMetadataDCMI md = new CswMetadataDCMI( null, record );
         md.setIdentifier( UUID.randomUUID().toString() );
         md.setTitle( "Test" );
         md.setDescription( "HashCode: " + md.hashCode() );

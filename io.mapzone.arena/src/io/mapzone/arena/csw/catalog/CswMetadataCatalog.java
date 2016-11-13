@@ -14,17 +14,14 @@
  */
 package io.mapzone.arena.csw.catalog;
 
+import static com.google.common.collect.Iterators.transform;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.google.common.collect.Iterators;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -54,8 +51,6 @@ import io.mapzone.arena.csw.jaxb.RecordXML;
 public class CswMetadataCatalog
         extends Configurable
         implements IUpdateableMetadataCatalog {
-
-    private static Log log = LogFactory.getLog( CswMetadataCatalog.class );
 
     /** The URL to use for requests. Allow to change overtime. */
     @Mandatory
@@ -93,7 +88,7 @@ public class CswMetadataCatalog
                     @Override
                     public Iterator<IMetadata> iterator() {
                         Iterator<RecordXML> result = rs.iterator();
-                        return Iterators.transform( result, record -> new CswMetadataDCMI( record ) );
+                        return transform( result, record -> new CswMetadataDCMI( CswMetadataCatalog.this, record ) );
                     }
                     @Override
                     public int size() {
@@ -121,7 +116,7 @@ public class CswMetadataCatalog
                 .baseUrl.put( baseUrl.get().get() );
         
         return request.execute( monitor )
-                .map( record -> new CswMetadataDCMI( record ) );
+                .map( record -> new CswMetadataDCMI( this, record ) );
     }
 
     
@@ -133,7 +128,7 @@ public class CswMetadataCatalog
             @Override
             public void newEntry( Consumer<IUpdateableMetadata> initializer ) {
                 RecordXML record = new RecordXML();
-                CswMetadataDCMI md = new CswMetadataDCMI( record );
+                CswMetadataDCMI md = new CswMetadataDCMI( CswMetadataCatalog.this, record );
                 initializer.accept( md );
                 requests.add( new InsertRecordRequest( record )
                         .baseUrl.put( baseUrl.get().get() ) );
@@ -142,7 +137,7 @@ public class CswMetadataCatalog
             @Override
             public void updateEntry( String identifier, Consumer<IUpdateableMetadata> updater ) {
                 RecordXML record = new RecordXML();
-                CswMetadataDCMI md = new CswMetadataDCMI( record );
+                CswMetadataDCMI md = new CswMetadataDCMI( CswMetadataCatalog.this, record );
                 md.setIdentifier( identifier );
                 updater.accept( md );
                 requests.add( new UpdateRecordRequest( record )

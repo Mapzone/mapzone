@@ -207,7 +207,7 @@ public class GetRecordsRequest<T extends AbstractRecordXML>
         System.out.println( record.identifier );
         System.out.println( record.URI );
         
-        CswMetadataDCMI md = new CswMetadataDCMI( record );
+        CswMetadataDCMI md = new CswMetadataDCMI( null, record );
         System.out.println( md.getIdentifier() );
         System.out.println( md.getTitle() );
         System.out.println( md.getDescription().orElse( null ) );
