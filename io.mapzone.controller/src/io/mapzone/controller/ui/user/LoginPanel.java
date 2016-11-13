@@ -43,6 +43,7 @@ import org.polymap.rhei.field.NotEmptyValidator;
 import org.polymap.rhei.field.PlainValuePropertyAdapter;
 import org.polymap.rhei.field.StringFormField;
 import org.polymap.rhei.field.StringFormField.Style;
+import org.polymap.rhei.field.VerticalFieldLayout;
 import org.polymap.rhei.form.DefaultFormPage;
 import org.polymap.rhei.form.IFormPageSite;
 import org.polymap.rhei.form.batik.BatikFormContainer;
@@ -165,10 +166,12 @@ public class LoginPanel
         @Override
         public void createFormContents( final IFormPageSite site ) {
             formSite = site;
+            site.setDefaultFieldLayout( VerticalFieldLayout.INSTANCE );
             Composite body = site.getPageBody();
             body.setLayout( ColumnLayoutFactory.defaults()
-                    .spacing( 5 /*panelSite.getLayoutPreference( LAYOUT_SPACING_KEY ) / 4*/ )
-                    .margins( 10 /*panelSite().getLayoutPreference().getSpacing() / 2*/ ).create() );
+                    .spacing( 8 /*panelSite.getLayoutPreference( LAYOUT_SPACING_KEY ) / 4*/ )
+                    .margins( 8 /*panelSite().getLayoutPreference().getSpacing() / 2*/ ).create() );
+
             // username
             Composite nameField = site.newFormField( new PlainValuePropertyAdapter( "username", username ) )
                     .field.put( new StringFormField() ).validator.put( new NotEmptyValidator() )

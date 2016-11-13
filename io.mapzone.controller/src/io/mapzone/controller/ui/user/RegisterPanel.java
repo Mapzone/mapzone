@@ -17,6 +17,7 @@ import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.security.SecurityContext;
 import org.polymap.core.ui.ColumnLayoutFactory;
+
 import org.polymap.rhei.batik.BatikPlugin;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
@@ -32,6 +33,7 @@ import org.polymap.rhei.field.PlainValuePropertyAdapter;
 import org.polymap.rhei.field.StringFormField;
 import org.polymap.rhei.field.StringFormField.Style;
 import org.polymap.rhei.field.Validators;
+import org.polymap.rhei.field.VerticalFieldLayout;
 import org.polymap.rhei.form.DefaultFormPage;
 import org.polymap.rhei.form.IFormPageSite;
 import org.polymap.rhei.form.batik.BatikFormContainer;
@@ -213,10 +215,11 @@ public class RegisterPanel
         public void createFormContents( IFormPageSite site ) {
             super.createFormContents( site );
             
+            site.setDefaultFieldLayout( VerticalFieldLayout.INSTANCE );
             Composite body = site.getPageBody();
             body.setLayout( ColumnLayoutFactory.defaults()
-                    .spacing( 5 /*panelSite.getLayoutPreference( LAYOUT_SPACING_KEY ) / 4*/ )
-                    .margins( getSite().getLayoutPreference().getSpacing() / 2 ).create() );
+                    .spacing( 8 /*panelSite.getLayoutPreference( LAYOUT_SPACING_KEY ) / 4*/ )
+                    .margins( 8 /*getSite().getLayoutPreference().getSpacing() / 2*/ ).create() );
 
             site.newFormField( new PropertyAdapter( op.user.get().name ) )
                     .label.put( "Username" )
