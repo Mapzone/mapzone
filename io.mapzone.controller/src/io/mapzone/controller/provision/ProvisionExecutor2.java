@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
 public class ProvisionExecutor2
         extends ProvisionExecutor {
 
-    private static Log log = LogFactory.getLog( ProvisionExecutor2.class );
+    private static final Log log = LogFactory.getLog( ProvisionExecutor2.class );
     
     public ProvisionExecutor2( Class<Provision>[] preliminaries ) {
         super( preliminaries );
@@ -75,7 +75,7 @@ public class ProvisionExecutor2
             }
 
             // try target
-            log.warn( prefix( level ) + "Attempt: " 
+            log.debug( prefix( level ) + "Attempt: " 
                     + "[" + StringUtils.right( Thread.currentThread().getName(), 2 ) + "] " 
                     + target.getClass().getSimpleName() + " ..." );
             targetStatus = executeProvision( target );
