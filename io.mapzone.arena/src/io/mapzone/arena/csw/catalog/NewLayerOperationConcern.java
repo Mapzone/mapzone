@@ -40,7 +40,7 @@ import org.polymap.core.ui.FormLayoutFactory;
 import org.polymap.rhei.batik.toolkit.DefaultToolkit;
 import org.polymap.rhei.batik.toolkit.SimpleDialog;
 
-import org.polymap.p4.P4Plugin;
+import org.polymap.p4.catalog.AllResolver;
 import org.polymap.p4.layer.NewLayerOperation;
 
 import io.mapzone.arena.csw.catalog.MapzoneProjectResolver.MapzoneProjectResourceInfo;
@@ -89,7 +89,7 @@ public class NewLayerOperationConcern
             }
 
             // default: WMS
-            resId = P4Plugin.allResolver().resourceIdentifier( op.res.get() );
+            resId = AllResolver.resourceIdentifier( op.res.get() );
             
             UIThreadExecutor.sync( () -> {
                 new SimpleDialog()
@@ -120,7 +120,7 @@ public class NewLayerOperationConcern
             wmsBtn.addSelectionListener( new SelectionAdapter() {
                 @Override
                 public void widgetSelected( SelectionEvent e ) {
-                    resId = P4Plugin.allResolver().resourceIdentifier( op.res.get() );
+                    resId = AllResolver.resourceIdentifier( op.res.get() );
                 }
             });
             wmsBtn.setSelection( true );
