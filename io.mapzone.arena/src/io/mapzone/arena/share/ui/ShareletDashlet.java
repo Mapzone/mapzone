@@ -56,7 +56,7 @@ public class ShareletDashlet
 
     @Override
     public void init( DashletSite site ) {
-        site.isExpandable.set( false );
+        site.expandable.set( false );
         site.border.set( true );
         site.title.set( sharelet.site().title.get() );
         site.constraints.get().add( new PriorityConstraint( sharelet.site().priority.get() ) );

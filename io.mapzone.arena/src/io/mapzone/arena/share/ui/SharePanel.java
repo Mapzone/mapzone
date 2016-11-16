@@ -73,7 +73,7 @@ public class SharePanel
     public void init() {
         super.init();
         site().title.set( i18n.get( "title" ) );
-        site().setSize( SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH2, Integer.MAX_VALUE );
+        site().setSize( SIDE_PANEL_WIDTH/2, SIDE_PANEL_WIDTH, Integer.MAX_VALUE );
 
         // set useful defaults into the context
         final MapViewer<ILayer> mapViewer = ((ProjectMapPanel)parentPanel().get()).mapViewer;
