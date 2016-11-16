@@ -59,6 +59,7 @@ import org.polymap.rhei.batik.toolkit.md.MdToolbar2;
 
 import org.polymap.p4.P4Panel;
 import org.polymap.p4.P4Plugin;
+import org.polymap.p4.catalog.AllResolver;
 import org.polymap.p4.style.LayerStylePanel;
 import org.polymap.p4.style.StyleEditorInput;
 import org.polymap.rap.openlayers.base.OlEventListener;
@@ -321,6 +322,6 @@ public class GraphPanel
     private String resourceIdentifier( final FeatureSource selectedFeatureSource ) throws IOException {
         IResolvableInfo info = P4Plugin.localCatalog().localFeaturesStoreInfo();
         IResourceInfo res = ((RServiceInfo)info.getServiceInfo()).resource( selectedFeatureSource );
-        return P4Plugin.allResolver().resourceIdentifier( res );
+        return AllResolver.resourceIdentifier( res );
     }
 }
