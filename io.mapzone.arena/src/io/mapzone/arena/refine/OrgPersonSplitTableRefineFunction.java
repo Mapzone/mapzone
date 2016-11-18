@@ -63,6 +63,7 @@ import org.polymap.core.style.model.FeatureStyle;
 import org.polymap.core.ui.FormDataFactory;
 import org.polymap.core.ui.StatusDispatcher;
 import org.polymap.p4.P4Plugin;
+import org.polymap.p4.catalog.AllResolver;
 import org.polymap.p4.project.ProjectRepository;
 import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
@@ -260,7 +261,7 @@ public class OrgPersonSplitTableRefineFunction implements RefineFunction {
         IResolvableInfo info = P4Plugin.localCatalog().localFeaturesStoreInfo();
         IResourceInfo res = ((RServiceInfo) info.getServiceInfo()).resource(
                 P4Plugin.localCatalog().localFeaturesStore().getFeatureSource(features.getSchema().getName()));
-        return P4Plugin.allResolver().resourceIdentifier(res);
+        return AllResolver.resourceIdentifier(res);
     }
 
     private void store(final DefaultFeatureCollection features) throws IOException {

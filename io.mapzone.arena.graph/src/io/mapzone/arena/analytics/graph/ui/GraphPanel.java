@@ -61,7 +61,7 @@ import org.polymap.p4.P4Panel;
 import org.polymap.p4.P4Plugin;
 import org.polymap.p4.catalog.AllResolver;
 import org.polymap.p4.style.LayerStylePanel;
-import org.polymap.p4.style.StyleEditorInput;
+import org.polymap.p4.style.FeatureStyleEditorInput;
 import org.polymap.rap.openlayers.base.OlEventListener;
 import org.polymap.rap.openlayers.control.MousePositionControl;
 
@@ -120,7 +120,7 @@ public class GraphPanel
 
     @Mandatory
     @Scope( P4Plugin.StyleScope )
-    protected Context<StyleEditorInput> styleEditorInput;
+    protected Context<FeatureStyleEditorInput> styleEditorInput;
 
 
     @Override
@@ -296,7 +296,7 @@ public class GraphPanel
             icon.set( P4Plugin.images().svgImage( "palette.svg", P4Plugin.TOOLBAR_ICON_CONFIG ) );
             tooltip.set( i18n.get( "nodeStylerTooltip" ) );
             action.set( ev -> {
-                styleEditorInput.set( new StyleEditorInput( site().memento().getString( NODE_STYLE_IDENTIFIER ), new FeatureCollectionStore(graphLayerProvider.graphUi().nodeCollection()) ) );
+                styleEditorInput.set( new FeatureStyleEditorInput( site().memento().getString( NODE_STYLE_IDENTIFIER ), new FeatureCollectionStore(graphLayerProvider.graphUi().nodeCollection()) ) );
                 getContext().openPanel( site().path(), LayerStylePanel.ID );
             } );
         }
@@ -312,7 +312,7 @@ public class GraphPanel
             icon.set( P4Plugin.images().svgImage( "palette.svg", P4Plugin.TOOLBAR_ICON_CONFIG ) );
             tooltip.set( i18n.get( "edgeStylerTooltip" ) );
             action.set( ev -> {
-                styleEditorInput.set( new StyleEditorInput( site().memento().getString( EDGE_STYLE_IDENTIFIER ), new FeatureCollectionStore( graphLayerProvider.graphUi().edgeCollection() ) ) );
+                styleEditorInput.set( new FeatureStyleEditorInput( site().memento().getString( EDGE_STYLE_IDENTIFIER ), new FeatureCollectionStore( graphLayerProvider.graphUi().edgeCollection() ) ) );
                 getContext().openPanel( site().path(), LayerStylePanel.ID );
             } );
         }
