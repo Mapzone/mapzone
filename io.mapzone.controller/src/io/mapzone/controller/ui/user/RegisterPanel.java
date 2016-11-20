@@ -90,7 +90,7 @@ public class RegisterPanel
     @Override
     public void init() {
         super.init();
-        site().setSize( SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH2+50, SIDE_PANEL_WIDTH2+50 );
+        site().setSize( SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH2 );
         op = new CreateUserOperation();
         op.createEntity();
     }

@@ -86,7 +86,7 @@ public class LoginPanel
     @Override
     public void init() {
         super.init();
-        site().setSize( SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH2, SIDE_PANEL_WIDTH2 );
+        site().setSize( SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH2 );
         site().title.set( i18n.get( "title" ) );
     }
     

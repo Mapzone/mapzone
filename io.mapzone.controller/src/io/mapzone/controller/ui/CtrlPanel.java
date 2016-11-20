@@ -38,9 +38,9 @@ public abstract class CtrlPanel
 
     private static Log log = LogFactory.getLog( CtrlPanel.class );
 
-    public static final int                 SIDE_PANEL_WIDTH = 380;
+    public static final int                 SIDE_PANEL_WIDTH = 400;
     
-    public static final int                 SIDE_PANEL_WIDTH2 = 430;
+    public static final int                 SIDE_PANEL_WIDTH2 = 450;
     
     @Mandatory
     @Scope( "io.mapzone.controller" )
