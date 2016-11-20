@@ -178,9 +178,9 @@ public class UserInfoPanel
             site.newFormField( new PropertyAdapter( op.user.get().email ) )
                     .validator.put( Validators.AND( new NotEmptyValidator(), new EMailAddressValidator() {
                         @Override
-                        public String validate( Object fieldValue ) {
+                        public String validate( String fieldValue ) {
                             return Optional.ofNullable( super.validate( fieldValue ) )
-                                    .orElse( op.umUow.get().findUser( (String)fieldValue ).isPresent() && !fieldValue.equals( op.user.get().email.get() )
+                                    .orElse( op.umUow.get().findUser( fieldValue ).isPresent() && !fieldValue.equals( op.user.get().email.get() )
                                             ? "EMail is already taken" : null );
                         }
                     }))

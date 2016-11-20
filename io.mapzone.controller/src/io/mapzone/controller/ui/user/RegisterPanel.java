@@ -248,15 +248,15 @@ public class RegisterPanel
                     .tooltip.put( "Valid email allows to reset password if lost" )
                     .validator.put( Validators.AND( /*new NotEmptyValidator(),*/ new EMailAddressValidator() {
                         @Override
-                        public String validate( Object fieldValue ) {
-                            if (StringUtils.isBlank( (CharSequence)fieldValue )) {   // empty is ok
+                        public String validate( String fieldValue ) {
+                            if (StringUtils.isBlank( fieldValue )) {   // empty is ok
                                 return null;
                             }
                             String invalidSyntax = super.validate( fieldValue );
                             if (invalidSyntax != null) {// valid syntax
                                 return invalidSyntax; 
                             }
-                            else if (op.umUow.get().findUserForEmail( (String)fieldValue ).isPresent() ) {
+                            else if (op.umUow.get().findUserForEmail( fieldValue ).isPresent() ) {
                                 return "EMail is already taken";
                             }
                             return null;
