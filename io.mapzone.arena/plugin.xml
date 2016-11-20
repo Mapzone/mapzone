@@ -55,6 +55,10 @@
             class="io.mapzone.arena.share.ui.ShareletPanel"
             id="sharelet">
       </panel>
+      <panel
+            class="io.mapzone.arena.StackExchangeHelpDashlet$StackExchangePanel"
+            id="io.mapzone.arena.StackExchangePanel">
+      </panel>
    </extension>
    <extension
          point="org.polymap.core.catalog.catalogProviders">
@@ -74,5 +78,16 @@
             class="io.mapzone.arena.csw.catalog.NewLayerOperationConcern"
             id="io.mapzone.arena.concern1">
       </concern>
+   </extension>
+   <extension
+         point="org.polymap.rhei.batik.contributions">
+      <contributions
+            class="io.mapzone.arena.StackExchangeHelpContribution"
+            id="io.mapzone.arena.StackExchangeHelpContribution">
+      </contributions>s">
+      <contributions
+            class="io.mapzone.arena.EMailHelpContribution"
+            id="io.mapzone.arena.EMailHelpContribution">
+      </contributions>
    </extension>
 </plugin>
