@@ -44,7 +44,7 @@ public class StackExchangeHelpDashlet
     @Override
     public void init( DashletSite site ) {
         super.init( site );
-        site().title.set( "StackExchange" );
+        site().title.set( i18n.get( "title" ) );
         site().setExpanded( false );
     }
 
