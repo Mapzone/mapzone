@@ -84,7 +84,7 @@ public abstract class ProjectForm
         super.createFormContents( site );
         
         Composite body = site.getPageBody();
-        body.setLayout( ColumnLayoutFactory.defaults().spacing( 3 ).create() );
+        body.setLayout( ColumnLayoutFactory.defaults().spacing( 8 ).create() );
         
         // organization
         Map<String,Organization> orgs = user.organizations.stream()

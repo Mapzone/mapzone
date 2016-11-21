@@ -82,6 +82,7 @@ public class ProjectInfoPanel
     public void init() {
         super.init();
         site().title.set( "Project" );
+        site().setSize( SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH2, SIDE_PANEL_WIDTH2 );
         
         op = new UpdateProjectOperation( userPrincipal.get().getName() );
         op.project.set( selected.get() );

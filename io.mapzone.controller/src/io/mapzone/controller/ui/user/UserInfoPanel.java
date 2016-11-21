@@ -84,7 +84,8 @@ public class UserInfoPanel
     public void init() {
         super.init();
         op = new UpdateUserOperation( userPrincipal.get().getName() );
-        getSite().setTitle( "Account: " + op.user.get().name.get() );
+        site().title.set( "Account: " + op.user.get().name.get() );
+        site().setSize( SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH2, SIDE_PANEL_WIDTH2 );
     }
 
 

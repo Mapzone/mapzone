@@ -27,9 +27,8 @@ import org.polymap.core.ui.UIUtils;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.contribution.ContributionManager;
 import org.polymap.rhei.batik.dashboard.Dashboard;
+import org.polymap.rhei.batik.help.HelpAwarePanel;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
-
-import org.polymap.cms.ArticlePanel;
 
 import io.mapzone.controller.ui.project.ProjectsDashlet;
 import io.mapzone.controller.um.repository.LoginCookie;
@@ -41,7 +40,8 @@ import io.mapzone.controller.um.repository.ProjectRepository;
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class DashboardPanel
-        extends CtrlPanel {
+        extends CtrlPanel
+        implements HelpAwarePanel {
 
     private static Log log = LogFactory.getLog( DashboardPanel.class );
 
@@ -89,8 +89,7 @@ public class DashboardPanel
             // let the animation of the DashboardPanel complete
             // and make a nice effect :)
             UIUtils.sessionDisplay().timerExec( 2500, () -> {
-                getContext().openPanel( site().path(), ArticlePanel.ID )
-                        .ifPresent( panel -> ((ArticlePanel)panel).setArticle( "ui/dashboard-welcome.md" ) );
+                getContext().openPanel( site().path(), CtrlHelpPanel.ID );
             });
         }
         
@@ -98,4 +97,10 @@ public class DashboardPanel
         ContributionManager.instance().contributeTo( dashboard, this );
     }
 
+
+    @Override
+    public String cmsPath() {
+        return "ui/dashboard-welcome.md";
+    }
+    
 }

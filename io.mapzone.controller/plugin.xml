@@ -111,6 +111,22 @@
             class="io.mapzone.controller.ui.user.LoginPanel"
             id="io.mapzone.controller.LoginPanel">
       </panel>
+      <panel
+            class="io.mapzone.controller.ui.CtrlHelpPanel"
+            id="io.mapzone.controller.CtrlHelpPanel"
+            stackPriority="-1000">
+      </panel>
+   </extension>
+   <extension
+         point="org.polymap.rhei.batik.contributions">
+      <contributions
+            class="io.mapzone.controller.ui.CmsHelpContribution"
+            id="io.mapzone.controller.CmsHelpContribution">
+      </contributions>
+      <contributions
+            class="io.mapzone.controller.ui.EMailHelpContribution"
+            id="io.mapzone.controller.EMailHelpDashlet">
+      </contributions>
    </extension>
 
 </plugin>

@@ -79,6 +79,7 @@ public class CreateProjectPanel
     public void init() {
         super.init();
         site().title.set( "New project" );
+        site().setSize( SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH2, SIDE_PANEL_WIDTH2 );
         
         op = new CreateProjectOperation( userPrincipal.get().getName() );
         op.createProject();
