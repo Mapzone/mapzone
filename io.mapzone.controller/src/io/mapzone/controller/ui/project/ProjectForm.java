@@ -20,20 +20,27 @@ import java.util.Map;
 
 import org.eclipse.swt.widgets.Composite;
 
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.eclipse.ui.forms.widgets.Section;
+
 import org.polymap.core.runtime.config.Config2;
 import org.polymap.core.runtime.config.ConfigurationFactory;
 import org.polymap.core.runtime.config.Mandatory;
 import org.polymap.core.ui.ColumnDataFactory;
 import org.polymap.core.ui.ColumnLayoutFactory;
+import org.polymap.core.ui.HSLColor;
 
+import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 import org.polymap.rhei.field.DateValidator;
 import org.polymap.rhei.field.FormFieldEvent;
 import org.polymap.rhei.field.IFormFieldListener;
+import org.polymap.rhei.field.LabelFormField;
 import org.polymap.rhei.field.NotEmptyValidator;
 import org.polymap.rhei.field.PicklistFormField;
 import org.polymap.rhei.field.PlainValuePropertyAdapter;
 import org.polymap.rhei.field.StringFormField;
 import org.polymap.rhei.field.TextFormField;
+import org.polymap.rhei.field.VerticalFieldLayout;
 import org.polymap.rhei.form.DefaultFormPage;
 import org.polymap.rhei.form.FieldBuilder;
 import org.polymap.rhei.form.IFormPageSite;
@@ -54,7 +61,7 @@ public abstract class ProjectForm
         extends DefaultFormPage 
         implements IFormFieldListener {
     
-    private static final int            TEXT_HEIGHT = 70;
+    private static final int            TEXT_HEIGHT = 100;
 
     /**
      * True specifies that the form is used for creation of a new Project in a
@@ -63,13 +70,19 @@ public abstract class ProjectForm
     @Mandatory
     public Config2<ProjectForm,Boolean> creation;
     
+    /**
+     * True specifies that the form is used for creation of a new Project in a
+     * {@link CreateProjectPanel}
+     */
+    @Mandatory
+    public Config2<ProjectForm,MdToolkit> tk;
+    
     private ProjectUnitOfWork           uow;
     
     private Project                     project;
     
     private User                        user;
 
-    
     
     protected ProjectForm( ProjectUnitOfWork uow, Project project, User user ) {
         this.uow = uow;
@@ -85,6 +98,7 @@ public abstract class ProjectForm
         
         Composite body = site.getPageBody();
         body.setLayout( ColumnLayoutFactory.defaults().spacing( 8 ).create() );
+        site.setDefaultFieldLayout( VerticalFieldLayout.INSTANCE );
         
         // organization
         Map<String,Organization> orgs = user.organizations.stream()
@@ -129,10 +143,27 @@ public abstract class ProjectForm
         // description
         site.newFormField( new PropertyAdapter( project.description ) )
                 .field.put( new TextFormField() )
+                .validator.put( new NotEmptyValidator() )
                 .create().setLayoutData( ColumnDataFactory.defaults().heightHint( TEXT_HEIGHT ).create() );
 
+        // publisher
+        site.newFormField( new PropertyAdapter( project.publisher ) )
+                .field.put( new TextFormField() )
+                .tooltip.put( "An entity responsible for making the resource available." )
+                .create().setLayoutData( ColumnDataFactory.defaults().heightHint( TEXT_HEIGHT ).create() );
+
+        // expandable section
+        Section expand = tk.get().createSection( body, "Keywords and Rights", 
+                ExpandableComposite.TWISTIE, Section.SHORT_TITLE_BAR, Section.FOCUS_TITLE );
+        expand.setBackground( new HSLColor( body.getBackground() )
+                .adjustSaturation( -10f ).adjustLuminance( -4f ).toSWT() );
+        ((Composite)expand.getClient()).setLayout( 
+                ColumnLayoutFactory.defaults().spacing( 6 ).margins( 0, 6 ).create() );
+        expand.setExpanded( false );
+        
         // keywords
         site.newFormField( new PropertyAdapter( project.keywords ) )
+                .parent.put( (Composite)expand.getClient() )
                 .label.put( "Keywords" )
                 .validator.put( new KeywordsValidator() )
                 .field.put( new StringFormField() )
@@ -140,27 +171,24 @@ public abstract class ProjectForm
         
         // creator
         site.newFormField( new PropertyAdapter( project.creator ) )
+                .parent.put( (Composite)expand.getClient() )
                 .field.put( new TextFormField() )
                 .tooltip.put( "An entity primarily responsible for making the resource." )
                 .create().setLayoutData( ColumnDataFactory.defaults().heightHint( TEXT_HEIGHT ).create() );
         
         // rights
         site.newFormField( new PropertyAdapter( project.rights ) )
+                .parent.put( (Composite)expand.getClient() )
                 .field.put( new TextFormField() )
                 .tooltip.put( "Information about rights held in and over the resource. Typically, rights\n"
                         + "information includes a statement about various property rights associated with\n"
                         + "the resource, including intellectual property rights." )
                 .create().setLayoutData( ColumnDataFactory.defaults().heightHint( TEXT_HEIGHT ).create() );
         
-        // publisher
-        site.newFormField( new PropertyAdapter( project.publisher ) )
-                .field.put( new TextFormField() )
-                .tooltip.put( "An entity responsible for making the resource available." )
-                .create().setLayoutData( ColumnDataFactory.defaults().heightHint( TEXT_HEIGHT ).create() );
-        
         // accessRights
         site.newFormField( new PropertyAdapter( project.accessRights ) )
-                .fieldEnabled.put( false )
+                .parent.put( (Composite)expand.getClient() )
+                .fieldEnabled.put( true )
                 .label.put( "Access rights" )
                 .field.put( new TextFormField() )
                 .tooltip.put( "Information about who can access the resource or an indication of its security\n"
@@ -168,19 +196,21 @@ public abstract class ProjectForm
                         + "based on privacy, security, or other policies." )
                 .create().setLayoutData( ColumnDataFactory.defaults().heightHint( TEXT_HEIGHT ).create() );
         
-        // created
-        site.newFormField( new PropertyAdapter( project.created ) )
-                .fieldEnabled.put( false )
-                .field.put( new StringFormField() )
-                .validator.put( new DateValidator() )
-                .create();
-        
-        // modified
-        site.newFormField( new PropertyAdapter( project.modified ) )
-                .fieldEnabled.put( false )
-                .field.put( new StringFormField() )
-                .validator.put( new DateValidator() )
-                .create();
+        if (!creation.get()) {
+            // created
+            site.newFormField( new PropertyAdapter( project.created ) )
+                    .fieldEnabled.put( false )
+                    .field.put( new LabelFormField() )
+                    .validator.put( new DateValidator() )
+                    .create();
+
+            // modified
+            site.newFormField( new PropertyAdapter( project.modified ) )
+                    .fieldEnabled.put( false )
+                    .field.put( new LabelFormField() )
+                    .validator.put( new DateValidator() )
+                    .create();
+        }
         
         site.addFieldListener( this );
     }

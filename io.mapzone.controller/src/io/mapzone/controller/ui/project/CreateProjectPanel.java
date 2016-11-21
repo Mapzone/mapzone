@@ -2,10 +2,6 @@ package io.mapzone.controller.ui.project;
 
 import static org.polymap.core.runtime.UIThreadExecutor.asyncFast;
 import static org.polymap.rhei.batik.toolkit.md.dp.dp;
-import io.mapzone.controller.ControllerPlugin;
-import io.mapzone.controller.ops.CreateProjectOperation;
-import io.mapzone.controller.ui.CtrlPanel;
-import io.mapzone.controller.um.repository.Project;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,6 +12,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.ui.ColumnLayoutFactory;
@@ -35,6 +32,11 @@ import org.polymap.rhei.form.batik.BatikFormContainer;
 
 import org.polymap.cms.ContentProvider;
 
+import io.mapzone.controller.ControllerPlugin;
+import io.mapzone.controller.ops.CreateProjectOperation;
+import io.mapzone.controller.ui.CtrlPanel;
+import io.mapzone.controller.um.repository.Project;
+
 /**
  * 
  *
@@ -43,7 +45,7 @@ import org.polymap.cms.ContentProvider;
 public class CreateProjectPanel
         extends CtrlPanel {
 
-    private static Log log = LogFactory.getLog( CreateProjectPanel.class );
+    private static final Log log = LogFactory.getLog( CreateProjectPanel.class );
 
     public static final PanelIdentifier ID = PanelIdentifier.parse( "createProject" );
 
@@ -79,7 +81,7 @@ public class CreateProjectPanel
     public void init() {
         super.init();
         site().title.set( "New project" );
-        site().setSize( SIDE_PANEL_WIDTH, SIDE_PANEL_WIDTH2, SIDE_PANEL_WIDTH2 );
+        site().setSize( SIDE_PANEL_WIDTH2, SIDE_PANEL_WIDTH2, SIDE_PANEL_WIDTH2 );
         
         op = new CreateProjectOperation( userPrincipal.get().getName() );
         op.createProject();
@@ -116,7 +118,8 @@ public class CreateProjectPanel
                 CreateProjectPanel.this.updateEnabled();
             }
         };
-        projectForm = new BatikFormContainer( formPage.creation.put( true ) );
+        formPage.creation.put( true ).tk.put( tk() );
+        projectForm = new BatikFormContainer( formPage );
         projectForm.createContents( projectSection.getBody() );
 
 //        // ProjectLauncher
@@ -161,7 +164,11 @@ public class CreateProjectPanel
     }
     
     protected void updateEnabled() {
+        //log.info( "dirty: " + projectForm.isDirty() + ", valid: " + projectForm.isValid() );
         fab.setVisible( projectForm.isDirty() && projectForm.isValid() );
+        if (fab.isVisible()) {
+            fab.getParent().layout( new Control[] {fab} );
+        }
     }
     
     

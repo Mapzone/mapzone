@@ -170,7 +170,7 @@ public class ProjectInfoPanel
                 ProjectInfoPanel.this.updateEnabled();
             }
         };
-        formPage.creation.set( false );
+        formPage.creation.put( false ).tk.put( tk() );
         form = new BatikFormContainer( formPage );
         form.createContents( section.getBody() );
     }

@@ -87,15 +87,15 @@ public class CreateProjectOperation
         
         // creator / publisher
         StringBuilder buf = new StringBuilder( 1024 );
-        ifPresent( buf, user.get().fullname, v -> v + "\n" );
+        ifPresent( buf, user.get().fullname, v -> v + "  \n" );
         ifPresent( buf, user.get().company, v -> "  * " + v + "\n" );
         ifPresent( buf, user.get().location, v -> "  * " + v + "\n" );
         ifPresent( buf, user.get().website, v -> "  * " + v + "\n" );
         ifPresent( buf, user.get().email, v -> "  * " + v + "\n" );
-        project.get().creator.set( buf.toString() );
+       // project.get().creator.set( buf.toString() );
         project.get().publisher.set( buf.toString() );
         
-        project.get().accessRights.set( "[Open Data Commons Open Database License (ODbL)](http://opendatacommons.org/licenses/odbl/)" );
+       // project.get().accessRights.set( "[Open Data Commons Open Database License (ODbL)](http://opendatacommons.org/licenses/odbl/)" );
         
         return project.get();
     }

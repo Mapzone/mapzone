@@ -132,6 +132,7 @@ public class ProjectsDashlet
         else {
             // just update list
             viewer.setInput( projects );
+            parent.layout( true );
         }
     }
 
