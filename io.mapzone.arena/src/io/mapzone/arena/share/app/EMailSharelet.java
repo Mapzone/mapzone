@@ -53,6 +53,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.polymap.core.operation.DefaultOperation;
 import org.polymap.core.operation.OperationSupport;
+import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.ui.ColumnDataFactory;
 import org.polymap.core.ui.StatusDispatcher;
@@ -186,13 +187,15 @@ public class EMailSharelet
                         };
                         // execute
                         OperationSupport.instance().execute2( op, false, false, result -> {
-                            if (result.getResult().isOK()) {
-                                fab.setEnabled( false );
-                                site().tk.get().createSnackbar( Appearance.FadeIn, "Email sent successfully" );
-                            }
-                            else {
-                                StatusDispatcher.handleError( "Unable to send email.", result.getResult().getException() );
-                            }
+                            UIThreadExecutor.async( () -> {
+                                if (result.getResult().isOK()) {
+                                    fab.setEnabled( false );
+                                    site().tk.get().createSnackbar( Appearance.FadeIn, "Email sent successfully" );
+                                }
+                                else {
+                                    StatusDispatcher.handleError( "Unable to send email.", result.getResult().getException() );
+                                }
+                            });
                         });
                     }
                     catch (Exception e) {
