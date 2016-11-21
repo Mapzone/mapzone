@@ -20,6 +20,8 @@ import org.polymap.rhei.batik.dashboard.Dashboard;
 import org.polymap.rhei.batik.help.HelpPanel;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 
+import io.mapzone.arena.jmx.ArenaConfigMBean;
+
 /**
  * 
  *
@@ -32,9 +34,9 @@ public class EMailHelpContribution
     public void fillDashboard( IContributionSite site, Dashboard dashboard ) {
         if (site.tagsContain( HelpPanel.DASHBOARD_ID )) {
             dashboard.addDashlet( new EMailHelpDashlet()
-                    .smtpUser.put( "support@mapzone.io" )
-                    .smtpPassword.put("690332" )
-                    .smtpHost.put( "mail.mapzone.io" )
+                    .smtpUser.put( ArenaConfigMBean.SMTP_USER )
+                    .smtpPassword.put( ArenaConfigMBean.SMTP_PWD )
+                    .smtpHost.put( ArenaConfigMBean.SMTP_HOST )
                     .to.put( "support@mapzone.io" )
                     .addConstraint( new PriorityConstraint( 100 ) ) );
         }

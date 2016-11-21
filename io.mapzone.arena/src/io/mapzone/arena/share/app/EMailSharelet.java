@@ -59,6 +59,7 @@ import org.polymap.rap.updownload.download.DownloadService.ContentProvider;
 
 import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.Messages;
+import io.mapzone.arena.jmx.ArenaConfigMBean;
 import io.mapzone.arena.share.content.ArenaContentProvider.ArenaContent;
 import io.mapzone.arena.share.content.ImagePngContentProvider.ImagePngContent;
 import io.mapzone.arena.share.DefaultSectionProvider;
@@ -192,8 +193,8 @@ public class EMailSharelet
 
         msg.addRecipients( RecipientType.TO, InternetAddress.parse( toText, false ) );
         // TODO we need the FROM from the current user
-        msg.addFrom( InternetAddress.parse( "steffen@mapzone.io" ) );
-        msg.setReplyTo( InternetAddress.parse( "steffen@mapzone.io" ) );
+        msg.addFrom( InternetAddress.parse( ArenaConfigMBean.SMTP_USER ) );
+        msg.setReplyTo( InternetAddress.parse( ArenaConfigMBean.SMTP_USER ) );
 
         msg.setSubject( subjectText, "utf-8" );
         if (withAttachment) {
@@ -227,15 +228,9 @@ public class EMailSharelet
 
 
     private Session mailSession() throws Exception {
-        if (StringUtils.isBlank( System.getProperty( "mail.share.user" ) )) {
-            throw new RuntimeException( "Sytem property mail.share.user must be set" );
-        }
-        if (StringUtils.isBlank( System.getProperty( "mail.share.password" ) )) {
-            throw new RuntimeException( "Sytem property mail.share.password must be set" );
-        }
         if (session == null) {
             Properties props = new Properties();
-            props.put( "mail.smtp.host", System.getProperty( "mail.smtp.host", "mail.mapzone.io" ) );
+            props.put( "mail.smtp.host", ArenaConfigMBean.SMTP_HOST );
             props.put( "mail.smtp.port", "25" );
             props.put( "mail.smtp.auth", "true" );
             // TODO uncomment if the mail server contains a correct SSL certificate
@@ -243,10 +238,9 @@ public class EMailSharelet
 
             // create Authenticator object to pass in Session.getInstance argument
             Authenticator auth = new Authenticator() {
-
-                // override the getPasswordAuthentication method
+                @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication( System.getProperty( "mail.share.user" ), System.getProperty( "mail.share.password" ) );
+                    return new PasswordAuthentication( ArenaConfigMBean.SMTP_USER, ArenaConfigMBean.SMTP_PWD );
                 }
             };
             session = Session.getInstance( props, auth );
