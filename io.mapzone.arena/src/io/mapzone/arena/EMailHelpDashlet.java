@@ -47,6 +47,7 @@ import org.polymap.core.ui.ColumnLayoutFactory;
 import org.polymap.core.ui.StatusDispatcher;
 
 import org.polymap.rhei.batik.BatikApplication;
+import org.polymap.rhei.batik.dashboard.DashletSite;
 import org.polymap.rhei.batik.help.HelpDashlet;
 import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
 import org.polymap.rhei.field.EMailAddressValidator;
@@ -103,9 +104,14 @@ public class EMailHelpDashlet
 
 
     @Override
-    public void createContents( Composite parent ) {
+    public void init( DashletSite site ) {
+        super.init( site );
         site().title.set( i18n.get( "title" ) );
-        
+    }
+
+
+    @Override
+    public void createContents( Composite parent ) {
         initMailSession();
         msg = new MimeMessage( session );
         
