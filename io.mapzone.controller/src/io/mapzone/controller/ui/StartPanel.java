@@ -122,7 +122,7 @@ public class StartPanel
                 // suppress default text size computation in order to avoid flickering
                 // caused by client side font size determination
                 double area = 596 * 222;
-                int height = Math.max( Math.min( (int)(area / wHint), 280 ), 160 );
+                int height = Math.max( Math.min( (int)(area / wHint), 280 ), 250 );
                 Point result = new Point( wHint, height );
                 //log.info( "" + result );
                 return result;
