@@ -44,6 +44,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
 import org.eclipse.core.runtime.IAdaptable;
@@ -54,6 +55,9 @@ import org.polymap.core.operation.DefaultOperation;
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.ui.ColumnDataFactory;
+import org.polymap.core.ui.StatusDispatcher;
+
+import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
 
 import org.polymap.rap.updownload.download.DownloadService.ContentProvider;
 
@@ -119,12 +123,13 @@ public class EMailSharelet
             ImagePngContent image = (ImagePngContent)contentBuilders[0].get();
             ArenaContent arena = (ArenaContent)contentBuilders[1].get();
             Button fab = tk().createFab();
+            fab.setToolTipText( "Send" );
 
             // To:
             LabeledField toField = createField( tk(), parent, i18n.get( "email_to" ), null ); 
-            Text to = tk().createText( toField, "", SWT.BORDER, SWT.WRAP );
+            Text to = tk().createText( toField, "", SWT.BORDER/*, SWT.WRAP*/ );
             to.setToolTipText( i18n.get( "email_toTooltip" ) );
-            ColumnDataFactory.on( to ).widthHint( width() ).heightHint( 40 );
+            //ColumnDataFactory.on( to ).widthHint( width() ).heightHint( 40 );
             to.addModifyListener( new ModifyListener() {
                 @Override
                 public void modifyText( ModifyEvent event ) {
@@ -132,6 +137,7 @@ public class EMailSharelet
                     if (!StringUtils.isBlank( to.getText().trim() )) {
                         fab.setVisible( true );
                         fab.setEnabled( true );
+                        fab.getParent().layout( new Control[] {fab} );
                     }
                     else {
                         fab.setVisible( false );
@@ -165,21 +171,33 @@ public class EMailSharelet
             fab.setVisible( false );
             fab.addSelectionListener( new SelectionAdapter() {
                 @Override
-                public void widgetSelected( SelectionEvent e ) {
-                    final String toText = to.getText();
-                    final String subjectText = subject.getText();
-                    final String messageText = message.getText();
-                    final boolean attach = attachPreview.getSelection();
-                    DefaultOperation op = new DefaultOperation( i18n.get( "email_title" ) ) {
-                        @Override
-                        public IStatus doExecute( IProgressMonitor monitor, IAdaptable info ) throws Exception {
-                            sendEmail( toText, subjectText, messageText, attach, image );
-                            return Status.OK_STATUS;
-                        }
-                    };
-                    // execute
-                    OperationSupport.instance().execute2( op, true, false );
-                    fab.setVisible( false );
+                public void widgetSelected( SelectionEvent ev ) {
+                    try {
+                        final String toText = to.getText();
+                        final String subjectText = subject.getText();
+                        final String messageText = message.getText();
+                        final boolean attach = attachPreview.getSelection();
+                        DefaultOperation op = new DefaultOperation( i18n.get( "email_title" ) ) {
+                            @Override
+                            public IStatus doExecute( IProgressMonitor monitor, IAdaptable info ) throws Exception {
+                                sendEmail( toText, subjectText, messageText, attach, image );
+                                return Status.OK_STATUS;
+                            }
+                        };
+                        // execute
+                        OperationSupport.instance().execute2( op, false, false, result -> {
+                            if (result.getResult().isOK()) {
+                                fab.setEnabled( false );
+                                site().tk.get().createSnackbar( Appearance.FadeIn, "Email sent successfully" );
+                            }
+                            else {
+                                StatusDispatcher.handleError( "Unable to send email.", result.getResult().getException() );
+                            }
+                        });
+                    }
+                    catch (Exception e) {
+                        StatusDispatcher.handleError( "Unable to send email.", e );
+                    }
                 }
             });
         }
