@@ -141,7 +141,8 @@ public class ProjectInfoPanel
         CLabel btn = new CLabel( parent, SWT.CENTER );
         tk().adapt( btn, false, false );
         btn.setText( "<a target=\"_blank\" href=\"" + projectUrl + "\" "
-                + "style=\"font-size: 20px;\""
+                // 22px is not a standard size but used for section title :(
+                + "style=\"font-size: 22px;\""
                 + ">Launch...</a>" );
         btn.setImage( ControllerPlugin.images().svgImage( "rocket.svg", ControllerPlugin.OK_ICON_CONFIG ) );
         btn.setAlignment( SWT.CENTER );
