@@ -44,7 +44,7 @@
             body="resources/html/body.html"
             id="io.mapzone.controller.branding"
             themeId="org.polymap.rhei.batik.materialDesign"
-            title="Mapzone">
+            title="mapzone">
          <additionalHeaders>
             <link
                   href="batikres/css/roboto.css"

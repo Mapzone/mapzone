@@ -16,7 +16,7 @@
             body="resources/html/body.html"
             id="io.mapzone.arena.branding"
             themeId="org.polymap.rhei.batik.materialDesign"
-            title="Arena">
+            title="mapzone | project">
          <additionalHeaders>
             <link
                   href="batikres/css/md/flowtext.css"
