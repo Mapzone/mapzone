@@ -139,7 +139,7 @@ public class RegisterPanel
         form.createContents( formSection );
 
         // btn
-        okBtn = tk().createFab();  //Button( form.getContents(), i18n.get( "okBtn" ), SWT.PUSH );
+        okBtn = tk().createFab( SWT.RIGHT );  //Button( form.getContents(), i18n.get( "okBtn" ), SWT.PUSH );
         okBtn.setToolTipText( i18n.get( "okBtn" ) );
         okBtn.setEnabled( false );
         okBtn.addSelectionListener( new SelectionAdapter() {
