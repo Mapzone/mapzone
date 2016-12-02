@@ -3,10 +3,10 @@
 <plugin>
    <extension
          point="org.polymap.rhei.batik.panels">
-      <panel
+      <!--panel
             class="io.mapzone.arena.analytics.graph.ui.GraphPanel"
             id="io.mapzone.arena.analytics.graph.ui.GraphPanel">
-      </panel>
+      </panel-->
       <panel
             class="io.mapzone.arena.analytics.graph.ui.SelectedNodePanel"
             id="io.mapzone.arena.analytics.graph.ui.SelectedNodePanel">
