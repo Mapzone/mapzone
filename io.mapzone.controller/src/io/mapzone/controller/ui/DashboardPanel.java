@@ -99,7 +99,7 @@ public class DashboardPanel
 
 
     @Override
-    public String cmsPath() {
+    public String helpCmsPath() {
         return "ui/dashboard-welcome.md";
     }
     

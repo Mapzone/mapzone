@@ -49,7 +49,7 @@ public class CmsHelpContribution
         IPanel parentPanel = site.context().getPanel( site.panel().site().path().removeLast( 1 ) );
         if (parentPanel instanceof HelpAwarePanel
                 && site.tagsContain( HelpPanel.DASHBOARD_ID )) {
-            String cmsPath = ((HelpAwarePanel)parentPanel).cmsPath();
+            String cmsPath = ((HelpAwarePanel)parentPanel).helpCmsPath();
             dashboard.addDashlet( new CmsHelpDashlet()
                     .cmsPath.put( cmsPath )
                     .addConstraint( new PriorityConstraint( 100 ) ) );
