@@ -123,8 +123,8 @@ public class EMailSharelet
         public void createContents( final Composite parent, ShareableContentProvider... contentBuilders ) {
             ImagePngContent image = (ImagePngContent)contentBuilders[0].get();
             ArenaContent arena = (ArenaContent)contentBuilders[1].get();
-            Button fab = tk().createFab();
-            fab.setToolTipText( "Send" );
+            Button fab = tk().createFab( "Send" );
+            fab.setToolTipText( "Send email" );
 
             // To:
             LabeledField toField = createField( tk(), parent, i18n.get( "email_to" ), null ); 
