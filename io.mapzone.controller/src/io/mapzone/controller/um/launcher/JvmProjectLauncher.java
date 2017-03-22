@@ -84,7 +84,7 @@ public class JvmProjectLauncher
     public CollectionProperty<String>   classpath;
 
     @JvmParam( "Xmx" )
-    @DefaultValue( "512" )
+    @DefaultValue( "1500" )
     public Property<Integer>            xmxMB;
 
     /** Use -server VM, or not. */
