@@ -21,9 +21,6 @@ import static io.mapzone.controller.catalog.csw.Namespaces.DCT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.polymap.model2.Composite;
 
 import io.mapzone.controller.catalog.model.CatalogEntry;
@@ -36,8 +33,6 @@ import io.mapzone.controller.catalog.model.CatalogEntry.ConnectionParam;
  */
 public class RecordWriter
         extends AnnotatedCompositeWriter {
-
-    private static Log log = LogFactory.getLog( RecordWriter.class );
 
     public RecordWriter( XMLStreamWriter out ) {
         super( out, DC, DCT );

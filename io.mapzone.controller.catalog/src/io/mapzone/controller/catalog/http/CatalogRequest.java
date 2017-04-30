@@ -1,6 +1,6 @@
 /* 
  * polymap.org
- * Copyright (C) 2016, the @authors. All rights reserved.
+ * Copyright (C) 2016-2017, the @authors. All rights reserved.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -36,7 +36,8 @@ import com.google.common.collect.MultimapBuilder;
 import io.mapzone.controller.catalog.csw.CswResponse;
 
 /**
- * 
+ * Represents a HTTP catalog request from a client. CatalogRequests are handled by
+ * the {@link CatalogServlet}.
  *
  * @author Falko Bräutigam
  */

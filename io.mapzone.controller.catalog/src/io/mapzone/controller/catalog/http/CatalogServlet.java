@@ -1,6 +1,6 @@
 /* 
  * polymap.org
- * Copyright (C) 2016, the @authors. All rights reserved.
+ * Copyright (C) 2016-2017, the @authors. All rights reserved.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import io.mapzone.controller.catalog.csw.GetProposalsResponse;
 import io.mapzone.controller.catalog.csw.GetRecordByIdResponse;
 import io.mapzone.controller.catalog.csw.GetRecordsResponse;
 import io.mapzone.controller.catalog.csw.Params;
@@ -54,6 +55,7 @@ public class CatalogServlet
         responseTypes.put( GetRecordsResponse.REQUEST, GetRecordsResponse.class );
         responseTypes.put( GetRecordByIdResponse.REQUEST, GetRecordByIdResponse.class );
         responseTypes.put( TransactionResponse.REQUEST, TransactionResponse.class );
+        responseTypes.put( GetProposalsResponse.REQUEST, GetProposalsResponse.class );
     }
     
     
@@ -83,7 +85,13 @@ public class CatalogServlet
             RequestBaseType body = request.parseBody();
 
             if (body instanceof GetRecordsType) {
-                doService( request, GetRecordsResponse.class );
+                GetRecordsType getRecords = (GetRecordsType)body;
+                if ("csw:Proposals".equals( getRecords.getOutputSchema() )) {
+                    doService( request, GetProposalsResponse.class );                    
+                }
+                else {
+                    doService( request, GetRecordsResponse.class );
+                }
             }
             else if (body instanceof GetRecordByIdType) {
                 doService( request, GetRecordByIdResponse.class );

@@ -63,7 +63,7 @@ public class FilterParser {
         this( constraint.getFilter(), index );
 
         if (constraint.getCqlText() != null) {
-            throw new UnsupportedOperationException( "CQL ist not supported yet." );            
+            throw new UnsupportedOperationException( "CQL is not supported yet." );            
         }
     }
     

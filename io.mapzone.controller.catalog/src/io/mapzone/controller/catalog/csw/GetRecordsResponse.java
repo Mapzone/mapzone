@@ -1,6 +1,6 @@
 /* 
  * polymap.org
- * Copyright (C) 2016, the @authors. All rights reserved.
+ * Copyright (C) 2016-2017, the @authors. All rights reserved.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -36,7 +36,7 @@ import net.opengis.cat.csw.v_2_0_2.QueryType;
 public class GetRecordsResponse
         extends CswResponse {
 
-    private static Log log = LogFactory.getLog( GetRecordsResponse.class );
+    private static final Log log = LogFactory.getLog( GetRecordsResponse.class );
 
     public static final String              REQUEST = "GetRecords";
     
