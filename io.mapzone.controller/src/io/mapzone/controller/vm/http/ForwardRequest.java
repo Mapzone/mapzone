@@ -27,7 +27,7 @@ import io.mapzone.controller.provision.Provision.Status.Severity;
 public class ForwardRequest
         extends HttpProxyProvision {
 
-    private static Log log = LogFactory.getLog( ForwardRequest.class );
+    private static final Log log = LogFactory.getLog( ForwardRequest.class );
 
     public static final String              BAD_RESPONSE = "_bad_response_";
     public static final String              IO_ERROR = "_io_error_";

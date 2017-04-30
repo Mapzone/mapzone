@@ -100,7 +100,6 @@ public class HttpResponseForwarder
 
             // Send the content to the client
             copyResponseEntity( proxyResponse, servletResponse );
-
         }
         catch (Exception e) {
             // abort request, according to best practice with HttpClient
@@ -119,8 +118,8 @@ public class HttpResponseForwarder
 
         }
         finally {
-            // make sure the entire entity was consumed, so the connection is
-            // released
+            // make sure the entire entity was consumed, so the connection is released
+            // XXX CloseableHttpResponse.close()
             if (proxyResponse != null) {
                 consumeQuietly( proxyResponse.getEntity() );
             }

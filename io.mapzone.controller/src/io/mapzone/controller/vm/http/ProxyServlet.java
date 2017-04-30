@@ -32,11 +32,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpRequest;
-import org.apache.http.client.methods.CloseableHttpResponse;
-
 import com.google.common.base.Joiner;
 
-import org.polymap.core.runtime.Closer;
 import org.polymap.core.runtime.Timer;
 
 import io.mapzone.controller.ControllerPlugin;
@@ -156,8 +153,7 @@ public class ProxyServlet
                 return;
             }
             catch (ProvisionRuntimeException e) {
-                // login redirect
-                return;
+                return; // login redirect
             }
             catch (Throwable e) {
                 log.error( "Error while provisioning or upstream process.", e );
@@ -169,7 +165,6 @@ public class ProxyServlet
             }
 
             // response
-            CloseableHttpResponse proxyResponse = null;
             ProvisionExecutor executor2 = new ProvisionExecutor2( forwardResponseProvisions )
                     .setContextValues( executor.getContextValues() );
             ForwardResponse forwardResponse = executor2.newProvision( ForwardResponse.class );
@@ -178,12 +173,12 @@ public class ProxyServlet
                 assert status2.severity( OK );
             }
             catch (Exception e) {
+                // FIXME
+                log.error( "!!! Exception while response processing, proxy response/connection might not have been closed properly !!!" );
+                
                 // error while provisioning or sending response
                 // XXX log, reset instance(?), send error page?
                 throw new RuntimeException( e );
-            }
-            finally {
-                Closer.create().close( proxyResponse );
             }
         }
         catch (Exception e) {
