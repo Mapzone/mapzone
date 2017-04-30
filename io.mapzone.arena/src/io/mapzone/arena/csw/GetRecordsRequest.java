@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 import org.polymap.core.catalog.IMetadata;
 import org.polymap.core.runtime.config.Config2;
+import org.polymap.core.runtime.config.DefaultInt;
 import org.polymap.core.runtime.config.DefaultString;
 import org.polymap.core.runtime.config.Mandatory;
 
@@ -100,6 +101,20 @@ public class GetRecordsRequest<T extends AbstractRecordXML>
     @Mandatory
     public Config2<GetRecordsRequest<T>,ElementSetXML> elementSet;
             
+    /**
+     * Inbound: Maximum number of records in result set.
+     */
+    @Mandatory
+    @DefaultInt( 50 )
+    public Config2<GetRecordsRequest<T>,Integer> maxRecords;
+            
+    /**
+     * Inbound:
+     */
+    @Mandatory
+    @DefaultInt( 1 )
+    public Config2<GetRecordsRequest<T>,Integer> startPos;
+            
     
     public GetRecordsRequest() {
         request.set( "GetRecords" );
@@ -112,11 +127,11 @@ public class GetRecordsRequest<T extends AbstractRecordXML>
         //String url = baseUrl.get() + encodeRequestParams( assembleParams() );
         //GetRecordsResponseType response = read( GetRecordsResponseType.class, url );
         
-        out().writeAttribute( "resultType" , "results" );
-        out().writeAttribute( "maxRecords" , "50" );
-        out().writeAttribute( "startPosition" , "1" );
-        out().writeAttribute( "outputFormat" , "application/xml" );
-        out().writeAttribute( "outputSchema" , "csw:Record" );
+        out().writeAttribute( "resultType", "results" );
+        out().writeAttribute( "maxRecords", maxRecords.get().toString() );
+        out().writeAttribute( "startPosition", startPos.get().toString() );
+        out().writeAttribute( "outputFormat", "application/xml" );
+        out().writeAttribute( "outputSchema", "csw:Record" );
 
         
         writeElement( CSW, "Query", () -> {
@@ -134,8 +149,8 @@ public class GetRecordsRequest<T extends AbstractRecordXML>
                     // <PropertyIsLike wildCard="%" singleChar="_" escape="\\">
                     writeElement( OGC, "PropertyIsLike", () -> {
                         out().writeAttribute( "wildCard", "*" );
-                        writeElement( OGC, "PropertyName", () -> { out().writeCharacters( "AnyText" ); } );
-                        writeElement( OGC, "Literal", () -> { out().writeCharacters( constraint.get() ); } );
+                        writeElement( OGC, "PropertyName", () -> out().writeCharacters( "AnyText" ) );
+                        writeElement( OGC, "Literal", () -> out().writeCharacters( constraint.get() ) );
                     });
                 });
             });
@@ -181,7 +196,7 @@ public class GetRecordsRequest<T extends AbstractRecordXML>
     /**
      * Test.
      */
-    public static final void main( String[] args ) throws Exception {
+    public static void main( String[] args ) throws Exception {
 //        GetRecordsRequest<RecordXML> getRecords = new GetRecordsRequest<RecordXML>()
 //                .elementSet.put( ElementSetType.FULL )
 //                //.constraint.put( "AnyText Like '%Landschaftsschutzgebiete%'" )
@@ -190,7 +205,7 @@ public class GetRecordsRequest<T extends AbstractRecordXML>
 
         GetRecordsRequest<RecordXML> getRecords = new GetRecordsRequest<RecordXML>()
                 .elementSet.put( ElementSetXML.FULL )
-                .constraint.put( "ahnung" )
+                .constraint.put( "test" )
                 .baseUrl.put( "http://localhost:8090/csw" );
 
         ResultSet<RecordXML> rs = getRecords.execute( new NullProgressMonitor() );

@@ -119,6 +119,11 @@ public class ConnectedCswMetadataCatalog
     }
 
     @Override
+    public Iterable<String> propose( String prefix, int maxResults, IProgressMonitor monitor ) throws Exception {
+        return delegate.propose( prefix, maxResults, monitor );
+    }
+
+    @Override
     public Optional<? extends IMetadata> entry( String identifier, IProgressMonitor monitor ) throws Exception {
         return delegate.entry( identifier, monitor )
                 .map( result -> ((CswMetadataBase)result).setCatalog( this ) );

@@ -1,6 +1,6 @@
 /* 
  * polymap.org
- * Copyright (C) 2016, the @authors. All rights reserved.
+ * Copyright (C) 2016-2017, the @authors. All rights reserved.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -43,13 +43,13 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.io.input.TeeInputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import org.polymap.core.runtime.CachedLazyInit;
@@ -65,6 +65,7 @@ import io.mapzone.arena.csw.jaxb.GetRecordsResponseXML;
 import javanet.staxutils.IndentingXMLStreamWriter;
 
 /**
+ * A base request to be send to a CSW catalog.
  * 
  * @see <a href=
  *      "http://geonetwork-opensource.org/manuals/2.10.4/eng/developer/xml_services/csw_services.html">
@@ -80,6 +81,7 @@ public abstract class CswRequest<R>
 
     public static final DateFormat          DF = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
     
+    /** {@link CloseableHttpClient} wrapped inside an {@link AutoCloseHttpClient}. */
     public static final Lazy<HttpClient>    httpClient;
     
     public static final Lazy<JAXBContext>   jaxbContext;
@@ -167,16 +169,19 @@ public abstract class CswRequest<R>
         StringEntity entity = new StringEntity( content, DEFAULT_XML_ENCODING );
         entity.setContentType( "application/xml" );
         post.setEntity( entity );
-        HttpResponse response = httpClient.get().execute( post );
         
-        StatusLine status = response.getStatusLine();
-        if (status.getStatusCode() != 200) {
-            throw new IOException( status.getReasonPhrase() + " (" + status.getStatusCode() + ")" );
-        }
         // read response
         try (
-            java.io.InputStream in = response.getEntity().getContent();
+            CloseableHttpResponse response = (CloseableHttpResponse)httpClient.get().execute( post );
+            InputStream in = response.getEntity().getContent();
         ){
+            // check return code
+            StatusLine status = response.getStatusLine();
+            if (status.getStatusCode() != 200) {
+                throw new IOException( status.getReasonPhrase() + " (" + status.getStatusCode() + ")" );
+            }
+            
+            // handle response
             System.out.print( "RESPONSE: " );
             TeeInputStream tee = new TeeInputStream( in, System.out );
             return handleResponse( tee, monitor );

@@ -1,6 +1,6 @@
 /* 
  * polymap.org
- * Copyright (C) 2016, the @authors. All rights reserved.
+ * Copyright (C) 2016-2017, the @authors. All rights reserved.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -36,6 +36,7 @@ import org.polymap.core.runtime.config.Mandatory;
 
 import io.mapzone.arena.csw.CswRequest;
 import io.mapzone.arena.csw.DeleteRecordRequest;
+import io.mapzone.arena.csw.GetProposalsRequest;
 import io.mapzone.arena.csw.GetRecordByIdRequest;
 import io.mapzone.arena.csw.GetRecordsRequest;
 import io.mapzone.arena.csw.InsertRecordRequest;
@@ -105,6 +106,16 @@ public class CswMetadataCatalog
                 };
             }            
         };
+    }
+
+    
+    @Override
+    public Iterable<String> propose( String prefix, int maxResults, IProgressMonitor monitor ) throws Exception {
+        GetProposalsRequest request = new GetProposalsRequest()
+                .constraint.put( prefix )
+                .baseUrl.put( baseUrl.get().get() );
+        
+        return request.execute( monitor );
     }
 
     

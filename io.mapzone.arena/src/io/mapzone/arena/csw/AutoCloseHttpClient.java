@@ -54,7 +54,7 @@ public class AutoCloseHttpClient
     }
 
     public void close() throws IOException {
-        log.info( "Closing HttpClient..." );
+        log.info( "Closing CSW HttpClient..." );
         delegate.close();
     }
 
