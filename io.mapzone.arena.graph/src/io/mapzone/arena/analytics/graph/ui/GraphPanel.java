@@ -40,8 +40,8 @@ import org.polymap.core.project.IMap;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.style.DefaultStyle;
 import org.polymap.core.style.model.FeatureStyle;
-import org.polymap.core.style.model.PropertyString;
-import org.polymap.core.style.model.TextStyle;
+import org.polymap.core.style.model.feature.PropertyString;
+import org.polymap.core.style.model.feature.TextStyle;
 import org.polymap.core.ui.FormDataFactory;
 import org.polymap.core.ui.FormLayoutFactory;
 import org.polymap.core.ui.SelectionAdapter;
@@ -296,7 +296,11 @@ public class GraphPanel
             icon.set( P4Plugin.images().svgImage( "palette.svg", P4Plugin.TOOLBAR_ICON_CONFIG ) );
             tooltip.set( i18n.get( "nodeStylerTooltip" ) );
             action.set( ev -> {
-                styleEditorInput.set( new FeatureStyleEditorInput( site().memento().getString( NODE_STYLE_IDENTIFIER ), new FeatureCollectionStore(graphLayerProvider.graphUi().nodeCollection()) ) );
+                FeatureStyleEditorInput input = new FeatureStyleEditorInput();
+                input.styleIdentifier.set( site().memento().getString( NODE_STYLE_IDENTIFIER ) );
+                input.featureStore.set( new FeatureCollectionStore( graphLayerProvider.graphUi().nodeCollection() ) );
+                // FIXME input.featureType.set( );
+                styleEditorInput.set( input );
                 getContext().openPanel( site().path(), LayerStylePanel.ID );
             } );
         }
@@ -312,7 +316,11 @@ public class GraphPanel
             icon.set( P4Plugin.images().svgImage( "palette.svg", P4Plugin.TOOLBAR_ICON_CONFIG ) );
             tooltip.set( i18n.get( "edgeStylerTooltip" ) );
             action.set( ev -> {
-                styleEditorInput.set( new FeatureStyleEditorInput( site().memento().getString( EDGE_STYLE_IDENTIFIER ), new FeatureCollectionStore( graphLayerProvider.graphUi().edgeCollection() ) ) );
+                FeatureStyleEditorInput input = new FeatureStyleEditorInput();
+                input.styleIdentifier.set( site().memento().getString( EDGE_STYLE_IDENTIFIER ) );
+                input.featureStore.set( new FeatureCollectionStore( graphLayerProvider.graphUi().edgeCollection() ) );
+                // FIXME input.featureType.set( );
+                styleEditorInput.set( input );
                 getContext().openPanel( site().path(), LayerStylePanel.ID );
             } );
         }
