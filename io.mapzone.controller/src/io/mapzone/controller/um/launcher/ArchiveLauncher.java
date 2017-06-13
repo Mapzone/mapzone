@@ -14,10 +14,10 @@
  */
 package io.mapzone.controller.um.launcher;
 
+import java.util.regex.Pattern;
+
 import java.io.File;
 import java.net.URL;
-import java.net.URLEncoder;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -42,6 +42,8 @@ public abstract class ArchiveLauncher
 
     public static final String          INSTANCES_BASE_DIR = System.getProperty( "io.mapzone.controller.instancesBaseDir", "/home/mapzone/instances/" );
 
+    public static final Pattern         NO_PATH_CHARS = Pattern.compile( "[^a-zA-Z0-9.-_]" );
+    
     /** file:///tmp/p4.[tgz|zip] */
     public Property<String>             installArchiveUri;
 
@@ -58,15 +60,23 @@ public abstract class ArchiveLauncher
         return instance.homePath.get() + "/bin";
     }
     
+    protected String normalizePath( String input ) {
+        String result = NO_PATH_CHARS.matcher( input ).replaceAll( "_" );
+        if (!result.equals( input )) {
+            // make it unique
+            result += (byte)System.currentTimeMillis();
+        }
+        return result;
+    }
     
     @Override
     public void install( ProjectInstanceRecord instance, IProgressMonitor monitor ) throws Exception {
         monitor.beginTask( "Install instance", 11 );
 
         // basename
-        String basename = Joiner.on( "/" ).skipNulls().join( 
-                URLEncoder.encode( project().organization.get().name.get(), "UTF8" ), 
-                URLEncoder.encode( project().name.get(), "UTF8" )
+        String basename = Joiner.on( "/" ).skipNulls().join(
+                normalizePath( project().organization.get().name.get() ), 
+                normalizePath( project().name.get() )
                 /*, instance.version.get()*/ );
 
         // allow re-install
