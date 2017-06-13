@@ -1,5 +1,7 @@
 package io.mapzone.controller.vm.runtime;
 
+import java.util.List;
+
 import java.io.File;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -53,6 +55,9 @@ public abstract class HostRuntime
      */
     public abstract HostFile file( File f );
     
+
+    public abstract List<HostFile> listFiles( File f );
+    
     
     /**
      * Executes the given script on this host. Options are given via {@link Config}
@@ -66,5 +71,5 @@ public abstract class HostRuntime
      * given via {@link Config} properties on the script.
      */
     public abstract ListenableFuture<ScriptExecutionResult> nohupExecute( Script script );
-    
+
 }

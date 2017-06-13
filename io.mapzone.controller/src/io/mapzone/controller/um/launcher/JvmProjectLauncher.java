@@ -162,7 +162,7 @@ public class JvmProjectLauncher
         pollHttp( instance );
         
         // fail on exception
-        log.info( "PID: " + host.runtime.get().file( new File( pidFile ) ).content() );
+        log.info( "PID: " + host.runtime.get().file( new File( pidFile ) ).content( "UTF-8" ) );
     }
 
     

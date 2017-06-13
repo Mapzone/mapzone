@@ -152,11 +152,7 @@ public class ProjectRepository {
          * @param project
          */
         public Optional<Project> findProject( String organization, String project ) {
-            assert organization != null;
-            Organization org = delegate().query( Organization.class )
-                    .where( eq( Organization.TYPE.name, organization ) )
-                    .execute().stream().findAny().get();
-
+            Organization org = findOrganization( organization ).get();
             return org.projects.stream()
                     // newly created projects have no name set
                     // searching for null name is be possible
@@ -164,7 +160,15 @@ public class ProjectRepository {
                     .findAny();
         }
 
+        
+        public Optional<Organization> findOrganization( String organization ) {
+            assert organization != null;
+            return delegate().query( Organization.class )
+                    .where( eq( Organization.TYPE.name, organization ) )
+                    .execute().stream().findAny();
+        }
 
+        
         public Optional<User> findUser( String username ) {
             assert !StringUtils.isBlank( username );
             ResultSet<User> rs = delegate().query( User.class )

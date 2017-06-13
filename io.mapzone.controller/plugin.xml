@@ -129,5 +129,18 @@
             id="io.mapzone.controller.EMailHelpDashlet">
       </contributions>
    </extension>
+   <extension
+         point="org.polymap.service.fs.contentProviders">
+      <contentProvider
+            class="io.mapzone.controller.api.ApiContentProvider"
+            id="io.mapzone.controller.ApiContentProvider"
+            name="API">
+      </contentProvider>
+      <contentProvider
+            class="io.mapzone.controller.api.TargetPlatformProvider"
+            id="io.mapzone.controller.SdkTargetPlatformProvider"
+            name="TargetPlatform">
+      </contentProvider>
+   </extension>
 
 </plugin>

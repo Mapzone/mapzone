@@ -1,18 +1,20 @@
 package io.mapzone.controller.vm.runtime;
 
-import io.mapzone.controller.vm.repository.HostRecord;
-
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 import org.jclouds.compute.ComputeService;
 import org.jclouds.compute.domain.ExecResponse;
 import org.jclouds.compute.options.RunScriptOptions;
@@ -21,12 +23,15 @@ import org.jclouds.io.payloads.InputStreamPayload;
 import org.jclouds.ssh.SshClient;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
 import org.polymap.core.runtime.Timer;
+
+import io.mapzone.controller.vm.repository.HostRecord;
 
 /**
  * 
@@ -44,7 +49,7 @@ public class JCloudsHostRuntime
     
     
     // instance *******************************************
-    
+
     public JCloudsHostRuntime( HostRecord host ) {
         super( host );
     }
@@ -138,6 +143,20 @@ public class JCloudsHostRuntime
     }
 
 
+    @Override
+    public List<HostFile> listFiles( File f ) {
+        ScriptExecutionResult result = execute( new Script()
+                .add( "ls " + f.getAbsolutePath() )
+                .blockOnComplete.put( true )
+                .exceptionOnFail.put( true ) );
+        
+        String[] names = StringUtils.split( result.output.get(), "\n\r" );
+        return Arrays.stream( names )
+                .map( name -> new JCloudsHostFile( new File( f, name ) ) )
+                .collect( Collectors.toList() );
+    }
+
+
     /**
      * <p/>
      * XXX Makes new connection for each and every request!
@@ -152,23 +171,12 @@ public class JCloudsHostRuntime
         }
 
         @Override
-        public String content() throws IOException {
-            return content( "UTF8" );
+        public String name() {
+            return f.getName();
         }
 
-        protected <R,E extends Exception> R withSshClient( Task<SshClient,R,E> task ) throws E {
-            SshClient ssh = JCloudsRuntime.instance.get().sshForNode( host.hostId.get() );
-            try {
-                ssh.connect();
-                return task.accept( ssh );
-            } 
-            finally {
-                if (ssh != null) { ssh.disconnect(); }
-            }
-        }
-        
         @Override
-        public String content( String charset ) throws IOException {
+        public byte[] content() throws IOException {
             return withSshClient( ssh -> {
                 Timer timer = new Timer();
                 try (
@@ -176,11 +184,16 @@ public class JCloudsHostRuntime
                 ){
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
                     IOUtils.copy( in, out );
-                    System.out.println( "READ: " + out.size() + "bytes (" + timer.elapsedTime() + "ms)" );
+                    log.info( "READ: " + out.size() + "bytes (" + timer.elapsedTime() + "ms)" );
 
-                    return out.toString( charset );
+                    return out.toByteArray();
                 } 
             });
+        }
+
+        @Override
+        public String content( String charset ) throws IOException {
+            return new String( content(), charset );
         }
         
         @Override
@@ -219,6 +232,22 @@ public class JCloudsHostRuntime
         public boolean exists() {
             // XXX Auto-generated method stub
             throw new RuntimeException( "not yet implemented." );
+        }
+
+        @Override
+        public void delete() throws IOException {
+            withSshClient( ssh -> {
+                ExecResponse response = ssh.exec( "rm " + f.getAbsolutePath() );
+                if (response.getExitStatus() != 0) {
+                    throw new IOException( response.getError() );
+                }
+                return null;
+            });
+        }
+
+        protected <R,E extends Exception> R withSshClient( Task<SshClient,R,E> task ) throws E {
+            SshClient ssh = JCloudsRuntime.instance.get().sshForNode( host.hostId.get() );
+            return task.accept( ssh );
         }
         
     }

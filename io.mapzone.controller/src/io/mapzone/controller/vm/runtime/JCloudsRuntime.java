@@ -1,7 +1,6 @@
 package io.mapzone.controller.vm.runtime;
 
 import java.util.Properties;
-
 import org.jclouds.Constants;
 import org.jclouds.ContextBuilder;
 import org.jclouds.byon.BYONApiMetadata;
@@ -21,6 +20,8 @@ import com.google.common.collect.ImmutableSet;
 
 import org.polymap.core.runtime.Lazy;
 import org.polymap.core.runtime.LockedLazyInit;
+import org.polymap.core.runtime.cache.Cache;
+import org.polymap.core.runtime.cache.CacheConfig;
 
 /**
  * Configuration of the global JClouds contexts.
@@ -29,13 +30,15 @@ import org.polymap.core.runtime.LockedLazyInit;
  */
 public class JCloudsRuntime {
 
-    private static Log log = LogFactory.getLog( JCloudsRuntime.class );
+    private static final Log log = LogFactory.getLog( JCloudsRuntime.class );
     
-    public static Lazy<JCloudsRuntime>  instance = new LockedLazyInit( () -> new JCloudsRuntime() );
+    public static final Lazy<JCloudsRuntime>  instance = new LockedLazyInit( () -> new JCloudsRuntime() );
     
     // instance *******************************************
     
     private ComputeServiceContext       context;
+    
+    private Cache<String,AutoDisconnectSshClient> sshClients;
     
     
     protected JCloudsRuntime() {
@@ -65,6 +68,17 @@ public class JCloudsRuntime {
                 .overrides( contextProperties )
                 .modules( ImmutableSet.of( new SshjSshClientModule(), new SLF4JLoggingModule() ) )
                 .build( ComputeServiceContext.class );
+
+        sshClients = CacheConfig.defaults().initSize( 32 ).createCache();
+                
+//        sshClients = CacheBuilder.newBuilder()
+//                .initialCapacity( 32 )
+//                .expireAfterAccess( 60, TimeUnit.SECONDS )
+//                .removalListener( notification -> {
+//                    log.info( "SSH: removed " + notification.getKey() );
+//                    ((SshClient)notification.getValue()).disconnect();
+//                })
+//                .build();
     }
 
 
@@ -74,8 +88,32 @@ public class JCloudsRuntime {
 
     
     public SshClient sshForNode( String nodeId ) {
-        NodeMetadata node = computeService().getNodeMetadata( nodeId );
-        return context.utils().sshForNode().apply( node );
+        return sshClients.get( nodeId, k -> {
+            log.warn( "SSH: create new for " + nodeId );
+            NodeMetadata node = computeService().getNodeMetadata( nodeId );
+            SshClient sshClient = context.utils().sshForNode().apply( node );
+            return new AutoDisconnectSshClient( sshClient );
+        }).sshClient;
     }
 
+
+    /**
+     * 
+     */
+    class AutoDisconnectSshClient {
+        
+        public SshClient        sshClient;
+
+        protected AutoDisconnectSshClient( SshClient sshClient ) {
+            this.sshClient = sshClient;
+        }
+
+        @Override
+        protected void finalize() throws Throwable {
+            log.warn( "SSH: disconnect on finalize() -  " + sshClient.getHostAddress() );
+            sshClient.disconnect();
+            sshClient = null;
+        }
+    }
+    
 }

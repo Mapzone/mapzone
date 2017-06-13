@@ -17,7 +17,8 @@ Require-Bundle: org.eclipse.equinox.http.registry;bundle-version="1.1.300",
  org.polymap.rhei.form,
  org.polymap.rhei.form.batik,
  org.polymap.cms;bundle-version="1.1.0",
- io.mapzone.controller.catalog;bundle-version="1.0.0"
+ io.mapzone.controller.catalog;bundle-version="1.0.0",
+ org.polymap.service.fs
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/httpclient-4.5.jar,

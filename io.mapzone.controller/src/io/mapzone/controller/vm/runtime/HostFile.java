@@ -25,22 +25,26 @@ import java.io.OutputStream;
  */
 public abstract class HostFile {
 
+    public abstract String name();
+    
     public abstract InputStream inputStream();
     
     public abstract OutputStream outputStream();
     
     public abstract boolean exists();
 
-    public abstract String content() throws IOException;
+    public abstract byte[] content() throws IOException;
     
     public abstract String content( String charset ) throws IOException;
 
     /**
      * 
      *
-     * @param in The source to read from. Closed after return.
+     * @param in The source to read from. The stream is closed by this method.
      * @throws IOException
      */
     public abstract void write( InputStream in ) throws IOException;
+
+    public abstract void delete() throws IOException;
     
 }
