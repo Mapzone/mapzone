@@ -127,7 +127,7 @@ public class TargetPlatformProvider
 
                 File pluginDir = new File( instance.homePath.get(), "/bin/plugins" );
                 HostFile hostFile = instance.host.get().runtime.get().file( new File( pluginDir, newName ) );
-                boolean isNewFile = hostFile.exists();
+                boolean isNewFile = true;  //hostFile.exists();
                 hostFile.write( in );
 
                 // stop/restart process
