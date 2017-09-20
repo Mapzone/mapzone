@@ -17,6 +17,7 @@ package io.mapzone.controller.um.repository;
 import org.polymap.core.runtime.event.EventManager;
 
 import org.polymap.model2.Entity;
+import org.polymap.model2.runtime.EntityRuntimeContext.EntityStatus;
 import org.polymap.model2.runtime.Lifecycle;
 import org.polymap.model2.runtime.UnitOfWork;
 
@@ -31,6 +32,9 @@ import io.mapzone.controller.um.repository.ProjectRepository.ProjectUnitOfWork;
 public abstract class ProjectEntity
         extends Entity
         implements Lifecycle {
+
+    private EntityStatus        beforeCommitStatus;
+
 
     /**
      * The {@link UnitOfWork} this entity belongs to.
@@ -48,8 +52,11 @@ public abstract class ProjectEntity
     
     @Override
     public void onLifecycleChange( State state ) {
-        if (state == State.AFTER_COMMIT) {
-            EventManager.instance().publish( new EntityChangedEvent( this ) );
+        if (state == State.BEFORE_COMMIT || state == State.BEFORE_ROLLBACK) {
+            beforeCommitStatus = status();
+        }
+        else if (state == State.AFTER_COMMIT || state == State.AFTER_ROLLBACK) {
+            EventManager.instance().publish( new EntityChangedEvent( this, beforeCommitStatus ) );
         }
     }
 

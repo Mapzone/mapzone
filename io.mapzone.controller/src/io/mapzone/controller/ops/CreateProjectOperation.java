@@ -21,7 +21,6 @@ import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.model2.Property;
 
 import io.mapzone.controller.Messages;
-import io.mapzone.controller.um.launcher.ArenaLauncher;
 import io.mapzone.controller.um.repository.AuthToken;
 import io.mapzone.controller.um.repository.Organization;
 import io.mapzone.controller.um.repository.Project;
@@ -80,7 +79,7 @@ public class CreateProjectOperation
      */
     public Project createProject() {
         project.set( umUow.get().createEntity( Project.class, null, Project.defaults ) );        
-        project.get().launcher.createValue( ArenaLauncher.defaults );
+        //project.get().launcher.createValue( ArenaLauncher.defaults );
         
         project.get().created.set( new Date() );
         project.get().modified.set( new Date() );

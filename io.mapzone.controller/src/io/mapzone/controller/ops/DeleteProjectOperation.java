@@ -14,19 +14,15 @@
  */
 package io.mapzone.controller.ops;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import static org.polymap.core.ui.UIUtils.submon;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
-
 import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.Mandatory;
 import org.polymap.core.runtime.i18n.IMessages;
-
 import io.mapzone.controller.Messages;
 import io.mapzone.controller.um.repository.Project;
 import io.mapzone.controller.um.repository.ProjectRepository;
@@ -43,8 +39,6 @@ import io.mapzone.controller.vm.repository.VmRepository;
  */
 public class DeleteProjectOperation
         extends UmOperation {
-
-    private static Log log = LogFactory.getLog( DeleteProjectOperation.class );
 
     public static final IMessages i18n = Messages.forPrefix( "DeleteProjectOperation" );
     
@@ -81,12 +75,11 @@ public class DeleteProjectOperation
             op.kill.set( true );
             op.process.set( process );
             op.vmUow.set( vmUow.get() );
-            op.execute( null, null );
+            op.execute( submon( monitor, 1 ), null );
         }
-        monitor.worked( 1 );
 
         // uninstall filesystem on host
-        project.get().launcher.get().uninstall( instance, new SubProgressMonitor( monitor, 7 ) );
+        project.get().launcher.get().uninstall( instance, submon( monitor, 7 ) );
 
         // remove instance and association
         Object instanceId = instance.id();
@@ -97,7 +90,6 @@ public class DeleteProjectOperation
         // remove project
         umUow.get().removeEntity( project.get() );
 
-        monitor.done();
         return Status.OK_STATUS;
     }
 

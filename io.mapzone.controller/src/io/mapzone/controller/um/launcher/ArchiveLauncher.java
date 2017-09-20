@@ -17,6 +17,7 @@ package io.mapzone.controller.um.launcher;
 import java.util.regex.Pattern;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,15 +49,15 @@ public abstract class ArchiveLauncher
     public Property<String>             installArchiveUri;
 
     
-    public String logPath( ProjectInstanceRecord instance ) {
+    public static String logPath( ProjectInstanceRecord instance ) {
         return instance.homePath.get() + "/log";
     }
     
-    public String dataPath( ProjectInstanceRecord instance ) {
+    public static String dataPath( ProjectInstanceRecord instance ) {
         return instance.homePath.get() + "/data";
     }
     
-    public String binPath( ProjectInstanceRecord instance ) {
+    public static String binPath( ProjectInstanceRecord instance ) {
         return instance.homePath.get() + "/bin";
     }
     
@@ -71,7 +72,7 @@ public abstract class ArchiveLauncher
     
     @Override
     public void install( ProjectInstanceRecord instance, IProgressMonitor monitor ) throws Exception {
-        monitor.beginTask( "Install instance", 11 );
+        monitor.beginTask( "Install", 11 );
 
         // basename
         String basename = Joiner.on( "/" ).skipNulls().join(
@@ -103,10 +104,15 @@ public abstract class ArchiveLauncher
         monitor.subTask( "Copying runtime" );
         URL archiveSource = new URL( installArchiveUri.get() );
         File archiveTarget = new File( instance.homePath.get(), "install.archive" );
-        host.runtime.get().file( archiveTarget ).write( archiveSource.openStream() );
-        monitor.worked( 5 );
+        try ( 
+            InputStream in = archiveSource.openStream()
+        ){
+            host.runtime.get().file( archiveTarget ).write( in );
+            monitor.worked( 5 );
+        }
 
         // unpack
+        monitor.subTask( "Unpack" );
         host.runtime.get().execute( new Script()
                 .add( "cd " + binPath( instance ) )
                 .add( installArchiveUri.get().endsWith( "tgz" )
@@ -116,7 +122,6 @@ public abstract class ArchiveLauncher
                 .blockOnComplete.put( true )
                 .exceptionOnFail.put( true ) );
         monitor.worked( 5 );
-
         monitor.done();
     }
 

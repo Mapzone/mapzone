@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 
 import org.polymap.core.operation.DefaultOperation;
@@ -61,13 +62,17 @@ public abstract class VmOperation
 
     
     /**
-     * Execute this operation.
+     * Execute. this operation.
      * <p/>
      * The given {@link UnitOfWork} is a <b>nested</b> instance of {@link #vmUow}. It
      * is automatically handled (committed or rolled back) by this operation. All
      * modifications of {@link Entity}s should by done within this UnitOfWork in
      * order to by properly rolled back on error. Entities from outside *must* be
      * converted via {@link UnitOfWork#entity(Entity)}.
+     * <p/>
+     * The given {@link IProgressMonitor} has been started via
+     * <code>beginTask( getLabel(), IProgressMonitor.UNKNOWN )</code> and it is
+     * automatically {@link IProgressMonitor#done()} afterwards.
      *
      * @param monitor
      * @param uow Nested {@link UnitOfWork} of {@link #vmUow}.
@@ -124,6 +129,9 @@ public abstract class VmOperation
         try (
             UnitOfWork nested = vmUow.get().newUnitOfWork();
         ){
+            monitor = monitor != null ? monitor : new NullProgressMonitor();
+            monitor.beginTask( getLabel(), IProgressMonitor.UNKNOWN );
+            
             doWithException( monitor, nested );
             onSuccess( monitor, nested );
             return monitor != null && monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
@@ -132,6 +140,9 @@ public abstract class VmOperation
             log.warn( "Error while doWithException() or onSuccess().", e );
             onError( monitor, e );
             return new Status( IStatus.ERROR, ControllerPlugin.ID, e.getLocalizedMessage(), e );
+        }
+        finally {
+            monitor.done();
         }
     }
     

@@ -39,7 +39,7 @@ import org.polymap.model2.runtime.UnitOfWork;
 public class StartProcessOperation
         extends VmOperation {
 
-    private static Log log = LogFactory.getLog( StartProcessOperation.class );
+    private static final Log log = LogFactory.getLog( StartProcessOperation.class );
 
     /** Inbound: */
     @Immutable

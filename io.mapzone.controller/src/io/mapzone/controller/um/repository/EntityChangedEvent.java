@@ -17,18 +17,24 @@ package io.mapzone.controller.um.repository;
 import java.util.EventObject;
 
 import org.polymap.model2.Entity;
+import org.polymap.model2.runtime.EntityRuntimeContext.EntityStatus;
 import org.polymap.model2.runtime.UnitOfWork;
 
 /**
- * An {@link Entity} has been committed. 
+ * An {@link Entity} has been committed or rolled back. 
  *
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 public class EntityChangedEvent
         extends EventObject {
 
-    public EntityChangedEvent( Entity source ) {
+    public EntityStatus     beforeCommitStatus;
+
+
+    public EntityChangedEvent( Entity source, EntityStatus beforeCommitStatus ) {
         super( source );
+        this.beforeCommitStatus = beforeCommitStatus;
+        assert beforeCommitStatus != null;
     }
 
     

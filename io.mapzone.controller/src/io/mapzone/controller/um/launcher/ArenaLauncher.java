@@ -48,8 +48,8 @@ public class ArenaLauncher
         @Override
         public ArenaLauncher initialize( ArenaLauncher proto ) throws Exception {
             EclipseProjectLauncher.defaults.initialize( proto );
-            // http://build.mapzone.io/release/io.mapzone.arena.product/1.0.0-SNAPSHOT/io.mapzone.arena.product-1.0.0-SNAPSHOT-linux.gtk.x86_64.zip
-            String uri = System.getProperty( "io.mapzone.controller.installArchiveUri", "file:///home/falko/servers/arena.zip" );
+            String uri = System.getProperty( "io.mapzone.controller.installArchiveUri", 
+                    "http://build.mapzone.io/release/io.mapzone.arena.product/1.0.0-SNAPSHOT/io.mapzone.arena.product-1.0.0-SNAPSHOT-linux.gtk.x86_64.zip" );
             proto.installArchiveUri.set( uri );
             return proto;
         }

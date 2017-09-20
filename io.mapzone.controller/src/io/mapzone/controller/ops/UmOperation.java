@@ -1,6 +1,6 @@
 /* 
  * mapzone.io
- * Copyright (C) 2016, the @authors. All rights reserved.
+ * Copyright (C) 2016-2017, the @authors. All rights reserved.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -20,11 +20,11 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 
 import org.polymap.core.operation.DefaultOperation;
 import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.ConfigurationFactory;
-import org.polymap.core.runtime.config.Immutable;
 import org.polymap.core.runtime.config.Mandatory;
 import org.polymap.model2.runtime.TwoPhaseCommit;
 import org.polymap.model2.runtime.TwoPhaseCommit.CommitType;
@@ -36,7 +36,7 @@ import io.mapzone.controller.vm.repository.VmRepository;
 import io.mapzone.controller.vm.repository.VmRepository.VmUnitOfWork;
 
 /**
- * An {@link UmOperation} typically is user interface operations. It modifies
+ * An {@link UmOperation} typically is triggered by the user interface. It modifies
  * entities of the {@link ProjectRepository} and maybe the {@link VmRepository}.
  * Modifications are committed in a {@link TwoPhaseCommit}.
  *
@@ -48,11 +48,11 @@ public abstract class UmOperation
     private static final Log log = LogFactory.getLog( UmOperation.class );
 
     @Mandatory
-    @Immutable
+    //@Immutable
     public Config<ProjectUnitOfWork>    umUow;
 
     @Mandatory
-    @Immutable
+    //@Immutable
     public Config<VmUnitOfWork>         vmUow;
 
     
@@ -69,7 +69,13 @@ public abstract class UmOperation
     }
     
     /**
-     *
+     * Executes this operation.
+     * <p/>
+     * The given {@link IProgressMonitor} has been started via
+     * <code>beginTask( getLabel(), IProgressMonitor.UNKNOWN )</code> and it is
+     * automatically {@link IProgressMonitor#done()} afterwards.
+     * 
+     * @param monitor See doc text above for details.
      */
     protected abstract IStatus doWithCommit( IProgressMonitor monitor, IAdaptable info ) throws Exception;
 
@@ -90,6 +96,9 @@ public abstract class UmOperation
     @Override
     public final IStatus doExecute( IProgressMonitor monitor, IAdaptable info ) throws Exception {
         try {
+            monitor = monitor != null ? monitor : new NullProgressMonitor();
+            monitor.beginTask( getLabel(), IProgressMonitor.UNKNOWN );
+            
             IStatus result = doWithCommit( monitor, info );
             twoPhaseCommit().commit( CommitType.KEEP_OPEN );
             onSuccess();
@@ -100,6 +109,9 @@ public abstract class UmOperation
             twoPhaseCommit().rollback( CommitType.KEEP_OPEN );
             onError( e );
             throw e;
+        }
+        finally {
+            monitor.done();
         }
     }
 
