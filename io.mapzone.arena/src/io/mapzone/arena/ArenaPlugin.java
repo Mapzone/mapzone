@@ -16,6 +16,7 @@ package io.mapzone.arena;
 
 import java.util.Set;
 
+import java.io.File;
 import javax.management.JMX;
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
@@ -23,11 +24,16 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+
+import org.eclipse.core.runtime.Platform;
+
+import org.polymap.core.runtime.Timer;
 
 import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 
@@ -45,7 +51,7 @@ import io.mapzone.arena.tracker.GoogleAnalyticsTracker;
 public class ArenaPlugin 
         extends AbstractUIPlugin {
 
-    private static Log log = LogFactory.getLog( ArenaPlugin.class );
+    private static final Log log = LogFactory.getLog( ArenaPlugin.class );
 
     public static final String ID = "io.mapzone.arena";
 
@@ -93,6 +99,8 @@ public class ArenaPlugin
         System.setProperty( "http.agent", "mapzone.io (http://mapzone.io/)" );
         System.setProperty( "https.agent", "mapzone.io (http://mapzone.io/)" );
 
+        installDropinBundles( context );
+        
         testMBeanConnection();
 
         // register GeoServer
@@ -126,6 +134,67 @@ public class ArenaPlugin
         super.stop( context );
     }
 
+    
+    /**
+     * Install/Update and start every plugin in ../dropins directory.
+     */
+    protected void installDropinBundles( BundleContext context ) {
+        File bin = new File( Platform.getInstallLocation().getURL().getFile() );
+        
+        File dropins = new File( bin, "dropins" );
+        log.warn( "Dropins directory: " + dropins );
+        if (dropins.exists()) {
+            for (File f : dropins.listFiles()) {
+                String[] name = f.getName().split( "_|\\.jar" );
+                String bundleName = name[0];
+                String version = name[1];
+
+                new Thread( () -> {
+                    try {
+                        Timer timer = new Timer();
+                        log.warn( "DROPIN: " + bundleName + " version " + version );
+
+                        // find already installed bundles
+                        Bundle bundle = null;                
+                        for (Bundle installed : context.getBundles()) {
+                            if (installed.getSymbolicName().equals( bundleName )) {
+                                if (installed.getVersion().toString().equals( version )) {
+                                    //assert installed.getState() == Bundle.INSTALLED;
+                                    bundle = installed;
+                                }
+                                else {
+                                    log.warn( "  Uninstall: " + installed + " - " + state( installed.getState() ) );
+                                    installed.stop();
+                                    installed.uninstall();
+                                }
+                            }
+                        }
+
+                        // install
+                        if (bundle == null) {
+                            bundle = context.installBundle( f.toURI().toURL().toString() );
+                            log.warn( "  Install: " + bundle + " - " + state( bundle.getState() ) );
+                        }
+
+                        bundle.start( Bundle.START_TRANSIENT );
+                        log.warn( "  " + bundleName + " - " + state( bundle.getState() ) + " (" + timer.elapsedTime() + "ms)" );
+                    }
+                    catch (Exception e) {
+                        log.warn( "Error while starting bundle " + bundleName, e );
+                    }
+                }, "Bundle " + bundleName ).start(); 
+            }
+        }
+    }
+    
+    protected String state( int state ) {
+        switch (state) {
+            case Bundle.ACTIVE : return "ACTIVE";
+            case Bundle.INSTALLED : return "INSTALLED";
+            case Bundle.RESOLVED : return "RESOLVED";
+            default: return "UNKNOWN";
+        }
+    }
     
     protected void testMBeanConnection() throws Exception {
         // test connection
