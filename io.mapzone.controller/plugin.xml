@@ -89,6 +89,11 @@
             id="io.mapzone.controller.DashboardPanel">
       </panel>
       <panel
+            class="io.mapzone.controller.ui.admin.AdminDashboardPanel"
+            id="io.mapzone.controller.AdminDashboardPanel"
+            stackPriority="-200">
+      </panel>
+      <panel
             class="io.mapzone.controller.ui.StartPanel"
             id="io.mapzone.controller.StartPanel">
       </panel>
@@ -117,6 +122,19 @@
             id="io.mapzone.controller.CtrlHelpPanel"
             stackPriority="-1000">
       </panel>
+      <panel
+            class="io.mapzone.controller.ui.MyLabPanel"
+            id="io.mapzone.controller.PluginCatalogPanel"
+            stackPriority="-100">
+      </panel>
+      <panel
+            class="io.mapzone.controller.plugincat.PluginInfoPanel"
+            id="io.mapzone.controller.PluginInfoPanel">
+      </panel>
+      <panel
+            class="io.mapzone.controller.plugincat.PluginInfoPanel2"
+            id="io.mapzone.controller.PluginInfoPanel2">
+      </panel>
    </extension>
    <extension
          point="org.polymap.rhei.batik.contributions">
@@ -127,6 +145,10 @@
       <contributions
             class="io.mapzone.controller.ui.EMailHelpContribution"
             id="io.mapzone.controller.EMailHelpDashlet">
+      </contributions>
+      <contributions
+            class="io.mapzone.controller.ui.admin.AdminPluginDashlet"
+            id="io.mapzone.controller.AdminPluginContrib">
       </contributions>
    </extension>
    <extension
@@ -140,6 +162,11 @@
             class="io.mapzone.controller.api.TargetPlatformProvider"
             id="io.mapzone.controller.SdkTargetPlatformProvider"
             name="TargetPlatform">
+      </contentProvider>
+      <contentProvider
+            class="io.mapzone.controller.plugincat.PluginContentProvider"
+            id="io.mapzone.controller.PluginContentProvider"
+            name="Plugins Catalog">
       </contentProvider>
    </extension>
 

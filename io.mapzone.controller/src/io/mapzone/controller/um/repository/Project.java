@@ -32,6 +32,8 @@ import org.polymap.model2.Queryable;
 import org.polymap.model2.runtime.ValueInitializer;
 import org.polymap.model2.runtime.EntityRuntimeContext.EntityStatus;
 
+import io.mapzone.controller.plugincat.PluginInstaller;
+import io.mapzone.controller.um.launcher.ArenaLauncher;
 import io.mapzone.controller.um.launcher.ProjectLauncher;
 
 /**
@@ -47,6 +49,8 @@ public class Project
     public static final String          DEFAULT_SERVLET_ALIAS = "/arena";
     
     public static final ValueInitializer<Project> defaults = (Project proto) -> { 
+        proto.launcher.createValue( ArenaLauncher.defaults );
+        proto.plugins.createValue( PluginInstaller.defaults );
         return proto; 
     };
     
@@ -65,6 +69,8 @@ public class Project
     public Property<String>             servletAlias;
     
     public Property<ProjectLauncher>    launcher;
+
+    public Property<PluginInstaller>    plugins;
 
     /**
      * @see AuthToken

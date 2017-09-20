@@ -16,12 +16,12 @@ package io.mapzone.controller.ui.project;
 
 import static org.polymap.core.runtime.event.TypeEventFilter.ifType;
 import static org.polymap.core.ui.ColumnDataFactory.Alignment.CENTER;
+import static org.polymap.rhei.batik.Propagate.Propagation.ONESHOT;
+import static org.polymap.rhei.batik.Propagate.Propagation.UP;
 import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL24;
+import static org.polymap.rhei.batik.toolkit.LayoutConstraint.constraints;
 
 import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -44,11 +44,11 @@ import org.polymap.rhei.batik.BatikApplication;
 import org.polymap.rhei.batik.BatikPlugin;
 import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.Mandatory;
+import org.polymap.rhei.batik.Propagate;
 import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.dashboard.DashletSite;
 import org.polymap.rhei.batik.dashboard.DefaultDashlet;
-import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.md.ActionProvider;
 import org.polymap.rhei.batik.toolkit.md.ListTreeContentProvider;
 import org.polymap.rhei.batik.toolkit.md.MdListViewer;
@@ -70,12 +70,11 @@ import io.mapzone.controller.um.repository.User;
 public class ProjectsDashlet
         extends DefaultDashlet {
 
-    private static Log log = LogFactory.getLog( ProjectsDashlet.class );
-    
     @Mandatory
     @Scope( "io.mapzone.controller" )
     protected Context<User>                 user;
     
+    @Propagate( {UP, ONESHOT} )
     @Scope( "io.mapzone.controller" )
     protected Context<Project>              selected;
     
@@ -84,13 +83,15 @@ public class ProjectsDashlet
     private Composite                       parent;
 
     private MdToolkit                       tk;
+    
+    private ProjectInfoPanel                openedPanel;
 
     
     @Override
     public void init( DashletSite site ) {
         super.init( site );
         site.title.set( "Projects" );
-        site.constraints.get().add( new MinWidthConstraint( 1350, 10 ) );
+        site.addConstraint( constraints().priority( 100 ).minWidth( 500 ).get() );
 //        site.constraints.get().add( new MinHeightConstraint( dp(72)*3 , 10 ) );
         
         EventManager.instance().subscribe( this, ifType( EntityChangedEvent.class, ev -> 
@@ -199,7 +200,9 @@ public class ProjectsDashlet
             public void open( OpenEvent ev ) {
                 SelectionAdapter.on( ev.getSelection() ).forEach( elm -> {
                     selected.set( (Project)elm );
-                    BatikApplication.instance().getContext().openPanel( getSite().panelSite().getPath(), ProjectInfoPanel.ID );                        
+                    openedPanel = (ProjectInfoPanel)BatikApplication.instance().getContext()
+                            .openPanel( getSite().panelSite().getPath(), ProjectInfoPanel.ID )
+                            .orElse( null );                        
                 });
             }
         } );

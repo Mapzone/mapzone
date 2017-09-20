@@ -28,8 +28,7 @@ import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.contribution.ContributionManager;
 import org.polymap.rhei.batik.dashboard.Dashboard;
 import org.polymap.rhei.batik.help.HelpAwarePanel;
-import org.polymap.rhei.batik.toolkit.PriorityConstraint;
-
+import io.mapzone.controller.plugincat.PluginCatalogDashlet;
 import io.mapzone.controller.ui.project.ProjectsDashlet;
 import io.mapzone.controller.um.repository.LoginCookie;
 import io.mapzone.controller.um.repository.ProjectRepository;
@@ -43,7 +42,7 @@ public class DashboardPanel
         extends CtrlPanel
         implements HelpAwarePanel {
 
-    private static Log log = LogFactory.getLog( DashboardPanel.class );
+    private static final Log log = LogFactory.getLog( DashboardPanel.class );
 
     public static final PanelIdentifier     ID = PanelIdentifier.parse( "dashboard" );
     
@@ -65,6 +64,7 @@ public class DashboardPanel
 
     @Override
     public void dispose() {
+        dashboard.dispose();
         super.dispose();
         
         // XXX logout to work around correct user and panel size setting
@@ -77,11 +77,15 @@ public class DashboardPanel
     @Override
     public void createContents( Composite parent ) {
         site().title.set( "Dashboard of " + userPrincipal.get().getName() );
-        site().setSize( SIDE_PANEL_WIDTH, 650, Integer.MAX_VALUE );
+        site().setSize( SIDE_PANEL_WIDTH/2, 650, Integer.MAX_VALUE );
         ContributionManager.instance().contributeTo( this, this );
         
         dashboard = new Dashboard( getSite(), DASHBOARD_ID );
-        dashboard.addDashlet( new ProjectsDashlet().addConstraint( new PriorityConstraint( 5 ) ) );
+        dashboard.addDashlet( new ProjectsDashlet() );
+                //.addConstraint( constraints().priority( 100 ).get() ) );
+        dashboard.addDashlet( new PluginCatalogDashlet() );
+                //.addConstraint( new PriorityConstraint( 10 ) ) );
+        
 //        dashboard.addDashlet( new ActivitiesDashlet().addConstraint( new PriorityConstraint( 10 ) ) );
 //        dashboard.addDashlet( new UserProfileDashlet() );
         

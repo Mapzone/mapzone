@@ -34,7 +34,6 @@ import org.apache.commons.logging.LogFactory;
 import com.google.common.base.Throwables;
 
 import org.eclipse.core.runtime.IPath;
-
 import org.polymap.core.runtime.Lazy;
 import org.polymap.core.runtime.LockedLazyInit;
 

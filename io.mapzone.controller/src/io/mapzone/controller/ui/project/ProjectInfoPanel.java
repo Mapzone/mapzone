@@ -1,10 +1,14 @@
 package io.mapzone.controller.ui.project;
 
 import static org.polymap.core.runtime.UIThreadExecutor.asyncFast;
+import static org.polymap.core.runtime.event.TypeEventFilter.ifType;
 import static org.polymap.core.ui.FormDataFactory.on;
 import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.ACTION24;
 import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.COLOR_DANGER;
+import static org.polymap.rhei.batik.toolkit.IPanelSection.EXPANDABLE;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.logging.Log;
@@ -21,15 +25,18 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import org.eclipse.ui.forms.events.ExpansionEvent;
+
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.UIThreadExecutor;
+import org.polymap.core.runtime.event.EventHandler;
+import org.polymap.core.runtime.event.EventManager;
 import org.polymap.core.ui.FormLayoutFactory;
 import org.polymap.core.ui.StatusDispatcher;
 import org.polymap.core.ui.UIUtils;
 
 import org.polymap.rhei.batik.BatikPlugin;
 import org.polymap.rhei.batik.Context;
-import org.polymap.rhei.batik.Mandatory;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PanelPath;
 import org.polymap.rhei.batik.Scope;
@@ -39,12 +46,14 @@ import org.polymap.rhei.batik.toolkit.MinHeightConstraint;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
+import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 import org.polymap.rhei.form.batik.BatikFormContainer;
 
 import io.mapzone.controller.ControllerPlugin;
 import io.mapzone.controller.ops.DeleteProjectOperation;
 import io.mapzone.controller.ops.UpdateProjectOperation;
 import io.mapzone.controller.ops.UpdateProjectSoftwareOperation;
+import io.mapzone.controller.plugincat.ProjectPluginsDashlet;
 import io.mapzone.controller.ui.CtrlPanel;
 import io.mapzone.controller.um.repository.AuthToken;
 import io.mapzone.controller.um.repository.Project;
@@ -59,13 +68,15 @@ import io.mapzone.controller.vm.http.ServiceAuthProvision;
 public class ProjectInfoPanel
         extends CtrlPanel {
 
-    private static Log log = LogFactory.getLog( ProjectInfoPanel.class );
+    private static final Log log = LogFactory.getLog( ProjectInfoPanel.class );
 
     public static final PanelIdentifier ID = PanelIdentifier.parse( "editProject" );
     
-    @Mandatory
+    // XXX @Mandatory ; mimik @Propagate(ONESHOT) in dispose
     @Scope( "io.mapzone.controller" )
     protected Context<Project>          selected;
+    
+    private Project                     oneShot;
     
     /**
      * The operation to be prepared and executed by this panel.
@@ -77,6 +88,8 @@ public class ProjectInfoPanel
     private Button                      fab;
     
     private AuthToken                   newToken;
+    
+    private List<IPanelSection>         sections = new ArrayList();
 
     
     @Override
@@ -87,15 +100,32 @@ public class ProjectInfoPanel
         
         op = new UpdateProjectOperation( userPrincipal.get().getName() );
         op.project.set( selected.get() );
+        oneShot = selected.get();
+    }
+
+
+    @Override
+    public void dispose() {
+        // XXX mimik @Propagate(ONESHOT)
+        // don't reset if this panel is closed due to opening another
+        if (selected.get() == oneShot) {
+            selected.set( null );
+        }
+        
+        EventManager.instance().unsubscribe( this );
     }
 
 
     @Override
     public void createContents( Composite parent ) {
         createLaunchSection( parent );        
-        createFormSection( parent );
-        createAuthSection( parent );
-        createDeleteSection( parent );
+        sections.add( createFormSection( parent ) );
+        sections.add( createAuthSection( parent ).setExpanded( false ) );
+        sections.add( createPluginsSection( parent ).setExpanded( false ) );
+        sections.add( createDeleteSection( parent ).setExpanded( false ) );
+        
+        EventManager.instance().subscribe( this, ifType( ExpansionEvent.class, ev ->
+                sections.contains( ev.getSource() ) ) );
 
         // FAB
         fab = tk().createFab();
@@ -107,6 +137,18 @@ public class ProjectInfoPanel
                 submit( ev );
             }
         });
+    }
+
+
+    @EventHandler( display=true )
+    protected void onDashletExpansion( ExpansionEvent ev ) {
+        if (ev.getState()) {
+            for (IPanelSection section : sections) {
+                if (section.isExpanded() && section != ev.getSource()) {
+                    section.setExpanded( false );
+                }
+            }
+        }
     }
 
     
@@ -163,8 +205,20 @@ public class ProjectInfoPanel
     }
 
 
-    protected void createFormSection( Composite parent ) {
-        IPanelSection section = tk().createPanelSection( parent, "Basic settings", SWT.BORDER );
+    protected IPanelSection createPluginsSection( Composite parent ) {
+        IPanelSection section = tk().createPanelSection( parent, "Plugins", SWT.BORDER, EXPANDABLE );
+        section.addConstraint( new PriorityConstraint( 5 ), new MinWidthConstraint( 350, 1 ) );
+        
+        ProjectPluginsDashlet dashlet = new ProjectPluginsDashlet();
+        getContext().propagate( dashlet );
+        dashlet.createContents( section.getBody(), (MdToolkit)site().toolkit() );
+        
+        return section;
+    }
+
+
+    protected IPanelSection createFormSection( Composite parent ) {
+        IPanelSection section = tk().createPanelSection( parent, "Basic settings", SWT.BORDER, EXPANDABLE );
         section.addConstraint( new PriorityConstraint( 10 ), new MinWidthConstraint( 350, 1 ) );
         ProjectForm formPage = new ProjectForm( op.umUow.get(), op.project.get(), op.user.get() ) {
             @Override
@@ -175,11 +229,12 @@ public class ProjectInfoPanel
         formPage.creation.put( false ).tk.put( tk() );
         form = new BatikFormContainer( formPage );
         form.createContents( section.getBody() );
+        return section;
     }
 
 
-    protected void createAuthSection( Composite parent ) {
-        IPanelSection section = tk().createPanelSection( parent, "Auth token" );
+    protected IPanelSection createAuthSection( Composite parent ) {
+        IPanelSection section = tk().createPanelSection( parent, "Auth token", SWT.BORDER, EXPANDABLE );
         section.addConstraint( new PriorityConstraint( 1 ), new MinWidthConstraint( 350, 1 ) );
         section.getBody().setLayout( FormLayoutFactory.defaults().margins( 3 ).spacing( 5 ).create() );
         
@@ -206,14 +261,15 @@ public class ProjectInfoPanel
             }
         });
 
-        on( msg ).fill().noBottom();
+        on( msg ).fill().noBottom().height( 90 );
         on( createBtn ).top( msg ).right( 100 );
         on( text ).top( msg, 1 ).left( 0 ).right( createBtn );
+        return section;
     }
 
 
-    protected void createDeleteSection( Composite parent ) {
-        IPanelSection section = tk().createPanelSection( parent, "Danger zone" );
+    protected IPanelSection createDeleteSection( Composite parent ) {
+        IPanelSection section = tk().createPanelSection( parent, "Danger zone", SWT.BORDER, EXPANDABLE );
         section.addConstraint( new PriorityConstraint( 0 ), new MinWidthConstraint( 350, 1 ) );
         section.getTitleControl().setForeground( UIUtils.getColor( COLOR_DANGER ) );
         section.getBody().setLayout( new FillLayout( SWT.HORIZONTAL ) );
@@ -253,7 +309,7 @@ public class ProjectInfoPanel
                 uop.project.set( selected.get() );
 
                 // execute sync as long as there is no progress indicator
-                OperationSupport.instance().execute2( uop, false, false, ev2 -> asyncFast( () -> {
+                OperationSupport.instance().execute2( uop, true, false, ev2 -> asyncFast( () -> {
                     if (ev2.getResult().isOK()) {
                         tk().createSnackbar( Appearance.FadeIn, "Updated" );
                     }
@@ -263,6 +319,7 @@ public class ProjectInfoPanel
                 }));
             }
         });
+        return section;
     }
 
     
