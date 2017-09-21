@@ -1,6 +1,8 @@
 package io.mapzone.controller.um.repository;
 
 import static org.polymap.model2.query.Expressions.eq;
+
+import io.mapzone.controller.plugincat.PluginInstaller;
 import io.mapzone.controller.um.launcher.ArenaLauncher;
 import io.mapzone.controller.um.launcher.EclipseProjectLauncher;
 import io.mapzone.controller.um.launcher.JvmProjectLauncher;
@@ -38,7 +40,7 @@ import org.polymap.recordstore.lucene.LuceneRecordStore;
  */
 public class ProjectRepository {
 
-    private static Log log = LogFactory.getLog( ProjectRepository.class );
+    private static final Log log = LogFactory.getLog( ProjectRepository.class );
     
     private static EntityRepository     repo;
     
@@ -77,6 +79,7 @@ public class ProjectRepository {
         try (
             UnitOfWork _uow = repo.newUnitOfWork()
         ){
+            // default Project/Organization
             if (_uow.query( Organization.class ).execute().size() == 0) {
                 // Organization
                 Organization organization = _uow.createEntity( Organization.class, null, (Organization proto) -> {
@@ -95,8 +98,16 @@ public class ProjectRepository {
                     return proto;
                 });
                 assert project.organization.get() == organization : "Check bidi association.";
-                _uow.commit();
             }
+            
+            // init added Project.plugins property
+            for (Project project : _uow.query( Project.class ).execute()) {
+                if (!project.plugins.opt().isPresent()) {
+                    log.info( "Fixing .plugins property of: " + project.name.get() );
+                    project.plugins.createValue( PluginInstaller.defaults );
+                }
+            }
+            _uow.commit();
         }
     }
     
