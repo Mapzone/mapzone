@@ -123,7 +123,7 @@ public class PluginInfoPanel
             text.build( Element.NOOP, "This plugin is already installed in this project. "
                     + "Click on the button below to update to the latest version." );
         }
-        else if (entry.get().isFree.get()) {
+        else if (entry.get().isFree()) {
             btnText = "Install";
             text.build( Element.NOOP, "This plugin is available free of charge. "
                     + "Click on the button below to install it into your project." );

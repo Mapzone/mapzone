@@ -14,6 +14,8 @@
  */
 package io.mapzone.controller.plugincat;
 
+import static org.polymap.model2.query.Expressions.eq;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +32,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.polymap.model2.CollectionProperty;
 import org.polymap.model2.Composite;
 import org.polymap.model2.Defaults;
-import org.polymap.model2.query.Expressions;
 import org.polymap.model2.query.ResultSet;
 import org.polymap.model2.runtime.UnitOfWork;
 import org.polymap.model2.runtime.ValueInitializer;
@@ -76,7 +77,7 @@ public class PluginInstaller
     public List<PluginCatalogEntry> available() {
         UnitOfWork uow = PluginCatalog.session();
         ResultSet<PluginCatalogEntry> freePlugins = uow.query( PluginCatalogEntry.class )
-                .where( Expressions.eq( PluginCatalogEntry.TYPE.isFree, true ) )
+                .where( eq( PluginCatalogEntry.TYPE.fee, 0f ) )
                 .execute();
         // FIXME add non-free but already installed in another project
         return freePlugins.stream().collect( Collectors.toList() );

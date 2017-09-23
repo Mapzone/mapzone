@@ -51,7 +51,7 @@ public abstract class CatalogEntry
         proto.updated.set( now );
         proto.isReleased.set( false );
         proto.isRevoked.set( false );
-        proto.isFree.set( false );
+        proto.fee.set( 0f );
         return proto;
     };
     
@@ -103,10 +103,10 @@ public abstract class CatalogEntry
 //    @Nullable
     public Property<String>         vendorId;
 
-    /** {@link #defaults} to false */
-    @WebJsonApi
-    @DefaultValue( "false" )
-    public Property<Boolean>        isFree;
+//    /** {@link #defaults} to false */
+//    @WebJsonApi
+//    @DefaultValue( "false" )
+//    public Property<Boolean>        isFree;
     
     /** {@link #defaults} to false */
     @WebJsonApi
@@ -135,6 +135,11 @@ public abstract class CatalogEntry
 
     private EntityStatus            beforeCommitStatus;
 
+    
+    public boolean isFree() {
+        return fee.get() == 0f;
+    }
+    
     
     @Override
     public void onLifecycleChange( State state ) {
