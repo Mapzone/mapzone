@@ -137,7 +137,13 @@ public abstract class CatalogEntry
 
     
     public boolean isFree() {
-        return fee.get().equals( 0f );
+        try {
+            return fee.get().equals( 0f );
+        }
+        catch (Exception e) {
+            log.warn( "", e );
+            return true;
+        }
     }
     
     
