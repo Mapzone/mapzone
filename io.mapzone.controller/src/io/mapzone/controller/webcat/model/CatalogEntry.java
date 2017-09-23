@@ -127,7 +127,7 @@ public abstract class CatalogEntry
     @WebJsonApi
     public Property<String>         license;
 
-    /** The vendor fee. (in EUR?) */
+    /** The vendor fee (in EUR?). {@link #defaults} to 0. */
     @Nullable
     @WebJsonApi
     @DefaultValue( "0" )
@@ -137,7 +137,7 @@ public abstract class CatalogEntry
 
     
     public boolean isFree() {
-        return fee.get() == 0f;
+        return fee.get().equals( 0f );
     }
     
     
