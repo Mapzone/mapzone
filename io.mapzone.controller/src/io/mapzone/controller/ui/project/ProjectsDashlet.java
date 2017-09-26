@@ -43,7 +43,6 @@ import org.polymap.core.ui.SelectionAdapter;
 import org.polymap.core.ui.UIUtils;
 
 import org.polymap.rhei.batik.BatikApplication;
-import org.polymap.rhei.batik.BatikPlugin;
 import org.polymap.rhei.batik.Context;
 import org.polymap.rhei.batik.Mandatory;
 import org.polymap.rhei.batik.Propagate;
@@ -51,7 +50,6 @@ import org.polymap.rhei.batik.Scope;
 import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.dashboard.DashletSite;
 import org.polymap.rhei.batik.dashboard.DefaultDashlet;
-import org.polymap.rhei.batik.toolkit.md.ActionProvider;
 import org.polymap.rhei.batik.toolkit.md.ListTreeContentProvider;
 import org.polymap.rhei.batik.toolkit.md.MdListViewer;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
@@ -184,15 +182,15 @@ public class ProjectsDashlet
                 cell.setImage( ControllerPlugin.images().svgImage( "map.svg", NORMAL24 ) );
             }
         });
-        viewer.firstSecondaryActionProvider.set( new ActionProvider() {
-            @Override public void update( ViewerCell cell ) {
-                cell.setImage( BatikPlugin.images().svgImage( "chevron-right.svg", SvgImageRegistryHelper.DISABLED24 ) );
-            }
-            @Override public void perform( MdListViewer _viewer, Object elm ) {
-                selected.set( (Project)elm );
-                BatikApplication.instance().getContext().openPanel( getSite().panelSite().getPath(), ProjectInfoPanel.ID );                        
-            }
-        });
+//        viewer.firstSecondaryActionProvider.set( new ActionProvider() {
+//            @Override public void update( ViewerCell cell ) {
+//                cell.setImage( BatikPlugin.images().svgImage( "chevron-right.svg", SvgImageRegistryHelper.DISABLED24 ) );
+//            }
+//            @Override public void perform( MdListViewer _viewer, Object elm ) {
+//                selected.set( (Project)elm );
+//                BatikApplication.instance().getContext().openPanel( getSite().panelSite().getPath(), ProjectInfoPanel.ID );                        
+//            }
+//        });
         viewer.setComparator( new ViewerComparator() {
             @Override public int compare( Viewer _viewer, Object elm1, Object elm2 ) {
                 Date modified1 = ((Project)elm1).modified.get();
