@@ -21,17 +21,19 @@ import static org.polymap.rhei.batik.Propagate.Propagation.UP;
 import static org.polymap.rhei.batik.app.SvgImageRegistryHelper.NORMAL24;
 import static org.polymap.rhei.batik.toolkit.LayoutConstraint.constraints;
 
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.OpenEvent;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.jface.viewers.ViewerComparator;
 
 import org.polymap.core.runtime.event.EventHandler;
 import org.polymap.core.runtime.event.EventManager;
@@ -178,26 +180,29 @@ public class ProjectsDashlet
         viewer.firstLineLabelProvider.set( new ProjectLabelProvider( Type.Name ) );
         viewer.secondLineLabelProvider.set( new ProjectLabelProvider( Type.Description ) );
         viewer.iconProvider.set( new CellLabelProvider() {
-            @Override
-            public void update( ViewerCell cell ) {
+            @Override public void update( ViewerCell cell ) {
                 cell.setImage( ControllerPlugin.images().svgImage( "map.svg", NORMAL24 ) );
             }
         });
         viewer.firstSecondaryActionProvider.set( new ActionProvider() {
-            @Override
-            public void update( ViewerCell cell ) {
+            @Override public void update( ViewerCell cell ) {
                 cell.setImage( BatikPlugin.images().svgImage( "chevron-right.svg", SvgImageRegistryHelper.DISABLED24 ) );
             }
-            @Override
-            public void perform( @SuppressWarnings("hiding") MdListViewer viewer, Object elm ) {
+            @Override public void perform( MdListViewer _viewer, Object elm ) {
                 selected.set( (Project)elm );
                 BatikApplication.instance().getContext().openPanel( getSite().panelSite().getPath(), ProjectInfoPanel.ID );                        
             }
         });
+        viewer.setComparator( new ViewerComparator() {
+            @Override public int compare( Viewer _viewer, Object elm1, Object elm2 ) {
+                Date modified1 = ((Project)elm1).modified.get();
+                Date modified2 = ((Project)elm2).modified.get();
+                return modified2.compareTo( modified1 );
+            }
+        });
         
         viewer.addOpenListener( new IOpenListener() {
-            @Override
-            public void open( OpenEvent ev ) {
+            @Override public void open( OpenEvent ev ) {
                 SelectionAdapter.on( ev.getSelection() ).forEach( elm -> {
                     selected.set( (Project)elm );
                     openedPanel = (ProjectInfoPanel)BatikApplication.instance().getContext()
