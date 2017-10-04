@@ -168,13 +168,25 @@ public abstract class WebcatContentProvider
         return new EntryFolder( newEntry, myFolder.getPath() );
     }
 
+
+    protected void deleteEntry( CatalogEntry entry ) {
+        catalog().deleteEntry( uow, entry );
+        
+        if (allFolder != null) {
+            getSite().invalidateFolder( allFolder );
+        }
+        if (myFolder != null) {
+            getSite().invalidateFolder( myFolder );
+        }
+    }
+
     
     /**
      * A catalog entry folder.
      */
     public class EntryFolder
             extends DefaultContentFolder
-            implements IContentPutable {
+            implements IContentPutable, IContentDeletable {
         
         public EntryFolder( CatalogEntry entry, IPath parentPath ) {
             super( entry.id().toString(), parentPath, WebcatContentProvider.this, entry );
@@ -198,6 +210,11 @@ public abstract class WebcatContentProvider
                 
             getSite().invalidateFolder( this );
             return new EntryItemFile( item, EntryFolder.this );
+        }
+
+        @Override
+        public void delete() throws BadRequestException, NotAuthorizedException {
+            deleteEntry( getSource() );
         }
     }
 
@@ -279,7 +296,7 @@ public abstract class WebcatContentProvider
      */
     public class EntryContentsFile
             extends DefaultContentNode
-            implements IContentFile, IContentWriteable {
+            implements IContentFile, IContentWriteable, IContentDeletable {
         
         public EntryContentsFile( EntryFolder parent ) {
             super( "contents.json", parent.getPath(), WebcatContentProvider.this, parent.getSource() );
@@ -288,6 +305,11 @@ public abstract class WebcatContentProvider
         @Override
         public CatalogEntry getSource() {
             return (CatalogEntry)super.getSource();
+        }
+
+        @Override
+        public void delete() throws BadRequestException, NotAuthorizedException {
+            // called if PlugInFolder is deleted
         }
 
         @Override

@@ -162,6 +162,18 @@ public abstract class CatalogBase {
     }
     
     
+    public void deleteEntry( UnitOfWork uow, CatalogEntry entry ) {
+        try {
+            uow.removeEntity( entry );
+            uow.commit();
+        }
+        catch (RuntimeException e) {
+            uow.rollback();
+            throw e;
+        }
+    }
+    
+    
     public void releaseEntry( UnitOfWork uow, CatalogEntry entry, boolean released ) {
         try {
             entry.isReleased.set( released );
