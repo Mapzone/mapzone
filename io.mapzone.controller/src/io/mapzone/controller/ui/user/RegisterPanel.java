@@ -246,7 +246,7 @@ public class RegisterPanel
                     .create();
             
             site.newFormField( new PropertyAdapter( op.user.get().email ) )
-                    .tooltip.put( "Valid email allows to reset password if lost" )
+                    .tooltip.put( "Valid email address. Allows to reset password if lost." )
                     .validator.put( Validators.AND( /*new NotEmptyValidator(),*/ new EMailAddressValidator() {
                         @Override
                         public String validate( String fieldValue ) {
