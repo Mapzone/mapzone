@@ -88,8 +88,8 @@ public class CatalogEntryForm
         
         text.build( Element.H2, "Vendor" );
         text.form( null, f -> {
-                f.formField( "Vendor", entry.vendor.get() );
-                f.formField( "Vendor URL", formatUrl( entry.vendorUrl.get() ) );
+            f.formField( "Vendor", entry.vendor.get() );
+            f.formField( "Vendor URL", formatUrl( entry.vendorUrl.get() ) );
         });
         
         return tk.get().createFlowText( parent, text.toString() );
