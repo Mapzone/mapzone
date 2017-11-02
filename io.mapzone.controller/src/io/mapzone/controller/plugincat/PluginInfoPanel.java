@@ -114,7 +114,7 @@ public class PluginInfoPanel
             return;
         }
         
-        // XXX check admin/permission
+        // TODO check admin/permission
         
         // already installed
         String btnText = null;

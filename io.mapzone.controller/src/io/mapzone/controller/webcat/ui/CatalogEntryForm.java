@@ -14,6 +14,8 @@
  */
 package io.mapzone.controller.webcat.ui;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
@@ -41,7 +43,9 @@ import io.mapzone.controller.ui.util.PropertyAdapter;
 import io.mapzone.controller.webcat.model.CatalogEntry;
 
 /**
- * {@link CatalogEntry} settings.
+ * {@link CatalogEntry} settings displayed as
+ * {@link #createFormContents(IFormPageSite) form} or
+ * {@link #createFlowText(Composite) flowtext}.
  *
  * @author Falko Bräutigam
  */
@@ -49,7 +53,7 @@ public class CatalogEntryForm
         extends DefaultFormPage 
         implements IFormFieldListener {
     
-    private static final int            TEXT_HEIGHT = 150;
+    private static final int                TEXT_HEIGHT = 150;
 
     /**
      * True specifies that the form is used for creation of a new Project in a
@@ -72,25 +76,44 @@ public class CatalogEntryForm
     
     public Label createFlowText( Composite parent ) {
         FormTextBuilder text = FormTextBuilder.forHtml();
-        text.useForNull( "[not set]" );
+        text.useForNull( "" );
         text.build( Element.P, entry.description.get() ); //+ "</br></br>" );
         text.form( "Info", f -> {
             f.formField( "Plugin ID", entry.id() );
-            f.formField( "Created", entry.created.get() );
-            f.formField( "Updated", entry.updated.get() );
-            f.formField( "Project URL", entry.projectUrl.get() );
+            f.formField( "Created", entry.created.get(), "date,short" );
+            f.formField( "Updated", entry.updated.get(), "date,short" );
+            f.formField( "Project URL", formatUrl( entry.projectUrl.get() ) );
             f.formField( "License", entry.license.get() );
         });
         
         text.build( Element.H2, "Vendor" );
         text.form( null, f -> {
                 f.formField( "Vendor", entry.vendor.get() );
-                f.formField( "Vendor URL", entry.vendorUrl.get() );
+                f.formField( "Vendor URL", formatUrl( entry.vendorUrl.get() ) );
         });
         
         return tk.get().createFlowText( parent, text.toString() );
     }
 
+    
+    protected String formatUrl( String s ) {
+        if (StringUtils.isBlank( s )) {
+            return s;
+        }
+        else if (s.startsWith( "https://" )) {
+            return "<a target=\"blank\" href=\"" + s + "\">" + s.substring( 8 ) + "</a>";
+        }
+        else if (s.startsWith( "http://" )) {
+            return "<a target=\"blank\" href=\"" + s + "\">" + s.substring( 7 ) + "</a>";
+        }
+        else if (s.contains( "." )) {
+            return "<a target=\"blank\" href=\"http://" + s + "\">" + s + "</a>";
+        }
+        else {
+            return s;
+        }
+    }
+    
     
     @Override
     public void createFormContents( IFormPageSite site ) {
