@@ -80,8 +80,8 @@ public class CatalogEntryForm
         text.build( Element.P, entry.description.get() ); //+ "</br></br>" );
         text.form( "Info", f -> {
             f.formField( "Plugin ID", entry.id() );
-            f.formField( "Created", entry.created.get(), "date,short" );
-            f.formField( "Updated", entry.updated.get(), "date,short" );
+            f.formField( "Created", entry.created.get(), "date,long" );
+            f.formField( "Updated", entry.updated.get(), "date,long" );
             f.formField( "Project URL", formatUrl( entry.projectUrl.get() ) );
             f.formField( "License", entry.license.get() );
         });
