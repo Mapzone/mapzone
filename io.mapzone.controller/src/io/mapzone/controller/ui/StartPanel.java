@@ -19,6 +19,8 @@ import static org.polymap.core.ui.FormDataFactory.on;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,8 +41,11 @@ import org.eclipse.swt.widgets.Label;
 import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.runtime.event.EventHandler;
 import org.polymap.core.security.SecurityContext;
+import org.polymap.core.ui.FormDataFactory;
 import org.polymap.core.ui.FormDataFactory.Alignment;
 import org.polymap.core.ui.FormLayoutFactory;
+import org.polymap.core.ui.UIUtils;
+
 import org.polymap.rhei.batik.BatikApplication;
 import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.rhei.batik.PropertyAccessEvent;
@@ -106,14 +111,15 @@ public class StartPanel
 
 
     protected void createFrontpageContents() {
-        parent.setLayout( FormLayoutFactory.defaults().spacing( 10 ).margins( 0, 0, 10, 0 ).create() );
+        parent.setLayout( FormLayoutFactory.defaults().spacing( 10 ).margins( 10, 0, 10, 0 ).create() );
         
         ContentProvider cp = ContentProvider.instance();
         List<String> specials = Lists.newArrayList( "1welcome", "99bottom" );
         
         // banner
-        Composite banner = on( tk().createComposite( parent ) )
-                .fill().noBottom()/*.height( 200 )*/.control();
+        Composite banner = tk().createComposite( parent, SWT.BORDER );
+        banner.setBackground( UIUtils.getColor( 60, 70, 80 ) );
+        FormDataFactory.on( banner ).fill().noBottom();  //.height( 200 )
         banner.setLayout( FormLayoutFactory.defaults().margins( 0, 0 ).create() );
         
         Label welcome = new Label( banner, SWT.WRAP ) {
@@ -129,15 +135,18 @@ public class StartPanel
             }
         };
         tk().adapt( welcome, false, false );
-        welcome.setText( tk().markdownToHtml( cp.findContent( "frontpage/1welcome.md" ).content(), welcome ) );
+        String welcomeContent = cp.findContent( "frontpage/1welcome.md" ).content();
+        welcome.setText( tk().markdownToHtml( welcomeContent, welcome ) );
         on( welcome ).fill().left( 10 ).right( 60 );
         
         // btn
-        Composite btnContainer = on( tk().createComposite( banner ) )
-                .fill().left( 60 ).right( 100 ).control();
+        Matcher matcher = Pattern.compile( "^button.text=(.+)$", Pattern.MULTILINE ).matcher( welcomeContent );
+        String btnText = matcher.find() ? matcher.group( 1 ) : "Join..."; 
+        Composite btnContainer = tk().createComposite( banner );
+        FormDataFactory.on( btnContainer ).fill().left( 65 ).right( 100 );
         btnContainer.setLayout( FormLayoutFactory.defaults().create() );
         Control filled = on( tk().createComposite( btnContainer ) ).fill().control();
-        Button btn = on( tk().createButton( btnContainer, "Join...", SWT.PUSH ) )
+        Button btn = on( tk().createButton( btnContainer, btnText, SWT.PUSH ) )
                 .top( filled, 0, Alignment.CENTER ).left( 10 ).height( 45 ).width( 135 ).control();
         btn.setToolTipText( "Create an accountTest drive mapzone for free" );
         btn.moveAbove( null );
