@@ -84,7 +84,7 @@ public class JvmProjectLauncher
     public CollectionProperty<String>   classpath;
 
     @JvmParam( "Xmx" )
-    @DefaultValue( "1500" )
+    @DefaultValue( "1000" )
     public Property<Integer>            xmxMB;
 
     /** Use -server VM, or not. */
@@ -92,9 +92,9 @@ public class JvmProjectLauncher
     @DefaultValue( "true" )
     public Property<Boolean>            server;
 
-    /** Enable assertions */
+    /** Enable assertions. */
     @JvmParam( "ea" )
-    @DefaultValue( "true" )
+    @DefaultValue( "false" )
     public Property<Boolean>            ea;
 
     @JvmParam( "XX:+TieredCompilation" )
