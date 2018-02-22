@@ -48,8 +48,9 @@ public class GraphGeometryProcessor
 
     @Override
     public void init( PipelineProcessorSite site ) throws Exception {
-        this.graphUi = site.getProperty( "graphUi" );
-        this.isNodesLayer = site.getProperty( "isNodesLayer" );
+        // XXX use Param
+        this.graphUi = (SimpleFeatureGraphUI)site.params().get( "graphUi" );
+        this.isNodesLayer = (Boolean)site.params().get( "isNodesLayer" );
     }
 
 

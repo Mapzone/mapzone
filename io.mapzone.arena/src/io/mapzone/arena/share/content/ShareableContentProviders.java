@@ -28,7 +28,6 @@ public class ShareableContentProviders
         return instance( ShareableContentProviders.class );
     }
 
-    @SuppressWarnings( "unchecked" )
     private static List<Class<? extends ShareableContentProvider>> contentProviders = Lists.newArrayList( 
             ArenaContentProvider.class, 
             ImagePngContentProvider.class,

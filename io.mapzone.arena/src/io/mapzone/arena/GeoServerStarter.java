@@ -1,6 +1,6 @@
 /* 
  * polymap.org
- * Copyright (C) 2016, the @authors. All rights reserved.
+ * Copyright (C) 2016-2018, the @authors. All rights reserved.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,7 @@ import static com.google.common.base.Throwables.propagate;
 
 import java.util.EventObject;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.geotools.styling.Style;
@@ -33,7 +34,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 import org.polymap.core.data.feature.DefaultStyles;
 import org.polymap.core.data.feature.FeatureRenderProcessor2;
-import org.polymap.core.data.pipeline.DataSourceDescription;
+import org.polymap.core.data.pipeline.DataSourceDescriptor;
 import org.polymap.core.data.pipeline.Pipeline;
 import org.polymap.core.data.pipeline.PipelineProcessor;
 import org.polymap.core.project.ILayer;
@@ -48,7 +49,7 @@ import org.polymap.service.geoserver.OnDemandServlet;
 
 import org.polymap.p4.P4Plugin;
 import org.polymap.p4.catalog.AllResolver;
-import org.polymap.p4.data.P4PipelineIncubator;
+import org.polymap.p4.data.P4PipelineBuilder;
 import org.polymap.p4.project.ProjectRepository;
 
 import io.mapzone.arena.jmx.ArenaConfigMBean;
@@ -131,15 +132,17 @@ public class GeoServerStarter
     
     protected GeoServerServlet createGeoServer( String alias ) {
         return new GeoServerServlet( alias ) {
+            
             @Override
             protected IMap createMap() {
                 return ProjectRepository.unitOfWork().entity( IMap.class, "root" );
             }
+            
             @Override
-            protected Pipeline createPipeline( ILayer layer,
+            protected Optional<Pipeline> createPipeline( ILayer layer,
                     Class<? extends PipelineProcessor> usecase ) throws Exception {
                 // resolve service
-                DataSourceDescription dsd = AllResolver
+                DataSourceDescriptor dsd = AllResolver
                         .instance()
                         .connectLayer( layer, new NullProgressMonitor() )
                         .orElseThrow( () -> new RuntimeException( "No data source for layer: " + layer ) );
@@ -153,10 +156,11 @@ public class GeoServerStarter
                 };
 
                 // create pipeline for it
-                return P4PipelineIncubator.forLayer( layer )
-                        .addProperty( FeatureRenderProcessor2.STYLE_SUPPLIER, styleSupplier )
-                        .newPipeline( usecase, dsd, null );
+                P4PipelineBuilder builder = P4PipelineBuilder.forLayer( layer );
+                FeatureRenderProcessor2.STYLE_SUPPLIER.rawput( builder, styleSupplier );
+                return builder.createPipeline( usecase, dsd );
             }
+            
             @Override
             public String createSLD( ILayer layer ) {
                 String styleId = layer.styleIdentifier.get();

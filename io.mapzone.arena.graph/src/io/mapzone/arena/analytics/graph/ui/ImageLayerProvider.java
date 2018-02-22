@@ -14,9 +14,7 @@ package io.mapzone.arena.analytics.graph.ui;
 
 import static org.polymap.p4.layer.FeatureLayer.ff;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -42,10 +40,11 @@ import com.vividsolutions.jts.geom.Point;
 
 import org.polymap.core.data.feature.FeatureRenderProcessor2;
 import org.polymap.core.data.image.EncodedImageProducer;
-import org.polymap.core.data.pipeline.DataSourceDescription;
+import org.polymap.core.data.pipeline.DataSourceDescriptor;
 import org.polymap.core.data.pipeline.Pipeline;
 import org.polymap.core.data.pipeline.PipelineProcessorSite;
-import org.polymap.core.data.pipeline.ProcessorDescription;
+import org.polymap.core.data.pipeline.PipelineProcessorSite.Params;
+import org.polymap.core.data.pipeline.ProcessorDescriptor;
 import org.polymap.core.data.util.Geometries;
 import org.polymap.core.mapeditor.MapViewer;
 import org.polymap.core.mapeditor.services.SimpleWmsServer;
@@ -56,7 +55,7 @@ import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 
 import org.polymap.p4.P4Plugin;
 import org.polymap.p4.catalog.AllResolver;
-import org.polymap.p4.data.P4PipelineIncubator;
+import org.polymap.p4.data.P4PipelineBuilder;
 import org.polymap.rap.openlayers.base.OlEvent;
 import org.polymap.rap.openlayers.base.OlEventListener;
 import org.polymap.rap.openlayers.base.OlMap.Event;
@@ -121,7 +120,7 @@ public class ImageLayerProvider
             final String servletPath ) {
         try {
             // XXX don't connect again (use some cache on layer)
-            DataSourceDescription dsd = AllResolver.instance().connectLayer( baseLayer, null ).orElseThrow( () -> new RuntimeException( "No data source for layer: "
+            DataSourceDescriptor dsd = AllResolver.instance().connectLayer( baseLayer, null ).orElseThrow( () -> new RuntimeException( "No data source for layer: "
                     + baseLayer ) );
 
             // create pipeline for it
@@ -131,17 +130,18 @@ public class ImageLayerProvider
                 return P4Plugin.styleRepo().serializedFeatureStyle( styleId, Style.class ).get();
             };
 
-            final Pipeline pipeline = P4PipelineIncubator.forLayer( baseLayer ).addProperty( FeatureRenderProcessor2.STYLE_SUPPLIER, styleSupplier ).newPipeline( EncodedImageProducer.class, dsd, null );
-            assert pipeline != null && pipeline.length() > 0 : "Unable to build pipeline for: " + dsd;
+            P4PipelineBuilder builder = P4PipelineBuilder.forLayer( baseLayer );
+            FeatureRenderProcessor2.STYLE_SUPPLIER.rawput( builder, styleSupplier );
+            Pipeline pipeline = builder.createPipeline( EncodedImageProducer.class, dsd )
+                    .orElseThrow( () -> new RuntimeException( "Unable to build pipeline for: " + dsd ) );
 
             // inject ChartGeometryProcessor
-            FeatureRenderProcessor2 featureRenderProc = (FeatureRenderProcessor2)pipeline.get( pipeline.length()
-                    - 1 ).processor();
-            Map<String,Object> props = new HashMap();
-            props.put( "graphUi", graphUi );
-            props.put( "isNodesLayer", isNodesLayer );
-            ProcessorDescription proc = new ProcessorDescription( GraphGeometryProcessor.class, props );
-            PipelineProcessorSite procSite = new PipelineProcessorSite( props );
+            FeatureRenderProcessor2 featureRenderProc = (FeatureRenderProcessor2)pipeline.get( pipeline.length()-1).processor();
+            Params params = new Params();
+            params.put( "graphUi", graphUi );
+            params.put( "isNodesLayer", isNodesLayer );
+            ProcessorDescriptor proc = new ProcessorDescriptor( GraphGeometryProcessor.class, params );
+            PipelineProcessorSite procSite = new PipelineProcessorSite( params );
             proc.processor().init( procSite );
             featureRenderProc.pipeline().add( 0, proc );
             log.info( "FeatureRender pipeline: " + featureRenderProc.pipeline() );

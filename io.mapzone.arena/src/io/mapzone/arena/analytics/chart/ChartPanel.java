@@ -15,9 +15,7 @@
 package io.mapzone.arena.analytics.chart;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import java.io.IOException;
@@ -53,9 +51,9 @@ import org.eclipse.jface.viewers.ComboViewer;
 import org.polymap.core.data.feature.AddFeaturesRequest;
 import org.polymap.core.data.feature.FeatureRenderProcessor2;
 import org.polymap.core.data.feature.FeaturesProducer;
+import org.polymap.core.data.feature.GetBoundsRequest;
 import org.polymap.core.data.feature.GetFeatureTypeRequest;
 import org.polymap.core.data.feature.GetFeatureTypeResponse;
-import org.polymap.core.data.feature.GetBoundsRequest;
 import org.polymap.core.data.feature.GetFeaturesRequest;
 import org.polymap.core.data.feature.GetFeaturesResponse;
 import org.polymap.core.data.feature.GetFeaturesSizeRequest;
@@ -64,12 +62,13 @@ import org.polymap.core.data.feature.RemoveFeaturesRequest;
 import org.polymap.core.data.feature.TransactionRequest;
 import org.polymap.core.data.image.EncodedImageProducer;
 import org.polymap.core.data.pipeline.Consumes;
-import org.polymap.core.data.pipeline.DataSourceDescription;
+import org.polymap.core.data.pipeline.DataSourceDescriptor;
 import org.polymap.core.data.pipeline.EndOfProcessing;
 import org.polymap.core.data.pipeline.Pipeline;
 import org.polymap.core.data.pipeline.PipelineExecutor.ProcessorContext;
 import org.polymap.core.data.pipeline.PipelineProcessorSite;
-import org.polymap.core.data.pipeline.ProcessorDescription;
+import org.polymap.core.data.pipeline.PipelineProcessorSite.Params;
+import org.polymap.core.data.pipeline.ProcessorDescriptor;
 import org.polymap.core.data.pipeline.Produces;
 import org.polymap.core.data.util.Geometries;
 import org.polymap.core.mapeditor.ILayerProvider;
@@ -89,7 +88,7 @@ import org.polymap.rhei.batik.PanelIdentifier;
 import org.polymap.p4.P4Panel;
 import org.polymap.p4.P4Plugin;
 import org.polymap.p4.catalog.AllResolver;
-import org.polymap.p4.data.P4PipelineIncubator;
+import org.polymap.p4.data.P4PipelineBuilder;
 import org.polymap.rap.openlayers.control.MousePositionControl;
 import org.polymap.rap.openlayers.control.ScaleLineControl;
 import org.polymap.rap.openlayers.layer.ImageLayer;
@@ -245,21 +244,21 @@ public class ChartPanel
         public Layer getLayer( @SuppressWarnings("hiding") ILayer layer ) {
             try {
                 // XXX don't connect again (use some cache on layer)
-                DataSourceDescription dsd = AllResolver.instance().connectLayer( layer, null )
+                DataSourceDescriptor dsd = AllResolver.instance().connectLayer( layer, null )
                         .orElseThrow( () -> new RuntimeException( "No data source for layer: " + layer ) );
 
                 // create pipeline for it
                 // XXX do not use layer specific things like caching; build extra pipeline
-                pipeline = P4PipelineIncubator.forLayer( layer )
-                        .newPipeline( EncodedImageProducer.class, dsd, null );
-                assert pipeline != null && pipeline.length() > 0 : "Unable to build pipeline for: " + dsd;
+                pipeline = P4PipelineBuilder.forLayer( layer )
+                        .createPipeline( EncodedImageProducer.class, dsd )
+                        .orElseThrow( () -> new RuntimeException( "Unable to build pipeline for: " + dsd ) );
 
                 // inject ChartGeometryProcessor
                 FeatureRenderProcessor2 featureRenderProc = (FeatureRenderProcessor2)pipeline.get( pipeline.length()-1 ).processor();
-                Map<String,Object> props = new HashMap();
-                props.put( "mappingFunction", mappingFunctions.get( 0 ) );
-                ProcessorDescription proc = new ProcessorDescription( ChartGeometryProcessor.class, props );
-                PipelineProcessorSite procSite = new PipelineProcessorSite( props );
+                Params params = new Params();
+                params.put( "mappingFunction", mappingFunctions.get( 0 ) );
+                ProcessorDescriptor proc = new ProcessorDescriptor( ChartGeometryProcessor.class, params );
+                PipelineProcessorSite procSite = new PipelineProcessorSite( params );
                 proc.processor().init( procSite );
                 featureRenderProc.pipeline().add( 0, proc );
                 log.info( "FeatureRender pipeline: " + featureRenderProc.pipeline() );
