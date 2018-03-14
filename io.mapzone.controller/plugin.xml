@@ -169,5 +169,12 @@
             name="Plugins Catalog">
       </contentProvider>
    </extension>
+   <extension
+         point="org.polymap.rhei.batik.panelFilters">
+      <panelFilter
+            class="io.mapzone.controller.ui.DashboardPanelFilter"
+            servletNameMatcher="/dashboard">
+      </panelFilter>
+   </extension>
 
 </plugin>
