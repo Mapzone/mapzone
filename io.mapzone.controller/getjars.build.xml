@@ -12,6 +12,7 @@
 	<property environment="env" />
 	<dirname file="${ant.file.refresh_libs}" property="refresh_libs_basedir" />
     <available property="already_downloaded" type="dir" file="${lib}" />
+    <property name="nexusURL" value="http://build.mapzone.io/nexus/content/groups/public/" />
 
     <!--
       Bootstrap: maven jars, ant task
