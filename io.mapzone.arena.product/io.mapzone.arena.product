@@ -12,7 +12,6 @@
    <windowImages/>
 
    <launcher>
-      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
@@ -24,7 +23,6 @@
    <plugins>
       <plugin id="com.ibm.icu.base"/>
       <plugin id="io.mapzone.arena"/>
-      <plugin id="io.mapzone.arena.graph"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.xml"/>
       <plugin id="org.apache.felix.gogo.runtime"/>
