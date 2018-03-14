@@ -93,7 +93,6 @@
       <plugin id="org.polymap.rhei.form"/>
       <plugin id="org.polymap.rhei.form.batik"/>
       <plugin id="org.polymap.rhei.fulltext"/>
-      <plugin id="org.polymap.rhei.um"/>
       <plugin id="org.polymap.service.geoserver"/>
    </plugins>
 
