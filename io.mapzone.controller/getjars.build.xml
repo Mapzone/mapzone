@@ -12,7 +12,7 @@
 	<property environment="env" />
 	<dirname file="${ant.file.refresh_libs}" property="refresh_libs_basedir" />
     <available property="already_downloaded" type="dir" file="${lib}" />
-    <property name="nexusURL" value="http://build.mapzone.io/nexus/content/groups/public/" />
+    <!--property name="nexusURL" value="http://build.mapzone.io/nexus/content/groups/public/" /-->
 
     <!--
       Bootstrap: maven jars, ant task
@@ -41,9 +41,8 @@
 	</target>
 
 	<target name="load_m2_deps" depends="init" unless="already_downloaded">
-	    <!-- remote repositories -->
+        <artifact:localRepository id="local.repository" path="${user.home}/.m2/repository" />
 	    <artifact:remoteRepository id="central.repository" url="http://repo1.maven.org/maven2" />
-	    <artifact:localRepository id="local.repository" path="${user.home}/.m2/repository" />
 
 		<artifact:dependencies filesetId="dependency.fileset" sourcesFilesetId="sources.dependency.fileset" versionsId="dependency.versions" useScope="runtime">
 			<localRepository refid="local.repository" />
