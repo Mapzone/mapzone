@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Arena" uid="io.mapzone.arena.product" application="org.polymap.rhei.batik.app" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="Arena" uid="io.mapzone.arena.product" application="org.polymap.rhei.batik.app" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="false">
 
    <configIni use="">
    </configIni>
@@ -45,11 +45,14 @@
       <plugin id="org.eclipse.equinox.http.jetty"/>
       <plugin id="org.eclipse.equinox.http.registry"/>
       <plugin id="org.eclipse.equinox.http.servlet"/>
+      <plugin id="org.eclipse.equinox.launcher"/>
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
       <plugin id="org.eclipse.equinox.util"/>
       <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.jdt.junit.runtime"/>
+      <plugin id="org.eclipse.jdt.junit.runtime.source"/>
       <plugin id="org.eclipse.jetty.continuation"/>
       <plugin id="org.eclipse.jetty.http"/>
       <plugin id="org.eclipse.jetty.io"/>
@@ -61,6 +64,10 @@
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.rap.jface"/>
       <plugin id="org.eclipse.rap.jface.databinding"/>
+      <plugin id="org.eclipse.rap.junit"/>
+      <plugin id="org.eclipse.rap.junit.runtime"/>
+      <plugin id="org.eclipse.rap.junit.runtime.source"/>
+      <plugin id="org.eclipse.rap.junit.source"/>
       <plugin id="org.eclipse.rap.rwt"/>
       <plugin id="org.eclipse.rap.rwt.de" fragment="true"/>
       <plugin id="org.eclipse.rap.rwt.osgi"/>
@@ -70,6 +77,8 @@
       <plugin id="org.eclipse.rap.ui.source"/>
       <plugin id="org.eclipse.rap.ui.views"/>
       <plugin id="org.eclipse.rap.ui.workbench"/>
+      <plugin id="org.junit"/>
+      <plugin id="org.junit.source"/>
       <plugin id="org.polymap.cms"/>
       <plugin id="org.polymap.core"/>
       <plugin id="org.polymap.core.catalog"/>
