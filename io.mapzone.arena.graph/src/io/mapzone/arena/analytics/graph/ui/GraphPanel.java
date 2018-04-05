@@ -40,7 +40,7 @@ import org.polymap.core.project.IMap;
 import org.polymap.core.runtime.i18n.IMessages;
 import org.polymap.core.style.DefaultStyle;
 import org.polymap.core.style.model.FeatureStyle;
-import org.polymap.core.style.model.feature.PropertyString;
+import org.polymap.core.style.model.feature.AttributeValue;
 import org.polymap.core.style.model.feature.TextStyle;
 import org.polymap.core.ui.FormDataFactory;
 import org.polymap.core.ui.FormLayoutFactory;
@@ -143,7 +143,7 @@ public class GraphPanel
             FeatureStyle featureStyle = P4Plugin.styleRepo().newFeatureStyle();
             DefaultStyle.fillPointStyle( featureStyle );
             TextStyle textStyle = DefaultStyle.fillTextStyle( featureStyle, null );
-            textStyle.property.createValue( PropertyString.defaults( "name" ) );
+            textStyle.property.createValue( AttributeValue.defaults( "name", null, null ) );
             featureStyle.store();
             site().memento().putString( NODE_STYLE_IDENTIFIER, featureStyle.id() );
         }
