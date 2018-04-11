@@ -72,7 +72,6 @@
       <plugin id="org.eclipse.rap.ui.workbench"/>
       <plugin id="org.polymap.cms"/>
       <plugin id="org.polymap.core"/>
-      <plugin id="org.polymap.core.catalog"/>
       <plugin id="org.polymap.core.data"/>
       <plugin id="org.polymap.core.data.rs"/>
       <plugin id="org.polymap.core.recordstore"/>
