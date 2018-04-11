@@ -72,8 +72,10 @@
       <plugin id="org.junit"/>
       <plugin id="org.polymap.cms"/>
       <plugin id="org.polymap.core"/>
+      <plugin id="org.polymap.core.catalog"/>
       <plugin id="org.polymap.core.data"/>
       <plugin id="org.polymap.core.data.rs"/>
+      <plugin id="org.polymap.core.data.shapefile"/>
       <plugin id="org.polymap.core.recordstore"/>
       <plugin id="org.polymap.model2"/>
       <plugin id="org.polymap.model2.store.recordstore"/>
