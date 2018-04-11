@@ -70,7 +70,6 @@
       <plugin id="org.eclipse.rap.ui.forms"/>
       <plugin id="org.eclipse.rap.ui.views"/>
       <plugin id="org.eclipse.rap.ui.workbench"/>
-      <plugin id="org.junit"/>
       <plugin id="org.polymap.cms"/>
       <plugin id="org.polymap.core"/>
       <plugin id="org.polymap.core.catalog"/>
