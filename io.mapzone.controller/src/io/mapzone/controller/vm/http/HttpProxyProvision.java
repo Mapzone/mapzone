@@ -10,8 +10,6 @@ import io.mapzone.controller.vm.repository.VmRepository.VmUnitOfWork;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 
@@ -22,8 +20,6 @@ import org.apache.http.HttpResponse;
  */
 public abstract class HttpProxyProvision
         implements Provision {
-
-    private static Log log = LogFactory.getLog( HttpProxyProvision.class );
 
     protected Context<HttpServletRequest>   request;
     

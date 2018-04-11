@@ -58,7 +58,7 @@ public class ProxyServlet
     private static final Log log = LogFactory.getLog( ProxyServlet.class );
     
     /** The provisions to be handled before {@link ForwardRequest} to the instance. */
-    private static final Class[]    forwardRequestProvisions = {
+    private static final Class[]    FORWARD_REQUEST_PROVISIONS = {
             LoginProvision.class,
             ServiceAuthProvision.class,
             ProjectURICache.class, 
@@ -66,7 +66,7 @@ public class ProxyServlet
             ReStartProcess.class };
 
     /** The provisions to be handled before {@link ForwardResponse} back to the sender. */
-    private static final Class[]    forwardResponseProvisions = {};
+    private static final Class[]    FORWARD_RESPONSE_PROVISIONS = {};
 
     public static final String      SERVLET_ALIAS = "/projects";
 
@@ -128,7 +128,7 @@ public class ProxyServlet
             
             // request
             // XXX job/thread to make it cancelable or timeout?
-            ProvisionExecutor executor = new ProvisionExecutor2( forwardRequestProvisions );
+            ProvisionExecutor executor = new ProvisionExecutor2( FORWARD_REQUEST_PROVISIONS );
             ForwardRequest forwardRequest = executor.newProvision( ForwardRequest.class );
             forwardRequest.request.set( req );
             forwardRequest.response.set( resp );
@@ -165,7 +165,7 @@ public class ProxyServlet
             }
 
             // response
-            ProvisionExecutor executor2 = new ProvisionExecutor2( forwardResponseProvisions )
+            ProvisionExecutor executor2 = new ProvisionExecutor2( FORWARD_RESPONSE_PROVISIONS )
                     .setContextValues( executor.getContextValues() );
             ForwardResponse forwardResponse = executor2.newProvision( ForwardResponse.class );
             try {

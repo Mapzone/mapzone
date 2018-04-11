@@ -79,12 +79,19 @@ public class LoginProvision
     public Status execute() throws Exception {
         checked.set( this );
         
-        // find cookie
-        Optional<Cookie> cookie = Arrays.stream( request.get().getCookies() )
-                .filter( c -> c.getName().equals( COOKIE_NAME ) )
-                .findAny();
+        // check authToken
+        AuthTokenValidator atv = new AuthTokenValidator( () -> projectUow(), request.get() );
+        if (atv.checkAuthToken()) {
+            String clientHost = request.get().getRemoteHost();
+            log.info( "AuthToken: valid, for client: " + clientHost );
+            registerUser( clientHost, response.get() );
+            // who we are? does arena need a user?
+            return OK_STATUS;
+        }
         
         // cookie -> OK
+        Optional<Cookie> cookie = Arrays.stream( request.get().getCookies() )
+                .filter( c -> c.getName().equals( COOKIE_NAME ) ).findAny();
         if (cookie.isPresent()) {
             String userId = loggedIn.get( cookie.get().getValue() );
             if (userId != null) {
@@ -95,7 +102,7 @@ public class LoginProvision
         // check /dashboard login
         Optional<LoginCookie> loginCookie = LoginCookie.access( request.get(), response.get() ).findAndUpdate();
         if (loginCookie.isPresent()) {
-            registerUser( loginCookie.get().user.get(), response.get() );
+            registerUser( (String)loginCookie.get().user.get().id(), response.get() );
             return OK_STATUS;            
         }
         
@@ -106,7 +113,7 @@ public class LoginProvision
                 "?", request.get().getQueryString() );
         String handlerId = LoginAppDesign.registerHandler( user -> {
             try {
-                registerUser( user, RWT.getResponse() );
+                registerUser( (String)user.id(), RWT.getResponse() );
                 UIUtils.exec( "window.location=\"", requestUrl, "\";" );
             }
             catch (Exception e) {
@@ -121,14 +128,14 @@ public class LoginProvision
     }
 
     
-    protected void registerUser( User user, @SuppressWarnings( "hiding" ) HttpServletResponse response ) {
+    protected void registerUser( String userId, @SuppressWarnings( "hiding" ) HttpServletResponse response ) {
         // cookie token
         byte[] bytes = new byte[8];
         rand.nextBytes( bytes );
         String token = Base64.encodeBase64URLSafeString( bytes );
         
         // FIXME Leak: entries are never removed (allow just one cookie/session per user?)
-        if (loggedIn.putIfAbsent( token, (String)user.id() ) != null) {
+        if (loggedIn.putIfAbsent( token, userId ) != null) {
             throw new IllegalStateException( "Token already exists: " + token );
         }
         
