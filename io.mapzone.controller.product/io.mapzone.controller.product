@@ -68,8 +68,8 @@
       <plugin id="org.eclipse.rap.rwt.osgi"/>
       <plugin id="org.eclipse.rap.ui"/>
       <plugin id="org.eclipse.rap.ui.forms"/>
-      <plugin id="org.eclipse.rap.ui.views"/>
       <plugin id="org.eclipse.rap.ui.workbench"/>
+      <plugin id="org.junit"/>
       <plugin id="org.polymap.cms"/>
       <plugin id="org.polymap.core"/>
       <plugin id="org.polymap.core.data"/>
@@ -77,7 +77,6 @@
       <plugin id="org.polymap.core.recordstore"/>
       <plugin id="org.polymap.model2"/>
       <plugin id="org.polymap.model2.store.recordstore"/>
-      <plugin id="org.polymap.rap.openlayers"/>
       <plugin id="org.polymap.rap.updownload"/>
       <plugin id="org.polymap.rhei.batik"/>
       <plugin id="org.polymap.rhei.form"/>
