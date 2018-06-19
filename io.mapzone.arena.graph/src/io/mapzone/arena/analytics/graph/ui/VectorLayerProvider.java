@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.json.JSONArray;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import org.apache.commons.logging.Log;
@@ -89,7 +88,7 @@ public class VectorLayerProvider
             vector = new VectorLayer().style.put( new Style().fill.put( new FillStyle().color.put( new Color( 0, 0, 255, 0.1f ) ) ).stroke.put( new StrokeStyle().color.put( new Color( "red" ) ).width.put( 1f ) ) ).source.put( source );
 
             SelectInteraction selectInteraction = new SelectInteraction( vector );
-            selectInteraction.addEventListener( SelectInteraction.Event.select, this );
+            selectInteraction.addEventListener( SelectInteraction.Event.SELECT, this );
             mapViewer.addMapInteraction( selectInteraction );
         }
         return vector;
@@ -110,12 +109,14 @@ public class VectorLayerProvider
 
     @Override
     public void handleEvent( OlEvent event ) {
-        log.info( "Selected: " + event.properties().get( "selected" ).toString() );
-        JSONArray ids = event.properties().getJSONArray( "selected" );
-        if (ids != null && ids.length() > 0) {
-            String id = ids.getString( 0 );
-            nodeSelectionHandler.accept( id );
-        }
+        // FIXME
+        throw new RuntimeException( "Handling of Event/Payload has been changed! See code." );
+//        log.info( "Selected: " + event.properties().get( "selected" ).toString() );
+//        JSONArray ids = event.properties().getJSONArray( "selected" );
+//        if (ids != null && ids.length() > 0) {
+//            String id = ids.getString( 0 );
+//            nodeSelectionHandler.accept( id );
+//        }
     }
 
 

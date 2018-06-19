@@ -22,7 +22,6 @@ import java.util.function.Supplier;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.Style;
-import org.json.JSONArray;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
@@ -169,18 +168,20 @@ public class ImageLayerProvider
                     @Override
                     public void handleEvent( OlEvent ev ) {
                         try {
-                            log.info( "event: " + ev.properties() );
-                            JSONArray coord = ev.properties().getJSONObject( "feature" ).getJSONArray( "coordinate" );
-                            double x = coord.getDouble( 0 );
-                            double y = coord.getDouble( 1 );
-                            handleClick( graphUi, new Coordinate( x, y ) );
+                            // FIXME
+                            throw new RuntimeException( "Handling of Event/Payload has been changed! See code." );
+//                            log.info( "event: " + ev.properties() );
+//                            JSONArray coord = ev.properties().getJSONObject( "feature" ).getJSONArray( "coordinate" );
+//                            double x = coord.getDouble( 0 );
+//                            double y = coord.getDouble( 1 );
+//                            handleClick( graphUi, new Coordinate( x, y ) );
                         }
                         catch (Exception e) {
                             StatusDispatcher.handleError( "Unable to create graph layer.", e );
                         }
                     }
                 };
-                mapViewer.getMap().addEventListener( Event.click, clickListener );
+                mapViewer.map().addEventListener( Event.CLICK, clickListener );
             }
 
             return new TileLayer().source.put( new TileWMSSource().url.put( "."
