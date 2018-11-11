@@ -67,7 +67,7 @@ import org.polymap.core.runtime.config.Mandatory;
 public class HttpRequestForwarder
         extends HttpForwarder {
 
-    static Log log = LogFactory.getLog( HttpRequestForwarder.class );
+    private static final Log log = LogFactory.getLog( HttpRequestForwarder.class );
     
     /** Set to {@link PoolingHttpClientConnectionManager#setDefaultMaxPerRoute(int)}. */
     public static final int             MAX_CONNECTIONS_PER_ROUTE = 12;

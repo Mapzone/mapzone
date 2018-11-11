@@ -81,9 +81,8 @@ public class HttpResponseForwarder
             log.debug( "RESPONSE: " + statusCode );
 
             // copying response headers to make sure SESSIONID or other Cookie which
-            // comes from remote server
-            // will be saved in client when the proxied url was redirected to another
-            // one.
+            // comes from remote server will be saved in client when the proxied url
+            // was redirected to another one.
             // see issue [#51](https://github.com/mitre/HTTP-Proxy-Servlet/issues/51)
             copyResponseHeaders( proxyResponse, servletRequest, servletResponse );
 
@@ -185,9 +184,10 @@ public class HttpResponseForwarder
     protected void copyResponseHeaders( HttpResponse proxyResponse, HttpServletRequest servletRequest,
             HttpServletResponse servletResponse ) {
         for (Header header : proxyResponse.getAllHeaders()) {
-            if (hopByHopHeaders.containsHeader( header.getName() ))
+            if (hopByHopHeaders.containsHeader( header.getName() )) {
                 continue;
-            if (header.getName().equalsIgnoreCase( org.apache.http.cookie.SM.SET_COOKIE )
+            }
+            else if (header.getName().equalsIgnoreCase( org.apache.http.cookie.SM.SET_COOKIE )
                     || header.getName().equalsIgnoreCase( org.apache.http.cookie.SM.SET_COOKIE2 )) {
                 copyProxyCookie( servletRequest, servletResponse, header );
             }

@@ -91,7 +91,7 @@ public class SharePanel
             shareContext.get().crs.set( mapViewer.maxExtent.get().getCoordinateReferenceSystem() );
         }
         if (!shareContext.get().resolution.isPresent()) {
-            shareContext.get().resolution.set( mapViewer.resolution.get() );
+            shareContext.get().resolution.set( (float)mapViewer.resolution.get() );
         }
         if (shareContext.get().selectionDescriptors.get().isEmpty()) {
             mapViewer.getLayers().stream()
