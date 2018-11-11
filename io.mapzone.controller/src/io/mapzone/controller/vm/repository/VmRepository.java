@@ -56,7 +56,7 @@ import org.polymap.recordstore.lucene.LuceneRecordStore;
  */
 public class VmRepository {
 
-    private static Log log = LogFactory.getLog( VmRepository.class );
+    private static final Log log = LogFactory.getLog( VmRepository.class );
     
     private static EntityRepository     repo;
     
@@ -157,7 +157,7 @@ public class VmRepository {
 
 
         public void commit() throws ModelRuntimeException {
-            log.info( "COMMIT provision: ..." );
+            log.debug( "COMMIT provision: ..." );
             super.commit();
             close();
         }

@@ -81,7 +81,7 @@ public class ProjectURICache
         // keep instance and process stable
         instance.get().homePath.get();  // force (pessimistic) lock
         if (instance.get().process.isPresent()) {
-            log.info( "PROCESS is present! URI: " + instance.get().uri() );
+            log.debug( "PROCESS is present! URI: " + instance.get().uri() );
             process.set( instance.get().process.get() );
             projectUri.set( instance.get().uri() );
         }

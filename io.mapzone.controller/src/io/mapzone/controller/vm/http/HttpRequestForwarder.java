@@ -175,7 +175,7 @@ public class HttpRequestForwarder
         try {
             active.set( this );
             
-            log.info( "REQUEST "
+            log.debug( "REQUEST "
                     + "[" + StringUtils.right( Thread.currentThread().getName(), 2 ) + "] " 
                     + method + ": " + servletRequest.getRequestURI() + " -- " + proxyRequest.getRequestLine().getUri() );
             proxyResponse = proxyClient.execute( targetHost, proxyRequest );

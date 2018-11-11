@@ -66,7 +66,7 @@ class InterceptableHttpClientConnectionFactory
     @Override
     public ManagedHttpClientConnection create( HttpRoute route, ConnectionConfig config ) {
         ConfigurationFactory.inject( this );
-        log.info( "CONNECTION: " + config );
+        log.debug( "CONNECTION: " + config );
 
         ConnectionConfig cconfig = config != null ? config : ConnectionConfig.DEFAULT;
         CharsetDecoder chardecoder = null;

@@ -139,7 +139,7 @@ public class ProxyServlet
                 if (forwardRequest.vmUow.isPresent()) {
                     forwardRequest.vmUow.get().commit();
                 }
-                log.info( "Provisioning: " + timer.elapsedTime() + "ms" );
+                log.debug( "Provisioning: " + timer.elapsedTime() + "ms" );
             });
             try {
                 Status status = executor.execute( forwardRequest );

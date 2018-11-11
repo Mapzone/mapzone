@@ -57,7 +57,7 @@ public class JCloudsHostRuntime
 
     @Override
     public ScriptExecutionResult execute( Script script ) {
-        log.info( "SCRIPT: " + script );
+        log.debug( "SCRIPT: " + script );
         ComputeService cs = JCloudsRuntime.instance.get().computeService();
         ExecResponse response = cs.runScriptOnNode( host.hostId.get(), script.render(), options( script ) );
 
@@ -70,7 +70,7 @@ public class JCloudsHostRuntime
 
     @Override
     public ListenableFuture<ScriptExecutionResult> nohupExecute( Script script ) {
-        log.info( "SCRIPT: " + script );
+        log.debug( "SCRIPT: " + script );
         ComputeService cs = JCloudsRuntime.instance.get().computeService();
         
         ListenableFuture<ExecResponse> response = cs.submitScriptOnNode( host.hostId.get(), 
@@ -118,7 +118,7 @@ public class JCloudsHostRuntime
     protected ScriptExecutionResult executionResult( ExecResponse response ) {
         log.debug( "RESPONSE: " + response.getError() );
         log.debug( "RESPONSE: " + response.getExitStatus() );
-        log.info( "RESPONSE: " + response.getOutput() );
+        log.debug( "RESPONSE: " + response.getOutput() );
 
         ScriptExecutionResult result = new ScriptExecutionResult();
         result.error.set( response.getError() );
@@ -184,7 +184,7 @@ public class JCloudsHostRuntime
                 ){
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
                     IOUtils.copy( in, out );
-                    log.info( "READ: " + out.size() + "bytes (" + timer.elapsedTime() + "ms)" );
+                    log.debug( "READ: " + out.size() + "bytes (" + timer.elapsedTime() + "ms)" );
 
                     return out.toByteArray();
                 } 
