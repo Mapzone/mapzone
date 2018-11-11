@@ -20,7 +20,7 @@ import org.polymap.rhei.batik.dashboard.Dashboard;
 import org.polymap.rhei.batik.help.HelpPanel;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 
-import io.mapzone.arena.jmx.ArenaConfigMBean;
+import io.mapzone.controller.email.EmailConfig;
 
 /**
  * 
@@ -33,10 +33,11 @@ public class EMailHelpContribution
     @Override
     public void fillDashboard( IContributionSite site, Dashboard dashboard ) {
         if (site.tagsContain( HelpPanel.DASHBOARD_ID )) {
+            EmailConfig emailConfig = EmailConfig.forSupport();
             dashboard.addDashlet( new EMailHelpDashlet()
-                    .smtpUser.put( ArenaConfigMBean.SMTP_USER )
-                    .smtpPassword.put( ArenaConfigMBean.SMTP_PWD )
-                    .smtpHost.put( ArenaConfigMBean.SMTP_HOST )
+                    .smtpUser.put( emailConfig.USER.get() )
+                    .smtpPassword.put( emailConfig.PWD.get() )
+                    .smtpHost.put( emailConfig.HOST.get() )
                     .to.put( "support@mapzone.io" )
                     .addConstraint( new PriorityConstraint( 10 ) ) );
         }

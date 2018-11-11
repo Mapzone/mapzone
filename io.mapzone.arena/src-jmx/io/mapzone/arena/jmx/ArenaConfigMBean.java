@@ -20,17 +20,12 @@ import org.polymap.core.runtime.Lazy;
 import org.polymap.core.runtime.PlainLazyInit;
 
 /**
- * 
+ * ...
  *
  * @author Falko Bräutigam
  */
 public interface ArenaConfigMBean {
 
-    /** Weird, isn't it? */
-    public static final String              SMTP_USER = "support@mapzone.io";
-    public static final String              SMTP_PWD = "690332";
-    public static final String              SMTP_HOST = "mail.mapzone.io";
-    
     /**
      * URL param that specifies the mapzone user of service (request). Checked by
      * io.mapzone.controller.vm.http.ServiceAuthProvision. Set for example by
@@ -66,7 +61,8 @@ public interface ArenaConfigMBean {
             throw new RuntimeException( e );
         }
     });
-
+    
+    
     // interface ******************************************
     
     public void setAppTitle( String title );

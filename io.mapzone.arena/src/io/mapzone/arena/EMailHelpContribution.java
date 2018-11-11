@@ -32,14 +32,16 @@ public class EMailHelpContribution
 
     @Override
     public void fillDashboard( IContributionSite site, Dashboard dashboard ) {
-        if (site.tagsContain( HelpPanel.DASHBOARD_ID )) {
-            dashboard.addDashlet( new EMailHelpDashlet()
-                    .smtpUser.put( ArenaConfigMBean.SMTP_USER )
-                    .smtpPassword.put( ArenaConfigMBean.SMTP_PWD )
-                    .smtpHost.put( ArenaConfigMBean.SMTP_HOST )
-                    .to.put( "support@mapzone.io" )
-                    .addConstraint( new PriorityConstraint( 100 ) ) );
-        }
+        // FIXME unsupported until email passwd is send via ArenaConfigMBean
+//        if (site.tagsContain( HelpPanel.DASHBOARD_ID )) {
+//            EmailConfig emailConfig = ArenaConfigMBean.getSupportEmailConfig();
+//            dashboard.addDashlet( new EMailHelpDashlet()
+//                    .smtpUser.put( emailConfig.USER.get() )
+//                    .smtpPassword.put( emailConfig.PWD.get() )
+//                    .smtpHost.put( emailConfig.HOST.get() )
+//                    .to.put( "support@mapzone.io" )
+//                    .addConstraint( new PriorityConstraint( 100 ) ) );
+//        }
     }
 
 }
