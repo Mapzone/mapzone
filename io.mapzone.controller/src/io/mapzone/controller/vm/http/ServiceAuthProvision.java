@@ -41,7 +41,7 @@ import io.mapzone.controller.vm.repository.ProjectInstanceIdentifier;
 public class ServiceAuthProvision
         extends HttpProxyProvision {
 
-    private static Log log = LogFactory.getLog( ServiceAuthProvision.class );
+    private static final Log log = LogFactory.getLog( ServiceAuthProvision.class );
 
     // see io.mapzone.arena.GeoServerStarter
     public static final Set<String>         SERVICE_ALIASES = Sets.newHashSet( "/ows", "/webdav" );
@@ -64,16 +64,17 @@ public class ServiceAuthProvision
     
     // instance *******************************************
     
+    private boolean                         isServiceRequest;
+
     private Context<ServiceAuthProvision>   checked;
 
     
     @Override
     public boolean init( Provision failed, Status cause ) {
         String pathInfo = request.get().getPathInfo();
-        Optional<String> serviceRequest = SERVICE_ALIASES.stream()
-                .filter( alias -> pathInfo.contains( alias ) ).findAny();
+        isServiceRequest = SERVICE_ALIASES.stream().anyMatch( alias -> pathInfo.contains( alias ) );
         
-        return serviceRequest.isPresent() &&
+        return isServiceRequest &&
                 failed instanceof ForwardRequest &&
                 cause == null &&
                 !checked.isPresent();
