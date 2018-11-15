@@ -93,6 +93,7 @@ public class LoginProvision
         Optional<Cookie> cookie = Arrays.stream( request.get().getCookies() )
                 .filter( c -> c.getName().equals( COOKIE_NAME ) ).findAny();
         if (cookie.isPresent()) {
+            // XXX validate cookie value
             String userId = loggedIn.get( cookie.get().getValue() );
             if (userId != null) {
                 return OK_STATUS;

@@ -12,12 +12,15 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpRequest;
 import org.apache.http.client.ClientProtocolException;
 
+import com.google.common.base.Joiner;
+
 import org.polymap.core.runtime.config.Config;
 import org.polymap.core.runtime.config.ConfigurationFactory;
 
 import io.mapzone.controller.provision.Context;
 import io.mapzone.controller.provision.Provision;
 import io.mapzone.controller.provision.Provision.Status.Severity;
+import io.mapzone.controller.vm.repository.ProjectInstanceIdentifier;
 
 /**
  * 
@@ -90,21 +93,20 @@ public class ForwardRequest
             throws ClientProtocolException, IOException, Exception {
         
         HttpRequestForwarder _forwarder = new HttpRequestForwarder() {
-            @Override
-            protected String rewritePath( String path ) {
+            @Override protected String rewritePath( String path ) {
                 // /org/name/servletAlias
                 return "/" + substringAfter( substringAfter( substringAfter( path, "/" ), "/" ), "/" );
             }
-            @Override
-            protected void onRequestSubmitted( HttpRequest _request ) {
+            @Override protected void onRequestSubmitted( HttpRequest _request ) {
                 onRequestSend.get().accept( _request );
             }
         };
 
-        int targetPort = targetUri.getPort();
+        ProjectInstanceIdentifier pid = new ProjectInstanceIdentifier( request.get() );
+        String cookiePrefix = Joiner.on( "_" ).join( pid.organization(), pid.project(), "" );
         forwarder.set( _forwarder
                 .targetUri.put( targetUri.toString() )
-                .cookieNamePrefix.put( targetPort + "_" ) );
+                .cookieNamePrefix.put( cookiePrefix ) );
         
         forwarder.get().service( request.get(), response.get() );
         
