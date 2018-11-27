@@ -12,6 +12,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
+import org.eclipse.jface.action.Action;
+
 import org.polymap.core.operation.OperationSupport;
 import org.polymap.core.runtime.UIThreadExecutor;
 import org.polymap.core.runtime.i18n.IMessages;
@@ -20,10 +22,12 @@ import org.polymap.core.ui.ColumnLayoutFactory;
 
 import org.polymap.rhei.batik.BatikPlugin;
 import org.polymap.rhei.batik.PanelIdentifier;
+import org.polymap.rhei.batik.app.SvgImageRegistryHelper;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
+import org.polymap.rhei.batik.toolkit.md.MdActionbar;
 import org.polymap.rhei.field.EMailAddressValidator;
 import org.polymap.rhei.field.FormFieldEvent;
 import org.polymap.rhei.field.IFormFieldListener;
@@ -74,6 +78,8 @@ public class RegisterPanel
     private IPanelSection               welcomeSection;
 
     private IPanelSection               formSection;
+
+    private Action submit;
     
 
     @Override
@@ -138,6 +144,11 @@ public class RegisterPanel
         form = new BatikFormContainer( new NamePasswordForm() );
         form.createContents( formSection );
 
+        MdActionbar ab = tk().createFloatingActionbar();
+        submit = ab.addAction( i18n.get( "okBtn" ), null, a -> submit() );
+        submit.setImageDescriptor( BatikPlugin.images().svgImageDescriptor( "check2.svg", SvgImageRegistryHelper.WHITE24 ) );
+        submit.setEnabled( false );
+        
         // btn
         okBtn = tk().createButton( form.getContents(), i18n.get( "okBtn" ), SWT.PUSH );
         okBtn.setToolTipText( i18n.get( "okBtn" ) );
@@ -182,13 +193,15 @@ public class RegisterPanel
     public void fieldChange( FormFieldEvent ev ) {
         if (ev.getEventCode() == IFormFieldListener.VALUE_CHANGE
                 && !okBtn.isDisposed()) {
-            okBtn.setEnabled( false );            
+            okBtn.setEnabled( false );
+            submit.setEnabled( false );
 
             if (ev.getFieldName().equals( "password" )) {
                 ev.getNewModelValue().ifPresent( password -> op.password.set( (String)password ) );
             }
             
             okBtn.setEnabled( form.isValid() );
+            submit.setEnabled( form.isValid() );
             
 //            if (form.isValid()
 //                    // XXX "short" login for test :)

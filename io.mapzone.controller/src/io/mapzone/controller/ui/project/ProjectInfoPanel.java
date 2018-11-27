@@ -11,9 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -21,9 +18,10 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+
+import org.eclipse.jface.action.Action;
 
 import org.eclipse.ui.forms.events.ExpansionEvent;
 
@@ -46,6 +44,7 @@ import org.polymap.rhei.batik.toolkit.MinHeightConstraint;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
+import org.polymap.rhei.batik.toolkit.md.MdActionbar;
 import org.polymap.rhei.batik.toolkit.md.MdToolkit;
 import org.polymap.rhei.form.batik.BatikFormContainer;
 
@@ -68,8 +67,6 @@ import io.mapzone.controller.vm.http.ServiceAuthProvision;
 public class ProjectInfoPanel
         extends CtrlPanel {
 
-    private static final Log log = LogFactory.getLog( ProjectInfoPanel.class );
-
     public static final PanelIdentifier ID = PanelIdentifier.parse( "editProject" );
     
     // XXX @Mandatory ; mimik @Propagate(ONESHOT) in dispose
@@ -85,11 +82,11 @@ public class ProjectInfoPanel
     
     private BatikFormContainer          form;
 
-    private Button                      fab;
-    
     private AuthToken                   newToken;
     
     private List<IPanelSection>         sections = new ArrayList();
+
+    private Action                      submit;
 
     
     @Override
@@ -127,16 +124,9 @@ public class ProjectInfoPanel
         EventManager.instance().subscribe( this, ifType( ExpansionEvent.class, ev ->
                 sections.contains( ev.getSource() ) ) );
 
-        // FAB
-        fab = tk().createFab();
-        fab.setToolTipText( "Submit changes" );
-        fab.setVisible( false );
-        fab.addSelectionListener( new SelectionAdapter() {
-            @Override
-            public void widgetSelected( SelectionEvent ev ) {
-                submit( ev );
-            }
-        });
+        // submit
+        MdActionbar ab = tk().createFloatingActionbar();
+        submit = ab.addSubmit( a -> submit() );
     }
 
 
@@ -152,7 +142,7 @@ public class ProjectInfoPanel
     }
 
     
-    protected void submit( SelectionEvent ev ) {
+    protected void submit() {
         // submit form
         try {
             form.submit( null );
@@ -221,8 +211,7 @@ public class ProjectInfoPanel
         IPanelSection section = tk().createPanelSection( parent, "Basic settings", SWT.BORDER, EXPANDABLE );
         section.addConstraint( new PriorityConstraint( 10 ), new MinWidthConstraint( 350, 1 ) );
         ProjectForm formPage = new ProjectForm( op.umUow.get(), op.project.get(), op.user.get() ) {
-            @Override
-            protected void updateEnabled() {
+            @Override protected void updateEnabled() {
                 ProjectInfoPanel.this.updateEnabled();
             }
         };
@@ -324,12 +313,9 @@ public class ProjectInfoPanel
 
     
     protected void updateEnabled() {
-        fab.setVisible( 
+        submit.setEnabled( 
                 form.isDirty() && form.isValid() ||
                 newToken != null );
-        if (fab.isVisible()) {
-            fab.getParent().layout( new Control[] {fab} );
-        }
     }
     
     

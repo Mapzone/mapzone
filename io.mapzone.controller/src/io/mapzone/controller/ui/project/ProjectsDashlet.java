@@ -153,7 +153,7 @@ public class ProjectsDashlet
             createListContents();            
         }
         
-        Button btn = tk.createButton( parent, "New project...", SWT.PUSH );
+        Button btn = tk.createButton( parent, "New Project...", SWT.PUSH );
         btn.setImage( ControllerPlugin.images().svgImage( "plus-circle.svg", SvgImageRegistryHelper.WHITE24 ) );
         btn.setLayoutData( ColumnDataFactory.defaults().widthHint( 200 ).horizAlign( CENTER ).create() );
         btn.addSelectionListener( new org.eclipse.swt.events.SelectionAdapter() {

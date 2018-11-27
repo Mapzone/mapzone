@@ -21,6 +21,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
+import org.eclipse.jface.action.Action;
+
 import org.polymap.core.ui.ColumnDataFactory;
 import org.polymap.core.ui.ColumnLayoutFactory;
 import org.polymap.core.ui.StatusDispatcher;
@@ -35,6 +37,7 @@ import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
 import org.polymap.rhei.batik.toolkit.PriorityConstraint;
 import org.polymap.rhei.batik.toolkit.Snackbar.Appearance;
+import org.polymap.rhei.batik.toolkit.md.MdActionbar;
 import org.polymap.rhei.field.FormFieldEvent;
 import org.polymap.rhei.form.batik.BatikFormContainer;
 
@@ -79,10 +82,9 @@ public class PluginInfoPanel2
         IPanelSection section = tk().createPanelSection( parent, plugin.get().title.get(), SWT.BORDER );
         section.addConstraint( new PriorityConstraint( 10 ), new MinWidthConstraint( 350, 1 ) );
 
-        // fab
-        Button fab = tk().createFab();
-        fab.setVisible( false );
-        fab.addSelectionListener( UIUtils.selectionListener( ev -> {
+        // submit
+        MdActionbar ab = tk().createFloatingActionbar();
+        Action submit = ab.addSubmit( a -> { 
             try {
                 form.submit( null );
                 PluginCatalog.session().commit();
@@ -96,13 +98,13 @@ public class PluginInfoPanel2
             catch (Exception e) {
                 StatusDispatcher.handleError( "Changes could not be saved.", e );
             }
-        }));
+        });
+        submit.setEnabled( false );
         
         // form
         CatalogEntryForm formPage = new CatalogEntryForm( plugin.get() ) {
             @Override public void fieldChange( FormFieldEvent ev ) {
-                fab.setVisible( form.isDirty() );
-                fab.setEnabled( form.isValid() );
+                submit.setEnabled( form.isDirty() && form.isValid() );
             }
         };
         formPage.creation.put( false );

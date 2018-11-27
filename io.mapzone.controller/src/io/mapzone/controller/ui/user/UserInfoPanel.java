@@ -1,21 +1,14 @@
 package io.mapzone.controller.ui.user;
 
-import io.mapzone.controller.ControllerPlugin;
-import io.mapzone.controller.ops.UpdateUserOperation;
-import io.mapzone.controller.ui.CtrlPanel;
-import io.mapzone.controller.ui.DashboardPanel;
-import io.mapzone.controller.ui.util.PropertyAdapter;
-import io.mapzone.controller.um.repository.LoginCookie;
 import java.util.Optional;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+
+import org.eclipse.jface.action.Action;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
@@ -32,6 +25,7 @@ import org.polymap.rhei.batik.PanelPath;
 import org.polymap.rhei.batik.toolkit.ConstraintData;
 import org.polymap.rhei.batik.toolkit.IPanelSection;
 import org.polymap.rhei.batik.toolkit.MinWidthConstraint;
+import org.polymap.rhei.batik.toolkit.md.MdActionbar;
 import org.polymap.rhei.field.EMailAddressValidator;
 import org.polymap.rhei.field.FormFieldEvent;
 import org.polymap.rhei.field.IFormFieldListener;
@@ -45,6 +39,13 @@ import org.polymap.rhei.form.DefaultFormPage;
 import org.polymap.rhei.form.IFormPageSite;
 import org.polymap.rhei.form.batik.BatikFormContainer;
 
+import io.mapzone.controller.ControllerPlugin;
+import io.mapzone.controller.ops.UpdateUserOperation;
+import io.mapzone.controller.ui.CtrlPanel;
+import io.mapzone.controller.ui.DashboardPanel;
+import io.mapzone.controller.ui.util.PropertyAdapter;
+import io.mapzone.controller.um.repository.LoginCookie;
+
 /**
  * 
  *
@@ -52,8 +53,6 @@ import org.polymap.rhei.form.batik.BatikFormContainer;
  */
 public class UserInfoPanel
         extends CtrlPanel {
-
-    private static Log log = LogFactory.getLog( UserInfoPanel.class );
 
     public static final PanelIdentifier ID = PanelIdentifier.parse( "editUser" );
     
@@ -65,7 +64,7 @@ public class UserInfoPanel
     
     private Optional<String>            newPassword = Optional.empty();
 
-    private Button                      fab;
+    private Action                      submit;
 
     
     @Override
@@ -115,33 +114,10 @@ public class UserInfoPanel
             }
         });
 
-        // FAB
-        fab = tk().createFab();
-        fab.setToolTipText( "Submit changes" );
-        fab.addSelectionListener( new SelectionAdapter() {
-            @Override
-            public void widgetSelected( SelectionEvent ev ) {
-                // submit form
-                try {
-                    profileForm.submit( null );
-                }
-                catch (Exception e) {
-                    StatusDispatcher.handleError( "Unable to submit form.", e );
-                    return;
-                }
-                
-                // execute
-                OperationSupport.instance().execute2( op, true, false, ev2 -> UIThreadExecutor.asyncFast( () -> {
-                    if (ev2.getResult().isOK()) {
-                        PanelPath panelPath = getSite().getPath();
-                        getContext().closePanel( panelPath );                        
-                    }
-                    else {
-                        StatusDispatcher.handleError( "Unable to update user data.", ev2.getResult().getException() );
-                    }
-                }));
-            }
-        });
+        // submit
+        MdActionbar ab = tk().createFloatingActionbar();
+        submit = ab.addSubmit( a -> submit() );
+        
         // field events
         EventManager.instance().subscribe( this, ev -> 
                 ((FormFieldEvent)ev).getEditor() == profileForm ||
@@ -150,9 +126,33 @@ public class UserInfoPanel
         updateEnabled( null );
     }
 
+    
+    protected void submit() {
+        // submit form
+        try {
+            profileForm.submit( null );
+        }
+        catch (Exception e) {
+            StatusDispatcher.handleError( "Unable to submit form.", e );
+            return;
+        }
+        
+        // execute
+        OperationSupport.instance().execute2( op, true, false, ev2 -> UIThreadExecutor.asyncFast( () -> {
+            if (ev2.getResult().isOK()) {
+                PanelPath panelPath = getSite().getPath();
+                getContext().closePanel( panelPath );                        
+            }
+            else {
+                StatusDispatcher.handleError( "Unable to update user data.", ev2.getResult().getException() );
+            }
+        }));        
+    }
+    
+    
     @EventHandler( display=true )
     protected void updateEnabled( FormFieldEvent ev ) {
-        fab.setVisible( profileForm.isDirty() && profileForm.isValid()
+        submit.setEnabled( profileForm.isDirty() && profileForm.isValid()
                 || accountForm.isDirty() && accountForm.isValid() );
     }
     

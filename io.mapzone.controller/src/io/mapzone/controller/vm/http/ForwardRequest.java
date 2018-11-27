@@ -3,6 +3,7 @@ package io.mapzone.controller.vm.http;
 import static org.apache.commons.lang3.StringUtils.substringAfter;
 
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 import java.io.IOException;
 import java.net.URI;
@@ -32,6 +33,8 @@ public class ForwardRequest
 
     private static final Log log = LogFactory.getLog( ForwardRequest.class );
 
+    private static final Pattern            NO_COOKIE_CHAR = Pattern.compile( "[^A-Za-z0-9_+-]" );
+    
     public static final String              BAD_RESPONSE = "_bad_response_";
     public static final String              IO_ERROR = "_io_error_";
     public static final String              NO_URI = "_no_uri_";
@@ -103,7 +106,10 @@ public class ForwardRequest
         };
 
         ProjectInstanceIdentifier pid = new ProjectInstanceIdentifier( request.get() );
+        // XXX readable names are good for debugging but to a bit expensive? better use #hashcode
         String cookiePrefix = Joiner.on( "_" ).join( pid.organization(), pid.project(), "" );
+        cookiePrefix = NO_COOKIE_CHAR.matcher( cookiePrefix ).replaceAll( "+" );
+
         forwarder.set( _forwarder
                 .targetUri.put( targetUri.toString() )
                 .cookieNamePrefix.put( cookiePrefix ) );
