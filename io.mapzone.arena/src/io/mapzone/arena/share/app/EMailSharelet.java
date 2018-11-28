@@ -212,7 +212,7 @@ public class EMailSharelet
         msg.addRecipients( RecipientType.TO, InternetAddress.parse( toText, false ) );
         // TODO we need the FROM from the current user
         msg.addFrom( InternetAddress.parse( "support@mapzone.io" ) );  //ArenaConfigMBean.SMTP_USER ) );
-        msg.setReplyTo( InternetAddress.parse( "support@mapzone.io" ) );  //ArenaConfigMBean.SMTP_USER ) );
+        msg.setReplyTo( InternetAddress.parse( "DO_NOT_REPLY_TO_THIS_EMAIL@mapzone.io" ) );  //ArenaConfigMBean.SMTP_USER ) );
 
         msg.setSubject( subjectText, "utf-8" );
         if (withAttachment) {
@@ -248,7 +248,7 @@ public class EMailSharelet
     private Session mailSession() throws Exception {
         if (session == null) {
             Properties props = new Properties();
-            props.put( "mail.smtp.host", "mail.polymap.de" );  //ArenaConfigMBean.SMTP_HOST );
+            props.put( "mail.smtp.host", "192.168.122.183" );  //ArenaConfigMBean.SMTP_HOST );
             props.put( "mail.smtp.port", "25" );
             props.put( "mail.smtp.auth", "true" );
             // TODO uncomment if the mail server contains a correct SSL certificate
