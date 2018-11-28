@@ -1,5 +1,6 @@
 /*
- * polymap.org Copyright (C) 2016, the @authors. All rights reserved.
+ * polymap.org 
+ * Copyright (C) 2016-2018, the @authors. All rights reserved.
  *
  * This is free software; you can redistribute it and/or modify it under the terms of
  * the GNU Lesser General Public License as published by the Free Software
@@ -54,7 +55,7 @@ import io.mapzone.arena.share.ui.ShareletPanel;
 public class FacebookSharelet
         extends Sharelet {
 
-    private static Log             log  = LogFactory.getLog( FacebookSharelet.class );
+    private static final Log log  = LogFactory.getLog( FacebookSharelet.class );
 
     private static final IMessages i18n = Messages.forPrefix( "FacebookSharelet" );
 
