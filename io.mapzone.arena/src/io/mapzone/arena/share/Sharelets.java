@@ -17,6 +17,7 @@ import com.google.common.collect.Lists;
 
 import org.polymap.core.runtime.session.SessionSingleton;
 
+import io.mapzone.arena.share.app.EMailSharelet;
 import io.mapzone.arena.share.app.EmbedSharelet;
 import io.mapzone.arena.share.app.FacebookSharelet;
 import io.mapzone.arena.share.app.GeoServerSharelet;
@@ -31,7 +32,7 @@ public class Sharelets
 
     private final static List<Class<? extends Sharelet>> available = Lists.newArrayList( 
             FacebookSharelet.class,
-           // EMailSharelet.class,
+            EMailSharelet.class,
             EmbedSharelet.class, 
             GeoServerSharelet.class );
 
