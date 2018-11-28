@@ -1,5 +1,6 @@
 /*
- * polymap.org Copyright (C) 2016, the @authors. All rights reserved.
+ * polymap.org 
+ * Copyright (C) 2016-2018, the @authors. All rights reserved.
  *
  * This is free software; you can redistribute it and/or modify it under the terms of
  * the GNU Lesser General Public License as published by the Free Software
@@ -16,6 +17,8 @@ import java.util.StringJoiner;
 
 import org.apache.commons.lang3.StringUtils;
 import com.vividsolutions.jts.geom.Coordinate;
+
+import org.polymap.service.geoserver.GeoServerUtils;
 
 import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.jmx.ArenaConfig;
@@ -65,7 +68,7 @@ public class OpenLayersContentProvider
         StringJoiner layers = new StringJoiner( ",\n" );
         for (SelectionDescriptor selection : context.selectionDescriptors.get()) {
             String layer = replace( LAYERJS, "WMSURL", ArenaPlugin.instance().config().getProxyUrl() + "/ows" );
-            layer = replace( layer, "LAYER", selection.layer.get().label.get() );
+            layer = replace( layer, "LAYER", GeoServerUtils.simpleName( selection.layer.get().label.get() ) );
             if (!StringUtils.isBlank( ArenaPlugin.instance().config().getServiceAuthToken() )) {
                 layer = replace( layer, "AUTH", ", 'authToken': '"
                         + ArenaPlugin.instance().config().getServiceAuthToken() + "'" );
@@ -122,10 +125,10 @@ public class OpenLayersContentProvider
         return template.replaceAll( "_" + key + "_", value );
     }
     
-    private final static String JSRESOURCE = "http://openlayers.org/en/v3.17.1/build/ol.js";
-    private final static String CSSRESOURCE = "http://openlayers.org/en/v3.17.1/css/ol.css";
+    private final static String JSRESOURCE = "http://openlayers.org/en/v3.20.1/build/ol.js";
+    private final static String CSSRESOURCE = "http://openlayers.org/en/v3.20.1/css/ol.css";
     private final static String BODY = "<div id='map' class='map'></div>";
-    private final static String LAYERJS = new StringBuffer()
+    private final static String LAYERJS = new StringBuilder()
             .append( "        new ol.layer.Tile({\n")
 //            .append( "          extent: [_EXTENT_],\n")
             .append( "          source: new ol.source.TileWMS({\n")
@@ -134,9 +137,9 @@ public class OpenLayersContentProvider
 //            .append( "            serverType: 'geoserver'\n")
             .append( "          })\n")
             .append( "        })").toString();
-    private final static String MAPJSSTART = new StringBuffer()
+    private final static String MAPJSSTART = new StringBuilder()
             .append( "      var layers = [\n").toString();
-    private final static String MAPJSEND = new StringBuffer()
+    private final static String MAPJSEND = new StringBuilder()
             .append( "\n      ];\n")
             .append( "      var map = new ol.Map({\n")
             .append( "        layers: layers,\n")

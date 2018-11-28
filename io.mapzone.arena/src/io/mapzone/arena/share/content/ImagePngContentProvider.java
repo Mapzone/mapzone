@@ -1,5 +1,6 @@
 /*
- * polymap.org Copyright (C) 2016, the @authors. All rights reserved.
+ * polymap.org 
+ * Copyright (C) 2016-2018, the @authors. All rights reserved.
  *
  * This is free software; you can redistribute it and/or modify it under the terms of
  * the GNU Lesser General Public License as published by the Free Software
@@ -12,16 +13,19 @@
  */
 package io.mapzone.arena.share.content;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringJoiner;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
 
+import com.google.common.base.Joiner;
 import com.vividsolutions.jts.geom.Envelope;
+
+import org.polymap.service.geoserver.GeoServerUtils;
 
 import io.mapzone.arena.ArenaPlugin;
 import io.mapzone.arena.GeoServerStarter;
@@ -32,10 +36,13 @@ import io.mapzone.arena.share.ui.ShareContext.SelectionDescriptor;
  * Creates a complete openlayers HTML page as string.
  *
  * @author Steffen Stundzig
+ * @author Falko Bräutigam
  */
 public class ImagePngContentProvider
         implements ShareableContentProvider {
 
+    public final static String MIMETYPE = "image/png";
+    
     public class ImagePngContent implements ShareableContent {
 
         public String imgResource;
@@ -51,57 +58,64 @@ public class ImagePngContentProvider
         public int    previewHeight;
     }
 
-    private static Log         log      = LogFactory.getLog( ImagePngContentProvider.class );
 
-    public final static String MIMETYPE = "image/png";
-
+    // instance *******************************************
+    
     private ShareContext       context;
 
 
     @Override
     public ImagePngContent get() {
         ImagePngContent content = new ImagePngContent();
-        try {
 
-            StringJoiner layers = new StringJoiner( "," );
-            for (SelectionDescriptor selection : context.selectionDescriptors.get()) {
-                layers.add( selection.layer.get().label.get() );
-                // FIXME, if multilayers are working, remove this break!!!
-                break;
-            }
-            Envelope envelope = context.boundingBox.get();
-            StringJoiner extent = new StringJoiner( "," );
-            extent.add( String.valueOf( (int)envelope.getMinX() ) );
-            extent.add( String.valueOf( (int)envelope.getMinY() ) );
-            extent.add( String.valueOf( (int)envelope.getMaxX() ) );
-            extent.add( String.valueOf( (int)envelope.getMaxY() ) );
-
-            final StringBuilder imageUrl = new StringBuilder( ArenaPlugin.instance().config().getProxyUrl() );
-            imageUrl.append( GeoServerStarter.ALIAS );
-            imageUrl.append( "?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&CRS=EPSG%3A3857&STYLES=" );
-            imageUrl.append( "&LAYERS=" ).append( URLEncoder.encode( layers.toString(), "utf-8" ) );
-            imageUrl.append( "&BBOX=" ).append( URLEncoder.encode( extent.toString(), "utf-8" ) );
-            if (!StringUtils.isBlank( ArenaPlugin.instance().config().getServiceAuthToken() )) {
-                imageUrl.append( "&authToken=" ).append( URLEncoder.encode( ArenaPlugin.instance().config().getServiceAuthToken(), "utf-8" ) );
-            }
-            content.imgWidth = context.displaySize.get().x;
-            content.imgHeight = context.displaySize.get().y;
-
-            content.previewWidth = 320;
-            content.previewHeight = content.previewWidth * content.imgHeight / content.imgWidth;
-
-            content.previewResource = new StringBuffer( imageUrl.toString() ).append( "&WIDTH=" ).append( content.previewWidth ).append( "&HEIGHT=" ).append( content.previewHeight ).toString();
-
-            content.imgResource = imageUrl.append( "&WIDTH=" ).append( content.imgWidth ).append( "&HEIGHT=" ).append( content.imgHeight ).toString();
+        StringJoiner layers = new StringJoiner( "," );
+        for (SelectionDescriptor selection : context.selectionDescriptors.get()) {
+            layers.add( GeoServerUtils.simpleName( selection.layer.get().label.get() ) );
+            // FIXME, if multilayers are working, remove this break!!!
+            //break;
         }
-        catch (UnsupportedEncodingException e) {
-            throw new RuntimeException( e );
-        }
+        Envelope bbox = context.boundingBox.get();
+        String extent = Joiner.on( "," ).join( (int)bbox.getMinX(), (int)bbox.getMinY(), (int)bbox.getMaxX(), (int)bbox.getMaxY() );
 
+        String imageUrl = ArenaPlugin.instance().config().getProxyUrl() + GeoServerStarter.ALIAS;
+        List<NameValuePair> params = new ArrayList() {{
+            add( nameValue( "SERVICE", "WMS" ) );
+            add( nameValue( "VERSION", "1.3.0" ) );
+            add( nameValue( "REQUEST", "GetMap" ) );
+            add( nameValue( "FORMAT", "image/png") );
+            add( nameValue( "CRS", "EPSG:3857" ) );
+            add( nameValue( "BBOX", extent.toString() ) );
+            add( nameValue( "LAYERS", layers.toString() ) );
+        }};
+        if (!StringUtils.isBlank( ArenaPlugin.instance().config().getServiceAuthToken() )) {
+            params.add( nameValue( "authToken", ArenaPlugin.instance().config().getServiceAuthToken() ) );
+        }
+        content.imgWidth = context.displaySize.get().x;
+        content.imgHeight = context.displaySize.get().y;
+
+        content.previewWidth = 320;
+        content.previewHeight = content.previewWidth * content.imgHeight / content.imgWidth;
+
+        ArrayList previewParams = new ArrayList( params ) {{
+            add( nameValue( "WIDTH", content.previewWidth ) );
+            add( nameValue( "HEIGHT", content.previewHeight ) );
+        }};
+        content.previewResource = imageUrl + "?" + URLEncodedUtils.format( previewParams, "UTF-8" );
+
+        ArrayList imgParams = new ArrayList( params ) {{
+            add( nameValue( "WIDTH", content.imgWidth ) );
+            add( nameValue( "HEIGHT", content.imgHeight ) );
+        }};
+        content.imgResource = imageUrl + "?" + URLEncodedUtils.format( imgParams, "UTF-8" );
         return content;
     }
 
+    
+    protected NameValuePair nameValue( String name, Object value ) {
+        return new BasicNameValuePair( name, value.toString() );
+    }
 
+    
     @Override
     public boolean supports( final String mimeType, @SuppressWarnings( "hiding" ) final ShareContext context ) {
         this.context = context;

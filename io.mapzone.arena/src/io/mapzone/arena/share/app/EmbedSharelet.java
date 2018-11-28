@@ -19,8 +19,8 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -118,19 +118,14 @@ public class EmbedSharelet
 
     private ShareletSectionProvider iframe() {
         return new ShareletSectionProvider() {
-
             @Override
             public String title() {
                 return i18n.get( "iframe_title" );
             }
-
-
             @Override
             public String[] supportedTypes() {
                 return new String[] { "application/arena" };
             }
-
-
             @Override
             public void createContents( Composite parent, ShareableContentProvider... contentBuilders ) {
                 ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "iframe" ), SWT.WRAP ) ).widthHint( preferredWidth( parent ) );//.heightHint( 60 );
@@ -151,7 +146,7 @@ public class EmbedSharelet
     }
 
 
-    private ShareletSectionProvider screenshot() {
+    protected ShareletSectionProvider screenshot() {
         return new ShareletSectionProvider() {
 
             @Override
@@ -171,39 +166,31 @@ public class EmbedSharelet
 
                 ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "image" ), SWT.WRAP ) ).widthHint( width );//.heightHint( 40 );
 
-                StringBuffer image = new StringBuffer( "<img width='" ).append( content.imgWidth ).append( "' height='" ).append( content.imgHeight ).append( "' src='" );
-                image.append( content.imgResource );
-                image.append( "' alt='" ).append( ArenaConfig.getAppTitle() ).append( "'/>" );
+                StringBuilder image = new StringBuilder( 1024 )
+                        .append( "<img width='" ).append( content.imgWidth )
+                        .append( "' height='" ).append( content.imgHeight )
+                        .append( "' src='" ).append( content.imgResource )
+                        .append( "' alt='" ).append( ArenaConfig.getAppTitle() ).append( "'/>" );
 
                 Text text = tk().createText( parent, image.toString(), SWT.BORDER, SWT.WRAP, SWT.READ_ONLY );
                 ColumnDataFactory.on( text ).widthHint( width ).heightHint( 120 );
 
                 ColumnDataFactory.on( tk().createLabel( parent, i18n.get( "image_preview" ), SWT.WRAP ) ).widthHint( width );//.heightHint( 20 );
 
-                StringBuffer oreview = new StringBuffer( "<img width='" ).append( content.previewWidth ).append( "' height='" ).append( content.previewHeight ).append( "' src='" );
-                oreview.append( content.previewResource );
-                oreview.append( "'/>" );
+                StringBuilder oreview = new StringBuilder( 1024 )
+                        .append( "<img width='" ).append( content.previewWidth )
+                        .append( "' height='" ).append( content.previewHeight )
+                        .append( "' src='" ).append( content.previewResource ).append( "'/>" );
 
                 Label l = tk().createLabel( parent, oreview.toString(), SWT.BORDER );
                 ColumnDataFactory.on( l ).widthHint( Math.min( width, content.previewWidth ) ).heightHint( content.previewHeight );
-                l.addMouseListener( new MouseListener() {
-
+                l.addMouseListener( new MouseAdapter() {
                     @Override
                     public void mouseUp( MouseEvent e ) {
                         UrlLauncher launcher = RWT.getClient().getService( UrlLauncher.class );
                         launcher.openURL( ((ImagePngContent)contentBuilders[0].get()).imgResource );
                     }
-
-
-                    @Override
-                    public void mouseDown( MouseEvent e ) {
-                    }
-
-
-                    @Override
-                    public void mouseDoubleClick( MouseEvent e ) {
-                    }
-                } );
+                });
             }
         };
     }
