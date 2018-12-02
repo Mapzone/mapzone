@@ -58,8 +58,9 @@ public class AdminPluginDashlet
     @Override
     public void fillPanel( IContributionSite site, Composite parent ) {
         if (site.tagsContain( PluginInfoPanel.ID.id() ) && SecurityUtils.isAdmin()) {
-            IPanelSection section = site.toolkit().createPanelSection( parent, "Administration", SWT.BORDER );
-            section.addConstraint( new PriorityConstraint( 9 ), new MinWidthConstraint( 350, 1 ) );
+            IPanelSection section = site.toolkit().createPanelSection( parent, "Administration", SWT.BORDER, IPanelSection.EXPANDABLE );
+            section.addConstraint( new PriorityConstraint( 0 ), new MinWidthConstraint( 350, 1 ) );
+            section.setExpanded( false );
             
             AdminPluginDashlet dashlet = new AdminPluginDashlet();
             BatikApplication.instance().getContext().propagate( dashlet );

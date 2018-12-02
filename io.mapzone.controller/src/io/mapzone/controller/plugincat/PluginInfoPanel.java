@@ -85,11 +85,13 @@ public class PluginInfoPanel
         createFormSection( parent );
         createInstallSection( parent );
         ContributionManager.instance().contributeTo( parent, this, ID.id() );
+        
+        UIThreadExecutor.async( () -> site().layout( true ) );
     }
 
 
     protected void createFormSection( Composite parent ) {
-        IPanelSection section = tk().createPanelSection( parent, entry.get().title.get(), SWT.NONE );
+        IPanelSection section = tk().createPanelSection( parent, entry.get().title.get(), IPanelSection.EXPANDABLE );
         section.addConstraint( new PriorityConstraint( 10 ), new MinWidthConstraint( 350, 1 ) );
 
         new CatalogEntryForm( entry.get() )
@@ -100,8 +102,10 @@ public class PluginInfoPanel
 
     
     protected void createInstallSection( Composite parent ) {
-        IPanelSection section = tk().createPanelSection( parent, "Install", SWT.BORDER );
+        IPanelSection section = tk().createPanelSection( parent, "Install", SWT.BORDER, IPanelSection.EXPANDABLE );
         section.addConstraint( new PriorityConstraint( 9 ), new MinWidthConstraint( 350, 1 ) );
+        section.setExpanded( false );
+        
         section.getBody().setLayout( ColumnLayoutFactory.defaults().spacing( 5 ).margins( 3 ).create() );
 
         // outside project scope
