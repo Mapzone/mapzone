@@ -16,6 +16,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: io.mapzone.arena,
  io.mapzone.arena.analytics.chart,
+ io.mapzone.arena.jmx,
  io.mapzone.arena.refine
 Bundle-ClassPath: lib/commons-codec-1.9.jar,
  lib/httpclient-4.5.2.jar,
