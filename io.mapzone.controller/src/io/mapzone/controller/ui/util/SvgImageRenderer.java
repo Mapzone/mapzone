@@ -51,7 +51,7 @@ import org.polymap.rap.updownload.download.DownloadService;
 public class SvgImageRenderer
         implements IMarkdownRenderer, DisposeListener {
 
-    private static Log log = LogFactory.getLog( SvgImageRenderer.class );
+    private static final Log log = LogFactory.getLog( SvgImageRenderer.class );
     
     public static final Pattern                 urlPattern = Pattern.compile( "#([^@]+)[@]?([a-zA-Z0-9_-]*)" );
             
@@ -103,9 +103,9 @@ public class SvgImageRenderer
             widget.addDisposeListener( this );
 
             String url = DownloadService.registerContent( provider );
-            out.setUrl( url );
-            out.setText( node.text() );
-            out.setId( node.text() );
+            out.url.set( url );
+            out.text.set( node.text() );
+            out.id.set( node.text() );
             return true;
         }
         return false;
