@@ -1,3 +1,4 @@
+/* Copyright (C) 2018 Falko Bräutigam. All rights reserved. */
 package io.mapzone.controller.vm.http;
 
 import static org.apache.commons.lang3.StringUtils.substringAfter;
@@ -78,7 +79,7 @@ public class ForwardRequest
 //            return new Status( Severity.FAILED_CHECK_AGAIN, BAD_RESPONSE );
         }
         catch (IOException e) {
-            log.warn( "Forwarding request failed. (" + e .getMessage() + ")" );
+            log.warn( "Forwarding request failed. (" + e .getMessage() + ") (" + Thread.currentThread().getName() + ")" );
             return new Status( Severity.FAILED, IO_ERROR, e );                
         }
     }
@@ -97,7 +98,7 @@ public class ForwardRequest
         
         HttpRequestForwarder _forwarder = new HttpRequestForwarder() {
             @Override protected String rewritePath( String path ) {
-                // /org/name/servletAlias
+                // -> /org/name/servletAlias
                 return "/" + substringAfter( substringAfter( substringAfter( path, "/" ), "/" ), "/" );
             }
             @Override protected void onRequestSubmitted( HttpRequest _request ) {
@@ -114,10 +115,10 @@ public class ForwardRequest
                 .targetUri.put( targetUri.toString() )
                 .cookieNamePrefix.put( cookiePrefix ) );
         
-        forwarder.get().service( request.get(), response.get() );
+        _forwarder.service( request.get(), response.get() );
         
-        proxyResponse.set( forwarder.get().proxyResponse );
-        proxyRequest.set( forwarder.get().proxyRequest );
+        proxyResponse.set( _forwarder.proxyResponse );
+        proxyRequest.set( _forwarder.proxyRequest );
     }
     
 }

@@ -1,17 +1,4 @@
-/* 
- * mapzone.io
- * Copyright (C) 2016, the @authors. All rights reserved.
- *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 3.0 of
- * the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- */
+/* Copyright (C) 2016-2018 Falko Bräutigam. All rights reserved. */
 package io.mapzone.controller.vm.http;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -39,7 +26,7 @@ import org.apache.http.impl.io.DefaultHttpRequestWriterFactory;
 import org.polymap.core.runtime.config.ConfigurationFactory;
 
 /**
- * This allows to intercept processing of an {@link HttpRequest} to an upstream
+ * This allows to intercept processing of a {@link HttpRequest} to an upstream
  * project instance *right after* request was send - *before* start waiting on
  * response. A bit rough way to really split the execution of the REQUEST and
  * RESPONSE provision. {@link HttpClient} does not provide a more natural way to do
@@ -47,7 +34,7 @@ import org.polymap.core.runtime.config.ConfigurationFactory;
  *
  * @author Falko Bräutigam
  */
-class InterceptableHttpClientConnectionFactory
+abstract class InterceptableHttpClientConnectionFactory
         extends ManagedHttpClientConnectionFactory {
 
     static final Log log = LogFactory.getLog( InterceptableHttpClientConnectionFactory.class );

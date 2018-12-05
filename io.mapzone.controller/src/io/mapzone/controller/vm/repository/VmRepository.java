@@ -156,13 +156,26 @@ public class VmRepository {
         }
 
 
+        /**
+         * Commits this {@link UnitOfWork} and releases all
+         * {@link PessimisticLocking} locks but does not {@link #close()}.
+         */
+        @Override
         public void commit() throws ModelRuntimeException {
             log.debug( "COMMIT provision: ..." );
-            super.commit();
-            close();
+            try {
+                super.commit();
+            }
+            finally {
+                // UoW is committed when the request is submitted; we must not
+                // close it because in case of request/socket timeout the provisioning
+                // executes other provisions afterwards 
+                PessimisticLocking.notifyClosed( delegate() );                
+            }
         }
 
 
+        @Override
         public void rollback() throws ModelRuntimeException {
             log.info( "ROLLBACK provision: ..." );
             super.rollback();
@@ -170,6 +183,7 @@ public class VmRepository {
         }
 
 
+        @Override
         public void close() {
             try {
                 super.close();
@@ -187,7 +201,6 @@ public class VmRepository {
                 close();
             }
         }
-        
     }
     
 }

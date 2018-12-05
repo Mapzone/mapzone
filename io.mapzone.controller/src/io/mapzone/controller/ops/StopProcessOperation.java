@@ -1,3 +1,4 @@
+/* Copyright (C) 2018 Falko Bräutigam. All rights reserved. */
 package io.mapzone.controller.ops;
 
 import org.apache.commons.logging.Log;

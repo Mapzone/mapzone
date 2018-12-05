@@ -1,6 +1,6 @@
 /**
  * Copyright MITRE
- * Copyright (C) 2016, Falko Bräutigam. All rights reserved.
+ * Copyright (C) 2016-2018, Falko Bräutigam. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.AbortableHttpRequest;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.entity.InputStreamEntity;
@@ -46,6 +47,8 @@ import org.apache.http.message.BasicHttpRequest;
 import org.polymap.core.runtime.config.Config2;
 import org.polymap.core.runtime.config.DefaultBoolean;
 import org.polymap.core.runtime.config.Mandatory;
+
+import org.polymap.rhei.batik.BatikApplication;
 
 /**
  * An HTTP reverse proxy/gateway servlet. It is designed to be extended for
@@ -64,7 +67,7 @@ import org.polymap.core.runtime.config.Mandatory;
  * @author <a href="http://www.polymap.de">Falko Bräutigam</a>
  */
 @SuppressWarnings("deprecation")
-public class HttpRequestForwarder
+public abstract class HttpRequestForwarder
         extends HttpForwarder {
 
     private static final Log log = LogFactory.getLog( HttpRequestForwarder.class );
@@ -75,14 +78,17 @@ public class HttpRequestForwarder
     /** Set to {@link PoolingHttpClientConnectionManager#setMaxTotal(int)}. */
     public static final int             MAX_CONNECTIONS = 100;
     
+    /** Must be longer than {@link BatikApplication#REQUEST_CHECK_INTERVAL}. */
+    public static final int             REQUEST_TIMEOUT = BatikApplication.REQUEST_CHECK_INTERVAL + (10*1000);
+    
     protected static HttpClient         proxyClient;
     
-    protected static ThreadLocal<HttpRequestForwarder>  active = new ThreadLocal();
+    protected static final ThreadLocal<HttpRequestForwarder>  active = new ThreadLocal();
 
+    
     static {
         InterceptableHttpClientConnectionFactory factory = new InterceptableHttpClientConnectionFactory() {
-            @Override
-            protected void onRequestSubmitted( HttpRequest request ) {
+            @Override protected void onRequestSubmitted( HttpRequest request ) {
                 active.get().onRequestSubmitted( request );
             }
         };
@@ -91,10 +97,17 @@ public class HttpRequestForwarder
         manager.setDefaultMaxPerRoute( MAX_CONNECTIONS_PER_ROUTE );
         manager.setMaxTotal( MAX_CONNECTIONS );
         
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout( REQUEST_TIMEOUT )
+                .setConnectionRequestTimeout( REQUEST_TIMEOUT )
+                .setSocketTimeout( REQUEST_TIMEOUT )
+                .build();
+        
         proxyClient = HttpClientBuilder.create()
                 .disableCookieManagement()
                 .setConnectionManagerShared( true )
-                .setConnectionManager( manager ).build();
+                .setConnectionManager( manager )
+                .setDefaultRequestConfig( requestConfig ).build();
         
 //        // as of HttpComponents v4.2, this class is better since it uses System Properties:
 //      HttpParams hcParams = new BasicHttpParams();
@@ -115,9 +128,6 @@ public class HttpRequestForwarder
 
     @Mandatory
     public Config2<HttpRequestForwarder,String>  cookieNamePrefix;
-    
-    // These next 3 are cached here, and should only be referred to in initialization
-    // logic. See the
     
     /**  */
     @Mandatory
@@ -140,7 +150,7 @@ public class HttpRequestForwarder
     }
 
     
-    public void service( HttpServletRequest servletRequest, HttpServletResponse servletResponse )
+    public void service( HttpServletRequest request, HttpServletResponse response )
             throws ServletException, IOException, URISyntaxException {
         targetUriObj = new URI( targetUri.get() );
         targetHost = URIUtils.extractHost( targetUriObj );
@@ -148,28 +158,27 @@ public class HttpRequestForwarder
         // Make the Request
         // note: we won't transfer the protocol version because I'm not sure it would
         // truly be compatible
-        String method = servletRequest.getMethod();
-        String proxyRequestUri = rewriteUrlFromRequest( servletRequest );
+        String method = request.getMethod();
+        String proxyRequestUri = rewriteUrlFromRequest( request );
         
         // spec: RFC 2616, sec 4.3: either of these two headers signal that there is
         // a message body.
-        if (servletRequest.getHeader( HttpHeaders.CONTENT_LENGTH ) != null
-                || servletRequest.getHeader( HttpHeaders.TRANSFER_ENCODING ) != null) {
+        if (request.getHeader( HttpHeaders.CONTENT_LENGTH ) != null
+                || request.getHeader( HttpHeaders.TRANSFER_ENCODING ) != null) {
             HttpEntityEnclosingRequest eProxyRequest = new BasicHttpEntityEnclosingRequest( method, proxyRequestUri );
             // Add the input entity (streamed)
             // note: we don't bother ensuring we close the servletInputStream since
             // the container handles it
-            eProxyRequest.setEntity( new InputStreamEntity( servletRequest.getInputStream(), servletRequest
-                    .getContentLength() ) );
+            eProxyRequest.setEntity( new InputStreamEntity( request.getInputStream(), request.getContentLength() ) );
             proxyRequest = eProxyRequest;
         }
         else {
             proxyRequest = new BasicHttpRequest( method, proxyRequestUri );
         }
 
-        copyRequestHeaders( servletRequest );
+        copyRequestHeaders( request );
 
-        setXForwardedForHeader( servletRequest );
+        setXForwardedForHeader( request );
 
         // Execute the request
         try {
@@ -177,7 +186,7 @@ public class HttpRequestForwarder
             
             log.debug( "REQUEST "
                     + "[" + StringUtils.right( Thread.currentThread().getName(), 2 ) + "] " 
-                    + method + ": " + servletRequest.getRequestURI() + " -- " + proxyRequest.getRequestLine().getUri() );
+                    + method + ": " + request.getRequestURI() + " -- " + proxyRequest.getRequestLine().getUri() );
             proxyResponse = proxyClient.execute( targetHost, proxyRequest );
         }
         catch (Exception e) {
@@ -331,4 +340,5 @@ public class HttpRequestForwarder
     protected String rewriteQueryString( String queryString ) {
         return queryString;
     }
+    
 }

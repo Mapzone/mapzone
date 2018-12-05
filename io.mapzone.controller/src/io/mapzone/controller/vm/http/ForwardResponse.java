@@ -1,3 +1,4 @@
+/* Copyright (C) 2018 Falko Bräutigam. All rights reserved. */
 package io.mapzone.controller.vm.http;
 
 import io.mapzone.controller.provision.Context;
@@ -14,7 +15,7 @@ import org.apache.commons.logging.LogFactory;
 public class ForwardResponse
         extends HttpProxyProvision {
 
-    private static Log log = LogFactory.getLog( ForwardResponse.class );
+    private static final Log log = LogFactory.getLog( ForwardResponse.class );
 
     private Context<HttpRequestForwarder>   requestForwarder;
 
@@ -31,8 +32,8 @@ public class ForwardResponse
             HttpResponseForwarder forwarder = new HttpResponseForwarder( requestForwarder.get() );
         ){
             forwarder.service( request.get(), response.get() );
+            return OK_STATUS;
         }
-        return OK_STATUS;
     }
  
 }

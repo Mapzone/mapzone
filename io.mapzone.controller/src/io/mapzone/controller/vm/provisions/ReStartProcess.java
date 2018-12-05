@@ -1,3 +1,4 @@
+/* Copyright (C) 2018 Falko Bräutigam. All rights reserved. */
 package io.mapzone.controller.vm.provisions;
 
 import java.net.URI;
@@ -21,7 +22,7 @@ import io.mapzone.controller.vm.repository.ProjectInstanceIdentifier;
 import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
 
 /**
- * Checks if the process for the project was started at all,
+ * Checks if the process for the project has been started at all, and starts
  * {@link StartProcessOperation} if not. Finds the {@link ProjectInstanceRecord} and
  * its {@link ProcessRecord} for the org and project name in the request. Puts both
  * into the provision {@link Context}.
@@ -31,7 +32,7 @@ import io.mapzone.controller.vm.repository.ProjectInstanceRecord;
 public class ReStartProcess
         extends HttpProxyProvision {
 
-    private static Log log = LogFactory.getLog( ReStartProcess.class );
+    private static final Log log = LogFactory.getLog( ReStartProcess.class );
 
     public static final String              NO_HOST = "_no_host_";
 

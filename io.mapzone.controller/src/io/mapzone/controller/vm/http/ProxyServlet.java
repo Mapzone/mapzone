@@ -1,16 +1,4 @@
-/* 
- * Copyright (C) 2015-2016, the @authors. All rights reserved.
- *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 3.0 of
- * the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- */
+/* Copyright (C) 2018 Falko Bräutigam. All rights reserved. */
 package io.mapzone.controller.vm.http;
 
 import static com.google.common.base.Throwables.propagate;
@@ -136,10 +124,8 @@ public class ProxyServlet
             // commit on sent or discard
             forwardRequest.onRequestSend.set( (HttpRequest request) -> {
                 // see InterceptableHttpClientConnectionFactory
-                if (forwardRequest.vmUow.isPresent()) {
-                    forwardRequest.vmUow.get().commit();
-                }
-                log.debug( "Provisioning: " + timer.elapsedTime() + "ms" );
+                forwardRequest.vmUow.ifPresent( uow -> uow.commit() );
+                log.debug( "Provisioning: " + timer.elapsedTime() + "ms (" + Thread.currentThread().getName() + ")" );
             });
             try {
                 Status status = executor.execute( forwardRequest );
@@ -156,12 +142,13 @@ public class ProxyServlet
                 return; // login redirect
             }
             catch (Throwable e) {
-                log.error( "Error while provisioning or upstream process.", e );
+                log.error( "Error while provisioning or upstream process. (" + Thread.currentThread().getName() + ")", e );
                 ProvisionErrorResponse.send( resp, 503, "Sorry. Project is currently not available." );
                 return;
             }
             finally {
                 forwardRequest.vmUow.ifPresent( uow -> uow.close() );
+                log.debug( "   UOW closed. (" + Thread.currentThread().getName() + ")" );
             }
 
             // response
